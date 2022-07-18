@@ -2,6 +2,8 @@ import styled from '@emotion/styled';
 import theme from 'styles/theme';
 
 const Container = styled.div`
+  min-height: 500px;
+
   .trackbar {
     background: white;
     display: flex;

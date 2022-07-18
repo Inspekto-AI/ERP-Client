@@ -21,3 +21,4 @@ export const THIRD_SHIFT = [
   process.env.NEXT_PUBLIC_SECOND_SHIFT + 1,
   process.env.NEXT_PUBLIC_THIRD_SHIFT
 ];
+export const CLIENT_NAME = process.env.NEXT_PUBLIC_CLIENT_NAME;

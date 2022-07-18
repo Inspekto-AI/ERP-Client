@@ -37,13 +37,14 @@ const Container = styled.div`
       }
     }
 
-    .logo-container {
-      margin-bottom: 25px;
-    }
-
     .top-links {
       margin-bottom: 25px;
     }
+  }
+
+  .copyright {
+    text-align: right;
+    margin-top: 20px;
   }
 `;
 

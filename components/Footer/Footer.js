@@ -1,5 +1,4 @@
 import Image from 'next/image';
-import Link from 'next/link';
 import { Grid } from '@material-ui/core';
 
 import ImageKitLoader from 'utils/ImageLoader';
@@ -19,40 +18,9 @@ const Footer = () => {
             />
           </Grid>
           <Grid item md={10} xs={12}>
-            <Grid container spacing={4}>
-              <Grid item md={3} xs={6} className="top-links">
-                <div className="sub-heading">About</div>
-                <div className="links">
-                  <p>
-                    Our cutting-edge AI technology that supports your business
-                    decisions through sophisticated video monitoring, producing
-                    unimaginable insights.
-                  </p>
-                </div>
-              </Grid>
-              <Grid item md={3} xs={6} className="top-links">
-                <div className="sub-heading">Industries</div>
-                <div className="links">
-                  <Link href="/industries#manufacturing">Manufacturing</Link>
-                  <Link href="/industries#oil-and-gas">Oil &amp; Gas</Link>
-                  <Link href="/industries#banking">Banking</Link>
-                </div>
-              </Grid>
-              <Grid item md={3} xs={6}>
-                <div className="sub-heading">Site Map</div>
-                <div className="links">
-                  <Link href="/aboutus">About Us</Link>
-                  <Link href="/industries">Industries</Link>
-                  <Link href="/contactus#team">Team</Link>
-                </div>
-              </Grid>
-              <Grid item md={3} xs={6}>
-                <div className="sub-heading">Contact</div>
-                <div className="links">
-                  <Link href="/contactus">Contact Us</Link>
-                </div>
-              </Grid>
-            </Grid>
+            <p className="copyright">
+              &copy;&nbsp;Frinks Digital Technologies Private Limited
+            </p>
           </Grid>
         </Grid>
       </footer>

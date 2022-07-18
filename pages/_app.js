@@ -9,6 +9,7 @@ import CheckAuth from 'components/CheckAuth';
 import Head from 'next/head';
 import PropTypes from 'prop-types';
 
+import { CLIENT_NAME } from 'utils/constants';
 import theme from 'styles/theme';
 import 'styles/globalStyles.css';
 
@@ -39,7 +40,7 @@ export default function MyApp({ Component, pageProps }) {
   return (
     <>
       <Head>
-        <title>ACC | Frinks</title>
+        <title>{CLIENT_NAME} | Frinks</title>
         <meta
           name="viewport"
           content="minimum-scale=1, initial-scale=1, width=device-width"
