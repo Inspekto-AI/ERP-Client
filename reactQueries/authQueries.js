@@ -16,6 +16,12 @@ export const LoginQuery = () => {
   );
 };
 
+export const SignupQuery = () => {
+  return useMutation(values =>
+    post('/api/users/signup', values).then(res => res.data)
+  );
+};
+
 export const LogoutQuery = () => {
   return useMutation(() => post('/api/users/logout').then(res => res.data));
 };

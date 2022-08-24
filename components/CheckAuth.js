@@ -1,8 +1,8 @@
 import { useContext, useEffect } from 'react';
 import { CheckAuth as CheckAuthMutation } from 'reactQueries/authQueries';
-import PropTypes from 'prop-types';
 import { GlobalContext } from 'context/GlobalContext';
 import Loader from 'components/Loader';
+import PropTypes from 'prop-types';
 
 const CheckAuth = ({ children }) => {
   const { userData, setUserData } = useContext(GlobalContext);

@@ -18,9 +18,7 @@ const Footer = () => {
             />
           </Grid>
           <Grid item md={10} xs={12}>
-            <p className="copyright">
-              &copy;&nbsp;Frinks Digital Technologies Private Limited
-            </p>
+            <p className="copyright">&copy;&nbsp;Frinks.ai</p>
           </Grid>
         </Grid>
       </footer>

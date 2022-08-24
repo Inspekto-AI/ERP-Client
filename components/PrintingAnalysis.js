@@ -7,15 +7,10 @@ import AddMoreBagsModal from 'components/AddMoreBagsModal';
 import DefectiveBags from 'components/DefectiveBags';
 import InfoModal from 'components/InfoModal';
 
-const PrintingAnalysis = ({
-  activeTransactions,
-  handleBagIncrement,
-  handleStop
-}) => {
+const PrintingAnalysis = ({ printingBelts }) => {
   // const [search, setSearch] = useState('');
   const [detailModalOpen, setDetailModalOpen] = useState(null);
   const [rejectModalOpen, setRejectModalOpen] = useState(null);
-  const [bagModifyModalOpen, setBagModifyModalOpen] = useState(null);
 
   return (
     <>
@@ -34,8 +29,7 @@ const PrintingAnalysis = ({
           </div>
         </div>
         <div className="analytics">
-          {activeTransactions &&
-          Object.keys(activeTransactions)?.length === 0 ? (
+          {printingBelts && Object.keys(printingBelts)?.length === 0 ? (
             <p style={{ fontSize: '20px', textAlign: 'center', color: 'gray' }}>
               <AiOutlineExclamationCircle style={{ fontSize: '70px' }} />
               <br />
@@ -45,30 +39,29 @@ const PrintingAnalysis = ({
             </p>
           ) : (
             <Grid container>
-              {activeTransactions &&
-                Object.keys(activeTransactions)?.map((e, index) => (
+              {printingBelts &&
+                Object.keys(printingBelts)?.map((e, index) => (
                   <Grid item xs={3} key={index}>
                     <AnalyticsCard
                       data={{
-                        transaction_id: e,
-                        ...activeTransactions[e]
+                        ...printingBelts[e]
                       }}
                       rejectModalOpen={() =>
                         setRejectModalOpen({
-                          transaction_id: e,
-                          ...activeTransactions[e]
+                          ...printingBelts[e],
+                          printing_belt_id: e
                         })
                       }
-                      bagModifyModalOpen={() =>
-                        setBagModifyModalOpen({
-                          transaction_id: e,
-                          ...activeTransactions[e]
-                        })
-                      }
+                      // bagModifyModalOpen={() =>
+                      //   setBagModifyModalOpen({
+                      //     transaction_id: e,
+                      //     ...printingBelts[e]
+                      //   })
+                      // }
                       setDetailModalOpen={() =>
                         setDetailModalOpen({
                           transaction_id: e,
-                          ...activeTransactions[e]
+                          ...printingBelts[e]
                         })
                       }
                       printingCard
@@ -84,14 +77,15 @@ const PrintingAnalysis = ({
           open={detailModalOpen}
           close={() => setDetailModalOpen(null)}
           heading="Transaction details"
-          handleSubmit={e => {
-            handleBagIncrement(e);
+          handleSubmit={() => {
+            // handleBagIncrement(e);
             setDetailModalOpen(null);
           }}
-          handleStop={e => {
-            handleStop(e);
+          handleStop={() => {
+            // handleStop(e);
             setDetailModalOpen(null);
           }}
+          printingCard
         />
       ) : null}
       {rejectModalOpen ? (
@@ -101,10 +95,10 @@ const PrintingAnalysis = ({
           title="Rejected bags"
           hideConfirm
         >
-          <DefectiveBags transaction_id={rejectModalOpen?.transaction_id} />
+          <DefectiveBags printingBeltId={rejectModalOpen?.printing_belt_id} />
         </InfoModal>
       ) : null}
-      {bagModifyModalOpen ? (
+      {/* {bagModifyModalOpen ? (
         <AddMoreBagsModal
           open={bagModifyModalOpen}
           close={() => setBagModifyModalOpen(null)}
@@ -114,15 +108,13 @@ const PrintingAnalysis = ({
             setBagModifyModalOpen(null);
           }}
         />
-      ) : null}
+      ) : null} */}
     </>
   );
 };
 
 PrintingAnalysis.propTypes = {
-  activeTransactions: PropTypes.any,
-  handleBagIncrement: PropTypes.func,
-  handleStop: PropTypes.any
+  printingBelts: PropTypes.any
 };
 
 export default PrintingAnalysis;

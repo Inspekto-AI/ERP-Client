@@ -5,18 +5,27 @@ import PropTypes from 'prop-types';
 import { get } from 'utils/api';
 import { BASE_URL } from 'utils/constants';
 
-const DefectiveBags = ({ transaction_id }) => {
+const DefectiveBags = ({
+  transaction_id,
+  passedRejectArray,
+  printingBeltId
+}) => {
   const [rejectBags, setRejectBags] = useState(null);
 
   useEffect(() => {
     const fetchRejectBags = async () => {
-      const res = await get('/api/transaction/fetch-reject', {
-        id: transaction_id
-      });
+      const reqParams = {
+        transaction_id,
+        printing_belt_id: printingBeltId
+      };
+      if (printingBeltId) delete reqParams.transaction_id;
+      else delete reqParams.printing_belt_id;
+      const res = await get('/api/transaction/fetch-reject', reqParams);
       setRejectBags(res?.data?.data);
     };
-    fetchRejectBags();
-  }, [transaction_id]);
+    if (!passedRejectArray) fetchRejectBags();
+    else setRejectBags(passedRejectArray);
+  }, [passedRejectArray, transaction_id, printingBeltId]);
 
   return (
     <DefectiveBagsContainer>
@@ -36,12 +45,21 @@ const DefectiveBags = ({ transaction_id }) => {
               <div className="image">
                 <div className="image-container">
                   <Image
-                    src={e.local_image_location}
+                    src={
+                      transaction_id || printingBeltId
+                        ? e.local_image_location || e.local_image_path
+                        : e.s3_image_url
+                    }
                     layout="fill"
                     loader={() =>
-                      `${BASE_URL}/api/transaction/images?image_location=${e.local_image_location}`
+                      transaction_id || printingBeltId
+                        ? `${BASE_URL}/api/transaction/images?image_location=${
+                            e.local_image_location || e.local_image_path
+                          }`
+                        : e.s3_image_url
                     }
                     objectFit="contain"
+                    objectPosition="top"
                   />
                 </div>
                 <div className="description">
@@ -60,7 +78,9 @@ const DefectiveBags = ({ transaction_id }) => {
 };
 
 DefectiveBags.propTypes = {
-  transaction_id: PropTypes.any
+  transaction_id: PropTypes.any,
+  passedRejectArray: PropTypes.array,
+  printingBeltId: PropTypes.any
 };
 
 export default DefectiveBags;

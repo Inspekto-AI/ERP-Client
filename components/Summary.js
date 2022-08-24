@@ -1,35 +1,44 @@
+import { useEffect, useState } from 'react';
 import Image from 'next/image';
 import theme from 'styles/theme';
-import FrinksButton from 'components/FrinksButton';
 import Container from 'styles/summary.styles';
-import { Grid, Button } from '@material-ui/core';
+import { Grid } from '@material-ui/core';
 import NotificationContainer from 'styles/summaryNotification.styles';
 import MaintenanceContainer from 'styles/maintenanceNotification.styles';
 import ImageKitLoader from 'utils/ImageLoader';
-import { FIRST_SHIFT, SECOND_SHIFT } from 'utils/constants';
-import Layout from './Layout';
+import { BASE_URL } from 'utils/constants';
+import { get } from 'utils/api';
+import Layout from 'components/Layout';
+import moment from 'moment';
 
-const getShiftDetail = () => {
-  const currentHour = new Date().getHours();
-  if (currentHour >= FIRST_SHIFT[0] && currentHour <= FIRST_SHIFT[1])
-    return 'Shift 1';
-  if (currentHour >= SECOND_SHIFT[0] && currentHour <= SECOND_SHIFT[1])
-    return 'Shift 2';
-  return 'Shift 3';
+const getCount = missedPaths => {
+  let counter = 0;
+  if (missedPaths) {
+    Object.values(missedPaths).forEach(e => {
+      counter += e?.length || 0;
+    });
+  }
+  return counter;
 };
 
 const Summary = () => {
-  // useEffect(() => {
-  //   const fetchSummary = async () => {
-  //     const data = await get('/api/transaction/summary', {
-  //       date
-  //     });
-  //     console.log(data);
-  //   };
-  //   if (!summaryData) {
-  //     fetchSummary();
-  //   }
-  // }, [date, summaryData]);
+  const [summaryData, setSummaryData] = useState(null);
+  const [shiftDate, setShiftDate] = useState(null);
+  const [printingBelts, setPrintingBelts] = useState(null);
+  const [shiftCount, setShiftCount] = useState(null);
+
+  useEffect(() => {
+    const fetchSummary = async () => {
+      const data = await get('/api/analysis/summary');
+      setSummaryData(data?.data?.data?.analysis);
+      setShiftCount(data?.data?.data?.shift);
+      setShiftDate(data?.data?.data?.date);
+      setPrintingBelts(data?.data?.data?.belt_info);
+    };
+    if (!summaryData) {
+      fetchSummary();
+    }
+  }, [summaryData]);
 
   return (
     <Container>
@@ -38,13 +47,7 @@ const Summary = () => {
           <h2>Shift Summary</h2>
           <div className="search-container">
             <div className="date-display">
-              {getShiftDetail()}&nbsp;-{' '}
-              {new Date()
-                .toISOString()
-                .slice(0, 10)
-                .split('-')
-                .reverse()
-                .join('-')}
+              Shift {shiftCount} - {new Date(shiftDate).toLocaleDateString()}
             </div>
           </div>
         </div>
@@ -55,28 +58,36 @@ const Summary = () => {
                 <Grid item xs={6}>
                   <div
                     className="count-block"
-                    style={{ background: theme.palette.summary.red }}
+                    style={{ background: theme.palette.summary.green }}
                   >
                     <Image
                       src="Package.svg"
                       loader={ImageKitLoader}
                       layout="fill"
                     />
-                    <p className="count">3200 Bags</p>
+                    <p className="count">
+                      {summaryData
+                        ? `${summaryData?.total_bags_packed} Bags`
+                        : 'NA'}
+                    </p>
                     <p className="description">Bags printed so far</p>
                   </div>
                 </Grid>
                 <Grid item xs={6}>
                   <div
                     className="count-block"
-                    style={{ background: theme.palette.summary.green }}
+                    style={{ background: theme.palette.summary.red }}
                   >
                     <Image
                       src="Tag.svg"
                       loader={ImageKitLoader}
                       layout="fill"
                     />
-                    <p className="count">18 Bags</p>
+                    <p className="count">
+                      {summaryData
+                        ? `${summaryData?.total_missed_labels} Bags`
+                        : 'NA'}
+                    </p>
                     <p className="description">Bags printed without label</p>
                   </div>
                 </Grid>
@@ -90,8 +101,12 @@ const Summary = () => {
                       loader={ImageKitLoader}
                       layout="fill"
                     />
-                    <p className="count">240 Bags</p>
-                    <p className="description">No. of bags packed today</p>
+                    <p className="count">
+                      {summaryData
+                        ? `${summaryData?.total_bags_dispatched} Bags`
+                        : 'NA'}
+                    </p>
+                    <p className="description">Bags dispatched</p>
                   </div>
                 </Grid>
                 <Grid item xs={6}>
@@ -104,8 +119,12 @@ const Summary = () => {
                       loader={ImageKitLoader}
                       layout="fill"
                     />
-                    <p className="count">330 Bags</p>
-                    <p className="description">Bags packed in last 30 mins</p>
+                    <p className="count">
+                      {summaryData
+                        ? `${summaryData?.packing_efficiency}`
+                        : 'NA'}
+                    </p>
+                    <p className="description">Packing efficiency</p>
                   </div>
                 </Grid>
               </Grid>
@@ -114,13 +133,21 @@ const Summary = () => {
               <Layout
                 alternateHeader
                 title="Assigned Tickets"
-                close={() => console.log('assigned tickets close')}
                 hideFooter
-                counter={21}
+                counter={0}
                 summaryHeader
+                disableMinimumHeight
               >
                 <MaintenanceContainer>
-                  <div className="defect active">
+                  <p
+                    style={{
+                      padding: '20px',
+                      textAlign: 'center'
+                    }}
+                  >
+                    No maintenance ticket found
+                  </p>
+                  {/* <div className="defect active">
                     <div className="title">Just Now</div>
                     <div className="stepper">
                       <div className="blank-thumb" />
@@ -179,7 +206,7 @@ const Summary = () => {
                         />
                       </div>
                     </div>
-                  </div>
+                  </div> */}
                 </MaintenanceContainer>
               </Layout>
             </div>
@@ -189,100 +216,95 @@ const Summary = () => {
               <Layout
                 alternateHeader
                 title="Latest Activity"
-                close={() => console.log('latest activity close')}
                 hideFooter
-                counter={21}
+                counter={getCount(summaryData?.missedPaths)}
                 summaryHeader
                 disableMinimumHeight
               >
                 <NotificationContainer>
-                  <div className="defect active">
-                    <div className="title">Just Now</div>
-                    <div className="stepper">
-                      <div className="thumb">
-                        <div className="vr invert-vr" />
-                        <Image
-                          src="Package_5rbWbqc1A.svg"
-                          loader={ImageKitLoader}
-                          layout="fixed"
-                          height={40}
-                          width={40}
-                        />
-                      </div>
-                      <div className="vr" />
-                    </div>
-                    <div className="notification">
-                      <div className="info-container">
-                        <div className="info">
-                          <div className="title">Incorrect bags</div>
-                          <div className="sub-title">
-                            5 bags passed unmarked.
-                          </div>
-                        </div>
-                        <div className="count">5 bags</div>
-                      </div>
-                      <div className="image-container">
-                        <div className="image">
-                          <div className="image-container">
-                            <Image
-                              src="/cement_bag.png"
-                              loader={ImageKitLoader}
-                              layout="fill"
-                              objectFit="contain"
-                            />
-                          </div>
-                          <div className="time">8.48am</div>
-                        </div>
-                        <div className="image">
-                          <div className="image-container">
-                            <Image
-                              src="/cement_bag.png"
-                              loader={ImageKitLoader}
-                              layout="fill"
-                              objectFit="contain"
-                            />
-                          </div>
-                          <div className="time">8.48am</div>
-                        </div>
-                      </div>
-                      <div className="incorrect-container">
-                        <Button variant="outlined" color="inherit">
-                          Incorrect Alert?
-                        </Button>
-                      </div>
-                    </div>
-                  </div>
-                  <div className="defect">
-                    <div className="title">8:44am</div>
-                    <div className="stepper">
-                      <div className="thumb">
-                        <Image
-                          src="Package_5rbWbqc1A.svg"
-                          loader={ImageKitLoader}
-                          layout="fixed"
-                          height={40}
-                          width={40}
-                        />
-                      </div>
-                      {/* <div className="vr" /> */}
-                    </div>
-                    <div className="notification">
-                      <div className="info-container">
-                        <div className="info">
-                          <div className="title">Printing Belt</div>
-                          <div className="sub-title">
-                            Belt was marked in idle status.
-                          </div>
-                        </div>
-                        <div className="count">Belt ID</div>
-                      </div>
-                      <div className="incorrect-container">
-                        <Button variant="outlined" color="inherit">
-                          Incorrect Alert?
-                        </Button>
-                      </div>
-                    </div>
-                  </div>
+                  {summaryData && printingBelts ? (
+                    <>
+                      {Object.values(summaryData?.missed_paths)?.map(
+                        (e, index) => {
+                          if (e.length <= 0) return null;
+                          return (
+                            <div className="defect active" key={index}>
+                              <div className="title">Just Now</div>
+                              <div className="stepper">
+                                <div className="thumb">
+                                  <div className="vr invert-vr" />
+                                  <Image
+                                    src="Package_5rbWbqc1A.svg"
+                                    loader={ImageKitLoader}
+                                    layout="fixed"
+                                    height={40}
+                                    width={40}
+                                  />
+                                </div>
+                                <div className="vr" />
+                              </div>
+                              <div className="notification">
+                                <div className="info-container">
+                                  <div className="info">
+                                    <div className="title">Incorrect bags</div>
+                                    <div className="sub-title">
+                                      {e.length} bags passed unmarked.
+                                    </div>
+                                  </div>
+                                  <div className="count">
+                                    {printingBelts[index - 1]}
+                                  </div>
+                                </div>
+                                <div className="image-container">
+                                  <Grid container>
+                                    {e.map((element, idx) => (
+                                      <Grid item xs={4}>
+                                        <div className="image" key={idx}>
+                                          <div className="image-container">
+                                            <Image
+                                              src={element.local_image_path}
+                                              loader={() =>
+                                                `${BASE_URL}/api/transaction/images?image_location=${
+                                                  element.local_image_path ||
+                                                  element.local_image_location
+                                                }`
+                                              }
+                                              layout="fill"
+                                              objectFit="contain"
+                                              objectPosition="top"
+                                            />
+                                          </div>
+                                          <div className="time">
+                                            {moment(
+                                              new Date(element.created_at)
+                                            ).format('h:mm A')}
+                                          </div>
+                                        </div>
+                                      </Grid>
+                                    ))}
+                                  </Grid>
+                                </div>
+                                {/* <div className="incorrect-container">
+                                  <Button variant="outlined" color="inherit">
+                                    Incorrect Alert?
+                                  </Button>
+                                </div> */}
+                              </div>
+                            </div>
+                          );
+                        }
+                      )}
+                    </>
+                  ) : (
+                    <p
+                      style={{
+                        padding: '20px',
+                        textAlign: 'center'
+                      }}
+                    >
+                      No new activities found
+                    </p>
+                  )}
                 </NotificationContainer>
               </Layout>
             </div>

@@ -1,6 +1,8 @@
 import styled from '@emotion/styled';
 
 const Container = styled.div`
+  margin-bottom: 60px;
+
   .header {
     background: #051c3f;
     box-shadow: 5.95181px 5.95181px 5.95181px rgb(0 0 0 / 8%);
@@ -26,7 +28,7 @@ const Container = styled.div`
   .view {
     display: flex;
     align-items: center;
-    margin-right: 20px;
+    // margin-right: 20px;
 
     p {
       margin-right: 20px;
@@ -152,6 +154,50 @@ const Container = styled.div`
       padding: 2px 5px;
       font-size: 14px;
       cursor: pointer;
+    }
+  }
+
+  .MuiTableSortLabel-root {
+    white-space: nowrap;
+  }
+
+  .MuiTableContainer-root {
+    ::-webkit-scrollbar {
+      height: 5px;
+    }
+
+    ::-webkit-scrollbar-thumb {
+      border-radius: 10px;
+      background: rgba(0, 0, 0, 0.2);
+    }
+  }
+
+  .MuiTableCell-head {
+    text-align: center !important;
+  }
+`;
+
+export const ProgressBarContainer = styled.div`
+  .MuiLinearProgress-root {
+    height: 20px;
+    background: #f5f5f5;
+    box-shadow: inset 0px 4.75152px 9.50303px rgb(0 0 0 / 10%);
+    border-radius: 4.75152px;
+  }
+
+  .MuiLinearProgress-barColorPrimary {
+    background-color: ${props => props.progressBackground};
+  }
+
+  .productivity {
+    font-family: 'Roboto';
+    font-size: 13px;
+    margin-top: 10px;
+    color: #808080;
+
+    .bold {
+      font-weight: 900;
+      color: black;
     }
   }
 `;

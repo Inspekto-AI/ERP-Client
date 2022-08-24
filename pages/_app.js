@@ -9,9 +9,9 @@ import CheckAuth from 'components/CheckAuth';
 import Head from 'next/head';
 import PropTypes from 'prop-types';
 
-import { CLIENT_NAME } from 'utils/constants';
 import theme from 'styles/theme';
 import 'styles/globalStyles.css';
+import { CLIENT_NAME } from 'utils/constants';
 
 export default function MyApp({ Component, pageProps }) {
   const [queryClient] = useState(

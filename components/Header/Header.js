@@ -4,6 +4,7 @@ import { useRouter } from 'next/router';
 import { Button, Popper, Fade } from '@material-ui/core';
 import { BsFillTriangleFill } from 'react-icons/bs';
 
+import { IS_AWS_FRONTEND } from 'utils/constants';
 import { LogoutQuery } from 'reactQueries/authQueries';
 import ImageKitLoader from 'utils/ImageLoader';
 import { removeLocalStorage } from 'utils/storage';
@@ -56,56 +57,60 @@ const Header = ({
           />
         </div>
         <div className="links">
-          <Button
-            variant="contained"
-            color="primary"
-            onClick={() => openShipmentForm()}
-          >
-            <p className="button-label">+ NEW SHIPMENT</p>
-          </Button>
-          <Button
-            variant="contained"
-            color="primary"
-            className="purple-button"
-            onClick={() => maintenanceForm()}
-          >
-            <p className="button-label">+ NEW MAINTENANCE TICKET</p>
-          </Button>
-          <div className="notification">
-            <div
-              className="icon"
-              onClick={() => openNotificationForm()}
-              onKeyPress={() => openNotificationForm()}
-              role="button"
-              tabIndex={0}
-            >
-              {/* <div className="counter">20</div> */}
-              <Image
-                src="notification_fU5rQCmps.svg"
-                loader={ImageKitLoader}
-                layout="fixed"
-                height={20}
-                width={20}
-              />
-            </div>
-            <hr />
-            <div
-              className="icon"
-              onClick={() => openMaintenanceForm()}
-              onKeyPress={() => openMaintenanceForm()}
-              role="button"
-              tabIndex={0}
-            >
-              {/* <div className="counter blue-counter">20</div> */}
-              <Image
-                src="warning_QhrmDxvk4.svg"
-                loader={ImageKitLoader}
-                layout="fixed"
-                height={20}
-                width={20}
-              />
-            </div>
-          </div>
+          {IS_AWS_FRONTEND ? null : (
+            <>
+              <Button
+                variant="contained"
+                color="primary"
+                onClick={() => openShipmentForm()}
+              >
+                <p className="button-label">+ NEW SHIPMENT</p>
+              </Button>
+              <Button
+                variant="contained"
+                color="primary"
+                className="purple-button"
+                onClick={() => maintenanceForm()}
+              >
+                <p className="button-label">+ NEW MAINTENANCE TICKET</p>
+              </Button>
+              <div className="notification">
+                <div
+                  className="icon"
+                  onClick={() => openNotificationForm()}
+                  onKeyPress={() => openNotificationForm()}
+                  role="button"
+                  tabIndex={0}
+                >
+                  {/* <div className="counter">20</div> */}
+                  <Image
+                    src="notification_fU5rQCmps.svg"
+                    loader={ImageKitLoader}
+                    layout="fixed"
+                    height={20}
+                    width={20}
+                  />
+                </div>
+                <hr />
+                <div
+                  className="icon"
+                  onClick={() => openMaintenanceForm()}
+                  onKeyPress={() => openMaintenanceForm()}
+                  role="button"
+                  tabIndex={0}
+                >
+                  {/* <div className="counter blue-counter">20</div> */}
+                  <Image
+                    src="warning_QhrmDxvk4.svg"
+                    loader={ImageKitLoader}
+                    layout="fixed"
+                    height={20}
+                    width={20}
+                  />
+                </div>
+              </div>
+            </>
+          )}
           <Button className="menu-button" onClick={handleClick}>
             <Image
               src="DotsThreeOutlineVertical_yfCTGQ8ny.svg"

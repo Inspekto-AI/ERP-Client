@@ -3,7 +3,6 @@ import { useRouter } from 'next/router';
 import Container from 'styles/loginStyles';
 import { useState, useEffect, useContext } from 'react';
 import { TextField } from '@material-ui/core';
-import ImageKitLoader from 'utils/ImageLoader';
 import { LoginQuery } from 'reactQueries/authQueries';
 import FrinksButton from 'components/FrinksButton';
 import { GlobalContext } from 'context/GlobalContext';
@@ -29,9 +28,12 @@ const Login = () => {
     if (loginQuery.isSuccess) {
       setUserData({ ...loginQuery.data.data, isLoggedIn: true });
       router.replace('/');
+      loginQuery.reset();
     }
     if (loginQuery.isError) {
-      setError(loginQuery.error.response.data.message);
+      if (loginQuery?.error?.response?.data?.errors) {
+        setError(Object.values(loginQuery?.error?.response?.data?.errors)[0]);
+      } else setError(loginQuery.error.response.data.message);
       loginQuery.reset();
     }
   }, [loginQuery, router, setUserData]);
@@ -52,7 +54,7 @@ const Login = () => {
         layout="fixed"
         height={150}
         width={150}
-        loader={ImageKitLoader}
+        loader={() => '/high_res_logo.svg'}
       />
       <div className="login-form">
         <form onSubmit={handleSubmit}>
@@ -83,7 +85,7 @@ const Login = () => {
             helperText={error ? error.desc : null}
           />
           <br />
-          <br />
+          <div className="error-block">{error}</div>
           <FrinksButton text="Login" type="submit" />
           <p className="forgot">
             Unable to login? Reach out to <span>Administrator</span>.

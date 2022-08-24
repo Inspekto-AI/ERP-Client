@@ -1,5 +1,6 @@
 import { useState, useContext, useEffect } from 'react';
 import Layout from 'components/Layout';
+import { useRouter } from 'next/router';
 import Container from 'styles/homepage.styles';
 import AlertModal from 'components/AlertModal/AlertModal';
 import InfoModal from 'components/InfoModal/InfoModal';
@@ -17,12 +18,16 @@ import Loader from 'components/Loader';
 import Summary from 'components/Summary';
 import Report from 'components/Report';
 import PackerAnalysis from 'components/PackerAnalysis';
+import { IS_AWS_FRONTEND } from 'utils/constants';
+import { GlobalContext } from 'context/GlobalContext';
 
 const DashboardComponent = ({
   activeSection,
   activeTransactions,
   handleBagIncrement,
-  handleStop
+  handleStop,
+  printingBelts,
+  backgroundTransactions
 }) => {
   if (activeSection === 0) {
     return (
@@ -50,25 +55,28 @@ const DashboardComponent = ({
   }
   return (
     <PrintingAnalysis
-      activeTransactions={activeTransactions}
-      handleBagIncrement={handleBagIncrement}
-      handleStop={handleStop}
+      printingBelts={printingBelts}
+      backgroundTransactions={backgroundTransactions}
     />
   );
 };
 
 const Index = () => {
-  const [alertModalVisible, setAlertModalVisible] = useState(false);
-  const [infoModalOpen, setInfoModalOpen] = useState(false);
-  const [shipmentFormOpen, setShipmentFormOpen] = useState(false);
-  const [maintenanceFormOpen, setMaintenanceFormOpen] = useState(false);
-  const [notificationsFormOpen, setNotificationsFormOpen] = useState(false);
-  const [maintenanceForm, setMaintenanceForm] = useState(false);
-  const [activeSection, setActiveSection] = useState(0);
-  const [activeTransactions, setActiveTransactions] = useState(null);
+  const router = useRouter();
+  const serviceMutation = ServiceQuery();
   const socket = useContext(SocketContext);
   const [isLoading, setIsLoading] = useState(false);
-  const serviceMutation = ServiceQuery();
+  const { userData } = useContext(GlobalContext);
+  const [activeSection, setActiveSection] = useState(IS_AWS_FRONTEND ? 4 : 0);
+  const [printingBelts, setPrintingBelts] = useState({});
+  const [infoModalOpen, setInfoModalOpen] = useState(false);
+  const [maintenanceForm, setMaintenanceForm] = useState(false);
+  const [shipmentFormOpen, setShipmentFormOpen] = useState(false);
+  const [alertModalVisible, setAlertModalVisible] = useState(false);
+  const [activeTransactions, setActiveTransactions] = useState({});
+  const [maintenanceFormOpen, setMaintenanceFormOpen] = useState(false);
+  const [notificationsFormOpen, setNotificationsFormOpen] = useState(false);
+  const [backgroundTransactions, setBackgroundTransactions] = useState(null);
 
   const handleNewShipment = async data => {
     serviceMutation.mutate(data);
@@ -115,7 +123,28 @@ const Index = () => {
   useEffect(() => {
     const getActiveTransactions = async () => {
       const res = await get('/api/transaction');
-      setActiveTransactions(res?.data?.data);
+      setActiveTransactions(res?.data?.data?.transactionRes);
+      const backgroundTransactionsRes = res?.data?.data?.backgroundInfo;
+      setBackgroundTransactions(backgroundTransactionsRes);
+      const beltMasterRes = {};
+      const printing_data = res?.data?.data?.printingBeltRes;
+      printing_data?.forEach(e => {
+        beltMasterRes[e?.id] = {
+          tag_machine_id: e?.machine_id,
+          missed_labels: 0,
+          printing_count: 0
+        };
+      });
+      Object.keys(backgroundTransactionsRes).forEach(e => {
+        beltMasterRes[e] = {
+          ...beltMasterRes[e],
+          missed_labels: backgroundTransactionsRes[e]?.missed_labels,
+          printing_count: backgroundTransactionsRes[e]?.printing_count,
+          tag_machine_id: backgroundTransactionsRes[e]?.tag_machine_id,
+          transaction_id: backgroundTransactionsRes[e]?.transaction_id
+        };
+      });
+      setPrintingBelts(beltMasterRes);
     };
     getActiveTransactions();
   }, []);
@@ -135,7 +164,6 @@ const Index = () => {
       });
     });
     socket.on('tag-entry', data => {
-      // console.log(data, 'tag-entry');
       const transaction_id = parseInt(data?.transaction_id, 10);
       setActiveTransactions(prevState => {
         return {
@@ -144,6 +172,42 @@ const Index = () => {
             ...prevState[transaction_id],
             printing_count: data?.bag_count,
             missed_labels: data?.missed_labels
+          }
+        };
+      });
+      const belt_id = parseInt(data?.belt_id, 10);
+      setPrintingBelts(prevState => {
+        return {
+          ...prevState,
+          [belt_id]: {
+            ...prevState[belt_id],
+            printing_count: data?.bag_count_background,
+            missed_labels: data?.missed_labels_background
+          }
+        };
+      });
+    });
+    socket.on('tag-entry-deactivated', data => {
+      const belt_id = parseInt(data?.belt_id, 10);
+      setPrintingBelts(prevState => {
+        return {
+          ...prevState,
+          [belt_id]: {
+            ...prevState[belt_id],
+            printing_count: data?.bag_count,
+            missed_labels: data?.missed_labels
+          }
+        };
+      });
+    });
+    socket.on('new_tag_deactivated_transaction', data => {
+      const belt_id = parseInt(data?.belt_id, 10);
+      setPrintingBelts(prevState => {
+        return {
+          ...prevState,
+          [belt_id]: {
+            ...prevState[belt_id],
+            transaction_id: data?.transaction_id
           }
         };
       });
@@ -170,7 +234,29 @@ const Index = () => {
         };
       });
     });
+    socket.on('background-reset', () => {
+      setPrintingBelts(prevState => {
+        const newState = {};
+        Object.keys(prevState).forEach(e => {
+          newState[e] = {
+            tag_machine_id: prevState[e]?.tag_machine_id,
+            missed_labels: 0,
+            printing_count: 0
+          };
+        });
+        return newState;
+      });
+    });
   }, [socket]);
+
+  if (!userData) {
+    return <Loader />;
+  }
+
+  if (userData.isLoggedIn === false) {
+    router.push('/login');
+    return <Loader />;
+  }
 
   if (shipmentFormOpen) {
     return (
@@ -203,42 +289,46 @@ const Index = () => {
       <Container>
         {isLoading ? <Loader /> : null}
         <div className="trackbar">
-          <div
-            className={`option ${activeSection === 0 ? 'active' : ''}`}
-            onClick={() => setActiveSection(0)}
-            onKeyPress={() => setActiveSection(0)}
-            role="button"
-            tabIndex={0}
-          >
-            <h6>Shipment tracking</h6>
-          </div>
-          <div
-            className={`option ${activeSection === 1 ? 'active' : ''}`}
-            onClick={() => setActiveSection(1)}
-            onKeyPress={() => setActiveSection(1)}
-            role="button"
-            tabIndex={0}
-          >
-            <h6>Printing belt</h6>
-          </div>
-          <div
+          {IS_AWS_FRONTEND ? null : (
+            <>
+              <div
+                className={`option ${activeSection === 0 ? 'active' : ''}`}
+                onClick={() => setActiveSection(0)}
+                onKeyPress={() => setActiveSection(0)}
+                role="button"
+                tabIndex={0}
+              >
+                <h6>Shipment tracking</h6>
+              </div>
+              <div
+                className={`option ${activeSection === 1 ? 'active' : ''}`}
+                onClick={() => setActiveSection(1)}
+                onKeyPress={() => setActiveSection(1)}
+                role="button"
+                tabIndex={0}
+              >
+                <h6>Printing belt</h6>
+              </div>
+              {/* <div
             className={`option ${activeSection === 2 ? 'active' : ''}`}
             onClick={() => setActiveSection(2)}
             onKeyPress={() => setActiveSection(2)}
             role="button"
             tabIndex={0}
           >
-            <h6>Packer analytics</h6>
-          </div>
-          <div
-            className={`option ${activeSection === 3 ? 'active' : ''}`}
-            onClick={() => setActiveSection(3)}
-            onKeyPress={() => setActiveSection(3)}
-            role="button"
-            tabIndex={0}
-          >
-            <h6>Summary</h6>
-          </div>
+            <h6 style={{ cursor: 'inherit' }}>Packer analytics</h6>
+          </div> */}
+              <div
+                className={`option ${activeSection === 3 ? 'active' : ''}`}
+                onClick={() => setActiveSection(3)}
+                onKeyPress={() => setActiveSection(3)}
+                role="button"
+                tabIndex={0}
+              >
+                <h6>Summary</h6>
+              </div>
+            </>
+          )}
           <div
             className={`option ${activeSection === 4 ? 'active' : ''}`}
             onClick={() => setActiveSection(4)}
@@ -254,6 +344,8 @@ const Index = () => {
           activeTransactions={activeTransactions}
           handleBagIncrement={handleBagIncrement}
           handleStop={handleStop}
+          printingBelts={printingBelts}
+          backgroundTransactions={backgroundTransactions}
         />
         {alertModalVisible ? (
           <AlertModal
@@ -281,7 +373,9 @@ DashboardComponent.propTypes = {
   activeSection: PropTypes.number,
   activeTransactions: PropTypes.any,
   handleBagIncrement: PropTypes.func,
-  handleStop: PropTypes.any
+  handleStop: PropTypes.any,
+  printingBelts: PropTypes.any,
+  backgroundTransactions: PropTypes.any
 };
 
 export default Index;

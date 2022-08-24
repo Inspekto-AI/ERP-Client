@@ -29,7 +29,7 @@ const Loader = () => {
     <div className={classes.root}>
       <Image
         src="FrinksHighRes_Logo_Gradient_Eii_pLuqH.svg"
-        alt="Vaaahq"
+        alt="Frinks"
         className={classes.image}
         height={200}
         width={200}

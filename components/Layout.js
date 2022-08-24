@@ -44,7 +44,7 @@ const Layout = ({
       <div
         style={{
           background: `${changeBackground ? 'white' : '#E5E5E5'}`,
-          minHeight: `${disableMinimumHeight ? 0 : '60vh'}`
+          minHeight: `${disableMinimumHeight ? 'auto' : '70vh'}`
         }}
       >
         {children}

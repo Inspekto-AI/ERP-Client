@@ -29,6 +29,7 @@ const Container = styled.div`
 
     .MuiButtonBase-root {
       width: 100%;
+      margin-top: 15px;
     }
 
     .MuiFormControl-root {
@@ -37,11 +38,18 @@ const Container = styled.div`
 
     .forgot {
       margin-top: 20px;
+      text-align: center;
 
       span {
         font-weight: 900;
       }
     }
+  }
+
+  .error-block {
+    margin-top: 5px;
+    color: ${theme.palette.error.main};
+    text-align: right;
   }
 `;
 

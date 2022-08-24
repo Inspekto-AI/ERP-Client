@@ -9,7 +9,8 @@ const AddMoreBagsModal = ({
   onlyBags,
   heading,
   handleSubmit,
-  handleStop
+  handleStop,
+  printingCard
 }) => {
   // const [timeDifference, setTimeDifference] = useState(0);
 
@@ -34,16 +35,21 @@ const AddMoreBagsModal = ({
       onlyBags
       transactionId={open?.transaction_id}
       handleSubmit={handleSubmit}
-      currentCount={open?.bag_count}
+      currentCount={
+        open?.is_bag_belt_active ? open?.bag_count : open?.printing_count
+      }
       handleStop={handleStop}
+      printingCard={printingCard}
     >
       {onlyBags ? null : (
         <div className="card-info-container">
           <div className="hint-container">
-            <div className="hints" style={{ marginRight: '10px' }}>
-              <div className="key">Loader ID</div>
-              <div className="value">{open.bag_machine_id}</div>
-            </div>
+            {printingCard ? null : (
+              <div className="hints" style={{ marginRight: '10px' }}>
+                <div className="key">Loader ID</div>
+                <div className="value">{open.bag_machine_id}</div>
+              </div>
+            )}
             <div className="hints">
               <div className="key">Printing Belt ID</div>
               <div className="value">{open.tag_machine_id}</div>
@@ -51,38 +57,45 @@ const AddMoreBagsModal = ({
           </div>
           {open.vehicle_type === 1 ? (
             <div className="hint-container">
-              <div className="hints">
-                <div className="key">Vehicle Details</div>
-                <div className="value" style={{ fontWeight: '900' }}>
-                  Wagon Number | {open.gate_no} Gate
+              {printingCard ? null : (
+                <div className="hints">
+                  <div className="key">Vehicle Details</div>
+                  <div className="value" style={{ fontWeight: '900' }}>
+                    Wagon Number | {open.gate_no} Gate
+                  </div>
                 </div>
-              </div>
+              )}
             </div>
           ) : null}
           <div className="hint-container">
-            <div className="hints" style={{ marginRight: '10px' }}>
-              <div className="key">Vehicle Details</div>
-              <div className="value">
-                {/* {open?.count_finished_at
+            {printingCard ? null : (
+              <div className="hints" style={{ marginRight: '10px' }}>
+                <div className="key">Vehicle Details</div>
+                <div className="value">
+                  {/* {open?.count_finished_at
                   ? msToTime(
                       new Date(open?.count_finished_at).getTime() -
                         new Date(open?.created_at).getTime()
                     )
                   : timeDifference} */}
+                </div>
               </div>
-            </div>
+            )}
             <div className="hints">
               <div className="key">Bags Filled</div>
               <div className="value">
-                {open.bag_count}/{open.limit}
+                {open.printing_count}
+                {printingCard ? null : <>/{open.limit}</>}
               </div>
             </div>
           </div>
           <div className="hint-container">
-            <div className="hints" style={{ marginRight: '10px' }}>
-              <div className="key">Bag Type</div>
-              <div className="value">{open.bag_type}</div>
-            </div>
+            {printingCard ? null : (
+              <div className="hints" style={{ marginRight: '10px' }}>
+                <div className="key">Bag Type</div>
+                <div className="value">{open.bag_type}</div>
+              </div>
+            )}
             <div className="hints">
               <div className="key">Incorrect Bags</div>
               <div className="value">{open.missed_labels}</div>
@@ -100,7 +113,8 @@ AddMoreBagsModal.propTypes = {
   onlyBags: PropTypes.bool,
   heading: PropTypes.string,
   handleSubmit: PropTypes.func,
-  handleStop: PropTypes.any
+  handleStop: PropTypes.any,
+  printingCard: PropTypes.bool
 };
 
 export default AddMoreBagsModal;

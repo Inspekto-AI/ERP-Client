@@ -94,7 +94,8 @@ const InfoModal = ({
   onlyBags,
   transactionId,
   currentCount,
-  handleStop
+  handleStop,
+  printingCard
 }) => {
   const classes = useStyles();
   const [newBagCount, setNewBagCount] = useState(bagCount);
@@ -175,20 +176,22 @@ const InfoModal = ({
               ) : (
                 <div />
               )}
-              <div>
-                {onlyBags ? (
+              {printingCard ? null : (
+                <div>
+                  {onlyBags ? (
+                    <FrinksButton
+                      text={currentCount >= bagCount ? 'Done' : 'Stop'}
+                      onClick={handleFormStop}
+                      variant="outlined"
+                      style={{ marginRight: '10px' }}
+                    />
+                  ) : null}
                   <FrinksButton
-                    text={currentCount >= bagCount ? 'Done' : 'Stop'}
-                    onClick={handleFormStop}
-                    variant="outlined"
-                    style={{ marginRight: '10px' }}
+                    text={buttonText || 'Confirm'}
+                    onClick={handleFormSubmit}
                   />
-                ) : null}
-                <FrinksButton
-                  text={buttonText || 'Confirm'}
-                  onClick={handleFormSubmit}
-                />
-              </div>
+                </div>
+              )}
             </div>
           ) : null}
         </div>
@@ -210,6 +213,7 @@ InfoModal.propTypes = {
   onlyBags: PropTypes.bool,
   transactionId: PropTypes.any,
   currentCount: PropTypes.any,
-  handleStop: PropTypes.any
+  handleStop: PropTypes.any,
+  printingCard: PropTypes.bool
 };
 export default InfoModal;

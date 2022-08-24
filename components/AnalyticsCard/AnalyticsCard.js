@@ -8,14 +8,14 @@ import { msToTime } from 'utils/globalFunctions';
 import { PACKER_LIMIT } from 'utils/constants';
 import Container from './AnalyticsCard.styles';
 
-const getStatus = progressPercentage => {
+export const getStatus = progressPercentage => {
   if (progressPercentage <= 20) {
     return {
       colorCode: '#FF3945',
       status: 'Poor'
     };
   }
-  if (progressPercentage <= PACKER_LIMIT) {
+  if (progressPercentage <= 40) {
     return {
       colorCode: '#F9D907',
       status: 'Better'
@@ -100,7 +100,7 @@ const AnalyticsCard = ({
           </div>
         </div>
         <div className="timer">
-          {packerCard ? null : (
+          {packerCard || printingCard ? null : (
             <>
               {data?.count_finished_at
                 ? msToTime(data?.count_finished_at - data?.created_at)
@@ -116,9 +116,9 @@ const AnalyticsCard = ({
             : data?.is_bag_belt_active
             ? data?.bag_count
             : data?.printing_count}
-          {packerCard ? data.count : `/${data?.limit}`}
+          {packerCard || printingCard ? data.count : `/${data?.limit}`}
         </h2>
-        {packerCard ? null : (
+        {packerCard || printingCard ? null : (
           <Avatar onClick={bagModifyModalOpen}>
             <IoMdAdd />
           </Avatar>
@@ -127,7 +127,7 @@ const AnalyticsCard = ({
       {packerCard ? null : (
         <>
           <div className="type">
-            <span>Bag type:</span> {data.bag_type}
+            {printingCard ? null : <span>Bag type:</span>} {data.bag_type}
           </div>
           <div className="rejected">
             <div className="count">

@@ -9,16 +9,6 @@ export const BAG_TYPES = [
   'Ambuja Star',
   'Ambuja NFR'
 ];
-export const FIRST_SHIFT = [
-  process.env.NEXT_PUBLIC_PLANT_START,
-  process.env.NEXT_PUBLIC_FIRST_SHIFT
-];
-export const SECOND_SHIFT = [
-  process.env.NEXT_PUBLIC_FIRST_SHIFT + 1,
-  process.env.NEXT_PUBLIC_SECOND_SHIFT
-];
-export const THIRD_SHIFT = [
-  process.env.NEXT_PUBLIC_SECOND_SHIFT + 1,
-  process.env.NEXT_PUBLIC_THIRD_SHIFT
-];
+export const IS_AWS_FRONTEND = process.env.NEXT_PUBLIC_IS_AWS_FRONTEND === '1';
+
 export const CLIENT_NAME = process.env.NEXT_PUBLIC_CLIENT_NAME;
