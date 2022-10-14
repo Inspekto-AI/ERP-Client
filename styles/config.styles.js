@@ -6,12 +6,17 @@ const Container = styled.div`
   max-width: 90vw;
   margin: auto;
   padding: 30px 0;
+  margin-bottom: 120px;
 
   .form-container {
     background: white;
-    max-width: 1080px;
-    min-width: 1080px;
+    ${
+      '' /* max-width: 1080px;
+    min-width: 1080px; */
+    }
+    width: 80%;
     margin: auto;
+
     border-radius: 10px;
 
     .title {
