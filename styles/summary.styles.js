@@ -3,6 +3,7 @@ import styled from '@emotion/styled';
 const Container = styled.div`
   .summary-container {
     display: flex;
+    flex-wrap: wrap;
     justify-content: space-between;
     margin-top: 50px;
   }
@@ -14,8 +15,12 @@ const Container = styled.div`
   }
 
   .left-portion {
-    width: 50%;
+    ${
+      '' /* width: 50%;
+    padding-right: 20px; */
+    }
     padding-right: 20px;
+    flex: 1 1 400px;
 
     .maintenance-container {
       margin-top: 30px;
@@ -23,8 +28,16 @@ const Container = styled.div`
   }
 
   .right-portion {
-    width: 50%;
-    padding-left: 20px;
+    ${
+      '' /* width: 50%;
+    padding-left: 20px; */
+    }
+    padding-right: 20px;
+    flex: 1 1 400px;
+
+    @media all and (max-width: 850px) {
+      margin-top: 20px;
+    }
   }
 
   .count-block {

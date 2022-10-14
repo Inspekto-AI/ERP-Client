@@ -10,13 +10,17 @@ const Container = styled.div`
     color: #485057;
 
     @media all and (max-width: 960px) {
-      padding: 20px;
+      padding: 10px;
     }
 
     .option {
       padding: 8px 16px;
       border-radius: 4px;
       margin-right: 18px;
+
+      @media all and (max-width: 600px) {
+        width: 22%;
+      }
 
       h6 {
         cursor: pointer;
