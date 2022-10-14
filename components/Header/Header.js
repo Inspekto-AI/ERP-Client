@@ -1,8 +1,10 @@
 import Image from 'next/image';
 import { useState, useContext, useEffect } from 'react';
 import { useRouter } from 'next/router';
-import { Button, Popper, Fade } from '@material-ui/core';
+import { Hidden, Button, Popper, Fade } from '@material-ui/core';
 import { BsFillTriangleFill } from 'react-icons/bs';
+import { IoIosMenu } from 'react-icons/io';
+import HeaderDrawer from './HeaderDrawer';
 
 import { IS_AWS_FRONTEND } from 'utils/constants';
 import { LogoutQuery } from 'reactQueries/authQueries';
@@ -22,6 +24,7 @@ const Header = ({
   const [anchorEl, setAnchorEl] = useState(null);
   const logoutMutation = LogoutQuery();
   const { setUserData } = useContext(GlobalContext);
+  const [headerDropDownVisible, setHeaderDropDownVisible] = useState(false);
 
   useEffect(() => {
     if (logoutMutation?.isSuccess) {
@@ -56,105 +59,54 @@ const Header = ({
             layout="fill"
           />
         </div>
-        <div className="links">
-          {IS_AWS_FRONTEND ? null : (
-            <>
-              <Button
-                variant="contained"
-                color="primary"
-                onClick={() => openShipmentForm()}
-              >
-                <p className="button-label">+ NEW SHIPMENT</p>
-              </Button>
-              <Button
-                variant="contained"
-                color="primary"
-                className="purple-button"
-                onClick={() => maintenanceForm()}
-              >
-                <p className="button-label">+ NEW MAINTENANCE TICKET</p>
-              </Button>
-              <div className="notification">
-                <div
-                  className="icon"
-                  onClick={() => openNotificationForm()}
-                  onKeyPress={() => openNotificationForm()}
-                  role="button"
-                  tabIndex={0}
+
+        <Hidden smDown>
+          <div className="links">
+            {IS_AWS_FRONTEND ? null : (
+              <>
+                <Button
+                  variant="contained"
+                  color="primary"
+                  onClick={() => openShipmentForm()}
                 >
-                  {/* <div className="counter">20</div> */}
-                  <Image
-                    src="notification_fU5rQCmps.svg"
-                    loader={ImageKitLoader}
-                    layout="fixed"
-                    height={20}
-                    width={20}
-                  />
-                </div>
-                <hr />
-                <div
-                  className="icon"
-                  onClick={() => openMaintenanceForm()}
-                  onKeyPress={() => openMaintenanceForm()}
-                  role="button"
-                  tabIndex={0}
+                  <p className="button-label">+ NEW SHIPMENT</p>
+                </Button>
+                <Button
+                  variant="contained"
+                  color="primary"
+                  className="purple-button"
+                  onClick={() => maintenanceForm()}
                 >
-                  {/* <div className="counter blue-counter">20</div> */}
-                  <Image
-                    src="warning_QhrmDxvk4.svg"
-                    loader={ImageKitLoader}
-                    layout="fixed"
-                    height={20}
-                    width={20}
-                  />
-                </div>
-              </div>
-            </>
-          )}
-          <Button className="menu-button" onClick={handleClick}>
-            <Image
-              src="DotsThreeOutlineVertical_yfCTGQ8ny.svg"
-              loader={ImageKitLoader}
-              layout="fixed"
-              height={20}
-              width={20}
-            />
-          </Button>
-          <Popper
-            id={id}
-            open={open}
-            anchorEl={anchorEl}
-            transition
-            placement="bottom-end"
-            disablePortal
-            modifiers={{
-              flip: {
-                enabled: false
-              },
-              preventOverflow: {
-                enabled: true,
-                boundariesElement: 'viewport'
-              }
-            }}
-          >
-            {({ TransitionProps }) => (
-              <Fade {...TransitionProps} timeout={350}>
-                <div className="popper">
-                  <span style={{ cursor: 'pointer' }}>
-                    <BsFillTriangleFill className="arrow" />
-                    Need Help?
-                  </span>
+                  <p className="button-label">+ NEW MAINTENANCE TICKET</p>
+                </Button>
+                <div className="notification">
+                  <div
+                    className="icon"
+                    onClick={() => openNotificationForm()}
+                    onKeyPress={() => openNotificationForm()}
+                    role="button"
+                    tabIndex={0}
+                  >
+                    {/* <div className="counter">20</div> */}
+                    <Image
+                      src="notification_fU5rQCmps.svg"
+                      loader={ImageKitLoader}
+                      layout="fixed"
+                      height={20}
+                      width={20}
+                    />
+                  </div>
                   <hr />
                   <div
-                    className="logout-container"
-                    onClick={() => logoutMutation.mutate({})}
-                    onKeyPress={() => logoutMutation.mutate({})}
-                    tabIndex={0}
+                    className="icon"
+                    onClick={() => openMaintenanceForm()}
+                    onKeyPress={() => openMaintenanceForm()}
                     role="button"
+                    tabIndex={0}
                   >
-                    Logout
+                    {/* <div className="counter blue-counter">20</div> */}
                     <Image
-                      src="UploadSimple_nuAcn_fBm.svg"
+                      src="warning_QhrmDxvk4.svg"
                       loader={ImageKitLoader}
                       layout="fixed"
                       height={20}
@@ -162,11 +114,84 @@ const Header = ({
                     />
                   </div>
                 </div>
-              </Fade>
+              </>
             )}
-          </Popper>
-        </div>
+            <Button className="menu-button" onClick={handleClick}>
+              <Image
+                src="DotsThreeOutlineVertical_yfCTGQ8ny.svg"
+                loader={ImageKitLoader}
+                layout="fixed"
+                height={20}
+                width={20}
+              />
+            </Button>
+            <Popper
+              id={id}
+              open={open}
+              anchorEl={anchorEl}
+              transition
+              placement="bottom-end"
+              disablePortal
+              modifiers={{
+                flip: {
+                  enabled: false
+                },
+                preventOverflow: {
+                  enabled: true,
+                  boundariesElement: 'viewport'
+                }
+              }}
+            >
+              {({ TransitionProps }) => (
+                <Fade {...TransitionProps} timeout={350}>
+                  <div className="popper">
+                    <span style={{ cursor: 'pointer' }}>
+                      <BsFillTriangleFill className="arrow" />
+                      Need Help?
+                    </span>
+                    <hr />
+                    <div
+                      className="logout-container"
+                      onClick={() => logoutMutation.mutate({})}
+                      onKeyPress={() => logoutMutation.mutate({})}
+                      tabIndex={0}
+                      role="button"
+                    >
+                      Logout
+                      <Image
+                        src="UploadSimple_nuAcn_fBm.svg"
+                        loader={ImageKitLoader}
+                        layout="fixed"
+                        height={20}
+                        width={20}
+                      />
+                    </div>
+                  </div>
+                </Fade>
+              )}
+            </Popper>
+          </div>
+        </Hidden>
+
+        <Hidden mdUp>
+          <Button
+            className="hamburger-menu"
+            onClick={() => setHeaderDropDownVisible(true)}
+          >
+            <IoIosMenu />
+          </Button>
+        </Hidden>
       </nav>
+      <Hidden mdUp>
+        <HeaderDrawer
+          open={headerDropDownVisible}
+          close={() => setHeaderDropDownVisible(false)}
+          openShipmentForm={openShipmentForm}
+          openMaintenanceForm={openMaintenanceForm}
+          openNotificationForm={openNotificationForm}
+          maintenanceForm={maintenanceForm}
+        />
+      </Hidden>
     </Container>
   );
 };
