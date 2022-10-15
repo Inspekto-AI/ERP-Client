@@ -21,8 +21,8 @@ const useStyles = makeStyles(() => ({
     color: 'black',
     fontSize: '15px',
     borderRadius: '8px',
-    marginTop: '30px',
-    minWidth: '650px'
+    marginTop: '30px'
+    // minWidth: '650px'
   },
   header: {
     display: 'flex',
