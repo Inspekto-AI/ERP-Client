@@ -135,15 +135,17 @@ const Index = () => {
           printing_count: 0
         };
       });
-      Object.keys(backgroundTransactionsRes).forEach(e => {
-        beltMasterRes[e] = {
-          ...beltMasterRes[e],
-          missed_labels: backgroundTransactionsRes[e]?.missed_labels,
-          printing_count: backgroundTransactionsRes[e]?.printing_count,
-          tag_machine_id: backgroundTransactionsRes[e]?.tag_machine_id,
-          transaction_id: backgroundTransactionsRes[e]?.transaction_id
-        };
-      });
+      if (backgroundTransactionsRes) {
+        Object.keys(backgroundTransactionsRes).forEach(e => {
+          beltMasterRes[e] = {
+            ...beltMasterRes[e],
+            missed_labels: backgroundTransactionsRes[e]?.missed_labels,
+            printing_count: backgroundTransactionsRes[e]?.printing_count,
+            tag_machine_id: backgroundTransactionsRes[e]?.tag_machine_id,
+            transaction_id: backgroundTransactionsRes[e]?.transaction_id
+          };
+        });
+      }
       setPrintingBelts(beltMasterRes);
     };
     getActiveTransactions();

@@ -45,7 +45,7 @@ const Summary = () => {
       <div className="analysis-container">
         <div className="head">
           <h2>Shift Summary</h2>
-          <div className="search-container">
+          <div className="date-container">
             <div className="date-display">
               Shift {shiftCount} - {new Date(shiftDate).toLocaleDateString()}
             </div>
@@ -264,9 +264,8 @@ const Summary = () => {
                                             <Image
                                               src={element.local_image_path}
                                               loader={() =>
-                                                `${BASE_URL}/api/transaction/images?image_location=${
-                                                  element.local_image_path ||
-                                                  element.local_image_location
+                                                `${BASE_URL}/api/transaction/images?image_location=${element.local_image_path ||
+                                                element.local_image_location
                                                 }`
                                               }
                                               layout="fill"

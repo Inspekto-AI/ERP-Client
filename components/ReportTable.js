@@ -353,13 +353,13 @@ const useToolbarStyles = makeStyles(theme => ({
   highlight:
     theme.palette.type === 'light'
       ? {
-          color: theme.palette.secondary.main,
-          backgroundColor: lighten(theme.palette.secondary.light, 0.85)
-        }
+        color: theme.palette.secondary.main,
+        backgroundColor: lighten(theme.palette.secondary.light, 0.85)
+      }
       : {
-          color: theme.palette.text.primary,
-          backgroundColor: theme.palette.secondary.dark
-        },
+        color: theme.palette.text.primary,
+        backgroundColor: theme.palette.secondary.dark
+      },
   title: {
     flex: '1 1 100%'
   }
@@ -706,7 +706,7 @@ const RenderTable = ({ layoutType, data, setRejectIndex }) => {
 };
 
 RenderTable.propTypes = {
-  data: PropTypes.object,
+  data: PropTypes.any,
   layoutType: PropTypes.number,
   setRejectIndex: PropTypes.any
 };
@@ -871,7 +871,7 @@ const ReportTable = ({
 ReportTable.propTypes = {
   title: PropTypes.string.isRequired,
   layoutType: PropTypes.number.isRequired,
-  data: PropTypes.object,
+  data: PropTypes.any,
   startCount: PropTypes.number,
   endCount: PropTypes.number,
   setStartCount: PropTypes.func,

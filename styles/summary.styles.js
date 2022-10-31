@@ -78,6 +78,30 @@ const Container = styled.div`
     font-family: 'Roboto';
     color: #616161;
   }
+
+  .search-container {
+    position: relative;
+    min-width: 330px;
+  }
+
+  .date-range-container {
+    position: absolute;
+    top: 0;
+    transform: translateY(-25px);
+    z-index: 2;
+  }
+
+  .rdrDateDisplayWrapper {
+    min-width: 330px;
+  }
+
+  .rdrMonthAndYearWrapper {
+    display: ${props => (props.datePickerOpen ? 'flex' : 'none')};
+  }
+
+  .rdrMonth {
+    display: ${props => (props.datePickerOpen ? 'block' : 'none')};
+  }
 `;
 
 export default Container;

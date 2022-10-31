@@ -1,20 +1,20 @@
 import { useState, useEffect } from 'react';
 import Container from 'styles/summary.styles';
 import ReportTable from 'components/ReportTable';
-import DateRangePicker from 'react-bootstrap-daterangepicker';
-import 'bootstrap-daterangepicker/daterangepicker.css';
+import { DateRange } from 'react-date-range';
+import 'react-date-range/dist/styles.css'; // main css file
+import 'react-date-range/dist/theme/default.css'; // theme css file
 import { get } from 'utils/api';
 
-const getInitialDate = () => {
-  const dateArr = new Date().toLocaleDateString().split('/');
-  const today = `${dateArr[1] < 10 ? `0${dateArr[1]}` : dateArr[1]}/${
-    dateArr[0] < 10 ? `0${dateArr[0]}` : dateArr[0]
-  }/${dateArr[2] < 10 ? `0${dateArr[2]}` : dateArr[2]}`;
-  return `${today} - ${today}`;
+const getStartAndEndDate = dateRange => {
+  let start = dateRange[0].startDate;
+  let end = dateRange[0].endDate;
+  start = new Date(start).setUTCHours(18, 30, 0, 999);
+  end = new Date(end).setUTCHours(41, 89, 59, 999);
+  return [start, end];
 };
 
 const Report = () => {
-  const [date, setDate] = useState(null);
   const [shipmentReport, setShipmentReport] = useState(null);
   const [shipmentStartTrackBar, setShipmentStartTrackBar] = useState(0);
   const [shipmentEndTrackBar, setShipmentEndTrackBar] = useState(5);
@@ -31,14 +31,19 @@ const Report = () => {
   const [loaderStartTrackBar, setLoaderStartTrackBar] = useState(0);
   const [loaderEndTrackBar, setLoaderEndTrackBar] = useState(5);
 
-  useEffect(() => {
-    setDate(getInitialDate());
-  }, []);
+  const [datePickerOpen, setDatePickerOpen] = useState(false);
+  const [date, setDate] = useState([
+    {
+      startDate: new Date(),
+      endDate: new Date(),
+      key: 'selection'
+    }
+  ]);
 
   useEffect(() => {
     const fetchShipmentReport = async () => {
       const res = await get('/api/analysis/shipment-report', {
-        dateRange: date,
+        dateRange: getStartAndEndDate(date),
         trackbar: [shipmentStartTrackBar, shipmentEndTrackBar]
       });
       setShipmentReport(res.data.data);
@@ -52,7 +57,7 @@ const Report = () => {
   useEffect(() => {
     const fetchPrintingReport = async () => {
       const res = await get('/api/analysis/printing-report', {
-        dateRange: date,
+        dateRange: getStartAndEndDate(date),
         trackbar: [printingStartTrackBar, printingEndTrackBar]
       });
       setPrintingReport(res.data.data);
@@ -66,7 +71,7 @@ const Report = () => {
   useEffect(() => {
     const fetchLoadingReport = async () => {
       const res = await get('/api/analysis/loading-report', {
-        dateRange: date,
+        dateRange: getStartAndEndDate(date),
         trackbar: [loaderStartTrackBar, loaderEndTrackBar]
       });
       setLoaderReport(res.data.data);
@@ -77,10 +82,16 @@ const Report = () => {
     }
   }, [date, loaderEndTrackBar, loaderStartTrackBar]);
 
+  const handleBlur = e => {
+    if (!e.currentTarget.contains(e.relatedTarget)) {
+      setDatePickerOpen(false);
+    }
+  };
+
   // useEffect(() => {
   //   const fetchPackerReport = async () => {
   //     const res = await get('/api/analysis/packer-report', {
-  //       dateRange: date,
+  //       dateRange: getStartAndEndDate(date),
   //       trackbar: [packerStartTrackBar, packerEndTrackBar]
   //     });
   //     setPackerReport(res.data.data);
@@ -92,37 +103,27 @@ const Report = () => {
   // }, [date, packerEndTrackBar, packerStartTrackBar]);
 
   return (
-    <Container>
+    <Container datePickerOpen={datePickerOpen} >
       <div className="analysis-container">
         <div className="head">
           <h2>Reports</h2>
           <div className="search-container">
-            <DateRangePicker
-              initialSettings={{
-                startDate: new Date().toLocaleDateString(),
-                locale: {
-                  format: 'DD/MM/YYYY'
-                }
-              }}
-              onApply={(event, picker) => {
-                setDate(
-                  `${picker.startDate.format(
-                    'DD/MM/YYYY'
-                  )} - ${picker.endDate.format('DD/MM/YYYY')}`
-                );
-                picker.element.val(
-                  `${picker.startDate.format(
-                    'DD/MM/YYYY'
-                  )} - ${picker.endDate.format('DD/MM/YYYY')}`
-                );
-              }}
+            <div
+              className="date-range-container"
+              onClick={() => setDatePickerOpen(true)}
+              onKeyPress={() => setDatePickerOpen(true)}
+              onBlur={handleBlur}
+              tabIndex={0}
+              role="button"
             >
-              <input
-                type="text"
-                className="form-control"
-                id="date-range-picker"
+              <DateRange
+                editableDateInputs
+                onChange={item => setDate([item.selection])}
+                moveRangeOnFirstSelection={false}
+                ranges={date}
+                rangeColors="#051c3f"
               />
-            </DateRangePicker>
+            </div>
           </div>
         </div>
         <div className="report-container">
