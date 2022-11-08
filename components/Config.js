@@ -45,8 +45,7 @@ const useStyles = makeStyles(theme => ({
 const getSteps = loaderType => {
   return [
     `Belts' details`,
-    `${
-      loaderType === null ? 'Loader' : loaderType === 0 ? 'Truck' : 'Wagon'
+    `${loaderType === null ? 'Loader' : loaderType === 0 ? 'Truck' : 'Wagon'
     } configuration`,
     'No. of bags needed to filled',
     'Label for print data'
@@ -114,7 +113,7 @@ const Config = ({ close, handleSubmit }) => {
   const [loaderId, setLoaderId] = useState('');
   const [licenceNumber, setLicenceNumber] = useState('');
   const [bagType, setBagType] = useState('');
-  const [bagCount, setBagCount] = useState(0);
+  const [bagCount, setBagCount] = useState('0');
   const [beltIds, setBeltIds] = useState(null);
   const [vehicleIds, setVehicleIds] = useState(null);
   const serviceMutation = ServiceQuery();
@@ -123,7 +122,7 @@ const Config = ({ close, handleSubmit }) => {
   const steps = getSteps(loaderType);
   const [rackno, setRackno] = useState('');
   const [wagonno, setWagonno] = useState('');
-  const [gateno, setGateno] = useState(0);
+  const [gateno, setGateno] = useState('');
   const [labelExample, setLabelExample] = useState('');
 
   useEffect(() => {
@@ -166,7 +165,7 @@ const Config = ({ close, handleSubmit }) => {
   }, [activeStep, licenceNumber, gateno, rackno, wagonno]);
 
   useEffect(() => {
-    if (bagType !== '' && bagCount !== '0') {
+    if (bagType !== '' && bagCount !== '0' && bagCount !== 0 && bagCount !== '') {
       setActiveStep(Math.max(3, activeStep));
     }
   }, [activeStep, bagCount, bagType]);
@@ -192,21 +191,27 @@ const Config = ({ close, handleSubmit }) => {
                 <div className="input-container">
                   <div className="label">Rack no.</div>
                   <TextField
-                    type="text"
+                    type="number"
                     variant="outlined"
                     placeholder="Rack no."
                     value={rackno}
                     onChange={e => setRackno(e.target.value)}
+                    InputProps={{
+                      inputProps: { min: 0 }
+                    }}
                   />
                 </div>
                 <div className="input-container">
                   <div className="label">Wagon no.</div>
                   <TextField
-                    type="text"
+                    type="number"
                     variant="outlined"
                     placeholder="Wagon no."
                     value={wagonno}
                     onChange={e => setWagonno(e.target.value)}
+                    InputProps={{
+                      inputProps: { min: 0 }
+                    }}
                   />
                 </div>
                 <div className="input-container">
@@ -217,6 +222,9 @@ const Config = ({ close, handleSubmit }) => {
                     placeholder="Gate no."
                     value={gateno}
                     onChange={e => setGateno(e.target.value)}
+                    InputProps={{
+                      inputProps: { min: 0 }
+                    }}
                   />
                 </div>
               </>
@@ -256,7 +264,7 @@ const Config = ({ close, handleSubmit }) => {
                     height={40}
                     width={40}
                     onClick={() =>
-                      setBagCount(Math.max(1, parseInt(bagCount - 1, 10)))
+                      setBagCount(Math.max(1, parseInt(bagCount - 1, 10)).toString())
                     }
                   />
                   <TextField
@@ -265,6 +273,9 @@ const Config = ({ close, handleSubmit }) => {
                     value={bagCount}
                     onChange={e => setBagCount(e.target.value)}
                     style={{ width: '100px' }}
+                    InputProps={{
+                      inputProps: { min: 0 }
+                    }}
                   />
                   <Image
                     src="add_W7hvn9BT_.svg"
@@ -272,21 +283,11 @@ const Config = ({ close, handleSubmit }) => {
                     layout="fixed"
                     height={40}
                     width={40}
-                    onClick={() => setBagCount(parseInt(bagCount + 1, 10))}
+                    onClick={() => setBagCount(parseInt(bagCount + 1, 10).toString())}
                   />
                 </div>
               </div>
             </div>
-            {/* <div className="form-part">
-              <Button
-                variant="outlined"
-                color="primary"
-                className="add-more-btn"
-              >
-                <MdAddBox /> Add BAG TYPE
-              </Button>
-              <div />
-            </div> */}
           </>
         );
       case 3:
@@ -304,16 +305,6 @@ const Config = ({ close, handleSubmit }) => {
                 />
               </div>
             </div>
-            {/* <div className="form-part">
-              <Button
-                variant="outlined"
-                color="primary"
-                className="add-more-btn"
-              >
-                <MdAddBox /> Add BAG TYPE
-              </Button>
-              <div />
-            </div> */}
           </>
         );
       default:

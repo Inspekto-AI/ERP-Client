@@ -12,7 +12,7 @@ const Notification = ({ close }) => {
 
   useEffect(() => {
     const fetchPrintingBeltsIds = async () => {
-      const res = await get('/api/transaction/missing-labels');
+      const res = await get('/api/transaction/notifications');
       setMissingData(res?.data?.data);
     };
     fetchPrintingBeltsIds();

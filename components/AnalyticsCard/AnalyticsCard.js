@@ -46,7 +46,8 @@ const AnalyticsCard = ({
   data,
   rejectModalOpen,
   bagModifyModalOpen,
-  setDetailModalOpen
+  setDetailModalOpen,
+  loaderCard
 }) => {
   const [timeDifference, setTimeDifference] = useState(0);
 
@@ -100,7 +101,7 @@ const AnalyticsCard = ({
           </div>
         </div>
         <div className="timer">
-          {packerCard || printingCard ? null : (
+          {packerCard || printingCard || loaderCard ? null : (
             <>
               {data?.count_finished_at
                 ? msToTime(data?.count_finished_at - data?.created_at)
@@ -116,9 +117,11 @@ const AnalyticsCard = ({
             : data?.is_bag_belt_active
             ? data?.bag_count
             : data?.printing_count}
-          {packerCard || printingCard ? data.count : `/${data?.limit}`}
+          {packerCard || printingCard || loaderCard
+            ? data.count
+            : `/${data?.limit}`}
         </h2>
-        {packerCard || printingCard ? null : (
+        {packerCard || printingCard || loaderCard ? null : (
           <Avatar onClick={bagModifyModalOpen}>
             <IoMdAdd />
           </Avatar>
@@ -126,18 +129,22 @@ const AnalyticsCard = ({
       </div>
       {packerCard ? null : (
         <>
-          <div className="type">
-            {printingCard ? null : <span>Bag type:</span>} {data.bag_type}
-          </div>
-          <div className="rejected">
-            <div className="count">
-              <Avatar>{data?.missed_labels}</Avatar>
-              <h6>Rejected bags</h6>
-            </div>
-            <Button variant="text" onClick={rejectModalOpen}>
-              View
-            </Button>
-          </div>
+          {loaderCard ? null : (
+            <>
+              <div className="type">
+                {printingCard ? null : <span>Bag type:</span>} {data.bag_type}
+              </div>
+              <div className="rejected">
+                <div className="count">
+                  <Avatar>{data?.missed_labels}</Avatar>
+                  <h6>Rejected bags</h6>
+                </div>
+                <Button variant="text" onClick={rejectModalOpen}>
+                  View
+                </Button>
+              </div>
+            </>
+          )}
           <Button
             variant="outlined"
             className="view-button"
@@ -177,7 +184,8 @@ AnalyticsCard.propTypes = {
   data: PropTypes.any,
   rejectModalOpen: PropTypes.func,
   bagModifyModalOpen: PropTypes.func,
-  setDetailModalOpen: PropTypes.func
+  setDetailModalOpen: PropTypes.func,
+  loaderCard: PropTypes.bool
 };
 
 export default AnalyticsCard;

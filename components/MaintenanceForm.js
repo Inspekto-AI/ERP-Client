@@ -77,7 +77,7 @@ const MaintenanceForm = ({ close }) => {
   const handleSubmit = () => {
     setInfoModalOpen(false);
     maintenanceMutation.mutate({
-      machine_type: machineType === 0 ? 'Printing machine' : 'Counting machine',
+      machine_type: machineType,
       belt_id: beltId,
       reason,
       comments,

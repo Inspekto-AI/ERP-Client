@@ -29,6 +29,7 @@ import clsx from 'clsx';
 import { msToTime } from 'utils/globalFunctions';
 import InfoModal from 'components/InfoModal';
 import DefectiveBags from 'components/DefectiveBags';
+import moment from 'moment/moment';
 import { getStatus } from 'components/AnalyticsCard/AnalyticsCard';
 
 const getCompletionTime = (
@@ -353,13 +354,13 @@ const useToolbarStyles = makeStyles(theme => ({
   highlight:
     theme.palette.type === 'light'
       ? {
-        color: theme.palette.secondary.main,
-        backgroundColor: lighten(theme.palette.secondary.light, 0.85)
-      }
+          color: theme.palette.secondary.main,
+          backgroundColor: lighten(theme.palette.secondary.light, 0.85)
+        }
       : {
-        color: theme.palette.text.primary,
-        backgroundColor: theme.palette.secondary.dark
-      },
+          color: theme.palette.text.primary,
+          backgroundColor: theme.palette.secondary.dark
+        },
   title: {
     flex: '1 1 100%'
   }
@@ -477,7 +478,7 @@ const RenderTable = ({ layoutType, data, setRejectIndex }) => {
                       padding="none"
                       style={{ textAlign: 'center' }}
                     >
-                      {row?.transaction_id}
+                      {row?.id}
                     </TableCell>
                     <TableCell style={{ textAlign: 'center' }}>
                       {row?.licence_number === '' ? 'NA' : row?.licence_number}
@@ -501,18 +502,9 @@ const RenderTable = ({ layoutType, data, setRejectIndex }) => {
                       {new Date(row?.created_at).toLocaleTimeString()}
                     </TableCell>
                     <TableCell style={{ textAlign: 'center' }}>
-                      {/* {!(
-                        row?.bag_count_completed_at ||
-                        row?.tag_count_completed_at
-                      )
-                        ? 'NA'
-                        : msToTime(
-                            (row?.bag_count_completed_at ||
-                              row?.tag_count_completed_at) - row?.created_at
-                          )} */}
                       {getCompletionTime(
-                        row?.bag_count_completed_at,
-                        row?.tag_count_completed_at,
+                        row?.bag_count_finished_at,
+                        row?.tag_count_finished_at,
                         row?.created_at,
                         row?.stopped_at
                       )}

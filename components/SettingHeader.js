@@ -55,7 +55,13 @@ const useStyles = makeStyles(() => ({
   }
 }));
 
-const SettingHeader = ({ title, counter, close, summaryHeader }) => {
+const SettingHeader = ({
+  title,
+  counter,
+  close,
+  summaryHeader,
+  viewAllFunc
+}) => {
   const classes = useStyles();
 
   return (
@@ -79,7 +85,7 @@ const SettingHeader = ({ title, counter, close, summaryHeader }) => {
         {summaryHeader ? (
           <FrinksButton
             text="VIEW ALL"
-            onClick={() => console.log('view all')}
+            onClick={viewAllFunc}
             style={summaryHeader ? viewAllButton : null}
             variant="outlined"
           />
@@ -95,7 +101,8 @@ SettingHeader.propTypes = {
   title: PropTypes.string.isRequired,
   counter: PropTypes.number,
   close: PropTypes.func,
-  summaryHeader: PropTypes.bool
+  summaryHeader: PropTypes.bool,
+  viewAllFunc: PropTypes.func
 };
 
 export default SettingHeader;

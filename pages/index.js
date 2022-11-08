@@ -8,7 +8,7 @@ import { SocketContext } from 'context/SocketContext';
 import Config from 'components/Config';
 import Maintenance from 'components/Maintenance';
 import Notification from 'components/Notification';
-import ShipmentAnalysis from 'components/ShipmentAnalysis';
+// import ShipmentAnalysis from 'components/ShipmentAnalysis';
 import PrintingAnalysis from 'components/PrintingAnalysis';
 import MaintenanceForm from 'components/MaintenanceForm';
 import { ServiceQuery } from 'reactQueries/shipmentQueries';
@@ -20,6 +20,7 @@ import Report from 'components/Report';
 import PackerAnalysis from 'components/PackerAnalysis';
 import { IS_AWS_FRONTEND } from 'utils/constants';
 import { GlobalContext } from 'context/GlobalContext';
+import LoaderAnalysis from 'components/LoaderAnalysis';
 
 const DashboardComponent = ({
   activeSection,
@@ -27,14 +28,22 @@ const DashboardComponent = ({
   handleBagIncrement,
   handleStop,
   printingBelts,
-  backgroundTransactions
+  backgroundTransactions,
+  vehicleBelts
 }) => {
   if (activeSection === 0) {
     return (
-      <ShipmentAnalysis
-        activeTransactions={activeTransactions}
-        handleBagIncrement={handleBagIncrement}
-        handleStop={handleStop}
+      <PrintingAnalysis
+        printingBelts={printingBelts}
+        backgroundTransactions={backgroundTransactions}
+      />
+    );
+  }
+  if (activeSection === 1) {
+    return (
+      <LoaderAnalysis
+        vehicleBelts={vehicleBelts}
+        backgroundTransactions={backgroundTransactions}
       />
     );
   }
@@ -50,25 +59,17 @@ const DashboardComponent = ({
   if (activeSection === 3) {
     return <Summary />;
   }
-  if (activeSection === 4) {
-    return <Report />;
-  }
-  return (
-    <PrintingAnalysis
-      printingBelts={printingBelts}
-      backgroundTransactions={backgroundTransactions}
-    />
-  );
+  return <Report />;
 };
 
 const Index = () => {
   const router = useRouter();
   const serviceMutation = ServiceQuery();
   const socket = useContext(SocketContext);
-  const [isLoading, setIsLoading] = useState(false);
   const { userData } = useContext(GlobalContext);
-  const [activeSection, setActiveSection] = useState(IS_AWS_FRONTEND ? 4 : 0);
+  const [isLoading, setIsLoading] = useState(false);
   const [printingBelts, setPrintingBelts] = useState({});
+  const [vehicleBelts, setVehicleBelts] = useState(null);
   const [infoModalOpen, setInfoModalOpen] = useState(false);
   const [maintenanceForm, setMaintenanceForm] = useState(false);
   const [shipmentFormOpen, setShipmentFormOpen] = useState(false);
@@ -77,6 +78,7 @@ const Index = () => {
   const [maintenanceFormOpen, setMaintenanceFormOpen] = useState(false);
   const [notificationsFormOpen, setNotificationsFormOpen] = useState(false);
   const [backgroundTransactions, setBackgroundTransactions] = useState(null);
+  const [activeSection, setActiveSection] = useState(IS_AWS_FRONTEND ? 4 : 0);
 
   const handleNewShipment = async data => {
     serviceMutation.mutate(data);
@@ -127,12 +129,20 @@ const Index = () => {
       const backgroundTransactionsRes = res?.data?.data?.backgroundInfo;
       setBackgroundTransactions(backgroundTransactionsRes);
       const beltMasterRes = {};
+      const vehicleBeltMasterRes = {};
       const printing_data = res?.data?.data?.printingBeltRes;
+      const vehicle_data = res?.data?.data?.vehicleBeltRes;
       printing_data?.forEach(e => {
         beltMasterRes[e?.id] = {
           tag_machine_id: e?.machine_id,
           missed_labels: 0,
           printing_count: 0
+        };
+      });
+      vehicle_data?.forEach(e => {
+        vehicleBeltMasterRes[e?.id] = {
+          tag_machine_id: e?.machine_id,
+          count: 0
         };
       });
       if (backgroundTransactionsRes) {
@@ -147,6 +157,7 @@ const Index = () => {
         });
       }
       setPrintingBelts(beltMasterRes);
+      setVehicleBelts(vehicleBeltMasterRes);
     };
     getActiveTransactions();
   }, []);
@@ -300,7 +311,7 @@ const Index = () => {
                 role="button"
                 tabIndex={0}
               >
-                <h6>Shipment tracking</h6>
+                <h6>Printing belt</h6>
               </div>
               <div
                 className={`option ${activeSection === 1 ? 'active' : ''}`}
@@ -309,7 +320,7 @@ const Index = () => {
                 role="button"
                 tabIndex={0}
               >
-                <h6>Printing belt</h6>
+                <h6>Loader belt</h6>
               </div>
               {/* <div
             className={`option ${activeSection === 2 ? 'active' : ''}`}
@@ -348,6 +359,7 @@ const Index = () => {
           handleStop={handleStop}
           printingBelts={printingBelts}
           backgroundTransactions={backgroundTransactions}
+          vehicleBelts={vehicleBelts}
         />
         {alertModalVisible ? (
           <AlertModal
@@ -377,7 +389,8 @@ DashboardComponent.propTypes = {
   handleBagIncrement: PropTypes.func,
   handleStop: PropTypes.any,
   printingBelts: PropTypes.any,
-  backgroundTransactions: PropTypes.any
+  backgroundTransactions: PropTypes.any,
+  vehicleBelts: PropTypes.any
 };
 
 export default Index;

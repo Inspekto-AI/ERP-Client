@@ -7,7 +7,7 @@ import AddMoreBagsModal from 'components/AddMoreBagsModal';
 import DefectiveBags from 'components/DefectiveBags';
 import InfoModal from 'components/InfoModal';
 
-const PrintingAnalysis = ({ printingBelts }) => {
+const LoaderAnalysis = ({ vehicleBelts }) => {
   const [detailModalOpen, setDetailModalOpen] = useState(null);
   const [rejectModalOpen, setRejectModalOpen] = useState(null);
 
@@ -15,11 +15,11 @@ const PrintingAnalysis = ({ printingBelts }) => {
     <>
       <div className="analysis-container">
         <div className="head">
-          <h2>Printing Analysis</h2>
+          <h2>Loader Analysis</h2>
           <div className="search-container"></div>
         </div>
         <div className="analytics">
-          {printingBelts && Object.keys(printingBelts)?.length === 0 ? (
+          {vehicleBelts && Object.keys(vehicleBelts)?.length === 0 ? (
             <p style={{ fontSize: '20px', textAlign: 'center', color: 'gray' }}>
               <AiOutlineExclamationCircle style={{ fontSize: '70px' }} />
               <br />
@@ -29,26 +29,26 @@ const PrintingAnalysis = ({ printingBelts }) => {
             </p>
           ) : (
             <Grid container>
-              {printingBelts &&
-                Object.keys(printingBelts)?.map((e, index) => (
+              {vehicleBelts &&
+                Object.keys(vehicleBelts)?.map((e, index) => (
                   <Grid item xs={3} key={index}>
                     <AnalyticsCard
                       data={{
-                        ...printingBelts[e]
+                        ...vehicleBelts[e]
                       }}
                       rejectModalOpen={() =>
                         setRejectModalOpen({
-                          ...printingBelts[e],
+                          ...vehicleBelts[e],
                           printing_belt_id: e
                         })
                       }
                       setDetailModalOpen={() =>
                         setDetailModalOpen({
                           transaction_id: e,
-                          ...printingBelts[e]
+                          ...vehicleBelts[e]
                         })
                       }
-                      printingCard
+                      loaderCard
                     />
                   </Grid>
                 ))}
@@ -86,8 +86,8 @@ const PrintingAnalysis = ({ printingBelts }) => {
   );
 };
 
-PrintingAnalysis.propTypes = {
-  printingBelts: PropTypes.any
+LoaderAnalysis.propTypes = {
+  vehicleBelts: PropTypes.any
 };
 
-export default PrintingAnalysis;
+export default LoaderAnalysis;

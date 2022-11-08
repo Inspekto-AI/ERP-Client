@@ -19,9 +19,9 @@ const Report = () => {
   const [shipmentStartTrackBar, setShipmentStartTrackBar] = useState(0);
   const [shipmentEndTrackBar, setShipmentEndTrackBar] = useState(5);
 
-  // const [packerReport, setPackerReport] = useState(null);
-  // const [packerStartTrackBar, setPackerStartTrackBar] = useState(0);
-  // const [packerEndTrackBar, setPackerEndTrackBar] = useState(5);
+  const [packerReport, setPackerReport] = useState(null);
+  const [packerStartTrackBar, setPackerStartTrackBar] = useState(0);
+  const [packerEndTrackBar, setPackerEndTrackBar] = useState(5);
 
   const [printingReport, setPrintingReport] = useState(null);
   const [printingStartTrackBar, setPrintingStartTrackBar] = useState(0);
@@ -88,22 +88,22 @@ const Report = () => {
     }
   };
 
-  // useEffect(() => {
-  //   const fetchPackerReport = async () => {
-  //     const res = await get('/api/analysis/packer-report', {
-  //       dateRange: getStartAndEndDate(date),
-  //       trackbar: [packerStartTrackBar, packerEndTrackBar]
-  //     });
-  //     setPackerReport(res.data.data);
-  //   };
-  //   if (date) {
-  //     // fetch reports from a single endpoint
-  //     fetchPackerReport();
-  //   }
-  // }, [date, packerEndTrackBar, packerStartTrackBar]);
+  useEffect(() => {
+    const fetchPackerReport = async () => {
+      const res = await get('/api/analysis/packer-report', {
+        dateRange: getStartAndEndDate(date),
+        trackbar: [packerStartTrackBar, packerEndTrackBar]
+      });
+      setPackerReport(res.data.data);
+    };
+    if (date) {
+      // fetch reports from a single endpoint
+      fetchPackerReport();
+    }
+  }, [date, packerEndTrackBar, packerStartTrackBar]);
 
   return (
-    <Container datePickerOpen={datePickerOpen} >
+    <Container datePickerOpen={datePickerOpen}>
       <div className="analysis-container">
         <div className="head">
           <h2>Reports</h2>
@@ -121,7 +121,7 @@ const Report = () => {
                 onChange={item => setDate([item.selection])}
                 moveRangeOnFirstSelection={false}
                 ranges={date}
-                rangeColors="#051c3f"
+                rangeColors={['#051c3f']}
               />
             </div>
           </div>
@@ -156,7 +156,7 @@ const Report = () => {
             setEndCount={e => setLoaderEndTrackBar(e)}
             hideRowCount
           />
-          {/* <ReportTable
+          <ReportTable
             title="Packer Analytics"
             layoutType={3}
             data={packerReport}
@@ -165,7 +165,7 @@ const Report = () => {
             setStartCount={e => setPackerStartTrackBar(e)}
             setEndCount={e => setPackerEndTrackBar(e)}
             hideRowCount
-          /> */}
+          />
         </div>
       </div>
     </Container>

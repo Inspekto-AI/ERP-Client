@@ -18,7 +18,8 @@ const Layout = ({
   openNotificationForm,
   maintenanceForm,
   summaryHeader,
-  disableMinimumHeight
+  disableMinimumHeight,
+  viewAllFunc
 }) => {
   return (
     <>
@@ -30,6 +31,7 @@ const Layout = ({
               counter={counter}
               close={close}
               summaryHeader={summaryHeader}
+              viewAllFunc={viewAllFunc}
             />
           ) : (
             <Header
@@ -68,7 +70,8 @@ Layout.propTypes = {
   openNotificationForm: PropTypes.func,
   maintenanceForm: PropTypes.func,
   summaryHeader: PropTypes.bool,
-  disableMinimumHeight: PropTypes.bool
+  disableMinimumHeight: PropTypes.bool,
+  viewAllFunc: PropTypes.func
 };
 
 export default Layout;

@@ -7,9 +7,12 @@ import NotificationContainer from 'styles/summaryNotification.styles';
 import MaintenanceContainer from 'styles/maintenanceNotification.styles';
 import ImageKitLoader from 'utils/ImageLoader';
 import { BASE_URL } from 'utils/constants';
-import { get } from 'utils/api';
+import { get, put } from 'utils/api';
 import Layout from 'components/Layout';
 import moment from 'moment';
+import FrinksButton from 'components/FrinksButton';
+import Maintenance from 'components/Maintenance';
+import Notification from 'components/Notification';
 
 const getCount = missedPaths => {
   let counter = 0;
@@ -26,6 +29,9 @@ const Summary = () => {
   const [shiftDate, setShiftDate] = useState(null);
   const [printingBelts, setPrintingBelts] = useState(null);
   const [shiftCount, setShiftCount] = useState(null);
+  const [maintenanceTickets, setMaintenanceTickets] = useState(null);
+  const [maintenanceFormOpen, setMaintenanceFormOpen] = useState(false);
+  const [notificationsFormOpen, setNotificationsFormOpen] = useState(false);
 
   useEffect(() => {
     const fetchSummary = async () => {
@@ -34,11 +40,35 @@ const Summary = () => {
       setShiftCount(data?.data?.data?.shift);
       setShiftDate(data?.data?.data?.date);
       setPrintingBelts(data?.data?.data?.belt_info);
+      setMaintenanceTickets(data?.data?.data?.maintenance_tickets);
     };
     if (!summaryData) {
       fetchSummary();
     }
   }, [summaryData]);
+
+  const markMaintenanceComplete = async id => {
+    const data = await put('/api/transaction/maintenance', { id });
+    if (data?.data?.success) {
+      // remove ticket from list
+      const newTickets = maintenanceTickets.map(e => {
+        if (e.id !== id) return e;
+      });
+      if (newTickets[0]) {
+        setMaintenanceTickets(newTickets);
+      } else {
+        setMaintenanceTickets(null);
+      }
+    }
+  };
+
+  if (notificationsFormOpen) {
+    return <Notification close={() => setNotificationsFormOpen(false)} />;
+  }
+
+  if (maintenanceFormOpen) {
+    return <Maintenance close={() => setMaintenanceFormOpen(false)} />;
+  }
 
   return (
     <Container>
@@ -137,76 +167,67 @@ const Summary = () => {
                 counter={0}
                 summaryHeader
                 disableMinimumHeight
+                viewAllFunc={() => setMaintenanceFormOpen(true)}
               >
                 <MaintenanceContainer>
-                  <p
-                    style={{
-                      padding: '20px',
-                      textAlign: 'center'
-                    }}
-                  >
-                    No maintenance ticket found
-                  </p>
-                  {/* <div className="defect active">
-                    <div className="title">Just Now</div>
-                    <div className="stepper">
-                      <div className="blank-thumb" />
-                      <div className="vr" />
-                    </div>
-                    <div className="notification">
-                      <div className="ticket-title">Ticket #43211</div>
-                      <div className="description">
-                        Printing belt | Printing belt 1:6326 | Belt jammed | --
-                      </div>
-                      <div className="button-container">
-                        <FrinksButton
-                          variant="outlined"
-                          color="inherit"
-                          text="Edit Ticket"
-                          style={{
-                            fontSize: '12px',
-                            height: '40px',
-                            marginRight: '14px'
-                          }}
-                        />
-                        <FrinksButton
-                          color="inherit"
-                          text="Mark Complete"
-                          style={{ fontSize: '12px', height: '40px' }}
-                        />
-                      </div>
-                    </div>
-                  </div>
-                  <div className="defect">
-                    <div className="title">Just Now</div>
-                    <div className="stepper">
-                      <div className="blank-thumb" />
-                      <div className="vr" />
-                    </div>
-                    <div className="notification">
-                      <div className="ticket-title">Ticket #43211</div>
-                      <div className="description">
-                        Printing belt | Printing belt 1:6326 | Belt jammed | --
-                      </div>
-                      <div className="button-container">
-                        <FrinksButton
-                          variant="outlined"
-                          color="inherit"
-                          text="Edit Ticket"
-                          style={{
-                            fontSize: '12px',
-                            height: '40px',
-                            marginRight: '14px'
-                          }}
-                        />
-                        <FrinksButton
-                          color="inherit"
-                          text="Mark Complete"
-                          style={{ fontSize: '12px', height: '40px' }}
-                        />
-                      </div>
-                    </div>
-                  </div> */}
+                  {maintenanceTickets && maintenanceTickets.length > 0 ? (
+                    <>
+                      {maintenanceTickets.map((e, index) => {
+                        return (
+                          <div className="defect active" key={index}>
+                            <div className="title">
+                              {new Date(e.created_at).toLocaleString()}
+                            </div>
+                            <div className="stepper">
+                              <div className="blank-thumb" />
+                              <div className="vr" />
+                            </div>
+                            <div className="notification">
+                              <div className="ticket-title">Ticket #{e.id}</div>
+                              {e.printing_belt ? (
+                                <div className="description">
+                                  Printing belt | Printing belt{' '}
+                                  {e?.printing_belt?.machine_id} | {e.reason}
+                                </div>
+                              ) : (
+                                <div className="description">
+                                  Vehicle belt | Vehicle belt{' '}
+                                  {e?.loader_belt?.machine_id} | {e.reason}
+                                </div>
+                              )}
+                              <div className="button-container">
+                                {/* <FrinksButton
+                            variant="outlined"
+                            color="inherit"
+                            text="Edit Ticket"
+                            style={{
+                              fontSize: '12px',
+                              height: '40px',
+                              marginRight: '14px'
+                            }}
+                          /> */}
+                                <FrinksButton
+                                  color="inherit"
+                                  text="Mark Complete"
+                                  style={{ fontSize: '12px', height: '40px' }}
+                                  onClick={() => markMaintenanceComplete(e.id)}
+                                />
+                              </div>
+                            </div>
+                          </div>
+                        );
+                      })}
+                    </>
+                  ) : (
+                    <p
+                      style={{
+                        padding: '20px',
+                        textAlign: 'center'
+                      }}
+                    >
+                      No maintenance ticket found
+                    </p>
+                  )}
                 </MaintenanceContainer>
               </Layout>
             </div>
@@ -220,6 +241,7 @@ const Summary = () => {
                 counter={getCount(summaryData?.missedPaths)}
                 summaryHeader
                 disableMinimumHeight
+                viewAllFunc={() => setNotificationsFormOpen(true)}
               >
                 <NotificationContainer>
                   {summaryData && printingBelts ? (
@@ -264,8 +286,9 @@ const Summary = () => {
                                             <Image
                                               src={element.local_image_path}
                                               loader={() =>
-                                                `${BASE_URL}/api/transaction/images?image_location=${element.local_image_path ||
-                                                element.local_image_location
+                                                `${BASE_URL}/api/transaction/images?image_location=${
+                                                  element.local_image_path ||
+                                                  element.local_image_location
                                                 }`
                                               }
                                               layout="fill"
