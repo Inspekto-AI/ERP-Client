@@ -22,9 +22,14 @@ const Container = styled.div`
     display: flex;
     align-items: center;
     cursor: pointer;
-    height: 50px;
-    width: 53px;
+    height: 60px;
+    aspect-ratio: 1/1;
     position: relative;
+
+    @media all and (max-width: 960px) {
+      height: 45px;
+      aspect-ratio: 1/1;
+    }
   }
 
   .links {
@@ -130,6 +135,15 @@ const Container = styled.div`
       top: -15px;
       right: 10px;
       color: #f5f5f5;
+    }
+  }
+
+  .hamburger-menu {
+    .MuiButton-label {
+      svg {
+        font-size: 30px;
+        color: ${theme.palette.smokyWhite.main};
+      }
     }
   }
 

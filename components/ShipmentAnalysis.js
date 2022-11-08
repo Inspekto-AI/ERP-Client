@@ -34,10 +34,10 @@ const ShipmentTracking = ({
               Please create a shipment first.
             </p>
           ) : (
-            <Grid container>
+            <Grid container className="par">
               {activeTransactions &&
                 Object.keys(activeTransactions)?.map((e, index) => (
-                  <Grid item xs={3} key={index}>
+                  <div key={index} className="childd">
                     <AnalyticsCard
                       data={{
                         transaction_id: e,
@@ -62,7 +62,7 @@ const ShipmentTracking = ({
                         })
                       }
                     />
-                  </Grid>
+                  </div>
                 ))}
             </Grid>
           )}

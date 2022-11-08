@@ -6,12 +6,17 @@ const Container = styled.div`
   max-width: 90vw;
   margin: auto;
   padding: 30px 0;
+  margin-bottom: 120px;
 
   .form-container {
     background: white;
-    max-width: 1080px;
-    min-width: 1080px;
+    ${
+      '' /* max-width: 1080px;
+    min-width: 1080px; */
+    }
+    width: 80%;
     margin: auto;
+
     border-radius: 10px;
 
     .title {
@@ -76,14 +81,21 @@ const Container = styled.div`
     }
 
     .form-part {
-      display: flex;
-      align-items: center;
-      justify-content: space-between;
-      max-width: 700px;
+      @media all and (min-width: 700px) {
+        display: flex;
+      }
+
+      ${
+        '' /* align-items: center;
+      justify-content: space-between; */
+      }
+      ${'' /* max-width: 700px; */}
+      
 
       .input-container {
         width: 100%;
         margin-right: 24px;
+        flex: 1 1 700px;
 
         .counter-container {
           display: flex;

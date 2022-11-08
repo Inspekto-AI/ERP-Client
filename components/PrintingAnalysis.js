@@ -28,10 +28,10 @@ const PrintingAnalysis = ({ printingBelts }) => {
               Please create a shipment first.
             </p>
           ) : (
-            <Grid container>
+            <Grid container className="par">
               {printingBelts &&
                 Object.keys(printingBelts)?.map((e, index) => (
-                  <Grid item xs={3} key={index}>
+                  <div className="childd">
                     <AnalyticsCard
                       data={{
                         ...printingBelts[e]
@@ -50,7 +50,7 @@ const PrintingAnalysis = ({ printingBelts }) => {
                       }
                       printingCard
                     />
-                  </Grid>
+                  </div>
                 ))}
             </Grid>
           )}
