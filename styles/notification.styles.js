@@ -2,13 +2,17 @@ import styled from '@emotion/styled';
 import theme from 'styles/theme';
 
 const Container = styled.div`
-  min-width: 800px;
+  ${'' /* min-width: 800px; */}
+  ${'' /* width: 80%; */}
   max-width: 800px;
   margin: auto;
   padding-top: 80px;
 
   .defect {
     display: flex;
+    @media (max-width: 900px) {
+      width: 60%;
+    }
 
     .stepper {
       position: relative;
@@ -54,13 +58,20 @@ const Container = styled.div`
     padding-top: 27px;
   }
 
+  .outer-image-container {
+    width: 50%;
+  }
+
   .image {
     display: flex;
     align-items: flex-start;
+    @media (max-width: 900px) {
+      width: 60%;
+    }
 
     .image-container {
       position: relative;
-      width: 120px;
+      width: 100px;
       aspect-ratio: 1.5/1;
       margin: 2px 24px 14px 0;
     }

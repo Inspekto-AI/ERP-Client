@@ -56,7 +56,7 @@ const Notification = ({ close }) => {
               </div>
               <div className="count">5 bags</div>
             </div>
-            <div className="image-container">
+            <div className={`${'image-container'} ${'outer-image-container'}`}>
               <div className="image">
                 <div className="image-container">
                   <Image

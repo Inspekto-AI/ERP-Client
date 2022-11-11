@@ -35,6 +35,10 @@ const Container = styled.div`
     .MuiButtonBase-root {
       width: 250px;
       font-size: 14px;
+
+      @media (max-width: 600px) {
+        width: 100px;
+      }
     }
   }
 `;
