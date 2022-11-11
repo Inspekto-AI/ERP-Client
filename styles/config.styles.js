@@ -96,6 +96,7 @@ const Container = styled.div`
         width: 100%;
         margin-right: 24px;
         flex: 1 1 700px;
+        margin-top: 15px;
 
         .counter-container {
           display: flex;
