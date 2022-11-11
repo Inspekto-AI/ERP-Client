@@ -154,13 +154,3 @@ code {
   padding: 7px;
   border-left: 1px solid #dedede;
 }
-
-.par {
-  display: flex;
-  justify-content: space-around;
-}
-
-.childd {
-  margin: 10px;
-  flex-wrap: wrap;
-}

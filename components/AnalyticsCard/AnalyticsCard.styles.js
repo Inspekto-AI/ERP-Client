@@ -2,7 +2,12 @@ import styled from '@emotion/styled';
 import theme from 'styles/theme';
 
 const Container = styled.div`
-  background: ${props => (props.isError ? theme.palette.error.main : 'white')};
+  background: ${props =>
+    props.isError || props.status > 0
+      ? props.status === 1
+        ? '#F37500'
+        : '#FC2D1E'
+      : 'white'};
   border-radius: 10px;
   padding: ${props => (props.packerCard ? '35px 5px' : '35px 20px')};
   // padding-top: ${props => (props.isError ? '40px' : '20px')};
@@ -15,6 +20,7 @@ const Container = styled.div`
 
   .head {
     font-size: 18px;
+    margin-bottom: 20px;
     align-items: flex-start !important;
     padding: ${props => (props.packerCard ? '0 15px' : '0 0')};
 
@@ -23,7 +29,12 @@ const Container = styled.div`
       align-items: center;
 
       .status {
-        background: ${props => (props.isError ? '#F72525' : '#01ba8f')};
+        background: ${props =>
+          props.status === 0
+            ? '#01ba8f'
+            : props.status === 1
+            ? '#F37500'
+            : '#F72525'};
         height: 18px;
         width: 18px;
         border-radius: 100px;
@@ -31,7 +42,8 @@ const Container = styled.div`
       }
 
       .id {
-        color: ${props => (props.isError ? 'white' : 'gray')};
+        color: ${props =>
+          props.isError || props.status > 0 ? 'white' : 'gray'};
         font-weight: 600;
         margin-left: 5px;
         font-size: 15px;
@@ -47,6 +59,7 @@ const Container = styled.div`
 
   .count-container {
     display: flex;
+    margin-bottom: 10px;
     align-items: center;
     // margin-top: ${props => (props.isError ? '0' : '10px')};
     margin-top: 10px;
@@ -126,6 +139,23 @@ const Container = styled.div`
   .view-button {
     width: 100%;
     border: 3px solid ${theme.palette.byzantine.main};
+    background: white;
+    border-radius: 12px;
+    font-size: 15px;
+    height: 35px;
+    color: ${theme.palette.byzantine.main};
+    font-weight: 900;
+
+    svg {
+      font-size: 25px;
+      margin-bottom: 3px;
+      margin-left: 5px;
+    }
+  }
+
+  .view-button2 {
+    width: 100%;
+    border: 3px solid white;
     background: white;
     border-radius: 12px;
     font-size: 15px;

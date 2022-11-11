@@ -90,9 +90,17 @@ const Container = styled.div`
     justify-content: space-between;
     color: #485057;
 
+    @media all and (max-width: 960px) {
+      flex-direction: column;
+    }
+
     .left {
       display: flex;
       align-items: center;
+
+      @media all and (max-width: 960px) {
+        margin-bottom: 20px;
+      }
     }
 
     .right {

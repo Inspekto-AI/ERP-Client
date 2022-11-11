@@ -19,19 +19,21 @@ const PrintingAnalysis = ({ printingBelts }) => {
           <div className="search-container"></div>
         </div>
         <div className="analytics">
+          <div className="shipment-type">
+            <span className="category-name">Active belts</span> <hr />
+          </div>
           {printingBelts && Object.keys(printingBelts)?.length === 0 ? (
             <p style={{ fontSize: '20px', textAlign: 'center', color: 'gray' }}>
               <AiOutlineExclamationCircle style={{ fontSize: '70px' }} />
               <br />
-              No shipment created.
+              No info found.
               <br />
-              Please create a shipment first.
             </p>
           ) : (
-            <Grid container className="par">
+            <Grid container>
               {printingBelts &&
                 Object.keys(printingBelts)?.map((e, index) => (
-                  <div className="childd">
+                  <Grid item xs={12} sm={6} md={4} lg={3} key={index}>
                     <AnalyticsCard
                       data={{
                         ...printingBelts[e]
@@ -49,8 +51,85 @@ const PrintingAnalysis = ({ printingBelts }) => {
                         })
                       }
                       printingCard
+                      status={0}
                     />
-                  </div>
+                  </Grid>
+                ))}
+            </Grid>
+          )}
+          <div className="shipment-type">
+            <span className="category-name">Queued belts</span> <hr />
+          </div>
+          {printingBelts && Object.keys(printingBelts)?.length === 0 ? (
+            <p style={{ fontSize: '20px', textAlign: 'center', color: 'gray' }}>
+              <AiOutlineExclamationCircle style={{ fontSize: '70px' }} />
+              <br />
+              No info found.
+              <br />
+            </p>
+          ) : (
+            <Grid container>
+              {printingBelts &&
+                Object.keys(printingBelts)?.map((e, index) => (
+                  <Grid item xs={12} sm={6} md={4} lg={3} key={index}>
+                    <AnalyticsCard
+                      data={{
+                        ...printingBelts[e]
+                      }}
+                      rejectModalOpen={() =>
+                        setRejectModalOpen({
+                          ...printingBelts[e],
+                          printing_belt_id: e
+                        })
+                      }
+                      setDetailModalOpen={() =>
+                        setDetailModalOpen({
+                          transaction_id: e,
+                          ...printingBelts[e]
+                        })
+                      }
+                      printingCard
+                      status={1}
+                    />
+                  </Grid>
+                ))}
+            </Grid>
+          )}
+          <div className="shipment-type">
+            <span className="category-name">Inactive belts</span> <hr />
+          </div>
+          {printingBelts && Object.keys(printingBelts)?.length === 0 ? (
+            <p style={{ fontSize: '20px', textAlign: 'center', color: 'gray' }}>
+              <AiOutlineExclamationCircle style={{ fontSize: '70px' }} />
+              <br />
+              No info found.
+              <br />
+            </p>
+          ) : (
+            <Grid container>
+              {printingBelts &&
+                Object.keys(printingBelts)?.map((e, index) => (
+                  <Grid item xs={12} sm={6} md={4} lg={3} key={index}>
+                    <AnalyticsCard
+                      data={{
+                        ...printingBelts[e]
+                      }}
+                      rejectModalOpen={() =>
+                        setRejectModalOpen({
+                          ...printingBelts[e],
+                          printing_belt_id: e
+                        })
+                      }
+                      setDetailModalOpen={() =>
+                        setDetailModalOpen({
+                          transaction_id: e,
+                          ...printingBelts[e]
+                        })
+                      }
+                      printingCard
+                      status={2}
+                    />
+                  </Grid>
                 ))}
             </Grid>
           )}

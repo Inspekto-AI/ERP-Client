@@ -76,6 +76,10 @@ const Container = styled.div`
       width: 220px;
       border-radius: 12px;
     }
+
+    @media all and (max-width: 960px) {
+      flex-direction: column;
+    }
   }
 
   .select-label {

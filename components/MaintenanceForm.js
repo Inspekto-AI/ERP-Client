@@ -17,6 +17,7 @@ import { get } from 'utils/api';
 
 const useStyles = makeStyles(theme => ({
   title: {
+    width: '100%',
     color: theme.palette.trypanBlue.main,
     fontSize: '30px',
     fontWeight: '900',
@@ -36,10 +37,24 @@ const useStyles = makeStyles(theme => ({
   heading: {
     display: 'flex',
     justifyContent: 'space-between',
-    padding: '20px 40px'
+    padding: '20px 40px',
+    [theme.breakpoints.down(960)]: {
+      flexDirection: 'column-reverse',
+      alignItems: 'end'
+    }
   },
   formContainer: {
     background: 'white'
+  },
+  desc: {
+    [theme.breakpoints.down(960)]: {
+      textAlign: 'center'
+    }
+  },
+  formInfo: {
+    [theme.breakpoints.down(960)]: {
+      marginBottom: '20px'
+    }
   }
 }));
 
@@ -91,10 +106,12 @@ const MaintenanceForm = ({ close }) => {
       <div className={classes.formContainer}>
         <div className={classes.heading}>
           <div className={classes.title}>
-            <p>Create new maintenance request</p>
+            <p className={classes.desc}>Create new maintenance request</p>
           </div>
           <div className={classes.close}>
-            <Button onClick={() => close()}>X Close</Button>
+            <Button onClick={() => close()} style={{ whiteSpace: 'nowrap' }}>
+              X Close
+            </Button>
           </div>
         </div>
         <div className="sub-heading">Machinery type</div>
@@ -184,7 +201,7 @@ const MaintenanceForm = ({ close }) => {
               />
             </div>
             <div className="submit-container">
-              <p>
+              <p className={classes.formInfo}>
                 Once you have marked all the choices as per your needs, click
                 save.
               </p>

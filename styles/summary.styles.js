@@ -40,6 +40,12 @@ const Container = styled.div`
     }
   }
 
+  .report-header {
+    @media all and (max-width: 960px) {
+      margin-bottom: 40px;
+    }
+  }
+
   .count-block {
     height: 140px;
     color: white;

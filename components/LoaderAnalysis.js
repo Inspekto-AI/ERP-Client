@@ -19,6 +19,9 @@ const LoaderAnalysis = ({ vehicleBelts }) => {
           <div className="search-container"></div>
         </div>
         <div className="analytics">
+          <div className="shipment-type">
+            <span className="category-name">Active belts</span> <hr />
+          </div>
           {vehicleBelts && Object.keys(vehicleBelts)?.length === 0 ? (
             <p style={{ fontSize: '20px', textAlign: 'center', color: 'gray' }}>
               <AiOutlineExclamationCircle style={{ fontSize: '70px' }} />
@@ -31,7 +34,7 @@ const LoaderAnalysis = ({ vehicleBelts }) => {
             <Grid container>
               {vehicleBelts &&
                 Object.keys(vehicleBelts)?.map((e, index) => (
-                  <Grid item xs={3} key={index}>
+                  <Grid item xs={12} sm={6} md={4} lg={3} key={index}>
                     <AnalyticsCard
                       data={{
                         ...vehicleBelts[e]
@@ -49,6 +52,85 @@ const LoaderAnalysis = ({ vehicleBelts }) => {
                         })
                       }
                       loaderCard
+                      status={0}
+                    />
+                  </Grid>
+                ))}
+            </Grid>
+          )}
+          <div className="shipment-type">
+            <span className="category-name">Queued belts</span> <hr />
+          </div>
+          {vehicleBelts && Object.keys(vehicleBelts)?.length === 0 ? (
+            <p style={{ fontSize: '20px', textAlign: 'center', color: 'gray' }}>
+              <AiOutlineExclamationCircle style={{ fontSize: '70px' }} />
+              <br />
+              No shipment created.
+              <br />
+              Please create a shipment first.
+            </p>
+          ) : (
+            <Grid container>
+              {vehicleBelts &&
+                Object.keys(vehicleBelts)?.map((e, index) => (
+                  <Grid item xs={12} sm={6} md={4} lg={3} key={index}>
+                    <AnalyticsCard
+                      data={{
+                        ...vehicleBelts[e]
+                      }}
+                      rejectModalOpen={() =>
+                        setRejectModalOpen({
+                          ...vehicleBelts[e],
+                          printing_belt_id: e
+                        })
+                      }
+                      setDetailModalOpen={() =>
+                        setDetailModalOpen({
+                          transaction_id: e,
+                          ...vehicleBelts[e]
+                        })
+                      }
+                      loaderCard
+                      status={1}
+                    />
+                  </Grid>
+                ))}
+            </Grid>
+          )}
+          <div className="shipment-type">
+            <span className="category-name">Inactive belts</span> <hr />
+          </div>
+          {vehicleBelts && Object.keys(vehicleBelts)?.length === 0 ? (
+            <p style={{ fontSize: '20px', textAlign: 'center', color: 'gray' }}>
+              <AiOutlineExclamationCircle style={{ fontSize: '70px' }} />
+              <br />
+              No shipment created.
+              <br />
+              Please create a shipment first.
+            </p>
+          ) : (
+            <Grid container>
+              {vehicleBelts &&
+                Object.keys(vehicleBelts)?.map((e, index) => (
+                  <Grid item xs={12} sm={6} md={4} lg={3} key={index}>
+                    <AnalyticsCard
+                      data={{
+                        ...vehicleBelts[e]
+                      }}
+                      rejectModalOpen={() =>
+                        setRejectModalOpen({
+                          ...vehicleBelts[e],
+                          printing_belt_id: e
+                        })
+                      }
+                      setDetailModalOpen={() =>
+                        setDetailModalOpen({
+                          transaction_id: e,
+                          ...vehicleBelts[e]
+                        })
+                      }
+                      loaderCard
+                      status={2}
                     />
                   </Grid>
                 ))}

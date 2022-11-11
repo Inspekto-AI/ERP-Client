@@ -106,7 +106,7 @@ const Report = () => {
     <Container datePickerOpen={datePickerOpen}>
       <div className="analysis-container">
         <div className="head">
-          <h2>Reports</h2>
+          <h2 className="report-header">Reports</h2>
           <div className="search-container">
             <div
               className="date-range-container"

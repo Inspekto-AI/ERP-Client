@@ -141,7 +141,7 @@ const Index = () => {
       });
       vehicle_data?.forEach(e => {
         vehicleBeltMasterRes[e?.id] = {
-          tag_machine_id: e?.machine_id,
+          bag_machine_id: e?.machine_id,
           count: 0
         };
       });
@@ -311,7 +311,7 @@ const Index = () => {
                 role="button"
                 tabIndex={0}
               >
-                <h6>Printing belt</h6>
+                <h6 style={{ textAlign: 'center' }}>Printing belt</h6>
               </div>
               <div
                 className={`option ${activeSection === 1 ? 'active' : ''}`}
@@ -320,7 +320,7 @@ const Index = () => {
                 role="button"
                 tabIndex={0}
               >
-                <h6>Loader belt</h6>
+                <h6 style={{ textAlign: 'center' }}>Loader belt</h6>
               </div>
               {/* <div
             className={`option ${activeSection === 2 ? 'active' : ''}`}
@@ -338,7 +338,7 @@ const Index = () => {
                 role="button"
                 tabIndex={0}
               >
-                <h6>Summary</h6>
+                <h6 style={{ textAlign: 'center' }}>Summary</h6>
               </div>
             </>
           )}
@@ -349,7 +349,7 @@ const Index = () => {
             role="button"
             tabIndex={0}
           >
-            <h6>Reports</h6>
+            <h6 style={{ textAlign: 'center' }}>Reports</h6>
           </div>
         </div>
         <DashboardComponent

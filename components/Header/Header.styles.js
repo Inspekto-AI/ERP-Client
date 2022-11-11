@@ -23,12 +23,12 @@ const Container = styled.div`
     align-items: center;
     cursor: pointer;
     height: 60px;
-    aspect-ratio: 1/1;
+    width: 63px;
     position: relative;
 
     @media all and (max-width: 960px) {
       height: 45px;
-      aspect-ratio: 1/1;
+      width: 49px;
     }
   }
 

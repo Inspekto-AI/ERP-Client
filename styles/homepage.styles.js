@@ -53,6 +53,10 @@ const Container = styled.div`
       align-items: center;
       justify-content: space-between;
 
+      @media all and (max-width: 960px) {
+        flex-direction: column;
+      }
+
       .search-container {
         display: flex;
         align-items: center;
@@ -77,7 +81,7 @@ const Container = styled.div`
     .analytics {
       background: #f3f4f6;
       margin-top: 40px;
-      padding: 50px 20px 20px 20px;
+      padding: 20px;
 
       .MuiGrid-item {
         display: flex;
@@ -85,6 +89,24 @@ const Container = styled.div`
         justify-content: center;
         margin-bottom: 30px;
       }
+    }
+
+    .shipment-type {
+      display: flex;
+      align-items: center;
+      margin-bottom: 25px;
+
+      hr {
+        width: 100%;
+        border-top: 1px dashed gray;
+      }
+    }
+
+    .category-name {
+      white-space: nowrap;
+      margin-right: 14px;
+      color: gray;
+      font-size: 17px;
     }
   }
 `;

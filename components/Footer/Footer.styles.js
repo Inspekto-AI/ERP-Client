@@ -13,7 +13,6 @@ const Container = styled.div`
 
     @media all and (max-width: 960px) {
       padding: 40px 20px;
-      margin-bottom: 100px;
     }
 
     .sub-heading {

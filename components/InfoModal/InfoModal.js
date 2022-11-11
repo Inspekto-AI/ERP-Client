@@ -78,6 +78,9 @@ const useStyles = makeStyles(() => ({
     borderWidth: 'thin',
     borderBottomWidth: 0,
     marginBottom: '15px'
+  },
+  title: {
+    marginRight: '65px'
   }
 }));
 
@@ -130,7 +133,7 @@ const InfoModal = ({
         >
           <div className={classes.header}>
             <div className="title">
-              <h3>{title}</h3>
+              <h3 className={classes.title}>{title}</h3>
             </div>
             <div className={classes.closeBtn}>
               <Button variant="text" onClick={() => close()}>

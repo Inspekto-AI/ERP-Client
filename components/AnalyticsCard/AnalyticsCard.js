@@ -4,6 +4,7 @@ import { GrFlag } from 'react-icons/gr';
 import { IoMdAdd } from 'react-icons/io';
 import { Avatar, Button, LinearProgress } from '@material-ui/core';
 import { BiRightArrowAlt } from 'react-icons/bi';
+import { IoMdAddCircleOutline } from 'react-icons/io';
 import { msToTime } from 'utils/globalFunctions';
 import { PACKER_LIMIT } from 'utils/constants';
 import Container from './AnalyticsCard.styles';
@@ -47,7 +48,8 @@ const AnalyticsCard = ({
   rejectModalOpen,
   bagModifyModalOpen,
   setDetailModalOpen,
-  loaderCard
+  loaderCard,
+  status
 }) => {
   const [timeDifference, setTimeDifference] = useState(0);
 
@@ -74,6 +76,7 @@ const AnalyticsCard = ({
       progressBackground={
         getStatus(Math.min((data.count * 100) / PACKER_LIMIT, 100)).colorCode
       }
+      status={status}
     >
       <div className="error">
         <div className="title">
@@ -93,9 +96,13 @@ const AnalyticsCard = ({
             ) : (
               <>
                 {printingCard || packerCard ? null : (
-                  <p>{data?.bag_machine_id}</p>
+                  <p>{data?.bag_machine_id} - LB</p>
                 )}
-                <p>{data?.tag_machine_id}</p>
+                {status < 2 && loaderCard ? (
+                  <p>661BC3 - PB</p>
+                ) : printingCard ? (
+                  <p>{data?.tag_machine_id} - PB</p>
+                ) : null}
               </>
             )}
           </div>
@@ -110,26 +117,26 @@ const AnalyticsCard = ({
           )}
         </div>
       </div>
-      <div className="count-container">
-        <h2>
-          {printingCard
-            ? data?.printing_count
-            : data?.is_bag_belt_active
-            ? data?.bag_count
-            : data?.printing_count}
-          {packerCard || printingCard || loaderCard
-            ? data.count
-            : `/${data?.limit}`}
-        </h2>
-        {packerCard || printingCard || loaderCard ? null : (
-          <Avatar onClick={bagModifyModalOpen}>
-            <IoMdAdd />
-          </Avatar>
-        )}
-      </div>
+      {status > 0 ? null : (
+        <div className="count-container">
+          <h2>
+            {printingCard
+              ? data?.printing_count
+              : data?.is_bag_belt_active
+              ? data?.bag_count
+              : data?.printing_count}
+            {packerCard || printingCard ? data.count : `/${data?.limit || ''}`}
+          </h2>
+          {packerCard || printingCard ? null : (
+            <Avatar onClick={bagModifyModalOpen}>
+              <IoMdAdd />
+            </Avatar>
+          )}
+        </div>
+      )}
       {packerCard ? null : (
         <>
-          {loaderCard ? null : (
+          {loaderCard || status > 0 ? null : (
             <>
               <div className="type">
                 {printingCard ? null : <span>Bag type:</span>} {data.bag_type}
@@ -145,13 +152,23 @@ const AnalyticsCard = ({
               </div>
             </>
           )}
-          <Button
-            variant="outlined"
-            className="view-button"
-            onClick={setDetailModalOpen}
-          >
-            View Details <BiRightArrowAlt />
-          </Button>
+          {status > 1 ? (
+            <Button
+              variant="contained"
+              className="view-button2"
+              onClick={setDetailModalOpen}
+            >
+              Create shipment <IoMdAddCircleOutline />
+            </Button>
+          ) : (
+            <Button
+              variant="outlined"
+              className="view-button"
+              onClick={setDetailModalOpen}
+            >
+              View Details <BiRightArrowAlt />
+            </Button>
+          )}
         </>
       )}
       {packerCard ? (
