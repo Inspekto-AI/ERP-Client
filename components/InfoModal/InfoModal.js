@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { makeStyles } from '@material-ui/core/styles';
 import { Modal, Backdrop, Fade, Button, TextField } from '@material-ui/core';
 import PropTypes from 'prop-types';
@@ -59,6 +59,7 @@ const useStyles = makeStyles(() => ({
     display: 'flex',
     alignItems: 'center',
     justifyContent: 'flex-start',
+    marginRight: '50px',
     '& .MuiFormControl-root': {
       width: '90px',
       margin: '0 10px'
@@ -89,30 +90,33 @@ const InfoModal = ({
   close,
   title,
   children,
-  hideConfirm,
-  handleSubmit,
-  buttonText,
   bagCount,
-  showDivision,
   onlyBags,
-  transactionId,
-  currentCount,
   handleStop,
-  printingCard
+  buttonText,
+  hideConfirm,
+  printingCard,
+  handleSubmit,
+  currentCount,
+  showDivision
 }) => {
   const classes = useStyles();
   const [newBagCount, setNewBagCount] = useState(bagCount);
 
+  useEffect(() => {
+    setNewBagCount(open?.bag_limit);
+  }, []);
+
   const handleFormSubmit = async () => {
     await handleSubmit({
-      transaction_id: transactionId,
-      new_bag_count: newBagCount
+      transaction_id: open.id,
+      new_bag_limit: newBagCount
     });
   };
 
   const handleFormStop = async () => {
     await handleStop({
-      transaction_id: transactionId
+      transaction_id: open.id
     });
   };
 
@@ -147,7 +151,7 @@ const InfoModal = ({
           ) : null}
           {!hideConfirm ? (
             <div className={classes.btnContainer}>
-              {bagCount ? (
+              {open.bag_limit ? (
                 <div className={classes.counterContainer}>
                   <Image
                     src="subtract_KLMfUKuhe.svg"
@@ -181,7 +185,7 @@ const InfoModal = ({
               )}
               {printingCard ? null : (
                 <div>
-                  {onlyBags ? (
+                  {!onlyBags ? (
                     <FrinksButton
                       text={currentCount >= bagCount ? 'Done' : 'Stop'}
                       onClick={handleFormStop}
@@ -214,7 +218,6 @@ InfoModal.propTypes = {
   bagCount: PropTypes.number,
   showDivision: PropTypes.bool,
   onlyBags: PropTypes.bool,
-  transactionId: PropTypes.any,
   currentCount: PropTypes.any,
   handleStop: PropTypes.any,
   printingCard: PropTypes.bool

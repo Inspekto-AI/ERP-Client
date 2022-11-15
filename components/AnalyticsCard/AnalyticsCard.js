@@ -8,6 +8,7 @@ import { IoMdAddCircleOutline } from 'react-icons/io';
 import { msToTime } from 'utils/globalFunctions';
 import { PACKER_LIMIT } from 'utils/constants';
 import Container from './AnalyticsCard.styles';
+import FrinksButton from 'components/FrinksButton';
 
 export const getStatus = progressPercentage => {
   if (progressPercentage <= 20) {
@@ -40,6 +41,8 @@ export const getStatus = progressPercentage => {
   };
 };
 
+const countReached = false;
+
 const AnalyticsCard = ({
   // isError,
   printingCard,
@@ -49,13 +52,19 @@ const AnalyticsCard = ({
   bagModifyModalOpen,
   setDetailModalOpen,
   loaderCard,
-  status
+  status,
+  setReverseShipmentFormOpen
 }) => {
   const [timeDifference, setTimeDifference] = useState(0);
 
   useEffect(() => {
     const interval = setInterval(
-      () => setTimeDifference(msToTime(new Date().getTime() - data.created_at)),
+      () =>
+        setTimeDifference(
+          data.created_at
+            ? msToTime(new Date().getTime() - data.created_at)
+            : '00:00:00'
+        ),
       1000
     );
     return () => clearInterval(interval);
@@ -63,20 +72,13 @@ const AnalyticsCard = ({
 
   return (
     <Container
-      isError={
-        packerCard
-          ? false
-          : printingCard
-          ? data?.tag_count_finished_at
-          : data?.is_bag_belt_active
-          ? data?.bag_count_finished_at
-          : data?.tag_count_finished_at
-      }
       packerCard={packerCard}
       progressBackground={
         getStatus(Math.min((data.count * 100) / PACKER_LIMIT, 100)).colorCode
       }
       status={status}
+      countReached={countReached}
+      printingCard={printingCard}
     >
       <div className="error">
         <div className="title">
@@ -87,7 +89,7 @@ const AnalyticsCard = ({
           <p>Know more</p>
         </div>
       </div>
-      <div className="head">
+      <div className="head" style={{ flexDirection: 'row' }}>
         <div className="id-container">
           <div className="status" />
           <div className="id">
@@ -96,19 +98,19 @@ const AnalyticsCard = ({
             ) : (
               <>
                 {printingCard || packerCard ? null : (
-                  <p>{data?.bag_machine_id} - LB</p>
+                  <p className="bag-id">{data?.vehicle_id}</p>
                 )}
                 {status < 2 && loaderCard ? (
-                  <p>661BC3 - PB</p>
+                  <p className="tag-id">{data?.printing_id}</p>
                 ) : printingCard ? (
-                  <p>{data?.tag_machine_id} - PB</p>
+                  <p className="tag-id">{data?.printing_id}</p>
                 ) : null}
               </>
             )}
           </div>
         </div>
         <div className="timer">
-          {packerCard || printingCard || loaderCard ? null : (
+          {printingCard || status > 0 ? null : (
             <>
               {data?.count_finished_at
                 ? msToTime(data?.count_finished_at - data?.created_at)
@@ -117,17 +119,13 @@ const AnalyticsCard = ({
           )}
         </div>
       </div>
-      {status > 0 ? null : (
+      {status > 1 ? null : (
         <div className="count-container">
-          <h2>
-            {printingCard
-              ? data?.printing_count
-              : data?.is_bag_belt_active
-              ? data?.bag_count
-              : data?.printing_count}
-            {packerCard || printingCard ? data.count : `/${data?.limit || ''}`}
+          <h2 className="count">
+            {printingCard ? data?.tag_count || 0 : data?.bag_count || 0}
+            {printingCard ? null : `/${data?.bag_limit}`}
           </h2>
-          {packerCard || printingCard ? null : (
+          {printingCard ? null : (
             <Avatar onClick={bagModifyModalOpen}>
               <IoMdAdd />
             </Avatar>
@@ -136,38 +134,70 @@ const AnalyticsCard = ({
       )}
       {packerCard ? null : (
         <>
-          {loaderCard || status > 0 ? null : (
+          {status > 1 ? null : (
             <>
               <div className="type">
-                {printingCard ? null : <span>Bag type:</span>} {data.bag_type}
+                {printingCard ? null : (
+                  <>
+                    <span>Bag type: </span> {data.bag_type}
+                  </>
+                )}
               </div>
-              <div className="rejected">
-                <div className="count">
-                  <Avatar>{data?.missed_labels}</Avatar>
-                  <h6>Rejected bags</h6>
+              {status > 0 ? null : (
+                <div className="rejected">
+                  <div className="count">
+                    <Avatar>{data?.missed_label_count || 0}</Avatar>
+                    <h6>Rejected bags</h6>
+                  </div>
+                  <Button variant="text" onClick={rejectModalOpen}>
+                    View
+                  </Button>
                 </div>
-                <Button variant="text" onClick={rejectModalOpen}>
-                  View
-                </Button>
-              </div>
+              )}
             </>
           )}
-          {status > 1 ? (
-            <Button
-              variant="contained"
-              className="view-button2"
-              onClick={setDetailModalOpen}
-            >
-              Create shipment <IoMdAddCircleOutline />
-            </Button>
-          ) : (
-            <Button
-              variant="outlined"
-              className="view-button"
-              onClick={setDetailModalOpen}
-            >
-              View Details <BiRightArrowAlt />
-            </Button>
+          {printingCard ? null : (
+            <div className="action-buttons">
+              {status > 1 ? (
+                <Button
+                  variant="contained"
+                  className="view-button"
+                  onClick={() => setReverseShipmentFormOpen(data?.id)}
+                >
+                  Create shipment <IoMdAddCircleOutline />
+                </Button>
+              ) : (
+                <Button
+                  variant="outlined"
+                  className="view-button"
+                  onClick={setDetailModalOpen}
+                >
+                  {status == 0
+                    ? countReached
+                      ? 'View'
+                      : 'View Details'
+                    : 'Edit Shipment'}{' '}
+                  {countReached ? null : <BiRightArrowAlt />}
+                </Button>
+              )}
+              {countReached && status === 0 ? (
+                <FrinksButton
+                  variant="outlined"
+                  className="view-button"
+                  onClick={() => alert()}
+                  text="Done"
+                  style={{
+                    borderTopWidth: '3px',
+                    borderRightWidth: '3px',
+                    borderBottomWidth: '3px',
+                    borderLeftWidth: '3px',
+                    padding: '5px 15px',
+                    width: '48%',
+                    height: '35px'
+                  }}
+                />
+              ) : null}
+            </div>
           )}
         </>
       )}
@@ -202,7 +232,8 @@ AnalyticsCard.propTypes = {
   rejectModalOpen: PropTypes.func,
   bagModifyModalOpen: PropTypes.func,
   setDetailModalOpen: PropTypes.func,
-  loaderCard: PropTypes.bool
+  loaderCard: PropTypes.bool,
+  setReverseShipmentFormOpen: PropTypes.func
 };
 
 export default AnalyticsCard;

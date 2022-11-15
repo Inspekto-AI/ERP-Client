@@ -7,9 +7,16 @@ import AddMoreBagsModal from 'components/AddMoreBagsModal';
 import DefectiveBags from 'components/DefectiveBags';
 import InfoModal from 'components/InfoModal';
 
-const LoaderAnalysis = ({ vehicleBelts }) => {
+const LoaderAnalysis = ({
+  vehicleBelts,
+  handleBagIncrement,
+  ongoingTransactions,
+  setReverseShipmentFormOpen
+  // queuedTransactions
+}) => {
   const [detailModalOpen, setDetailModalOpen] = useState(null);
   const [rejectModalOpen, setRejectModalOpen] = useState(null);
+  const [bagModifyModalOpen, setBagModifyModalOpen] = useState(null);
 
   return (
     <>
@@ -20,9 +27,10 @@ const LoaderAnalysis = ({ vehicleBelts }) => {
         </div>
         <div className="analytics">
           <div className="shipment-type">
-            <span className="category-name">Active belts</span> <hr />
+            <span className="category-name">Active loaders</span> <hr />
           </div>
-          {vehicleBelts && Object.keys(vehicleBelts)?.length === 0 ? (
+          {ongoingTransactions &&
+          Object.keys(ongoingTransactions)?.length === 0 ? (
             <p style={{ fontSize: '20px', textAlign: 'center', color: 'gray' }}>
               <AiOutlineExclamationCircle style={{ fontSize: '70px' }} />
               <br />
@@ -32,24 +40,21 @@ const LoaderAnalysis = ({ vehicleBelts }) => {
             </p>
           ) : (
             <Grid container>
-              {vehicleBelts &&
-                Object.keys(vehicleBelts)?.map((e, index) => (
+              {ongoingTransactions &&
+                Object.keys(ongoingTransactions)?.map((e, index) => (
                   <Grid item xs={12} sm={6} md={4} lg={3} key={index}>
                     <AnalyticsCard
                       data={{
-                        ...vehicleBelts[e]
+                        ...ongoingTransactions[e]
                       }}
                       rejectModalOpen={() =>
-                        setRejectModalOpen({
-                          ...vehicleBelts[e],
-                          printing_belt_id: e
-                        })
+                        setRejectModalOpen(ongoingTransactions[e])
                       }
                       setDetailModalOpen={() =>
-                        setDetailModalOpen({
-                          transaction_id: e,
-                          ...vehicleBelts[e]
-                        })
+                        setDetailModalOpen(ongoingTransactions[e])
+                      }
+                      bagModifyModalOpen={() =>
+                        setBagModifyModalOpen(ongoingTransactions[e])
                       }
                       loaderCard
                       status={0}
@@ -58,10 +63,10 @@ const LoaderAnalysis = ({ vehicleBelts }) => {
                 ))}
             </Grid>
           )}
-          <div className="shipment-type">
-            <span className="category-name">Queued belts</span> <hr />
+          {/* <div className="shipment-type">
+            <span className="category-name">Queued loaders</span> <hr />
           </div>
-          {vehicleBelts && Object.keys(vehicleBelts)?.length === 0 ? (
+          {queuedTransactions && queuedTransactions?.length === 0 ? (
             <p style={{ fontSize: '20px', textAlign: 'center', color: 'gray' }}>
               <AiOutlineExclamationCircle style={{ fontSize: '70px' }} />
               <br />
@@ -71,23 +76,26 @@ const LoaderAnalysis = ({ vehicleBelts }) => {
             </p>
           ) : (
             <Grid container>
-              {vehicleBelts &&
-                Object.keys(vehicleBelts)?.map((e, index) => (
+              {queuedTransactions &&
+                queuedTransactions?.map((e, index) => (
                   <Grid item xs={12} sm={6} md={4} lg={3} key={index}>
                     <AnalyticsCard
-                      data={{
-                        ...vehicleBelts[e]
-                      }}
+                      data={e}
                       rejectModalOpen={() =>
                         setRejectModalOpen({
                           ...vehicleBelts[e],
                           printing_belt_id: e
                         })
                       }
-                      setDetailModalOpen={() =>
-                        setDetailModalOpen({
-                          transaction_id: e,
-                          ...vehicleBelts[e]
+                      setDetailModalOpen={() => setDetailModalOpen(e)}
+                      bagModifyModalOpen={() =>
+                        setBagModifyModalOpen({
+                          transaction_id: 1,
+                          is_bag_belt_active: true,
+                          bag_count: 300,
+                          bag_machine_id: 20,
+                          vehicle_type: 1,
+                          limit: 1000
                         })
                       }
                       loaderCard
@@ -96,11 +104,11 @@ const LoaderAnalysis = ({ vehicleBelts }) => {
                   </Grid>
                 ))}
             </Grid>
-          )}
+          )} */}
           <div className="shipment-type">
-            <span className="category-name">Inactive belts</span> <hr />
+            <span className="category-name">Inactive loaders</span> <hr />
           </div>
-          {vehicleBelts && Object.keys(vehicleBelts)?.length === 0 ? (
+          {vehicleBelts && vehicleBelts?.length === 0 ? (
             <p style={{ fontSize: '20px', textAlign: 'center', color: 'gray' }}>
               <AiOutlineExclamationCircle style={{ fontSize: '70px' }} />
               <br />
@@ -111,24 +119,11 @@ const LoaderAnalysis = ({ vehicleBelts }) => {
           ) : (
             <Grid container>
               {vehicleBelts &&
-                Object.keys(vehicleBelts)?.map((e, index) => (
+                vehicleBelts?.map((e, index) => (
                   <Grid item xs={12} sm={6} md={4} lg={3} key={index}>
                     <AnalyticsCard
-                      data={{
-                        ...vehicleBelts[e]
-                      }}
-                      rejectModalOpen={() =>
-                        setRejectModalOpen({
-                          ...vehicleBelts[e],
-                          printing_belt_id: e
-                        })
-                      }
-                      setDetailModalOpen={() =>
-                        setDetailModalOpen({
-                          transaction_id: e,
-                          ...vehicleBelts[e]
-                        })
-                      }
+                      data={e}
+                      setReverseShipmentFormOpen={setReverseShipmentFormOpen}
                       loaderCard
                       status={2}
                     />
@@ -151,6 +146,7 @@ const LoaderAnalysis = ({ vehicleBelts }) => {
             // handleStop(e);
             setDetailModalOpen(null);
           }}
+          hideConfirm
           printingCard
         />
       ) : null}
@@ -164,12 +160,25 @@ const LoaderAnalysis = ({ vehicleBelts }) => {
           <DefectiveBags printingBeltId={rejectModalOpen?.printing_belt_id} />
         </InfoModal>
       ) : null}
+      {bagModifyModalOpen ? (
+        <AddMoreBagsModal
+          open={bagModifyModalOpen}
+          close={() => setBagModifyModalOpen(null)}
+          onlyBags
+          handleSubmit={e => {
+            handleBagIncrement(e);
+            setBagModifyModalOpen(null);
+          }}
+        />
+      ) : null}
     </>
   );
 };
 
 LoaderAnalysis.propTypes = {
-  vehicleBelts: PropTypes.any
+  vehicleBelts: PropTypes.any,
+  setReverseShipmentFormOpen: PropTypes.func,
+  ongoingTransactions: PropTypes.array
 };
 
 export default LoaderAnalysis;

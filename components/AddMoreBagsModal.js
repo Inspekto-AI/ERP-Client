@@ -6,11 +6,12 @@ import InfoModal from 'components/InfoModal';
 const AddMoreBagsModal = ({
   open,
   close,
-  onlyBags,
   heading,
-  handleSubmit,
+  onlyBags,
   handleStop,
-  printingCard
+  hideConfirm,
+  handleSubmit,
+  showDivision
 }) => {
   // const [timeDifference, setTimeDifference] = useState(0);
 
@@ -27,78 +28,55 @@ const AddMoreBagsModal = ({
   return (
     <InfoModal
       open={open}
-      close={() => close()}
-      title={heading || 'Add more bags'}
       buttonText="Save"
+      onlyBags={onlyBags}
+      close={() => close()}
       bagCount={open.limit}
-      showDivision
-      onlyBags
-      transactionId={open?.transaction_id}
+      handleStop={handleStop}
+      hideConfirm={hideConfirm}
       handleSubmit={handleSubmit}
+      showDivision={showDivision}
+      title={heading || 'Add more bags'}
       currentCount={
         open?.is_bag_belt_active ? open?.bag_count : open?.printing_count
       }
-      handleStop={handleStop}
-      printingCard={printingCard}
     >
       {onlyBags ? null : (
         <div className="card-info-container">
           <div className="hint-container">
-            {printingCard ? null : (
-              <div className="hints" style={{ marginRight: '10px' }}>
-                <div className="key">Loader ID</div>
-                <div className="value">{open.bag_machine_id}</div>
-              </div>
-            )}
+            <div className="hints" style={{ marginRight: '10px' }}>
+              <div className="key">Loader ID</div>
+              <div className="value">{open.vehicle_id}</div>
+            </div>
             <div className="hints">
               <div className="key">Printing Belt ID</div>
-              <div className="value">{open.tag_machine_id}</div>
+              <div className="value">{open.printing_id}</div>
             </div>
           </div>
-          {open.vehicle_type === 1 ? (
-            <div className="hint-container">
-              {printingCard ? null : (
-                <div className="hints">
-                  <div className="key">Vehicle Details</div>
-                  <div className="value" style={{ fontWeight: '900' }}>
-                    Wagon Number | {open.gate_no} Gate
-                  </div>
-                </div>
-              )}
-            </div>
-          ) : null}
           <div className="hint-container">
-            {printingCard ? null : (
-              <div className="hints" style={{ marginRight: '10px' }}>
-                <div className="key">Vehicle Details</div>
-                <div className="value">
-                  {/* {open?.count_finished_at
-                  ? msToTime(
-                      new Date(open?.count_finished_at).getTime() -
-                        new Date(open?.created_at).getTime()
-                    )
-                  : timeDifference} */}
-                </div>
+            <div className="hints" style={{ marginRight: '10px' }}>
+              <div className="key">Vehicle Details</div>
+              <div className="value">
+                {open.licence_number === ''
+                  ? `Wagon No.- ${open.wagon_no} | Rack No.- ${open.rack_no} | Gate No.- ${open.gate_no}`
+                  : `Licence No.- ${open.licence_number}`}
               </div>
-            )}
+            </div>
             <div className="hints">
               <div className="key">Bags Filled</div>
               <div className="value">
-                {open.printing_count}
-                {printingCard ? null : <>/{open.limit}</>}
+                {open.bag_count} / {open.bag_limit}
               </div>
             </div>
           </div>
           <div className="hint-container">
-            {printingCard ? null : (
-              <div className="hints" style={{ marginRight: '10px' }}>
-                <div className="key">Bag Type</div>
-                <div className="value">{open.bag_type}</div>
-              </div>
-            )}
+            <div className="hints" style={{ marginRight: '10px' }}>
+              <div className="key">Bag Type</div>
+              <div className="value">{open.bag_type}</div>
+            </div>
             <div className="hints">
               <div className="key">Incorrect Bags</div>
-              <div className="value">{open.missed_labels}</div>
+              <div className="value">{open.missed_label_count}</div>
             </div>
           </div>
         </div>

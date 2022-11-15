@@ -79,7 +79,7 @@ const Container = styled.div`
       text-align: left;
     }
 
-    tr:nth-child(even) {
+    tr:nth-of-type(even) {
       background-color: #e8ecef;
     }
   }

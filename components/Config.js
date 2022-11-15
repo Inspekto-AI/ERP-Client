@@ -45,7 +45,8 @@ const useStyles = makeStyles(theme => ({
 const getSteps = loaderType => {
   return [
     `Belts' details`,
-    `${loaderType === null ? 'Loader' : loaderType === 0 ? 'Truck' : 'Wagon'
+    `${
+      loaderType === null ? 'Loader' : loaderType === 0 ? 'Truck' : 'Wagon'
     } configuration`,
     'No. of bags needed to filled',
     'Label for print data'
@@ -106,7 +107,12 @@ const QontoStepIcon = props => {
 
 QontoStepIcon.propTypes = { completed: PropTypes.bool };
 
-const Config = ({ close, handleSubmit }) => {
+const Config = ({
+  close,
+  handleSubmit,
+  reverseShipmentFormOpen,
+  setReverseShipmentFormOpen
+}) => {
   const classes = useStyles();
   const [activeStep, setActiveStep] = useState(0);
   const [printingId, setPrintingId] = useState('');
@@ -124,30 +130,42 @@ const Config = ({ close, handleSubmit }) => {
   const [wagonno, setWagonno] = useState('');
   const [gateno, setGateno] = useState('');
   const [labelExample, setLabelExample] = useState('');
+  const [isUsedBeltSelected, setIsUsedBeltSelected] = useState(false);
 
   useEffect(() => {
-    const fetchVehicle = async id => {
+    const fetchVehicle = async (id, vehicleId) => {
       const res = await get('/api/transaction/vehicle', {
         id
       });
+      if (vehicleId) {
+        setLoaderId(vehicleId);
+        setLoaderType(
+          res?.data?.data?.find(obj => obj.id === vehicleId)?.vehicle_type
+        );
+      }
       setVehicleIds(res?.data?.data);
     };
-    if (printingId !== '' && !vehicleIds) {
+    if (reverseShipmentFormOpen && !vehicleIds) {
+      // fetch beltIds
+      fetchVehicle(printingId, reverseShipmentFormOpen);
+    } else if (printingId !== '' && !vehicleIds) {
       // fetch beltIds
       fetchVehicle(printingId);
     }
-  }, [printingId, vehicleIds]);
+  }, [printingId, vehicleIds, reverseShipmentFormOpen]);
 
   useEffect(() => {
     const fetchPrintingBeltsIds = async () => {
-      const res = await get('/api/transaction/printing-belt');
+      const res = await get('/api/transaction/printing-belt', {
+        vehicle_id: reverseShipmentFormOpen
+      });
       setBeltIds(res?.data?.data);
     };
     fetchPrintingBeltsIds();
     return () => {
       setBeltIds(null);
     };
-  }, [printingId]);
+  }, [reverseShipmentFormOpen]);
 
   useEffect(() => {
     if (printingId !== '' && loaderId !== '') {
@@ -165,7 +183,12 @@ const Config = ({ close, handleSubmit }) => {
   }, [activeStep, licenceNumber, gateno, rackno, wagonno]);
 
   useEffect(() => {
-    if (bagType !== '' && bagCount !== '0' && bagCount !== 0 && bagCount !== '') {
+    if (
+      bagType !== '' &&
+      bagCount !== '0' &&
+      bagCount !== 0 &&
+      bagCount !== ''
+    ) {
       setActiveStep(Math.max(3, activeStep));
     }
   }, [activeStep, bagCount, bagType]);
@@ -264,7 +287,9 @@ const Config = ({ close, handleSubmit }) => {
                     height={40}
                     width={40}
                     onClick={() =>
-                      setBagCount(Math.max(1, parseInt(bagCount - 1, 10)).toString())
+                      setBagCount(
+                        Math.max(1, parseInt(bagCount - 1, 10)).toString()
+                      )
                     }
                   />
                   <TextField
@@ -272,7 +297,7 @@ const Config = ({ close, handleSubmit }) => {
                     variant="outlined"
                     value={bagCount}
                     onChange={e => setBagCount(e.target.value)}
-                    style={{ width: '100px' }}
+                    style={{ width: '200px' }}
                     InputProps={{
                       inputProps: { min: 0 }
                     }}
@@ -283,7 +308,9 @@ const Config = ({ close, handleSubmit }) => {
                     layout="fixed"
                     height={40}
                     width={40}
-                    onClick={() => setBagCount(parseInt(bagCount + 1, 10).toString())}
+                    onClick={() =>
+                      setBagCount(parseInt(bagCount + 1, 10).toString())
+                    }
                   />
                 </div>
               </div>
@@ -320,9 +347,15 @@ const Config = ({ close, handleSubmit }) => {
                   variant="outlined"
                   value={printingId}
                   onChange={e => {
+                    setIsUsedBeltSelected(
+                      beltIds.filter(ele => ele?.id === e?.target?.value)[0]
+                        ?.is_busy === 1
+                    );
                     setPrintingId(e.target.value);
-                    setVehicleIds(null);
-                    setLoaderId('');
+                    if (!reverseShipmentFormOpen) {
+                      setVehicleIds(null);
+                      setLoaderId('');
+                    }
                     setLicenceNumber('');
                     setBagCount(0);
                     setBagType('');
@@ -332,7 +365,17 @@ const Config = ({ close, handleSubmit }) => {
                   {beltIds &&
                     beltIds.map((e, index) => (
                       <MenuItem value={e.id} key={index}>
-                        {e.machine_id}
+                        <span className="dropdown-span">
+                          <p>{e.machine_id}</p>
+                          <p
+                            style={{
+                              height: '10px',
+                              width: '10px',
+                              background: `${e.is_busy ? 'red' : 'green'}`,
+                              borderRadius: '100px'
+                            }}
+                          />
+                        </span>
                       </MenuItem>
                     ))}
                 </Select>
@@ -348,13 +391,17 @@ const Config = ({ close, handleSubmit }) => {
                   variant="outlined"
                   value={loaderId}
                   onChange={e => {
+                    setIsUsedBeltSelected(
+                      vehicleIds.filter(ele => ele?.id === e?.target?.value)[0]
+                        ?.is_busy === 1
+                    );
                     setLoaderId(e.target.value);
                     setLoaderType(
                       vehicleIds.find(obj => obj.id === e.target.value)
                         .vehicle_type
                     );
                   }}
-                  disabled={!vehicleIds}
+                  disabled={!vehicleIds || reverseShipmentFormOpen}
                 >
                   {vehicleIds &&
                     vehicleIds.map((e, index) => (
@@ -365,7 +412,7 @@ const Config = ({ close, handleSubmit }) => {
                             style={{
                               height: '10px',
                               width: '10px',
-                              background: `${e.is_active ? 'green' : 'red'}`,
+                              background: `${e.is_busy ? 'red' : 'green'}`,
                               borderRadius: '100px'
                             }}
                           />
@@ -384,8 +431,9 @@ const Config = ({ close, handleSubmit }) => {
     if (serviceMutation.isSuccess) {
       serviceMutation.reset();
       close();
+      setReverseShipmentFormOpen(null);
     }
-  }, [close, serviceMutation]);
+  }, [close, serviceMutation, setReverseShipmentFormOpen]);
 
   const handleFormSubmit = async () => {
     setInfoModalOpen(false);
@@ -406,7 +454,10 @@ const Config = ({ close, handleSubmit }) => {
     <Layout
       alternateHeader
       title="Create new shipment"
-      close={close}
+      close={e => {
+        close(e);
+        setReverseShipmentFormOpen(null);
+      }}
       hideFooter
     >
       {serviceMutation.isLoading ? <Loader /> : null}
@@ -453,7 +504,7 @@ const Config = ({ close, handleSubmit }) => {
                 save.
               </p>
               <FrinksButton
-                text="SAVE"
+                text={isUsedBeltSelected ? 'Add to Queue' : 'SAVE'}
                 onClick={() => setInfoModalOpen(true)}
                 isInactive={labelExample === ''}
               />
@@ -479,7 +530,9 @@ const Config = ({ close, handleSubmit }) => {
 
 Config.propTypes = {
   close: PropTypes.func,
-  handleSubmit: PropTypes.func
+  handleSubmit: PropTypes.func,
+  reverseShipmentFormOpen: PropTypes.any,
+  setReverseShipmentFormOpen: PropTypes.func
 };
 
 export default Config;
