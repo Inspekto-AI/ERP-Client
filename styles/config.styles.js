@@ -15,6 +15,9 @@ const Container = styled.div`
     min-width: 1080px; */
     }
     width: 80%;
+    @media all and (max-width: 700px) {
+      width: 100%;
+    }
     margin: auto;
 
     border-radius: 10px;
