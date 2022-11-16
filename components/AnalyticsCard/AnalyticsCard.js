@@ -41,19 +41,18 @@ export const getStatus = progressPercentage => {
   };
 };
 
-const countReached = false;
-
 const AnalyticsCard = ({
   // isError,
-  printingCard,
-  packerCard,
   data,
+  status,
+  loaderCard,
+  packerCard,
+  printingCard,
   rejectModalOpen,
   bagModifyModalOpen,
   setDetailModalOpen,
-  loaderCard,
-  status,
-  setReverseShipmentFormOpen
+  setReverseShipmentFormOpen,
+  handleBagDone
 }) => {
   const [timeDifference, setTimeDifference] = useState(0);
 
@@ -77,7 +76,7 @@ const AnalyticsCard = ({
         getStatus(Math.min((data.count * 100) / PACKER_LIMIT, 100)).colorCode
       }
       status={status}
-      countReached={countReached}
+      countReached={data.bag_limit === data.bag_count}
       printingCard={printingCard}
     >
       <div className="error">
@@ -173,18 +172,20 @@ const AnalyticsCard = ({
                   onClick={setDetailModalOpen}
                 >
                   {status == 0
-                    ? countReached
+                    ? data.bag_limit === data.bag_count
                       ? 'View'
                       : 'View Details'
                     : 'Edit Shipment'}{' '}
-                  {countReached ? null : <BiRightArrowAlt />}
+                  {data.bag_limit === data.bag_count ? null : (
+                    <BiRightArrowAlt />
+                  )}
                 </Button>
               )}
-              {countReached && status === 0 ? (
+              {data.bag_limit === data.bag_count && status === 0 ? (
                 <FrinksButton
                   variant="outlined"
                   className="view-button"
-                  onClick={() => alert()}
+                  onClick={() => handleBagDone(data.id)}
                   text="Done"
                   style={{
                     borderTopWidth: '3px',
@@ -233,7 +234,8 @@ AnalyticsCard.propTypes = {
   bagModifyModalOpen: PropTypes.func,
   setDetailModalOpen: PropTypes.func,
   loaderCard: PropTypes.bool,
-  setReverseShipmentFormOpen: PropTypes.func
+  setReverseShipmentFormOpen: PropTypes.func,
+  handleBagDone: PropTypes.func
 };
 
 export default AnalyticsCard;

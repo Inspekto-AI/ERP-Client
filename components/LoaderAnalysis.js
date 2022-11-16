@@ -11,7 +11,8 @@ const LoaderAnalysis = ({
   vehicleBelts,
   handleBagIncrement,
   ongoingTransactions,
-  setReverseShipmentFormOpen
+  setReverseShipmentFormOpen,
+  handleBagDone
   // queuedTransactions
 }) => {
   const [detailModalOpen, setDetailModalOpen] = useState(null);
@@ -56,6 +57,7 @@ const LoaderAnalysis = ({
                       bagModifyModalOpen={() =>
                         setBagModifyModalOpen(ongoingTransactions[e])
                       }
+                      handleBagDone={handleBagDone}
                       loaderCard
                       status={0}
                     />
@@ -178,7 +180,8 @@ const LoaderAnalysis = ({
 LoaderAnalysis.propTypes = {
   vehicleBelts: PropTypes.any,
   setReverseShipmentFormOpen: PropTypes.func,
-  ongoingTransactions: PropTypes.array
+  ongoingTransactions: PropTypes.object,
+  handleBagDone: PropTypes.func
 };
 
 export default LoaderAnalysis;

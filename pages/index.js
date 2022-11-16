@@ -1,5 +1,5 @@
 import PropTypes from 'prop-types';
-import { get, post } from 'utils/api';
+import { get, post, put } from 'utils/api';
 import Report from 'components/Report';
 import Loader from 'components/Loader';
 import Layout from 'components/Layout';
@@ -31,7 +31,8 @@ const DashboardComponent = ({
   vehicleBelts,
   setReverseShipmentFormOpen,
   ongoingTransactions,
-  queuedTransactions
+  queuedTransactions,
+  handleBagDone
 }) => {
   if (activeSection === 0) {
     return (
@@ -42,6 +43,7 @@ const DashboardComponent = ({
         ongoingTransactions={ongoingTransactions}
         queuedTransactions={queuedTransactions}
         handleBagIncrement={handleBagIncrement}
+        handleBagDone={handleBagDone}
       />
     );
   }
@@ -89,6 +91,14 @@ const Index = () => {
   const [ongoingTransactions, setOngoingTransactions] = useState(null);
   const [queuedTransactions, setQueuedTransactions] = useState(null);
 
+  const handleBagDone = async transaction_id => {
+    setIsLoading(true);
+    console.log(transaction_id);
+    const res = await put('/api/transaction/shipment-done', { transaction_id });
+    console.log(res);
+    setIsLoading(false);
+  };
+
   const handleNewShipment = async data => {
     serviceMutation.mutate(data);
   };
@@ -118,13 +128,6 @@ const Index = () => {
           return e;
         })
       );
-      // setActiveTransactions({
-      //   ...activeTransactions,
-      //   [data.transaction_id]: {
-      //     ...activeTransactions[data.transaction_id],
-      //     limit: data.new_bag_count
-      //   }
-      // });
     }
     setIsLoading(false);
   };
@@ -165,30 +168,29 @@ const Index = () => {
         };
       });
     });
-    // socket.on('tag-entry', data => {
-    //   const transaction_id = parseInt(data?.transaction_id, 10);
-    //   setActiveTransactions(prevState => {
-    //     return {
-    //       ...prevState,
-    //       [transaction_id]: {
-    //         ...prevState[transaction_id],
-    //         printing_count: data?.bag_count,
-    //         missed_labels: data?.missed_labels
-    //       }
-    //     };
-    //   });
-    //   const belt_id = parseInt(data?.belt_id, 10);
-    //   setPrintingBelts(prevState => {
-    //     return {
-    //       ...prevState,
-    //       [belt_id]: {
-    //         ...prevState[belt_id],
-    //         printing_count: data?.bag_count_background,
-    //         missed_labels: data?.missed_labels_background
-    //       }
-    //     };
-    //   });
-    // });
+    socket.on('tag-entry', data => {
+      const transaction_id = parseInt(data?.transaction_id, 10);
+      setOngoingTransactions(prevState => {
+        return {
+          ...prevState,
+          [transaction_id]: {
+            ...prevState[transaction_id],
+            missed_label_count: data?.transactionMissed
+          }
+        };
+      });
+      const belt_id = parseInt(data?.belt_id, 10);
+      setPrintingBelts(prevState => {
+        return {
+          ...prevState,
+          [belt_id]: {
+            ...prevState[belt_id],
+            tag_count: data?.count,
+            missed_label_count: data?.missed_count
+          }
+        };
+      });
+    });
     socket.on('tag-entry-deactivated', data => {
       const belt_id = parseInt(data?.belt_id, 10);
       setPrintingBelts(prevState => {
@@ -202,18 +204,34 @@ const Index = () => {
         };
       });
     });
-    socket.on('new_tag_deactivated_transaction', data => {
-      const belt_id = parseInt(data?.belt_id, 10);
-      setPrintingBelts(prevState => {
-        return {
-          ...prevState,
-          [belt_id]: {
-            ...prevState[belt_id],
-            transaction_id: data?.transaction_id
-          }
-        };
+    socket.on('shipment-stop', data => {
+      const transaction_id = parseInt(data?.transaction_id, 10);
+      setOngoingTransactions(prevState => {
+        const currData = prevState;
+        delete currData[transaction_id];
+        return currData;
+      });
+      setVehicleBelts(prevState => {
+        const currData = prevState;
+        currData.push({
+          id: data?.vehicle_id,
+          vehicle_id: data?.machine_id
+        });
+        return currData;
       });
     });
+    // socket.on('new_tag_deactivated_transaction', data => {
+    //   const belt_id = parseInt(data?.belt_id, 10);
+    //   setPrintingBelts(prevState => {
+    //     return {
+    //       ...prevState,
+    //       [belt_id]: {
+    //         ...prevState[belt_id],
+    //         transaction_id: data?.transaction_id
+    //       }
+    //     };
+    //   });
+    // });
     // socket.on('stop', data => {
     //   const transaction_id = parseInt(data?.transaction_id, 10);
     //   setActiveTransactions(prevState => {
@@ -243,6 +261,14 @@ const Index = () => {
           ...prevState,
           [tra_id]: data
         };
+      });
+      setVehicleBelts(prevState => {
+        const newBelts = prevState.filter(e => {
+          if (e.id !== data.bag_counting_belt_id) {
+            return e;
+          }
+        });
+        return newBelts;
       });
     });
     socket.on('background-reset', () => {
@@ -364,6 +390,7 @@ const Index = () => {
           setReverseShipmentFormOpen={e => setReverseShipmentFormOpen(e)}
           ongoingTransactions={ongoingTransactions}
           queuedTransactions={queuedTransactions}
+          handleBagDone={handleBagDone}
         />
         {alertModalVisible ? (
           <AlertModal
@@ -396,8 +423,9 @@ DashboardComponent.propTypes = {
   backgroundTransactions: PropTypes.any,
   vehicleBelts: PropTypes.any,
   setReverseShipmentFormOpen: PropTypes.func,
-  ongoingTransactions: PropTypes.array,
-  queuedTransactions: PropTypes.array
+  ongoingTransactions: PropTypes.any,
+  queuedTransactions: PropTypes.any,
+  handleBagDone: PropTypes.func
 };
 
 export default Index;
