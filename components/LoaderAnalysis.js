@@ -119,7 +119,7 @@ const LoaderAnalysis = ({
               Please create a shipment first.
             </p>
           ) : (
-            <Grid container>
+            <Grid container spacing={2}>
               {vehicleBelts &&
                 vehicleBelts?.map((e, index) => (
                   <Grid item xs={12} sm={6} md={4} lg={3} key={index}>
