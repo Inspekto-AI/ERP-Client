@@ -18,6 +18,7 @@ import Loader from 'components/Loader';
 import Summary from 'components/Summary';
 import Report from 'components/Report';
 import PackerAnalysis from 'components/PackerAnalysis';
+import SystemHealth from 'components/SystemHealth/SystemHealth';
 import { IS_AWS_FRONTEND } from 'utils/constants';
 import { GlobalContext } from 'context/GlobalContext';
 import LoaderAnalysis from 'components/LoaderAnalysis';
@@ -58,6 +59,9 @@ const DashboardComponent = ({
   }
   if (activeSection === 3) {
     return <Summary />;
+  }
+  if (activeSection == 5) {
+    return <SystemHealth />;
   }
   return <Report />;
 };
@@ -350,6 +354,15 @@ const Index = () => {
             tabIndex={0}
           >
             <h6 style={{ textAlign: 'center' }}>Reports</h6>
+          </div>
+          <div
+            className={`option ${activeSection === 5 ? 'active' : ''}`}
+            onClick={() => setActiveSection(5)}
+            onKeyPress={() => setActiveSection(5)}
+            role="button"
+            tabIndex={0}
+          >
+            <h6 style={{ textAlign: 'center' }}>System Health</h6>
           </div>
         </div>
         <DashboardComponent
