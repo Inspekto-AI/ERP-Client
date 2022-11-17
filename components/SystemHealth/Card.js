@@ -8,13 +8,15 @@ export default function ({ active, type, name }) {
       style={{
         justifyContent: 'space-between',
         padding: '10px',
-        margin: '10px',
+        margin: '10px 20px',
         marginLeft: '0',
         border: 'solid 1px',
         borderRadius: '4px',
         background: active ? '#00C1F3' : '#FF5742',
         color: 'white',
-        fontSize: '22px'
+        fontSize: '18px'
+        // maxWidth: '360px',
+        // width: '100%'
       }}
     >
       {!active && (
