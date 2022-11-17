@@ -27,7 +27,7 @@ const PrintingAnalysis = ({ printingBelts }) => {
               <br />
             </p>
           ) : (
-            <Grid container>
+            <Grid container spacing={2}>
               {printingBelts &&
                 Object.keys(printingBelts)?.map((e, index) => (
                   <Grid item xs={12} sm={6} md={4} lg={3} key={index}>

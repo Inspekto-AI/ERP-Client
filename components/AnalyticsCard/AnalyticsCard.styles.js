@@ -14,7 +14,8 @@ const Container = styled.div`
   padding-top: 20px;
   // padding-bottom: ${props => (props.isError ? '15px' : '25px')};
   padding-bottom: ${props => (props.packerCard ? '8px' : '25px')};
-  min-width: 330px;
+  min-width: 100%;
+  width: 100%;
   position: relative;
 
   .head {
