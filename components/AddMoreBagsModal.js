@@ -62,8 +62,8 @@ const AddMoreBagsModal = ({
               <div className="key">Vehicle Details</div>
               <div className="value">
                 {open.licence_number === ''
-                  ? `Wagon No.- ${open.wagon_no} | Rack No.- ${open.rack_no} | Gate No.- ${open.gate_no}`
-                  : `Licence No.- ${open.licence_number}`}
+                  ? `Wagon No.- ${open.wagon_no} | Rake No.- ${open.rack_no} | Gate/Door No.- ${open.gate_no}`
+                  : `Truck No.- ${open.licence_number}`}
               </div>
             </div>
             <div className="hints">

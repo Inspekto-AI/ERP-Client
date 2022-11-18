@@ -481,8 +481,8 @@ const RenderTable = ({ layoutType, data, setRejectIndex }) => {
                     </TableCell>
                     <TableCell style={{ textAlign: 'center' }}>
                       {row?.licence_number === ''
-                        ? `Wagon No.- ${row.wagon_no}, Gate No.- ${row.gate_no}, Rack No.- ${row.rack_no}`
-                        : `License No.- ${row?.licence_number}`}
+                        ? `Wagon No.- ${row.wagon_no}, Gate/Door No.- ${row.gate_no}, Rake No.- ${row.rack_no}`
+                        : `Truck No.- ${row?.licence_number}`}
                     </TableCell>
                     <TableCell style={{ textAlign: 'center' }}>
                       {row?.vehicle?.machine_id || 'NA'}
@@ -613,7 +613,7 @@ const RenderTable = ({ layoutType, data, setRejectIndex }) => {
                       padding="none"
                       style={{ textAlign: 'center' }}
                     >
-                      {row?.belt_id}
+                      {row?.belt_id}({row?.vehicle_type === 1 ? 'WL' : 'TL'})
                     </TableCell>
                     <TableCell style={{ textAlign: 'center' }}>NA</TableCell>
                     <TableCell style={{ textAlign: 'center' }}>NA</TableCell>

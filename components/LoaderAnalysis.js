@@ -181,7 +181,7 @@ const LoaderAnalysis = ({
 LoaderAnalysis.propTypes = {
   vehicleBelts: PropTypes.any,
   setReverseShipmentFormOpen: PropTypes.func,
-  ongoingTransactions: PropTypes.object,
+  ongoingTransactions: PropTypes.any,
   handleBagDone: PropTypes.func
 };
 

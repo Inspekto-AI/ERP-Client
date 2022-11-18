@@ -82,6 +82,10 @@ const useStyles = makeStyles(() => ({
   },
   title: {
     marginRight: '65px'
+  },
+  commentField: {
+    width: '100%',
+    marginBottom: '30px'
   }
 }));
 
@@ -94,8 +98,7 @@ const ConfirmationPreview = ({ data }) => {
     rackNo,
     gateNo,
     bagType,
-    bagCount,
-    labelExample
+    bagCount
   } = data;
 
   return (
@@ -116,8 +119,8 @@ const ConfirmationPreview = ({ data }) => {
             <div className="key">Vehicle Details</div>
             <div className="value">
               {licenceNumber === ''
-                ? `Wagon No.- ${wagonNo} | Rack No.- ${rackNo} | Gate No.- ${gateNo}`
-                : `Licence No.- ${licenceNumber}`}
+                ? `Wagon No.- ${wagonNo} | Rake No.- ${rackNo} | Gate/Door No.- ${gateNo}`
+                : `Truck No.- ${licenceNumber}`}
             </div>
           </div>
           <div className="hints">
@@ -153,17 +156,30 @@ const InfoModal = ({
   dataToDisplay
 }) => {
   const classes = useStyles();
-  const [newBagCount, setNewBagCount] = useState(bagCount);
-
-  useEffect(() => {
-    setNewBagCount(open?.bag_limit);
-  }, []);
+  const [newBagCount, setNewBagCount] = useState(0);
+  const [comment, setComment] = useState('');
 
   const handleFormSubmit = async () => {
+    if (
+      !dataToDisplay &&
+      (comment === '' || newBagCount === 0 || newBagCount === '0')
+    ) {
+      return;
+    }
     await handleSubmit({
-      transaction_id: open.id,
-      new_bag_limit: newBagCount
+      transaction_id: open.id || open.transaction_id,
+      new_bag_limit: newBagCount,
+      old_limit: open.bag_limit,
+      comment
     });
+  };
+
+  const handleTransactionStop = async () => {
+    if (comment === '') {
+      return;
+    }
+    handleBagDone(open.transaction_id || open.id, comment);
+    close();
   };
 
   return (
@@ -198,6 +214,18 @@ const InfoModal = ({
               children
             )}
           </div>
+          {dataToDisplay ? null : (
+            <TextField
+              multiline
+              rows={4}
+              variant="filled"
+              placeholder="Enter comment"
+              value={comment}
+              onChange={e => setComment(e.target.value)}
+              className={classes.commentField}
+              inputProps={{ maxLength: 500 }}
+            />
+          )}
           {showDivision && !onlyBags ? (
             <hr className={classes.division} />
           ) : null}
@@ -240,10 +268,7 @@ const InfoModal = ({
                   {!onlyBags ? (
                     <FrinksButton
                       text={currentCount >= bagCount ? 'Done' : 'Stop'}
-                      onClick={() => {
-                        handleBagDone(open.transaction_id || open.id);
-                        close();
-                      }}
+                      onClick={handleTransactionStop}
                       variant="outlined"
                       style={{ marginRight: '10px' }}
                     />

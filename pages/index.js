@@ -91,9 +91,9 @@ const Index = () => {
   const [ongoingTransactions, setOngoingTransactions] = useState(null);
   const [queuedTransactions, setQueuedTransactions] = useState(null);
 
-  const handleBagDone = async transaction_id => {
+  const handleBagDone = async (transaction_id, comment) => {
     setIsLoading(true);
-    const res = await put('/api/transaction/shipment-done', { transaction_id });
+    await put('/api/transaction/shipment-done', { transaction_id, comment });
     setIsLoading(false);
   };
 
@@ -112,30 +112,27 @@ const Index = () => {
   const handleBagIncrement = async data => {
     setIsLoading(true);
     const res = await post('/api/transaction/bag-change', data);
-    if (res.data.success) {
-      // modify existing data
-      setOngoingTransactions(
-        ongoingTransactions.map(e => {
-          if (e.id === data.transaction_id) {
-            // modify this entity
-            return {
-              ...e,
-              bag_limit: data.new_bag_limit
-            };
-          }
-          return e;
-        })
-      );
-    }
+    setOngoingTransactions(
+      Object.keys(ongoingTransactions).map(e => {
+        if (ongoingTransactions[e].id === data.transaction_id) {
+          // modify this entity
+          return {
+            ...ongoingTransactions[e],
+            bag_limit: parseInt(data?.new_bag_limit) + parseInt(data?.old_limit)
+          };
+        }
+        return ongoingTransactions[e];
+      })
+    );
     setIsLoading(false);
   };
 
   const handleStop = async data => {
     setIsLoading(true);
-    post('/api/transaction/belt-stop', data);
-    const updatedTransactions = activeTransactions;
-    delete updatedTransactions[data?.transaction_id];
-    setActiveTransactions(updatedTransactions);
+    // post('/api/transaction/belt-stop', data);
+    // const updatedTransactions = activeTransactions;
+    // delete updatedTransactions[data?.transaction_id];
+    // setActiveTransactions(updatedTransactions);
     setIsLoading(false);
   };
 

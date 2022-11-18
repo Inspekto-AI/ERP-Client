@@ -200,11 +200,11 @@ const Config = ({
           <div className="form-part">
             {loaderType === 0 ? (
               <div className="input-container">
-                <div className="label">License no.</div>
+                <div className="label">Truck no.</div>
                 <TextField
                   type="text"
                   variant="outlined"
-                  placeholder="License no."
+                  placeholder="Truck no."
                   value={licenceNumber}
                   onChange={e => setLicenceNumber(e.target.value)}
                 />
@@ -212,11 +212,10 @@ const Config = ({
             ) : (
               <>
                 <div className="input-container">
-                  <div className="label">Rack no.</div>
+                  <div className="label">Rake no.</div>
                   <TextField
-                    type="number"
                     variant="outlined"
-                    placeholder="Rack no."
+                    placeholder="Rake no."
                     value={rackno}
                     onChange={e => setRackno(e.target.value)}
                     InputProps={{
@@ -238,17 +237,20 @@ const Config = ({
                   />
                 </div>
                 <div className="input-container">
-                  <div className="label">Gate no.</div>
-                  <TextField
-                    type="number"
-                    variant="outlined"
-                    placeholder="Gate no."
-                    value={gateno}
-                    onChange={e => setGateno(e.target.value)}
-                    InputProps={{
-                      inputProps: { min: 0 }
-                    }}
-                  />
+                  <div className="label">Gate/Door no.</div>
+                  <FormControl>
+                    {gateno === '' ? (
+                      <div className="select-label">Gate/Door no.</div>
+                    ) : null}
+                    <Select
+                      variant="outlined"
+                      value={gateno}
+                      onChange={e => setGateno(e.target.value)}
+                    >
+                      <MenuItem value={1}>1</MenuItem>
+                      <MenuItem value={2}>2</MenuItem>
+                    </Select>
+                  </FormControl>
                 </div>
               </>
             )}
@@ -407,7 +409,10 @@ const Config = ({
                     vehicleIds.map((e, index) => (
                       <MenuItem value={e.id} key={index}>
                         <span className="dropdown-span">
-                          <p>{e.machine_id}</p>
+                          <p>
+                            {e.machine_id}({e?.vehicle_type === 1 ? 'WL' : 'TL'}
+                            )
+                          </p>
                           <p
                             style={{
                               height: '10px',

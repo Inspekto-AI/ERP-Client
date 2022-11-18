@@ -76,7 +76,7 @@ const AnalyticsCard = ({
         getStatus(Math.min((data.count * 100) / PACKER_LIMIT, 100)).colorCode
       }
       status={status}
-      countReached={data.bag_limit === data.bag_count}
+      countReached={data.bag_limit <= data.bag_count}
       printingCard={printingCard}
     >
       <div className="error">
@@ -97,7 +97,9 @@ const AnalyticsCard = ({
             ) : (
               <>
                 {printingCard || packerCard ? null : (
-                  <p className="bag-id">{data?.vehicle_id}</p>
+                  <p className="bag-id">
+                    {data?.vehicle_id}({data?.vehicle_type === 1 ? 'WL' : 'TL'})
+                  </p>
                 )}
                 {status < 2 && loaderCard ? (
                   <p className="tag-id">{data?.printing_id}</p>
@@ -172,16 +174,16 @@ const AnalyticsCard = ({
                   onClick={setDetailModalOpen}
                 >
                   {status == 0
-                    ? data.bag_limit === data.bag_count
+                    ? data.bag_limit <= data.bag_count
                       ? 'View'
                       : 'View Details'
                     : 'Edit Shipment'}{' '}
-                  {data.bag_limit === data.bag_count ? null : (
+                  {data.bag_limit <= data.bag_count ? null : (
                     <BiRightArrowAlt />
                   )}
                 </Button>
               )}
-              {data.bag_limit === data.bag_count && status === 0 ? (
+              {data.bag_limit <= data.bag_count && status === 0 ? (
                 <FrinksButton
                   variant="outlined"
                   className="view-button"
