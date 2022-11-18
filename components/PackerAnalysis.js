@@ -92,7 +92,7 @@ const PackerAnalysis = ({ handleBagIncrement, handleStop }) => {
         <InfoModal
           open={rejectModalOpen}
           close={() => setRejectModalOpen(null)}
-          title="Rejected bags"
+          title="Misprint bags"
           hideConfirm
         >
           <DefectiveBags transaction_id={rejectModalOpen?.transaction_id} />

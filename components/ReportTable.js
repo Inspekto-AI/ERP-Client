@@ -80,9 +80,8 @@ const shipmentHead = [
   {
     id: 'licence_number',
     disablePadding: true,
-    label: 'Truck No.'
+    label: 'Truck No. / Wagon No.'
   },
-  { id: 'wagon_no', disablePadding: true, label: 'Wagon No.' },
   {
     id: 'vehicle.machine_id',
     disablePadding: true,
@@ -122,7 +121,7 @@ const shipmentHead = [
   {
     id: 'aws_missed_labels',
     disablePadding: true,
-    label: 'Rejected Bags'
+    label: 'Misprint bags'
   },
   { id: 'action', disablePadding: true, label: 'View' }
 ];
@@ -147,7 +146,7 @@ const printingHead = [
   {
     id: 'aws_missed_labels',
     disablePadding: true,
-    label: 'Rejected Bags'
+    label: 'Misprint bags'
   },
   { id: 'action', disablePadding: true, label: 'View' },
   { id: 'shipment_count', disablePadding: true, label: 'No. of Shipments Made' }
@@ -481,10 +480,9 @@ const RenderTable = ({ layoutType, data, setRejectIndex }) => {
                       {row?.id}
                     </TableCell>
                     <TableCell style={{ textAlign: 'center' }}>
-                      {row?.licence_number === '' ? 'NA' : row?.licence_number}
-                    </TableCell>
-                    <TableCell style={{ textAlign: 'center' }}>
-                      {row?.wagon_no === '' ? 'NA' : row?.wagon_no}
+                      {row?.licence_number === ''
+                        ? `Wagon No.- ${row.wagon_no}, Gate No.- ${row.gate_no}, Rack No.- ${row.rack_no}`
+                        : `License No.- ${row?.licence_number}`}
                     </TableCell>
                     <TableCell style={{ textAlign: 'center' }}>
                       {row?.vehicle?.machine_id || 'NA'}
@@ -844,7 +842,7 @@ const ReportTable = ({
         <InfoModal
           open={rejectIndex !== null}
           close={() => setRejectIndex(null)}
-          title="Rejected bags"
+          title="Misprint bags"
           hideConfirm
         >
           <DefectiveBags

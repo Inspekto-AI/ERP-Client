@@ -76,7 +76,7 @@ const PrintingAnalysis = ({ printingBelts }) => {
         <InfoModal
           open={rejectModalOpen}
           close={() => setRejectModalOpen(null)}
-          title="Rejected bags"
+          title="Misprint bags"
           hideConfirm
         >
           <DefectiveBags printingBeltId={rejectModalOpen?.printing_belt_id} />

@@ -288,7 +288,7 @@ const Config = ({
                     width={40}
                     onClick={() =>
                       setBagCount(
-                        Math.max(1, (parseInt(bagCount, 10)-1)).toString()
+                        Math.max(1, parseInt(bagCount, 10) - 1).toString()
                       )
                     }
                   />
@@ -309,7 +309,7 @@ const Config = ({
                     height={40}
                     width={40}
                     onClick={() =>
-                      setBagCount((parseInt(bagCount, 10)+1).toString())
+                      setBagCount((parseInt(bagCount, 10) + 1).toString())
                     }
                   />
                 </div>
@@ -514,14 +514,21 @@ const Config = ({
         {infoModalOpen ? (
           <InfoModal
             open={infoModalOpen}
-            close={() => setInfoModalOpen(false)}
             title="Confirm changes"
+            close={() => setInfoModalOpen(false)}
             handleSubmit={() => handleFormSubmit()}
-          >
-            <>
-              <p>Do you want to go ahead and save the changes you made?</p>
-            </>
-          </InfoModal>
+            dataToDisplay={{
+              printingId: beltIds?.find(e => e.id === printingId)?.machine_id,
+              loaderId: vehicleIds?.find(e => e.id === loaderId)?.machine_id,
+              licenceNumber,
+              wagonNo: wagonno,
+              rackNo: rackno,
+              gateNo: gateno,
+              bagType,
+              bagCount,
+              labelExample
+            }}
+          />
         ) : null}
       </Container>
     </Layout>

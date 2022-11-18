@@ -137,7 +137,7 @@ const LoaderAnalysis = ({
       </div>
       {detailModalOpen ? (
         <AddMoreBagsModal
-        showDivision
+          showDivision
           open={detailModalOpen}
           close={() => setDetailModalOpen(null)}
           heading="Transaction details"
@@ -157,7 +157,7 @@ const LoaderAnalysis = ({
         <InfoModal
           open={rejectModalOpen}
           close={() => setRejectModalOpen(null)}
-          title="Rejected bags"
+          title="Misprint bags"
           hideConfirm
         >
           <DefectiveBags printingBeltId={rejectModalOpen?.printing_belt_id} />
@@ -165,7 +165,7 @@ const LoaderAnalysis = ({
       ) : null}
       {bagModifyModalOpen ? (
         <AddMoreBagsModal
-        onlyBags
+          onlyBags
           open={bagModifyModalOpen}
           close={() => setBagModifyModalOpen(null)}
           handleSubmit={e => {

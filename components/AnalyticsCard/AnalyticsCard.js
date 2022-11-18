@@ -146,7 +146,7 @@ const AnalyticsCard = ({
                 <div className="rejected">
                   <div className="count">
                     <Avatar>{data?.missed_label_count || 0}</Avatar>
-                    <h6>Rejected bags</h6>
+                    <h6>Misprint bags</h6>
                   </div>
                   <Button variant="text" onClick={rejectModalOpen}>
                     View

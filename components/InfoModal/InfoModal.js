@@ -85,6 +85,57 @@ const useStyles = makeStyles(() => ({
   }
 }));
 
+const ConfirmationPreview = ({ data }) => {
+  const {
+    printingId,
+    loaderId,
+    licenceNumber,
+    wagonNo,
+    rackNo,
+    gateNo,
+    bagType,
+    bagCount,
+    labelExample
+  } = data;
+
+  return (
+    <div>
+      <div className="card-info-container">
+        <div className="hint-container">
+          <div className="hints" style={{ marginRight: '10px' }}>
+            <div className="key">Loader ID</div>
+            <div className="value">{loaderId}</div>
+          </div>
+          <div className="hints">
+            <div className="key">Printing Belt ID</div>
+            <div className="value">{printingId}</div>
+          </div>
+        </div>
+        <div className="hint-container">
+          <div className="hints" style={{ marginRight: '10px' }}>
+            <div className="key">Vehicle Details</div>
+            <div className="value">
+              {licenceNumber === ''
+                ? `Wagon No.- ${wagonNo} | Rack No.- ${rackNo} | Gate No.- ${gateNo}`
+                : `Licence No.- ${licenceNumber}`}
+            </div>
+          </div>
+          <div className="hints">
+            <div className="key">Bags Filled</div>
+            <div className="value">{bagCount}</div>
+          </div>
+        </div>
+        <div className="hint-container">
+          <div className="hints" style={{ marginRight: '10px' }}>
+            <div className="key">Bag Type</div>
+            <div className="value">{bagType}</div>
+          </div>
+        </div>
+      </div>
+    </div>
+  );
+};
+
 const InfoModal = ({
   open,
   close,
@@ -98,7 +149,8 @@ const InfoModal = ({
   currentCount,
   showDivision,
   hideModify,
-  handleBagDone
+  handleBagDone,
+  dataToDisplay
 }) => {
   const classes = useStyles();
   const [newBagCount, setNewBagCount] = useState(bagCount);
@@ -139,7 +191,13 @@ const InfoModal = ({
               </Button>
             </div>
           </div>
-          <div className={classes.children}>{children}</div>
+          <div className={classes.children}>
+            {dataToDisplay ? (
+              <ConfirmationPreview data={dataToDisplay} />
+            ) : (
+              children
+            )}
+          </div>
           {showDivision && !onlyBags ? (
             <hr className={classes.division} />
           ) : null}
@@ -218,6 +276,7 @@ InfoModal.propTypes = {
   showDivision: PropTypes.bool,
   onlyBags: PropTypes.bool,
   currentCount: PropTypes.any,
-  handleBagDone: PropTypes.func
+  handleBagDone: PropTypes.func,
+  dataToDisplay: PropTypes.object
 };
 export default InfoModal;
