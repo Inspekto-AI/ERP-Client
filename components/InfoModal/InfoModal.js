@@ -92,13 +92,13 @@ const InfoModal = ({
   children,
   bagCount,
   onlyBags,
-  handleStop,
   buttonText,
   hideConfirm,
-  printingCard,
   handleSubmit,
   currentCount,
-  showDivision
+  showDivision,
+  hideModify,
+  handleBagDone
 }) => {
   const classes = useStyles();
   const [newBagCount, setNewBagCount] = useState(bagCount);
@@ -111,12 +111,6 @@ const InfoModal = ({
     await handleSubmit({
       transaction_id: open.id,
       new_bag_limit: newBagCount
-    });
-  };
-
-  const handleFormStop = async () => {
-    await handleStop({
-      transaction_id: open.id
     });
   };
 
@@ -151,7 +145,7 @@ const InfoModal = ({
           ) : null}
           {!hideConfirm ? (
             <div className={classes.btnContainer}>
-              {open.bag_limit ? (
+              {open.bag_limit && !hideModify ? (
                 <div className={classes.counterContainer}>
                   <Image
                     src="subtract_KLMfUKuhe.svg"
@@ -160,7 +154,7 @@ const InfoModal = ({
                     height={40}
                     width={40}
                     onClick={() =>
-                      setNewBagCount(Math.max(1, parseInt(newBagCount - 1, 10)))
+                      setNewBagCount(Math.max(1, parseInt(newBagCount, 10) - 1))
                     }
                   />
                   <TextField
@@ -176,27 +170,32 @@ const InfoModal = ({
                     height={40}
                     width={40}
                     onClick={() =>
-                      setNewBagCount(parseInt(newBagCount + 1, 10))
+                      setNewBagCount(parseInt(newBagCount, 10) + 1)
                     }
                   />
                 </div>
               ) : (
                 <div />
               )}
-              {printingCard ? null : (
+              {hideConfirm ? null : (
                 <div>
                   {!onlyBags ? (
                     <FrinksButton
                       text={currentCount >= bagCount ? 'Done' : 'Stop'}
-                      onClick={handleFormStop}
+                      onClick={() => {
+                        handleBagDone(open.transaction_id || open.id);
+                        close();
+                      }}
                       variant="outlined"
                       style={{ marginRight: '10px' }}
                     />
                   ) : null}
-                  <FrinksButton
-                    text={buttonText || 'Confirm'}
-                    onClick={handleFormSubmit}
-                  />
+                  {hideModify ? null : (
+                    <FrinksButton
+                      text={buttonText || 'Confirm'}
+                      onClick={handleFormSubmit}
+                    />
+                  )}
                 </div>
               )}
             </div>
@@ -219,7 +218,6 @@ InfoModal.propTypes = {
   showDivision: PropTypes.bool,
   onlyBags: PropTypes.bool,
   currentCount: PropTypes.any,
-  handleStop: PropTypes.any,
-  printingCard: PropTypes.bool
+  handleBagDone: PropTypes.func
 };
 export default InfoModal;

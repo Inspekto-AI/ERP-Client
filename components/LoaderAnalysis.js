@@ -77,7 +77,7 @@ const LoaderAnalysis = ({
               Please create a shipment first.
             </p>
           ) : (
-            <Grid container>
+            <Grid container spacing={2}>
               {queuedTransactions &&
                 queuedTransactions?.map((e, index) => (
                   <Grid item xs={12} sm={6} md={4} lg={3} key={index}>
@@ -137,6 +137,7 @@ const LoaderAnalysis = ({
       </div>
       {detailModalOpen ? (
         <AddMoreBagsModal
+        showDivision
           open={detailModalOpen}
           close={() => setDetailModalOpen(null)}
           heading="Transaction details"
@@ -148,8 +149,8 @@ const LoaderAnalysis = ({
             // handleStop(e);
             setDetailModalOpen(null);
           }}
-          hideConfirm
-          printingCard
+          handleBagDone={handleBagDone}
+          hideModify
         />
       ) : null}
       {rejectModalOpen ? (
@@ -164,9 +165,9 @@ const LoaderAnalysis = ({
       ) : null}
       {bagModifyModalOpen ? (
         <AddMoreBagsModal
+        onlyBags
           open={bagModifyModalOpen}
           close={() => setBagModifyModalOpen(null)}
-          onlyBags
           handleSubmit={e => {
             handleBagIncrement(e);
             setBagModifyModalOpen(null);

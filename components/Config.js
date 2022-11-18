@@ -288,7 +288,7 @@ const Config = ({
                     width={40}
                     onClick={() =>
                       setBagCount(
-                        Math.max(1, parseInt(bagCount - 1, 10)).toString()
+                        Math.max(1, (parseInt(bagCount, 10)-1)).toString()
                       )
                     }
                   />
@@ -309,7 +309,7 @@ const Config = ({
                     height={40}
                     width={40}
                     onClick={() =>
-                      setBagCount(parseInt(bagCount + 1, 10).toString())
+                      setBagCount((parseInt(bagCount, 10)+1).toString())
                     }
                   />
                 </div>

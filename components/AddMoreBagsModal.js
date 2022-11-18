@@ -11,7 +11,9 @@ const AddMoreBagsModal = ({
   handleStop,
   hideConfirm,
   handleSubmit,
-  showDivision
+  showDivision,
+  hideModify,
+  handleBagDone
 }) => {
   // const [timeDifference, setTimeDifference] = useState(0);
 
@@ -33,6 +35,7 @@ const AddMoreBagsModal = ({
       close={() => close()}
       bagCount={open.limit}
       handleStop={handleStop}
+      hideModify={hideModify}
       hideConfirm={hideConfirm}
       handleSubmit={handleSubmit}
       showDivision={showDivision}
@@ -40,6 +43,7 @@ const AddMoreBagsModal = ({
       currentCount={
         open?.is_bag_belt_active ? open?.bag_count : open?.printing_count
       }
+      handleBagDone={handleBagDone}
     >
       {onlyBags ? null : (
         <div className="card-info-container">
@@ -92,7 +96,9 @@ AddMoreBagsModal.propTypes = {
   heading: PropTypes.string,
   handleSubmit: PropTypes.func,
   handleStop: PropTypes.any,
-  printingCard: PropTypes.bool
+  printingCard: PropTypes.bool,
+  hideModify: PropTypes.bool,
+  handleBagDone: PropTypes.func
 };
 
 export default AddMoreBagsModal;

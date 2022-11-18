@@ -93,9 +93,7 @@ const Index = () => {
 
   const handleBagDone = async transaction_id => {
     setIsLoading(true);
-    console.log(transaction_id);
     const res = await put('/api/transaction/shipment-done', { transaction_id });
-    console.log(res);
     setIsLoading(false);
   };
 
