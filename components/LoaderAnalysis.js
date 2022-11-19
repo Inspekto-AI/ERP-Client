@@ -159,8 +159,9 @@ const LoaderAnalysis = ({
           close={() => setRejectModalOpen(null)}
           title="Misprint bags"
           hideConfirm
+          hideComment
         >
-          <DefectiveBags printingBeltId={rejectModalOpen?.printing_belt_id} />
+          <DefectiveBags transaction_id={rejectModalOpen?.id} />
         </InfoModal>
       ) : null}
       {bagModifyModalOpen ? (

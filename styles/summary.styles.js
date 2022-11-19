@@ -121,6 +121,18 @@ const Container = styled.div`
   .rdrMonth {
     display: ${props => (props.datePickerOpen ? 'block' : 'none')};
   }
+
+  .date-done-btn {
+    top: 320px;
+    z-index: 10;
+    width: 332px;
+    background: white;
+    text-align: right;
+    position: absolute;
+    padding-right: 15px;
+    padding-bottom: 15px;
+    margin-top: 20px;
+  }
 `;
 
 export default Container;

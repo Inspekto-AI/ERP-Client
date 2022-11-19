@@ -226,7 +226,6 @@ const Config = ({
                 <div className="input-container">
                   <div className="label">Wagon no.</div>
                   <TextField
-                    type="number"
                     variant="outlined"
                     placeholder="Wagon no."
                     value={wagonno}
@@ -298,10 +297,17 @@ const Config = ({
                     type="number"
                     variant="outlined"
                     value={bagCount}
-                    onChange={e => setBagCount(e.target.value)}
+                    onChange={e =>
+                      setBagCount(
+                        Math.max(
+                          1,
+                          Math.min(parseInt(e.target.value, 10), 2000)
+                        )
+                      )
+                    }
                     style={{ width: '200px' }}
                     InputProps={{
-                      inputProps: { min: 0 }
+                      inputProps: { min: 0, max: 2000 }
                     }}
                   />
                   <Image
@@ -311,7 +317,9 @@ const Config = ({
                     height={40}
                     width={40}
                     onClick={() =>
-                      setBagCount((parseInt(bagCount, 10) + 1).toString())
+                      setBagCount(
+                        Math.min(2000, parseInt(bagCount, 10) + 1).toString()
+                      )
                     }
                   />
                 </div>

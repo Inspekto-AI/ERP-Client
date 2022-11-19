@@ -85,7 +85,11 @@ const useStyles = makeStyles(() => ({
   },
   commentField: {
     width: '100%',
-    marginBottom: '30px'
+    marginBottom: '10px'
+  },
+  error: {
+    marginBottom: '20px',
+    color: 'red'
   }
 }));
 
@@ -146,24 +150,27 @@ const InfoModal = ({
   children,
   bagCount,
   onlyBags,
+  hideModify,
   buttonText,
+  hideComment,
   hideConfirm,
   handleSubmit,
   currentCount,
   showDivision,
-  hideModify,
   handleBagDone,
   dataToDisplay
 }) => {
   const classes = useStyles();
   const [newBagCount, setNewBagCount] = useState(0);
   const [comment, setComment] = useState('');
+  const [error, setError] = useState('');
 
   const handleFormSubmit = async () => {
     if (
       !dataToDisplay &&
       (comment === '' || newBagCount === 0 || newBagCount === '0')
     ) {
+      setError('* All fields are required');
       return;
     }
     await handleSubmit({
@@ -176,6 +183,7 @@ const InfoModal = ({
 
   const handleTransactionStop = async () => {
     if (comment === '') {
+      setError('* All fields are required');
       return;
     }
     handleBagDone(open.transaction_id || open.id, comment);
@@ -214,17 +222,21 @@ const InfoModal = ({
               children
             )}
           </div>
-          {dataToDisplay ? null : (
-            <TextField
-              multiline
-              rows={4}
-              variant="filled"
-              placeholder="Enter comment"
-              value={comment}
-              onChange={e => setComment(e.target.value)}
-              className={classes.commentField}
-              inputProps={{ maxLength: 500 }}
-            />
+          {dataToDisplay || hideComment ? null : (
+            <>
+              <TextField
+                multiline
+                rows={4}
+                variant="filled"
+                placeholder="Enter comment"
+                value={comment}
+                onChange={e => setComment(e.target.value)}
+                className={classes.commentField}
+                inputProps={{ maxLength: 500 }}
+                error={error !== ''}
+              />
+              <p className={classes.error}>{error}</p>
+            </>
           )}
           {showDivision && !onlyBags ? (
             <hr className={classes.division} />
@@ -302,6 +314,7 @@ InfoModal.propTypes = {
   onlyBags: PropTypes.bool,
   currentCount: PropTypes.any,
   handleBagDone: PropTypes.func,
-  dataToDisplay: PropTypes.object
+  dataToDisplay: PropTypes.object,
+  hideConfirm: PropTypes.bool
 };
 export default InfoModal;

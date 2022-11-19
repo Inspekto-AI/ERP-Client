@@ -94,6 +94,7 @@ const PackerAnalysis = ({ handleBagIncrement, handleStop }) => {
           close={() => setRejectModalOpen(null)}
           title="Misprint bags"
           hideConfirm
+          hideComment
         >
           <DefectiveBags transaction_id={rejectModalOpen?.transaction_id} />
         </InfoModal>
