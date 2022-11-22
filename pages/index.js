@@ -91,9 +91,30 @@ const Index = () => {
   const [ongoingTransactions, setOngoingTransactions] = useState(null);
   const [queuedTransactions, setQueuedTransactions] = useState(null);
 
-  const handleBagDone = async (transaction_id, comment) => {
+  const handleBagDone = async (
+    transaction_id,
+    vehicle_id,
+    machine_id,
+    comment
+  ) => {
     setIsLoading(true);
-    await put('/api/transaction/shipment-done', { transaction_id, comment });
+    await put('/api/transaction/shipment-done', {
+      transaction_id,
+      comment
+    });
+    setOngoingTransactions(prevState => {
+      const currData = prevState;
+      delete currData[transaction_id];
+      return currData;
+    });
+    setVehicleBelts(prevState => {
+      const currData = prevState;
+      currData.push({
+        id: vehicle_id,
+        vehicle_id: machine_id
+      });
+      return currData;
+    });
     setIsLoading(false);
   };
 
@@ -197,22 +218,6 @@ const Index = () => {
             missed_label_count: data?.missed_count
           }
         };
-      });
-    });
-    socket.on('shipment-stop', data => {
-      const transaction_id = parseInt(data?.transaction_id, 10);
-      setOngoingTransactions(prevState => {
-        const currData = prevState;
-        delete currData[transaction_id];
-        return currData;
-      });
-      setVehicleBelts(prevState => {
-        const currData = prevState;
-        currData.push({
-          id: data?.vehicle_id,
-          vehicle_id: data?.machine_id
-        });
-        return currData;
       });
     });
     // socket.on('new_tag_deactivated_transaction', data => {

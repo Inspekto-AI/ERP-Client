@@ -186,7 +186,12 @@ const InfoModal = ({
       setError('* All fields are required');
       return;
     }
-    handleBagDone(open.transaction_id || open.id, comment);
+    handleBagDone(
+      open.transaction_id || open.id,
+      open?.bag_counting_belt_id,
+      open?.vehicle_id,
+      comment
+    );
     close();
   };
 

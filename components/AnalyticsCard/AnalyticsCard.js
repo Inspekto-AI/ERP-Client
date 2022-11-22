@@ -187,7 +187,13 @@ const AnalyticsCard = ({
                 <FrinksButton
                   variant="outlined"
                   className="view-button"
-                  onClick={() => handleBagDone(data.id)}
+                  onClick={() =>
+                    handleBagDone(
+                      data?.id,
+                      data?.bag_counting_belt_id,
+                      data?.vehicle_id
+                    )
+                  }
                   text="Done"
                   style={{
                     borderTopWidth: '3px',
