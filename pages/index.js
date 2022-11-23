@@ -100,7 +100,8 @@ const Index = () => {
     setIsLoading(true);
     await put('/api/transaction/shipment-done', {
       transaction_id,
-      comment
+      comment,
+      vehicle_id
     });
     setOngoingTransactions(prevState => {
       const currData = prevState;
