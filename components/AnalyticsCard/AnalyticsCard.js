@@ -120,6 +120,11 @@ const AnalyticsCard = ({
           )}
         </div>
       </div>
+      {status===0 && !printingCard && (<div className="rejected" style={{top: '75px', justifyContent: 'center'}} >
+        <div className="count">
+          <h6>{data?.vehicle_type===1?`Wagon No.- ${data?.wagon_no}`:`Truck No.- ${data?.licence_number}`}</h6>
+        </div>
+      </div>)}
       {status > 1 ? null : (
         <div className="count-container">
           <h2 className="count">
@@ -145,7 +150,7 @@ const AnalyticsCard = ({
                 )}
               </div>
               {status > 0 ? null : (
-                <div className="rejected">
+                <div className="rejected" style={{bottom: printingCard?'30px': '70px'}} >
                   <div className="count">
                     <Avatar>{data?.missed_label_count || 0}</Avatar>
                     <h6>Misprint bags</h6>

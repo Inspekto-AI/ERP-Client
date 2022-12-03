@@ -262,7 +262,7 @@ const Index = () => {
       setOngoingTransactions(prevState => {
         return {
           ...prevState,
-          [tra_id]: data
+          [tra_id]: data,
         };
       });
       setVehicleBelts(prevState => {
