@@ -177,6 +177,7 @@ const Index = () => {
       console.log(data, '----bag entry');
       const transaction_id = parseInt(data?.transaction_id, 10);
       setOngoingTransactions(prevState => {
+        if (!prevState) return null;
         return {
           ...prevState,
           [transaction_id]: {
@@ -190,6 +191,7 @@ const Index = () => {
       console.log(data, '----tag entry');
       const transaction_id = parseInt(data?.transaction_id, 10);
       setOngoingTransactions(prevState => {
+        if (!prevState) return null;
         return {
           ...prevState,
           [transaction_id]: {
@@ -200,6 +202,7 @@ const Index = () => {
       });
       const belt_id = parseInt(data?.belt_id, 10);
       setPrintingBelts(prevState => {
+        if (!prevState) return null;
         return {
           ...prevState,
           [belt_id]: {
@@ -213,6 +216,7 @@ const Index = () => {
     socket.on('tag-entry-deactivated', data => {
       const belt_id = parseInt(data?.belt_id, 10);
       setPrintingBelts(prevState => {
+        if (!prevState) return null;
         return {
           ...prevState,
           [belt_id]: {
@@ -260,12 +264,14 @@ const Index = () => {
     socket.on('service', data => {
       const tra_id = parseInt(data?.id, 10);
       setOngoingTransactions(prevState => {
+        if (!prevState) return null;
         return {
           ...prevState,
-          [tra_id]: data,
+          [tra_id]: data
         };
       });
       setVehicleBelts(prevState => {
+        if (!prevState) return null;
         const newBelts = prevState.filter(e => {
           if (e.id !== data.bag_counting_belt_id) {
             return e;
@@ -276,6 +282,7 @@ const Index = () => {
     });
     socket.on('background-reset', () => {
       setPrintingBelts(prevState => {
+        if (!prevState) return null;
         const newState = {};
         Object.keys(prevState).forEach(e => {
           newState[e] = {
