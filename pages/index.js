@@ -182,7 +182,7 @@ const Index = () => {
           ...prevState,
           [transaction_id]: {
             ...prevState[transaction_id],
-            bag_count: data?.bag_count
+            bag_count: data?.count
           }
         };
       });

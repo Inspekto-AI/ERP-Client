@@ -373,21 +373,24 @@ const Config = ({
                   }}
                 >
                   {beltIds &&
-                    beltIds.map((e, index) => (
-                      <MenuItem value={e.id} key={index}>
-                        <span className="dropdown-span">
-                          <p>{e.machine_id}</p>
-                          <p
-                            style={{
-                              height: '10px',
-                              width: '10px',
-                              background: `${e.is_busy ? 'red' : 'green'}`,
-                              borderRadius: '100px'
-                            }}
-                          />
-                        </span>
-                      </MenuItem>
-                    ))}
+                    beltIds.map((e, index) => {
+                      if (e?.is_busy) return null;
+                      return (
+                        <MenuItem value={e.id} key={index}>
+                          <span className="dropdown-span">
+                            <p>{e.machine_id}</p>
+                            <p
+                              style={{
+                                height: '10px',
+                                width: '10px',
+                                background: `${e.is_busy ? 'red' : 'green'}`,
+                                borderRadius: '100px'
+                              }}
+                            />
+                          </span>
+                        </MenuItem>
+                      );
+                    })}
                 </Select>
               </FormControl>
             </div>
@@ -414,24 +417,27 @@ const Config = ({
                   disabled={!vehicleIds || reverseShipmentFormOpen}
                 >
                   {vehicleIds &&
-                    vehicleIds.map((e, index) => (
-                      <MenuItem value={e.id} key={index}>
-                        <span className="dropdown-span">
-                          <p>
-                            {e.machine_id}({e?.vehicle_type === 1 ? 'WL' : 'TL'}
-                            )
-                          </p>
-                          <p
-                            style={{
-                              height: '10px',
-                              width: '10px',
-                              background: `${e.is_busy ? 'red' : 'green'}`,
-                              borderRadius: '100px'
-                            }}
-                          />
-                        </span>
-                      </MenuItem>
-                    ))}
+                    vehicleIds.map((e, index) => {
+                      if (e?.is_busy) return null;
+                      return (
+                        <MenuItem value={e.id} key={index}>
+                          <span className="dropdown-span">
+                            <p>
+                              {e.machine_id}(
+                              {e?.vehicle_type === 1 ? 'WL' : 'TL'})
+                            </p>
+                            <p
+                              style={{
+                                height: '10px',
+                                width: '10px',
+                                background: `${e.is_busy ? 'red' : 'green'}`,
+                                borderRadius: '100px'
+                              }}
+                            />
+                          </span>
+                        </MenuItem>
+                      );
+                    })}
                 </Select>
               </FormControl>
             </div>
