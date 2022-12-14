@@ -178,6 +178,7 @@ const Index = () => {
       const transaction_id = parseInt(data?.transaction_id, 10);
       setOngoingTransactions(prevState => {
         if (!prevState) return null;
+        if (!transaction_id in prevState) return prevState;
         return {
           ...prevState,
           [transaction_id]: {
@@ -192,6 +193,7 @@ const Index = () => {
       const transaction_id = parseInt(data?.transaction_id, 10);
       setOngoingTransactions(prevState => {
         if (!prevState) return null;
+        if (!transaction_id in prevState) return prevState;
         return {
           ...prevState,
           [transaction_id]: {
@@ -360,14 +362,14 @@ const Index = () => {
                 <h6 style={{ textAlign: 'center' }}>Printing belt</h6>
               </div>
               {/* <div
-            className={`option ${activeSection === 2 ? 'active' : ''}`}
-            onClick={() => setActiveSection(2)}
-            onKeyPress={() => setActiveSection(2)}
-            role="button"
-            tabIndex={0}
-          >
-            <h6 style={{ cursor: 'inherit' }}>Packer analytics</h6>
-          </div> */}
+                className={`option ${activeSection === 2 ? 'active' : ''}`}
+                onClick={() => setActiveSection(2)}
+                onKeyPress={() => setActiveSection(2)}
+                role="button"
+                tabIndex={0}
+              >
+                <h6 style={{ cursor: 'inherit' }}>Packer analytics</h6>
+              </div> */}
               <div
                 className={`option ${activeSection === 3 ? 'active' : ''}`}
                 onClick={() => setActiveSection(3)}

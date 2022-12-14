@@ -261,10 +261,22 @@ const InfoModal = ({
                     }
                   />
                   <TextField
-                    type="number"
                     variant="outlined"
                     value={newBagCount}
-                    onChange={e => setNewBagCount(e.target.value)}
+                    onChange={e => {
+                      if (e.target.value === '') setNewBagCount(1);
+                      else if (!isNaN(e.target.value)) {
+                        setNewBagCount(
+                          Math.max(
+                            1,
+                            Math.min(parseInt(e.target.value, 10), 100)
+                          )
+                        );
+                      }
+                    }}
+                    InputProps={{
+                      inputProps: { min: 1, max: 100 }
+                    }}
                   />
                   <Image
                     src="add_W7hvn9BT_.svg"

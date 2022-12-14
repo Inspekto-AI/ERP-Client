@@ -294,17 +294,19 @@ const Config = ({
                     }
                   />
                   <TextField
-                    type="number"
                     variant="outlined"
                     value={bagCount}
-                    onChange={e =>
-                      setBagCount(
-                        Math.max(
-                          1,
-                          Math.min(parseInt(e.target.value, 10), 2000)
-                        )
-                      )
-                    }
+                    onChange={e => {
+                      if (e.target.value === '') setBagCount(1);
+                      else if (!isNaN(e.target.value)) {
+                        setBagCount(
+                          Math.max(
+                            1,
+                            Math.min(parseInt(e.target.value, 10), 2000)
+                          )
+                        );
+                      }
+                    }}
                     style={{ width: '200px' }}
                     InputProps={{
                       inputProps: { min: 0, max: 2000 }
