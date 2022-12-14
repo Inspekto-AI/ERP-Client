@@ -5,9 +5,9 @@ const Container = styled.div`
   background: ${props =>
     props.isError || props.status > 0
       ? props.status === 1
-        ? '#F37500'
+        ? '#CB952B'
         : 'white'
-      : 'white'};
+      : '#26A84A'};
   border-radius: 10px;
   padding: ${props => (props.packerCard ? '35px 5px' : '35px 20px')};
   // padding-top: ${props => (props.isError ? '40px' : '20px')};
@@ -33,7 +33,7 @@ const Container = styled.div`
           props.status === 0
             ? '#01ba8f'
             : props.status === 1
-            ? '#F37500'
+            ? 'white'
             : '#F72525'};
         height: 18px;
         width: 18px;
@@ -44,7 +44,7 @@ const Container = styled.div`
 
       .id {
         color: ${props =>
-          props.isError || props.status == 1 ? 'white' : 'gray'};
+          props.isError || props.status <= 1 ? 'white' : 'gray'};
         font-weight: 600;
         margin-left: 5px;
         font-size: 15px;
@@ -62,7 +62,7 @@ const Container = styled.div`
     .timer {
       font-weight: 900;
       font-size: 14px;
-      color: ${props => (props.isError ? 'white' : 'black')};
+      color: ${props => (!props.isError ? 'white' : 'black')};
     }
   }
 
@@ -71,13 +71,13 @@ const Container = styled.div`
     margin-bottom: 10px;
     align-items: center;
     // margin-top: ${props => (props.isError ? '0' : '10px')};
-    margin-top: ${props => (props.printingCard ? '10px' : '75px')};
+    margin-top: ${props => (props.printingCard ? '10px' : '15px')};
     padding: ${props => (props.packerCard ? '0 15px' : '0 0')};
 
     h2 {
       margin-right: 10px;
       font-weight: 900;
-      color: ${props => (props.status == 0 ? 'black' : 'white')};
+      color: ${props => (props.status >= 2 ? 'black' : 'white')};
     }
 
     .MuiAvatar-circular {
@@ -95,16 +95,16 @@ const Container = styled.div`
   .type {
     font-size: 16px;
     color: ${props =>
-      props.isError || props.status === 1
+      props.isError || props.status <= 1
         ? 'white'
         : theme.palette.grey.grey100};
     margin: 2px 0 20px 0;
     margin-bottom: ${props =>
-      props.status === 0 ? '70px' : props.status === 1 ? '10px' : 0};
+      props.status <= 1 ? '70px' : props.status === 1 ? '10px' : 0};
 
     span {
       font-weight: 900;
-      color: ${props => (props.isError ? 'white' : 'black')};
+      color: ${props => (!props.isError ? 'white' : 'black')};
     }
   }
 
@@ -166,6 +166,7 @@ const Container = styled.div`
     border-radius: 12px;
     font-size: 15px;
     height: 35px;
+    padding: 20px;
     color: ${theme.palette.byzantine.main};
     font-weight: 900;
 

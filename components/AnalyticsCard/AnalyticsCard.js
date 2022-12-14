@@ -111,7 +111,7 @@ const AnalyticsCard = ({
           </div>
         </div>
         <div className="timer">
-          {printingCard || status > 0 ? null : (
+          {printingCard || status > 1 ? null : (
             <>
               {data?.count_finished_at
                 ? msToTime(data?.count_finished_at - data?.created_at)
@@ -120,11 +120,20 @@ const AnalyticsCard = ({
           )}
         </div>
       </div>
-      {status===0 && !printingCard && (<div className="rejected" style={{top: '75px', justifyContent: 'center'}} >
-        <div className="count">
-          <h6>{data?.vehicle_type===1?`Wagon No.- ${data?.wagon_no}`:`Truck No.- ${data?.licence_number}`}</h6>
+      {/* {status === 0 && !printingCard && (
+        <div
+          className="rejected"
+          style={{ top: '75px', justifyContent: 'center' }}
+        >
+          <div className="count">
+            <h6>
+              {data?.vehicle_type === 1
+                ? `Wagon No.- ${data?.wagon_no}`
+                : `Truck No.- ${data?.licence_number}`}
+            </h6>
+          </div>
         </div>
-      </div>)}
+      )} */}
       {status > 1 ? null : (
         <div className="count-container">
           <h2 className="count">
@@ -149,11 +158,17 @@ const AnalyticsCard = ({
                   </>
                 )}
               </div>
-              {status > 0 ? null : (
-                <div className="rejected" style={{bottom: printingCard?'30px': '70px'}} >
+              {status > 1 ? null : (
+                <div
+                  className="rejected"
+                  style={{
+                    bottom: printingCard ? '30px' : '85px'
+                    // top: status == 1 ? '20px' : ''
+                  }}
+                >
                   <div className="count">
                     <Avatar>{data?.missed_label_count || 0}</Avatar>
-                    <h6>Misprint bags</h6>
+                    <h6>Rejected bags</h6>
                   </div>
                   <Button variant="text" onClick={rejectModalOpen}>
                     View
@@ -169,24 +184,45 @@ const AnalyticsCard = ({
                   variant="contained"
                   className="view-button"
                   onClick={() => setReverseShipmentFormOpen(data?.id)}
+                  style={{
+                    color: '#008847',
+                    borderColor: '#008847',
+                    margin: '0px 20px'
+                  }}
                 >
                   Create shipment <IoMdAddCircleOutline />
                 </Button>
               ) : (
-                <Button
-                  variant="outlined"
-                  className="view-button"
-                  onClick={setDetailModalOpen}
-                >
-                  {status == 0
-                    ? data.bag_limit <= data.bag_count
-                      ? 'View'
-                      : 'View Details'
-                    : 'Edit Shipment'}{' '}
-                  {data.bag_limit <= data.bag_count ? null : (
-                    <BiRightArrowAlt />
+                <>
+                  <Button
+                    variant="outlined"
+                    className="view-button"
+                    onClick={setDetailModalOpen}
+                  >
+                    {status == 0
+                      ? data.bag_limit <= data.bag_count
+                        ? 'View'
+                        : 'View Details'
+                      : 'Edit'}{' '}
+                    {data.bag_limit <= data.bag_count ? null : (
+                      <BiRightArrowAlt />
+                    )}
+                  </Button>
+                  {status == 1 && (
+                    <Button
+                      className="view-button"
+                      variant="outlined"
+                      style={{
+                        color: 'white',
+                        background: '#26A84A',
+                        borderColor: '#008847',
+                        marginLeft: '10px'
+                      }}
+                    >
+                      Start
+                    </Button>
                   )}
-                </Button>
+                </>
               )}
               {data.bag_limit <= data.bag_count && status === 0 ? (
                 <FrinksButton

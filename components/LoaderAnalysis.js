@@ -28,7 +28,7 @@ const LoaderAnalysis = ({
         </div>
         <div className="analytics">
           <div className="shipment-type">
-            <span className="category-name">Active loaders</span> <hr />
+            <span className="category-name">Active Loader</span> <hr />
           </div>
           {ongoingTransactions &&
           Object.keys(ongoingTransactions)?.length === 0 ? (
@@ -60,6 +60,47 @@ const LoaderAnalysis = ({
                       handleBagDone={handleBagDone}
                       loaderCard
                       status={0}
+                    />
+                  </Grid>
+                ))}
+            </Grid>
+          )}
+
+          {/* next segment */}
+
+          <div className="shipment-type">
+            <span className="category-name">Queue Loader</span> <hr />
+          </div>
+          {ongoingTransactions &&
+          Object.keys(ongoingTransactions)?.length === 0 ? (
+            <p style={{ fontSize: '20px', textAlign: 'center', color: 'gray' }}>
+              <AiOutlineExclamationCircle style={{ fontSize: '70px' }} />
+              <br />
+              No shipment created.
+              <br />
+              Please create a shipment first.
+            </p>
+          ) : (
+            <Grid container spacing={2}>
+              {ongoingTransactions &&
+                Object.keys(ongoingTransactions)?.map((e, index) => (
+                  <Grid item xs={12} sm={6} md={4} lg={3} key={index}>
+                    <AnalyticsCard
+                      data={{
+                        ...ongoingTransactions[e]
+                      }}
+                      rejectModalOpen={() =>
+                        setRejectModalOpen(ongoingTransactions[e])
+                      }
+                      setDetailModalOpen={() =>
+                        setDetailModalOpen(ongoingTransactions[e])
+                      }
+                      bagModifyModalOpen={() =>
+                        setBagModifyModalOpen(ongoingTransactions[e])
+                      }
+                      handleBagDone={handleBagDone}
+                      loaderCard
+                      status={1}
                     />
                   </Grid>
                 ))}
