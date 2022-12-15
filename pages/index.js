@@ -94,6 +94,7 @@ const Index = () => {
   const handleBagDone = async (
     transaction_id,
     vehicle_id,
+    printing_belt_id,
     machine_id,
     comment
   ) => {
@@ -101,7 +102,8 @@ const Index = () => {
     await put('/api/transaction/shipment-done', {
       transaction_id,
       comment,
-      vehicle_id
+      vehicle_id,
+      printing_belt_id
     });
     setOngoingTransactions(prevState => {
       const currData = prevState;
@@ -174,11 +176,10 @@ const Index = () => {
 
   useEffect(() => {
     socket.on('bag-entry', data => {
-      // console.log(data, '----bag entry');
       const transaction_id = parseInt(data?.transaction_id, 10);
       setOngoingTransactions(prevState => {
         if (Object.keys(prevState).length === 0) return {};
-        if (!transaction_id in prevState) return prevState;
+        if (!(transaction_id in prevState)) return prevState;
         return {
           ...prevState,
           [transaction_id]: {
@@ -189,11 +190,10 @@ const Index = () => {
       });
     });
     socket.on('tag-entry', data => {
-      // console.log(data, '----tag entry');
       const transaction_id = parseInt(data?.transaction_id, 10);
       setOngoingTransactions(prevState => {
         if (Object.keys(prevState).length === 0) return {};
-        else if (!transaction_id in prevState) return prevState;
+        else if (!(transaction_id in prevState)) return prevState;
         return {
           ...prevState,
           [transaction_id]: {

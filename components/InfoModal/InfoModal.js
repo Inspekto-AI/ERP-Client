@@ -189,6 +189,7 @@ const InfoModal = ({
     handleBagDone(
       open.transaction_id || open.id,
       open?.bag_counting_belt_id,
+      open?.printing_belt_id,
       open?.vehicle_id,
       comment
     );
