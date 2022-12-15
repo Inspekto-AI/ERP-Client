@@ -134,11 +134,11 @@ const AnalyticsCard = ({
           </div>
         </div>
       )} */}
-      {status > 1 ? null : (
+      {status > 2 ? null : (
         <div className="count-container">
           <h2 className="count">
             {printingCard ? data?.tag_count || 0 : data?.bag_count || 0}
-            {printingCard ? null : `/${data?.bag_limit}`}
+            {printingCard ? null : `/${data?.bag_limit || '0'}`}
           </h2>
           {printingCard ? null : (
             <Avatar onClick={bagModifyModalOpen}>
@@ -149,7 +149,7 @@ const AnalyticsCard = ({
       )}
       {packerCard ? null : (
         <>
-          {status > 1 ? null : (
+          {status > 2 ? null : (
             <>
               <div className="type">
                 {printingCard ? null : (
@@ -158,19 +158,22 @@ const AnalyticsCard = ({
                   </>
                 )}
               </div>
-              {status > 1 ? null : (
+              {status > 2 ? null : (
                 <div
                   className="rejected"
                   style={{
-                    bottom: printingCard ? '30px' : '85px'
-                    // top: status == 1 ? '20px' : ''
+                    bottom: printingCard ? '30px' : '80px'
                   }}
                 >
                   <div className="count">
                     <Avatar>{data?.missed_label_count || 0}</Avatar>
                     <h6>Rejected bags</h6>
                   </div>
-                  <Button variant="text" onClick={rejectModalOpen}>
+                  <Button
+                    variant="text"
+                    onClick={rejectModalOpen}
+                    style={{ backgroundColor: '#E6C5FC' }}
+                  >
                     View
                   </Button>
                 </div>
@@ -187,10 +190,10 @@ const AnalyticsCard = ({
                   style={{
                     color: '#008847',
                     borderColor: '#008847',
-                    margin: '0px 20px'
+                    margin: '0px 30px'
                   }}
                 >
-                  Create shipment <IoMdAddCircleOutline />
+                  Create
                 </Button>
               ) : (
                 <>
@@ -204,7 +207,7 @@ const AnalyticsCard = ({
                         ? 'View'
                         : 'View Details'
                       : 'Edit'}{' '}
-                    {data.bag_limit <= data.bag_count ? null : (
+                    {data.bag_limit <= data.bag_count || status == 1 ? null : (
                       <BiRightArrowAlt />
                     )}
                   </Button>

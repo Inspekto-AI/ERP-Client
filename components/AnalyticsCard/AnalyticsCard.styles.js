@@ -34,7 +34,7 @@ const Container = styled.div`
             ? '#01ba8f'
             : props.status === 1
             ? 'white'
-            : '#F72525'};
+            : 'white'};
         height: 18px;
         width: 18px;
         border-radius: 100px;
@@ -44,7 +44,7 @@ const Container = styled.div`
 
       .id {
         color: ${props =>
-          props.isError || props.status <= 1 ? 'white' : 'gray'};
+          props.isError || props.status <= 1 ? 'white' : 'black'};
         font-weight: 600;
         margin-left: 5px;
         font-size: 15px;
@@ -100,7 +100,7 @@ const Container = styled.div`
         : theme.palette.grey.grey100};
     margin: 2px 0 20px 0;
     margin-bottom: ${props =>
-      props.status <= 1 ? '70px' : props.status === 1 ? '10px' : 0};
+      props.status <= 1 ? '70px' : props.status === 1 ? '10px' : '40px'};
 
     span {
       font-weight: 900;

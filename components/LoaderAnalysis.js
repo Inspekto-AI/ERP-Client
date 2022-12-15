@@ -28,6 +28,16 @@ const LoaderAnalysis = ({
         </div>
         <div className="analytics">
           <div className="shipment-type">
+            <div
+              style={{
+                background: '#01ba8f',
+                height: '18px',
+                width: '18px',
+                borderRadius: '100px',
+                border: '2px solid #f5f5f5',
+                marginRight: '4px'
+              }}
+            />
             <span className="category-name">Active Loader</span> <hr />
           </div>
           {ongoingTransactions &&
@@ -40,10 +50,26 @@ const LoaderAnalysis = ({
               Please create a shipment first.
             </p>
           ) : (
-            <Grid container spacing={2}>
+            <Grid
+              container
+              spacing={2}
+              style={{
+                backgroundColor: '#4DA76638',
+                padding: '20px 10px 0',
+                borderRadius: '10px'
+              }}
+            >
               {ongoingTransactions &&
                 Object.keys(ongoingTransactions)?.map((e, index) => (
-                  <Grid item xs={12} sm={6} md={4} lg={3} key={index}>
+                  <Grid
+                    item
+                    xs={12}
+                    sm={6}
+                    md={4}
+                    lg={3}
+                    key={index}
+                    style={{ marginBottom: '20px' }}
+                  >
                     <AnalyticsCard
                       data={{
                         ...ongoingTransactions[e]
@@ -68,7 +94,17 @@ const LoaderAnalysis = ({
 
           {/* next segment */}
 
-          <div className="shipment-type">
+          <div className="shipment-type" style={{ marginTop: '20px' }}>
+            <div
+              style={{
+                background: '#CB952B',
+                height: '18px',
+                width: '18px',
+                borderRadius: '100px',
+                border: '2px solid #f5f5f5',
+                marginRight: '4px'
+              }}
+            />
             <span className="category-name">Queue Loader</span> <hr />
           </div>
           {ongoingTransactions &&
@@ -81,10 +117,26 @@ const LoaderAnalysis = ({
               Please create a shipment first.
             </p>
           ) : (
-            <Grid container spacing={2}>
+            <Grid
+              container
+              spacing={2}
+              style={{
+                backgroundColor: '#CB952B38',
+                padding: '20px 10px 0',
+                borderRadius: '10px'
+              }}
+            >
               {ongoingTransactions &&
                 Object.keys(ongoingTransactions)?.map((e, index) => (
-                  <Grid item xs={12} sm={6} md={4} lg={3} key={index}>
+                  <Grid
+                    item
+                    xs={12}
+                    sm={6}
+                    md={4}
+                    lg={3}
+                    key={index}
+                    style={{ marginBottom: '20px' }}
+                  >
                     <AnalyticsCard
                       data={{
                         ...ongoingTransactions[e]
@@ -148,7 +200,17 @@ const LoaderAnalysis = ({
                 ))}
             </Grid>
           )} */}
-          <div className="shipment-type">
+          <div className="shipment-type" style={{ marginTop: '20px' }}>
+            <div
+              style={{
+                background: '#C0C0C0',
+                height: '18px',
+                width: '18px',
+                borderRadius: '100px',
+                border: '2px solid #f5f5f5',
+                marginRight: '4px'
+              }}
+            />
             <span className="category-name">Inactive loaders</span> <hr />
           </div>
           {vehicleBelts && vehicleBelts?.length === 0 ? (
@@ -160,10 +222,26 @@ const LoaderAnalysis = ({
               Please create a shipment first.
             </p>
           ) : (
-            <Grid container spacing={2}>
+            <Grid
+              container
+              spacing={2}
+              style={{
+                backgroundColor: '#C0C0C0',
+                padding: '20px 10px 0',
+                borderRadius: '10px'
+              }}
+            >
               {vehicleBelts &&
                 vehicleBelts?.map((e, index) => (
-                  <Grid item xs={12} sm={6} md={4} lg={3} key={index}>
+                  <Grid
+                    item
+                    xs={12}
+                    sm={6}
+                    md={4}
+                    lg={3}
+                    key={index}
+                    style={{ marginBottom: '20px' }}
+                  >
                     <AnalyticsCard
                       data={e}
                       setReverseShipmentFormOpen={setReverseShipmentFormOpen}
