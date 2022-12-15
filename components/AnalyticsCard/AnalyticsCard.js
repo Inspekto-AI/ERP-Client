@@ -134,7 +134,7 @@ const AnalyticsCard = ({
           </div>
         </div>
       )} */}
-      {status > 2 ? null : (
+      {status > 1 ? null : (
         <div className="count-container">
           <h2 className="count">
             {printingCard ? data?.tag_count || 0 : data?.bag_count || 0}
@@ -149,7 +149,7 @@ const AnalyticsCard = ({
       )}
       {packerCard ? null : (
         <>
-          {status > 2 ? null : (
+          {status > 1 ? null : (
             <>
               <div className="type">
                 {printingCard ? null : (
@@ -158,7 +158,7 @@ const AnalyticsCard = ({
                   </>
                 )}
               </div>
-              {status > 2 ? null : (
+              {status > 1 ? null : (
                 <div
                   className="rejected"
                   style={{
