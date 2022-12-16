@@ -228,7 +228,7 @@ const AnalyticsCard = ({
               )}
               {data.bag_limit <= data.bag_count && status === 0 ? (
                 <FrinksButton
-                  variant="outlined"
+                  variant="filled"
                   className="view-button"
                   onClick={() =>
                     handleBagDone(
@@ -246,7 +246,8 @@ const AnalyticsCard = ({
                     borderLeftWidth: '3px',
                     padding: '5px 15px',
                     width: '48%',
-                    height: '35px'
+                    height: '45px',
+                    color: 'white'
                   }}
                 />
               ) : null}

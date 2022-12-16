@@ -176,9 +176,10 @@ const Index = () => {
 
   useEffect(() => {
     socket.on('bag-entry', data => {
+      console.log(data, '----bag-entry');
       const transaction_id = parseInt(data?.transaction_id, 10);
       setOngoingTransactions(prevState => {
-        if (Object.keys(prevState).length === 0) return {};
+        if (prevState && Object.keys(prevState).length === 0) return {};
         if (!(transaction_id in prevState)) return prevState;
         return {
           ...prevState,
@@ -190,9 +191,10 @@ const Index = () => {
       });
     });
     socket.on('tag-entry', data => {
+      console.log(data, '----tag-entry');
       const transaction_id = parseInt(data?.transaction_id, 10);
       setOngoingTransactions(prevState => {
-        if (Object.keys(prevState).length === 0) return {};
+        if (prevState && Object.keys(prevState).length === 0) return {};
         else if (!(transaction_id in prevState)) return prevState;
         return {
           ...prevState,
