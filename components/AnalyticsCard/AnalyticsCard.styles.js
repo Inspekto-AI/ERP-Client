@@ -20,7 +20,7 @@ const Container = styled.div`
 
   .head {
     font-size: 18px;
-    margin-bottom: 20px;
+    margin-bottom: 65px;
     align-items: flex-start !important;
     padding: ${props => (props.packerCard ? '0 15px' : '0 0')};
 

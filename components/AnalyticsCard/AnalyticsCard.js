@@ -119,7 +119,7 @@ const AnalyticsCard = ({
           )}
         </div>
       </div>
-      {/* {status === 0 && !printingCard && (
+      {status === 0 && !printingCard && (
         <div
           className="rejected"
           style={{ top: '75px', justifyContent: 'center' }}
@@ -132,7 +132,7 @@ const AnalyticsCard = ({
             </h6>
           </div>
         </div>
-      )} */}
+      )}
       {status > 1 ? null : (
         <div className="count-container">
           <h2 className="count">
