@@ -20,7 +20,7 @@ const Container = styled.div`
 
   .head {
     font-size: 18px;
-    margin-bottom: 65px;
+    margin-bottom: 20px;
     align-items: flex-start !important;
     padding: ${props => (props.packerCard ? '0 15px' : '0 0')};
 
@@ -71,7 +71,7 @@ const Container = styled.div`
     margin-bottom: 10px;
     align-items: center;
     // margin-top: ${props => (props.isError ? '0' : '10px')};
-    margin-top: ${props => (props.printingCard ? '10px' : '15px')};
+    margin-top: ${props => (props.printingCard ? '10px' : '75px')};
     padding: ${props => (props.packerCard ? '0 15px' : '0 0')};
 
     h2 {
