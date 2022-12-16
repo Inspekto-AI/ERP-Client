@@ -4,7 +4,6 @@ import { GrFlag } from 'react-icons/gr';
 import { IoMdAdd } from 'react-icons/io';
 import { Avatar, Button, LinearProgress } from '@material-ui/core';
 import { BiRightArrowAlt } from 'react-icons/bi';
-import { IoMdAddCircleOutline } from 'react-icons/io';
 import { msToTime } from 'utils/globalFunctions';
 import { PACKER_LIMIT } from 'utils/constants';
 import Container from './AnalyticsCard.styles';
@@ -111,7 +110,7 @@ const AnalyticsCard = ({
           </div>
         </div>
         <div className="timer">
-          {printingCard || status > 0 ? null : (
+          {printingCard || status > 1 ? null : (
             <>
               {data?.count_finished_at
                 ? msToTime(data?.count_finished_at - data?.created_at)
@@ -120,7 +119,7 @@ const AnalyticsCard = ({
           )}
         </div>
       </div>
-      {status === 0 && !printingCard && (
+      {/* {status === 0 && !printingCard && (
         <div
           className="rejected"
           style={{ top: '75px', justifyContent: 'center' }}
@@ -133,12 +132,12 @@ const AnalyticsCard = ({
             </h6>
           </div>
         </div>
-      )}
+      )} */}
       {status > 1 ? null : (
         <div className="count-container">
           <h2 className="count">
             {printingCard ? data?.tag_count || 0 : data?.bag_count || 0}
-            {printingCard ? null : `/${data?.bag_limit}`}
+            {printingCard ? null : `/${data?.bag_limit || '0'}`}
           </h2>
           {printingCard ? null : (
             <Avatar onClick={bagModifyModalOpen}>
@@ -158,16 +157,22 @@ const AnalyticsCard = ({
                   </>
                 )}
               </div>
-              {status > 0 ? null : (
+              {status > 1 ? null : (
                 <div
                   className="rejected"
-                  style={{ bottom: printingCard ? '30px' : '70px' }}
+                  style={{
+                    bottom: printingCard ? '30px' : '80px'
+                  }}
                 >
                   <div className="count">
                     <Avatar>{data?.missed_label_count || 0}</Avatar>
-                    <h6>Misprint bags</h6>
+                    <h6>Rejected bags</h6>
                   </div>
-                  <Button variant="text" onClick={rejectModalOpen}>
+                  <Button
+                    variant="text"
+                    onClick={rejectModalOpen}
+                    style={{ backgroundColor: '#E6C5FC' }}
+                  >
                     View
                   </Button>
                 </div>
@@ -181,24 +186,45 @@ const AnalyticsCard = ({
                   variant="contained"
                   className="view-button"
                   onClick={() => setReverseShipmentFormOpen(data?.id)}
+                  style={{
+                    color: '#008847',
+                    borderColor: '#008847',
+                    margin: '0px 30px'
+                  }}
                 >
-                  Create shipment <IoMdAddCircleOutline />
+                  Create
                 </Button>
               ) : (
-                <Button
-                  variant="outlined"
-                  className="view-button"
-                  onClick={setDetailModalOpen}
-                >
-                  {status === 0
-                    ? data.bag_limit <= data.bag_count
-                      ? 'View'
-                      : 'View Details'
-                    : 'Edit Shipment'}{' '}
-                  {data.bag_limit <= data.bag_count ? null : (
-                    <BiRightArrowAlt />
+                <>
+                  <Button
+                    variant="outlined"
+                    className="view-button"
+                    onClick={setDetailModalOpen}
+                  >
+                    {status == 0
+                      ? data.bag_limit <= data.bag_count
+                        ? 'View'
+                        : 'View Details'
+                      : 'Edit'}{' '}
+                    {data.bag_limit <= data.bag_count || status == 1 ? null : (
+                      <BiRightArrowAlt />
+                    )}
+                  </Button>
+                  {status == 1 && (
+                    <Button
+                      className="view-button"
+                      variant="outlined"
+                      style={{
+                        color: 'white',
+                        background: '#26A84A',
+                        borderColor: '#008847',
+                        marginLeft: '10px'
+                      }}
+                    >
+                      Start
+                    </Button>
                   )}
-                </Button>
+                </>
               )}
               {data.bag_limit <= data.bag_count && status === 0 ? (
                 <FrinksButton
