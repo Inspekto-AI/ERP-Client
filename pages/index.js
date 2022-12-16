@@ -179,6 +179,7 @@ const Index = () => {
       console.log(data, '----bag-entry');
       const transaction_id = parseInt(data?.transaction_id, 10);
       setOngoingTransactions(prevState => {
+        if (!prevState) return null;
         if (prevState && Object.keys(prevState).length === 0) return {};
         if (!(transaction_id in prevState)) return prevState;
         return {
@@ -194,6 +195,7 @@ const Index = () => {
       console.log(data, '----tag-entry');
       const transaction_id = parseInt(data?.transaction_id, 10);
       setOngoingTransactions(prevState => {
+        if (!prevState) return null;
         if (prevState && Object.keys(prevState).length === 0) return {};
         else if (!(transaction_id in prevState)) return prevState;
         return {
