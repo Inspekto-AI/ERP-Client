@@ -6,14 +6,7 @@ import 'react-date-range/dist/styles.css'; // main css file
 import 'react-date-range/dist/theme/default.css'; // theme css file
 import { get } from 'utils/api';
 import FrinksButton from './FrinksButton';
-
-const getStartAndEndDate = dateRange => {
-  let start = dateRange[0].startDate;
-  let end = dateRange[0].endDate;
-  start = new Date(start).setUTCHours(18, 30, 0, 999);
-  end = new Date(end).setUTCHours(41, 89, 59, 999);
-  return [start, end];
-};
+import { getStartAndEndDate } from 'utils/globalFunctions';
 
 const Report = () => {
   const [shipmentReport, setShipmentReport] = useState(null);

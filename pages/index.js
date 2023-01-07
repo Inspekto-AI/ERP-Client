@@ -292,7 +292,7 @@ const Index = () => {
         const newState = {};
         Object.keys(prevState).forEach(e => {
           newState[e] = {
-            printing_id: prevState[e]?.tag_machine_id,
+            printing_id: prevState[e]?.printing_id,
             missed_label_count: 0,
             tag_count: 0,
             id: e

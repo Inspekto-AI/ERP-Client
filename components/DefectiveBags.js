@@ -4,6 +4,7 @@ import DefectiveBagsContainer from 'styles/defectiveBags.styles';
 import PropTypes from 'prop-types';
 import { BASE_URL } from 'utils/constants';
 import { get } from 'utils/api';
+import { getStartAndEndDate } from 'utils/globalFunctions';
 
 const DefectiveBags = ({ transaction_id, belt_id }) => {
   const [rejectBags, setRejectBags] = useState(null);
@@ -17,7 +18,8 @@ const DefectiveBags = ({ transaction_id, belt_id }) => {
     };
     const fetchRejectBagsByBelt = async () => {
       const res = await get('/api/transaction/fetch-reject-belt-bags', {
-        machine_id: belt_id
+        machine_id: belt_id,
+        dateRange: getStartAndEndDate()
       });
       setRejectBags(res?.data?.data);
     };

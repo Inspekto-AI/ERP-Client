@@ -14,12 +14,7 @@ import FrinksButton from 'components/FrinksButton';
 import Maintenance from 'components/Maintenance';
 import Notification from 'components/Notification';
 import Loader from 'components/Loader';
-
-const getStartAndEndDate = () => {
-  const start = new Date().setUTCHours(18, 30, 0, 999);
-  const end = new Date().setUTCHours(41, 89, 59, 999);
-  return [start, end];
-};
+import { getStartAndEndDate } from 'utils/globalFunctions';
 
 const Summary = () => {
   const [summaryData, setSummaryData] = useState(null);
@@ -34,8 +29,7 @@ const Summary = () => {
   useEffect(() => {
     const fetchSummary = async () => {
       const data = await get('/api/analysis/summary', {
-        // dateRange: getStartAndEndDate(),
-        dateRange: [1670669796316, 1671193859803]
+        dateRange: getStartAndEndDate()
       });
       setSummaryData(data?.data?.data?.analysis);
       setShiftCount(data?.data?.data?.shift);
