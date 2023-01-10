@@ -5,7 +5,6 @@ import Image from 'next/image';
 import ImageKitLoader from 'utils/ImageLoader';
 import AnalyticsCard from './AnalyticsCard/AnalyticsCard';
 
-// const [bgColor, setBgColor] = useState('#ffff');
 const useStyles = makeStyles( theme => ( {
     buttonStyle: {
         position: 'relative',
@@ -49,12 +48,6 @@ const FilterButton = ( {
     setFilterValue
 } ) => {
     const classes = useStyles();
-    // console.log( filtervalue );
-    // const [AnalyticsCard, setAnalyticsCard] = useState( 0 );
-
-    // console.log( index, `I am clicked ${
-    //     filtervalue === index ? 'True' : 'False'
-    // }` )
     return (<Button variant={
             variant || 'contained'
         }

@@ -56,17 +56,10 @@ const AnalyticsCard = ({
   filter
 }) => {
   const [timeDifference, setTimeDifference] = useState(0);
-  console.log(filter)
-  // const [index, setIndex] = useState({
-  // index:0,
-  // })
-  // console.log(index);
-  // console.log( index );
   useEffect(() => {
     const interval = setInterval(() => setTimeDifference(data.created_at ? msToTime(new Date().getTime() - data.created_at) : '00:00:00'), 1000);
     return () => clearInterval(interval);
   }, [data?.created_at]);
-  // console.log(filtervalue);
   return (filter===data?.vehicle_type?(< Container packerCard = { packerCard }
   progressBackground = {
     getStatus(Math.min((data.count * 100) / PACKER_LIMIT, 100) ).colorCode
