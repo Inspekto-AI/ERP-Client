@@ -1,7 +1,7 @@
 import styled from '@emotion/styled';
 import theme from 'styles/theme';
 
-const Container = styled.div`
+const Container = styled.div `
   .trackbar {
     background: white;
     display: flex;
@@ -48,7 +48,9 @@ const Container = styled.div`
     }
 
     .head {
-      color: ${theme.palette.trypanBlue.main};
+      color: ${
+    theme.palette.trypanBlue.main
+};
       display: flex;
       align-items: center;
       justify-content: space-between;
@@ -107,6 +109,12 @@ const Container = styled.div`
       margin-right: 14px;
       color: gray;
       font-size: 20px;
+    }
+
+    .filter-bottom {
+      text-align: end;
+      padding-right: 30px;
+      padding-bottom: 40px;
     }
   }
 `;

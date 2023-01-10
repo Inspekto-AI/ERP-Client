@@ -90,6 +90,7 @@ const Index = () => {
   const [reverseShipmentFormOpen, setReverseShipmentFormOpen] = useState(null);
   const [ongoingTransactions, setOngoingTransactions] = useState(null);
   const [queuedTransactions, setQueuedTransactions] = useState(null);
+  
 
   const handleBagDone = async (
     transaction_id,

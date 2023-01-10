@@ -3,13 +3,9 @@ import
 import PropTypes from 'prop-types';
 import Image from 'next/image';
 import ImageKitLoader from 'utils/ImageLoader';
-import { useState, useContext, useEffect } from 'react';
+import AnalyticsCard from './AnalyticsCard/AnalyticsCard';
 
-
-
-
-
-
+// const [bgColor, setBgColor] = useState('#ffff');
 const useStyles = makeStyles( theme => ( {
     buttonStyle: {
         position: 'relative',
@@ -17,26 +13,9 @@ const useStyles = makeStyles( theme => ( {
         fontSize: '16px',
         padding: theme.root.buttonPadding,
         height: '45px',
+        width: '6%',
+        marginLeft: '1%',
         borderRadius: theme.root.borderRadius,
-        background: theme.palette.byzantine.main,
-        overflow: 'hidden',
-        [ theme.breakpoints.down( 'sm' ) ]: {
-            height: 'auto'
-        },
-        '&:hover': {
-            color: theme.palette.smokyWhite.main,
-            background: theme.palette.gradient.pink
-        }
-    },
-    buttonOutlined: {
-        position: 'relative',
-        fontWeight: '900',
-        fontSize: '16px',
-        height: '45px',
-        padding: theme.root.buttonPadding,
-        borderRadius: theme.root.borderRadius,
-        color: theme.palette.byzantine.main,
-        borderColor: theme.palette.byzantine.main,
         overflow: 'hidden',
         [ theme.breakpoints.down( 'sm' ) ]: {
             height: 'auto'
@@ -48,29 +27,55 @@ const useStyles = makeStyles( theme => ( {
     }
 } ) );
 
-const FrinksButton = ( {
+const buttonStyle = ( is_active ) => {
+    if ( is_active )
+    
+        return { background: '#b5179e', color: 'white' };
+    
+    return { background: 'white', color: 'black', border: '2px solid #b5179e' }
+};
+
+const FilterButton = ( {
     text,
     isInactive,
     type,
     onClick,
     variant,
     style,
-    image,
+    image1,
+    image2,
+    index,
+    filtervalue,
+    setFilterValue
 } ) => {
-  const classes = useStyles();
+    const classes = useStyles();
+    // console.log( filtervalue );
+    // const [AnalyticsCard, setAnalyticsCard] = useState( 0 );
 
+    // console.log( index, `I am clicked ${
+    //     filtervalue === index ? 'True' : 'False'
+    // }` )
     return (<Button variant={
             variant || 'contained'
         }
         color="primary"
         className={
-            variant === 'outlined' ? classes.buttonOutlined : classes.buttonStyle
+            classes.buttonStyle
         }
         disabled={isInactive}
         type={type}
-        onClick={onClick}
-        style={style}> {
-        image ? <Image src={image}
+        onClick={
+            () => setFilterValue( index )
+        }
+        style={
+            {
+                ...style,
+                ... buttonStyle( filtervalue === index )
+            }
+    }> {
+        image1 ? <Image src={
+                filtervalue === index ? image2 : image1
+            }
             loader={ImageKitLoader}
             layout="fixed"
             height={35}
@@ -78,13 +83,14 @@ const FrinksButton = ( {
     } </Button>);
 };
 
-FrinksButton.propTypes = {
-    text: PropTypes.string.isRequired,
+FilterButton.propTypes = {
     isInactive: PropTypes.bool,
     type: PropTypes.string,
     onClick: PropTypes.func,
     variant: PropTypes.string,
-    style: PropTypes.any
+    style: PropTypes.any,
+    index: PropTypes.number,
+    filtervalue: PropTypes.number
 };
 
-export default FrinksButton;
+export default FilterButton;
