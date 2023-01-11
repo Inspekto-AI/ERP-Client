@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { Grid } from '@material-ui/core';
 import AnalyticsCard from 'components/AnalyticsCard';
 import { AiOutlineExclamationCircle } from 'react-icons/ai';
@@ -19,8 +19,20 @@ const LoaderAnalysis = ({
   const [rejectModalOpen, setRejectModalOpen] = useState(null);
   const [bagModifyModalOpen, setBagModifyModalOpen] = useState(null);
   const [filterButton, setFilterButton] = useState(2);
-
-  console.log(`this is from main loader analysis ${filterButton}`);
+  const [filterVehicle, setFiltervehicle] = useState();
+  
+  useEffect(() => {
+    if (filterButton === 2) {
+      setFiltervehicle(vehicleBelts)
+    }
+    else {
+      setFiltervehicle(vehicleBelts && vehicleBelts.length !== 0 ?(vehicleBelts.filter(vehicle=>vehicle.vehicle_type===filterButton)):null)
+    }
+    
+  }, [vehicleBelts, filterButton]);
+  
+  // console.log(`this is from main loader analysis ${filterButton}`);
+  console.log(filterVehicle)
 
   return (
     <>
@@ -138,7 +150,7 @@ const LoaderAnalysis = ({
               setFilterValue={e => setFilterButton(e)}
             />
           </div>
-          {vehicleBelts && vehicleBelts?.length === 0 ? (
+          {filterVehicle && filterVehicle?.length === 0 ? (
             <p
               style={{
                 fontSize: '20px',
@@ -163,8 +175,10 @@ const LoaderAnalysis = ({
               }}
             >
               {' '}
-              {vehicleBelts &&
-                vehicleBelts?.map((e, index) => (
+              {filterVehicle &&
+                  filterVehicle?.map((e, index) => (
+                  // console.log(e.vehicle_type),
+                  
                   <Grid
                     item
                     xs={12}
@@ -236,7 +250,8 @@ LoaderAnalysis.propTypes = {
   setReverseShipmentFormOpen: PropTypes.func,
   ongoingTransactions: PropTypes.any,
   handleBagDone: PropTypes.func,
-  filterButton: PropTypes.number
+  filterButton: PropTypes.number,
+  filterVehicle: PropTypes.any,
 };
 
 export default LoaderAnalysis;
