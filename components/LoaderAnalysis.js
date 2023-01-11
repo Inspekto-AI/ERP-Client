@@ -31,8 +31,7 @@ const LoaderAnalysis = ({
     
   }, [vehicleBelts, filterButton]);
   
-  // console.log(`this is from main loader analysis ${filterButton}`);
-  console.log(filterVehicle)
+
 
   return (
     <>

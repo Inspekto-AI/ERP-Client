@@ -3,13 +3,12 @@ import
 import PropTypes from 'prop-types';
 import Image from 'next/image';
 import ImageKitLoader from 'utils/ImageLoader';
-import AnalyticsCard from './AnalyticsCard/AnalyticsCard';
 
 const useStyles = makeStyles( theme => ( {
     buttonStyle: {
         position: 'relative',
         fontWeight: '900',
-        fontSize: '16px',
+        fontSize: '20px',
         padding: theme.root.buttonPadding,
         height: '45px',
         width: '6%',
@@ -23,6 +22,7 @@ const useStyles = makeStyles( theme => ( {
             color: theme.palette.smokyWhite.main,
             background: theme.palette.gradient.pink
         }
+        
     }
 } ) );
 
@@ -38,7 +38,6 @@ const FilterButton = ( {
     text,
     isInactive,
     type,
-    onClick,
     variant,
     style,
     image1,
@@ -69,6 +68,7 @@ const FilterButton = ( {
         image1 ? <Image src={
                 filtervalue === index ? image2 : image1
             }
+                alt="All"
             loader={ImageKitLoader}
             layout="fixed"
             height={35}

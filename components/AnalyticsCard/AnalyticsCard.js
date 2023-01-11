@@ -93,6 +93,7 @@ const AnalyticsCard = ({
                       {data?.vehicle_type === 1 ? (
                         <Image
                           src="freight-wagon(1).png"
+                          alt="(Wl)"
                           loader={ImageKitLoader}
                           layout="fixed"
                           height={25}
@@ -100,7 +101,8 @@ const AnalyticsCard = ({
                         />
                       ) : (
                         <Image
-                          src="van.png"
+                            src="van.png"
+                            alt="(TL)"
                           loader={ImageKitLoader}
                           layout="fixed"
                           height={25}
