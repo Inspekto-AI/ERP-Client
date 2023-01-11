@@ -1,6 +1,7 @@
 import Card from './Card';
 import { get } from 'utils/api';
 import { useState, useEffect } from 'react';
+import { SYSTEM_REFETCH_TIMEOUT_MS } from 'utils/constants';
 import Container from './SystemHealth.styles';
 
 const SystemHealth = () => {
@@ -12,10 +13,20 @@ const SystemHealth = () => {
       const data = await get('/api/analysis/health');
       setHealthData(data?.data?.data);
     };
-    if (!healthData) {
-      fetchHealth();
-    }
-  }, [healthData]);
+    fetchHealth();
+  }, []);
+
+  useEffect(() => {
+    const fetchHealth = async () => {
+      const data = await get('/api/analysis/health');
+      setHealthData(data?.data?.data);
+    };
+    const interval = setInterval(
+      () => fetchHealth(),
+      SYSTEM_REFETCH_TIMEOUT_MS
+    );
+    return () => clearInterval(interval);
+  }, []);
 
   useEffect(() => {
     if(healthData){
@@ -36,22 +47,28 @@ const SystemHealth = () => {
       <div className="container">
         <h1 className="heading">System Health Monitoring</h1>
       </div>
-      {defected && (<>
-        <h3 className="sub-heading">Not Functioning</h3>
-        <hr className="divider" />
-        <div className="card-container">
-          {defected.map((e, index) => {
-            return (
-              <Card active={e.started_at && !e.ended_at?false:true} type={e.entity_type} name={e.entity_name} ip={e.ip_address} key={index} index={index} started_at={e.started_at} />
-            )
-          })}
-        </div>
-      </>)}
-      {healthData && Object.keys(healthData).map((ele) => {
-        return (
-          <>
-            <h3 className="sub-heading">{ele}</h3>
+      {defected && defected.length>0 && (
+        <div>
+          <div className="sub-header">
+            <h3 className="sub-heading">Not Functioning</h3>
             <hr className="divider" />
+          </div>
+          <div className="card-container">
+            {defected.map((e, index) => {
+              return (
+                <Card active={e.started_at && !e.ended_at?false:true} type={e.entity_type} name={e.entity_name} ip={e.ip_address} key={index} index={index} started_at={e.started_at} />
+              )
+            })}
+          </div>
+        </div>
+      )}
+      {healthData && Object.keys(healthData).map((ele, idx) => {
+        return (
+          <div key={idx}>
+            <div className="sub-header">
+              <h3 className="sub-heading">{ele}</h3>
+              <hr className="divider" />
+            </div>
             <div className="card-container">
               {healthData[ele].map((e, index) => {
                 return (
@@ -59,7 +76,7 @@ const SystemHealth = () => {
                 )
               })}
             </div>
-          </>
+          </div>
         )
       })}
     </Container>

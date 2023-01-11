@@ -2,6 +2,7 @@ import Image from 'next/image';
 import {useState, useEffect} from 'react';
 import ImageKitLoader from 'utils/ImageLoader';
 import { msToTime } from 'utils/globalFunctions';
+import { CardContainer } from './SystemHealth.styles';
 
 export default function ({ active, type, name, ip, index, started_at }) {
   const [timeDifference, setTimeDifference] = useState(0);
@@ -20,24 +21,12 @@ export default function ({ active, type, name, ip, index, started_at }) {
   }, [started_at]);
 
   return (
-    <div
-      style={{
-        justifyContent: 'space-between',
-        padding: '10px',
-        margin: '10px 20px',
-        marginLeft: '0',
-        border: 'solid 1px',
-        borderRadius: '4px',
-        background: active ? '#00C1F3' : '#FF5742',
-        color: 'white',
-        fontSize: '18px'
-      }}
-    >
+    <CardContainer active={active}>
       {!active && (
-        <p style={{ fontSize: '14px', paddingLeft: '10px' }}>{timeDifference}</p>
+        <p className='downtime'>{timeDifference}</p>
       )}
-      <div style={{ display: 'flex' }}>
-        <div style={{ padding: '10px' }}>
+      <div className='container'>
+        <div className='image-container'>
           <Image
             src={
               type == 'Camera'
@@ -53,12 +42,12 @@ export default function ({ active, type, name, ip, index, started_at }) {
           />
           <p>{active ? 'Active' : 'Inactive'}</p>
         </div>
-        <div style={{ padding: '20px 10px' }}>
+        <div className='info'>
           <p>Entity Type: {type}</p>
           <p>Entity Name: {name==='undefined'?`${type} ${index+1}`:name}</p>
           <p>IP: {ip || 'NA'}</p>
         </div>
       </div>
-    </div>
+    </CardContainer>
   );
 }
