@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { makeStyles } from '@material-ui/core/styles';
 import { Modal, Backdrop, Fade, Button, TextField } from '@material-ui/core';
 import PropTypes from 'prop-types';
@@ -59,6 +59,7 @@ const useStyles = makeStyles(() => ({
     display: 'flex',
     alignItems: 'center',
     justifyContent: 'flex-start',
+    marginRight: '50px',
     '& .MuiFormControl-root': {
       width: '90px',
       margin: '0 10px'
@@ -81,39 +82,118 @@ const useStyles = makeStyles(() => ({
   },
   title: {
     marginRight: '65px'
+  },
+  commentField: {
+    width: '100%',
+    marginBottom: '10px'
+  },
+  error: {
+    marginBottom: '20px',
+    color: 'red'
   }
 }));
+
+const ConfirmationPreview = ({ data }) => {
+  const {
+    printingId,
+    loaderId,
+    licenceNumber,
+    wagonNo,
+    rackNo,
+    gateNo,
+    bagType,
+    bagCount
+  } = data;
+
+  return (
+    <div>
+      <div className="card-info-container">
+        <div className="hint-container">
+          <div className="hints" style={{ marginRight: '10px' }}>
+            <div className="key">Loader ID</div>
+            <div className="value">{loaderId}</div>
+          </div>
+          <div className="hints">
+            <div className="key">Printing Belt ID</div>
+            <div className="value">{printingId}</div>
+          </div>
+        </div>
+        <div className="hint-container">
+          <div className="hints" style={{ marginRight: '10px' }}>
+            <div className="key">Vehicle Details</div>
+            <div className="value">
+              {licenceNumber === ''
+                ? `Wagon No.- ${wagonNo} | Rake No.- ${rackNo} | Gate/Door No.- ${gateNo}`
+                : `Truck No.- ${licenceNumber}`}
+            </div>
+          </div>
+          <div className="hints">
+            <div className="key">Bags Filled</div>
+            <div className="value">{bagCount}</div>
+          </div>
+        </div>
+        <div className="hint-container">
+          <div className="hints" style={{ marginRight: '10px' }}>
+            <div className="key">Bag Type</div>
+            <div className="value">{bagType}</div>
+          </div>
+        </div>
+      </div>
+    </div>
+  );
+};
 
 const InfoModal = ({
   open,
   close,
   title,
   children,
+  bagCount,
+  onlyBags,
+  hideModify,
+  buttonText,
+  hideComment,
   hideConfirm,
   handleSubmit,
-  buttonText,
-  bagCount,
-  showDivision,
-  onlyBags,
-  transactionId,
   currentCount,
-  handleStop,
-  printingCard
+  showDivision,
+  handleBagDone,
+  dataToDisplay
 }) => {
   const classes = useStyles();
-  const [newBagCount, setNewBagCount] = useState(bagCount);
+  const [newBagCount, setNewBagCount] = useState(0);
+  const [comment, setComment] = useState('');
+  const [error, setError] = useState('');
 
   const handleFormSubmit = async () => {
+    if (
+      !dataToDisplay &&
+      (comment === '' || newBagCount === 0 || newBagCount === '0')
+    ) {
+      setError('* All fields are required');
+      return;
+    }
     await handleSubmit({
-      transaction_id: transactionId,
-      new_bag_count: newBagCount
+      transaction_id: open.id || open.transaction_id,
+      new_bag_limit: newBagCount,
+      old_limit: open.bag_limit,
+      comment
     });
   };
 
-  const handleFormStop = async () => {
-    await handleStop({
-      transaction_id: transactionId
-    });
+  const handleTransactionStop = async () => {
+    if (comment === '') {
+      setError('* All fields are required');
+      return;
+    }
+    handleBagDone(
+      open.transaction_id || open.id,
+      open?.bag_counting_belt_id,
+      open?.printing_belt_id,
+      open?.vehicle_id,
+      comment
+    );
+    close();
   };
 
   return (
@@ -141,13 +221,35 @@ const InfoModal = ({
               </Button>
             </div>
           </div>
-          <div className={classes.children}>{children}</div>
+          <div className={classes.children}>
+            {dataToDisplay ? (
+              <ConfirmationPreview data={dataToDisplay} />
+            ) : (
+              children
+            )}
+          </div>
+          {dataToDisplay || hideComment ? null : (
+            <>
+              <TextField
+                multiline
+                rows={4}
+                variant="filled"
+                placeholder="Enter comment"
+                value={comment}
+                onChange={e => setComment(e.target.value)}
+                className={classes.commentField}
+                inputProps={{ maxLength: 500 }}
+                error={error !== ''}
+              />
+              <p className={classes.error}>{error}</p>
+            </>
+          )}
           {showDivision && !onlyBags ? (
             <hr className={classes.division} />
           ) : null}
           {!hideConfirm ? (
             <div className={classes.btnContainer}>
-              {bagCount ? (
+              {open.bag_limit && !hideModify ? (
                 <div className={classes.counterContainer}>
                   <Image
                     src="subtract_KLMfUKuhe.svg"
@@ -156,14 +258,26 @@ const InfoModal = ({
                     height={40}
                     width={40}
                     onClick={() =>
-                      setNewBagCount(Math.max(1, parseInt(newBagCount - 1, 10)))
+                      setNewBagCount(Math.max(1, parseInt(newBagCount, 10) - 1))
                     }
                   />
                   <TextField
-                    type="number"
                     variant="outlined"
                     value={newBagCount}
-                    onChange={e => setNewBagCount(e.target.value)}
+                    onChange={e => {
+                      if (e.target.value === '') setNewBagCount(1);
+                      else if (!isNaN(e.target.value)) {
+                        setNewBagCount(
+                          Math.max(
+                            1,
+                            Math.min(parseInt(e.target.value, 10), 100)
+                          )
+                        );
+                      }
+                    }}
+                    InputProps={{
+                      inputProps: { min: 1, max: 100 }
+                    }}
                   />
                   <Image
                     src="add_W7hvn9BT_.svg"
@@ -172,27 +286,29 @@ const InfoModal = ({
                     height={40}
                     width={40}
                     onClick={() =>
-                      setNewBagCount(parseInt(newBagCount + 1, 10))
+                      setNewBagCount(parseInt(newBagCount, 10) + 1)
                     }
                   />
                 </div>
               ) : (
                 <div />
               )}
-              {printingCard ? null : (
+              {hideConfirm ? null : (
                 <div>
-                  {onlyBags ? (
+                  {!onlyBags ? (
                     <FrinksButton
                       text={currentCount >= bagCount ? 'Done' : 'Stop'}
-                      onClick={handleFormStop}
+                      onClick={handleTransactionStop}
                       variant="outlined"
                       style={{ marginRight: '10px' }}
                     />
                   ) : null}
-                  <FrinksButton
-                    text={buttonText || 'Confirm'}
-                    onClick={handleFormSubmit}
-                  />
+                  {hideModify ? null : (
+                    <FrinksButton
+                      text={buttonText || 'Confirm'}
+                      onClick={handleFormSubmit}
+                    />
+                  )}
                 </div>
               )}
             </div>
@@ -214,9 +330,9 @@ InfoModal.propTypes = {
   bagCount: PropTypes.number,
   showDivision: PropTypes.bool,
   onlyBags: PropTypes.bool,
-  transactionId: PropTypes.any,
   currentCount: PropTypes.any,
-  handleStop: PropTypes.any,
-  printingCard: PropTypes.bool
+  handleBagDone: PropTypes.func,
+  dataToDisplay: PropTypes.object,
+  hideConfirm: PropTypes.bool
 };
 export default InfoModal;

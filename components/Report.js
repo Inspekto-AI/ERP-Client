@@ -5,14 +5,8 @@ import { DateRange } from 'react-date-range';
 import 'react-date-range/dist/styles.css'; // main css file
 import 'react-date-range/dist/theme/default.css'; // theme css file
 import { get } from 'utils/api';
-
-const getStartAndEndDate = dateRange => {
-  let start = dateRange[0].startDate;
-  let end = dateRange[0].endDate;
-  start = new Date(start).setUTCHours(18, 30, 0, 999);
-  end = new Date(end).setUTCHours(41, 89, 59, 999);
-  return [start, end];
-};
+import FrinksButton from './FrinksButton';
+import { getStartAndEndDate } from 'utils/globalFunctions';
 
 const Report = () => {
   const [shipmentReport, setShipmentReport] = useState(null);
@@ -40,6 +34,48 @@ const Report = () => {
     }
   ]);
 
+  const fetchReports = async () => {
+    const fetchShipmentReport = async () => {
+      const res = await get('/api/analysis/shipment-report', {
+        dateRange: getStartAndEndDate(date),
+        trackbar: [shipmentStartTrackBar, shipmentEndTrackBar]
+      });
+      setShipmentReport(res.data.data);
+    };
+    const fetchPrintingReport = async () => {
+      const res = await get('/api/analysis/printing-report', {
+        dateRange: getStartAndEndDate(date),
+        trackbar: [printingStartTrackBar, printingEndTrackBar]
+      });
+      setPrintingReport(res.data.data);
+    };
+    const fetchLoadingReport = async () => {
+      const res = await get('/api/analysis/loading-report', {
+        dateRange: getStartAndEndDate(date),
+        trackbar: [loaderStartTrackBar, loaderEndTrackBar]
+      });
+      setLoaderReport(res.data.data);
+    };
+    const fetchPackerReport = async () => {
+      const res = await get('/api/analysis/packer-report', {
+        dateRange: getStartAndEndDate(date),
+        trackbar: [packerStartTrackBar, packerEndTrackBar]
+      });
+      setPackerReport(res.data.data);
+    };
+    await Promise.all([
+      fetchShipmentReport(),
+      fetchPrintingReport(),
+      fetchLoadingReport()
+      // fetchPackerReport()
+    ]);
+  };
+
+  const handleSearch = async () => {
+    await fetchReports();
+    setDatePickerOpen(false);
+  };
+
   useEffect(() => {
     const fetchShipmentReport = async () => {
       const res = await get('/api/analysis/shipment-report', {
@@ -48,59 +84,18 @@ const Report = () => {
       });
       setShipmentReport(res.data.data);
     };
-    if (date) {
-      // fetch reports from a single endpoint
-      fetchShipmentReport();
-    }
-  }, [date, shipmentEndTrackBar, shipmentStartTrackBar]);
+    fetchShipmentReport();
+  }, [shipmentStartTrackBar, shipmentEndTrackBar]);
 
   useEffect(() => {
-    const fetchPrintingReport = async () => {
-      const res = await get('/api/analysis/printing-report', {
-        dateRange: getStartAndEndDate(date),
-        trackbar: [printingStartTrackBar, printingEndTrackBar]
-      });
-      setPrintingReport(res.data.data);
-    };
-    if (date) {
-      // fetch reports from a single endpoint
-      fetchPrintingReport();
-    }
-  }, [date, printingEndTrackBar, printingStartTrackBar]);
-
-  useEffect(() => {
-    const fetchLoadingReport = async () => {
-      const res = await get('/api/analysis/loading-report', {
-        dateRange: getStartAndEndDate(date),
-        trackbar: [loaderStartTrackBar, loaderEndTrackBar]
-      });
-      setLoaderReport(res.data.data);
-    };
-    if (date) {
-      // fetch reports from a single endpoint
-      fetchLoadingReport();
-    }
-  }, [date, loaderEndTrackBar, loaderStartTrackBar]);
+    fetchReports();
+  }, []);
 
   const handleBlur = e => {
     if (!e.currentTarget.contains(e.relatedTarget)) {
       setDatePickerOpen(false);
     }
   };
-
-  useEffect(() => {
-    const fetchPackerReport = async () => {
-      const res = await get('/api/analysis/packer-report', {
-        dateRange: getStartAndEndDate(date),
-        trackbar: [packerStartTrackBar, packerEndTrackBar]
-      });
-      setPackerReport(res.data.data);
-    };
-    if (date) {
-      // fetch reports from a single endpoint
-      fetchPackerReport();
-    }
-  }, [date, packerEndTrackBar, packerStartTrackBar]);
 
   return (
     <Container datePickerOpen={datePickerOpen}>
@@ -116,6 +111,11 @@ const Report = () => {
               tabIndex={0}
               role="button"
             >
+              {datePickerOpen ? (
+                <div className="date-done-btn" onBlur={handleBlur}>
+                  <FrinksButton text="Search" onClick={handleSearch} />
+                </div>
+              ) : null}
               <DateRange
                 editableDateInputs
                 onChange={item => setDate([item.selection])}
@@ -156,7 +156,7 @@ const Report = () => {
             setEndCount={e => setLoaderEndTrackBar(e)}
             hideRowCount
           />
-          <ReportTable
+          {/* <ReportTable
             title="Packer Analytics"
             layoutType={3}
             data={packerReport}
@@ -165,7 +165,7 @@ const Report = () => {
             setStartCount={e => setPackerStartTrackBar(e)}
             setEndCount={e => setPackerEndTrackBar(e)}
             hideRowCount
-          />
+          /> */}
         </div>
       </div>
     </Container>

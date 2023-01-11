@@ -26,24 +26,10 @@ import Container, { ProgressBarContainer } from 'styles/reportTable.styles';
 import ImageKitLoader from 'utils/ImageLoader';
 import PropTypes from 'prop-types';
 import clsx from 'clsx';
-import { msToTime } from 'utils/globalFunctions';
 import InfoModal from 'components/InfoModal';
 import DefectiveBags from 'components/DefectiveBags';
 import moment from 'moment/moment';
 import { getStatus } from 'components/AnalyticsCard/AnalyticsCard';
-
-const getCompletionTime = (
-  bag_count_completed_at,
-  tag_count_completed_at,
-  created_at,
-  stopped_at
-) => {
-  if (!bag_count_completed_at || !tag_count_completed_at)
-    return msToTime(stopped_at - created_at);
-  return msToTime(
-    Math.max(bag_count_completed_at, tag_count_completed_at) - created_at
-  );
-};
 
 const descendingComparator = (a, b, orderBy) => {
   if (b[orderBy] < a[orderBy]) {
@@ -80,9 +66,8 @@ const shipmentHead = [
   {
     id: 'licence_number',
     disablePadding: true,
-    label: 'Truck No.'
+    label: 'Truck No. / Wagon No.'
   },
-  { id: 'wagon_no', disablePadding: true, label: 'Wagon No.' },
   {
     id: 'vehicle.machine_id',
     disablePadding: true,
@@ -120,9 +105,14 @@ const shipmentHead = [
     label: 'Bags Packed'
   },
   {
+    id: 'bags_increased',
+    disablePadding: true,
+    label: 'Bags Increased'
+  },
+  {
     id: 'aws_missed_labels',
     disablePadding: true,
-    label: 'Rejected Bags'
+    label: 'Misprint bags'
   },
   { id: 'action', disablePadding: true, label: 'View' }
 ];
@@ -147,7 +137,7 @@ const printingHead = [
   {
     id: 'aws_missed_labels',
     disablePadding: true,
-    label: 'Rejected Bags'
+    label: 'Misprint bags'
   },
   { id: 'action', disablePadding: true, label: 'View' },
   { id: 'shipment_count', disablePadding: true, label: 'No. of Shipments Made' }
@@ -481,10 +471,9 @@ const RenderTable = ({ layoutType, data, setRejectIndex }) => {
                       {row?.id}
                     </TableCell>
                     <TableCell style={{ textAlign: 'center' }}>
-                      {row?.licence_number === '' ? 'NA' : row?.licence_number}
-                    </TableCell>
-                    <TableCell style={{ textAlign: 'center' }}>
-                      {row?.wagon_no === '' ? 'NA' : row?.wagon_no}
+                      {row?.licence_number === ''
+                        ? `Wagon No.- ${row.wagon_no}, Gate/Door No.- ${row.gate_no}, Rake No.- ${row.rack_no}`
+                        : `Truck No.- ${row?.licence_number}`}
                     </TableCell>
                     <TableCell style={{ textAlign: 'center' }}>
                       {row?.vehicle?.machine_id || 'NA'}
@@ -502,21 +491,27 @@ const RenderTable = ({ layoutType, data, setRejectIndex }) => {
                       {new Date(row?.created_at).toLocaleTimeString()}
                     </TableCell>
                     <TableCell style={{ textAlign: 'center' }}>
-                      {getCompletionTime(
-                        row?.bag_count_finished_at,
-                        row?.tag_count_finished_at,
-                        row?.created_at,
-                        row?.stopped_at
-                      )}
+                      {moment
+                        .utc(
+                          moment
+                            .duration(
+                              moment(row?.stopped_at).diff(row?.created_at)
+                            )
+                            .asMilliseconds()
+                        )
+                        .format('HH:mm:ss')}
                     </TableCell>
                     <TableCell style={{ textAlign: 'center' }}>
-                      {row?.bag_count_total}
+                      {row?.bag_count || 0}
                     </TableCell>
                     <TableCell style={{ textAlign: 'center' }}>
-                      {row?.tag_count_total}
+                      {row?.tag_count}
                     </TableCell>
                     <TableCell style={{ textAlign: 'center' }}>
-                      {row?.aws_missed_labels?.length}
+                      {row?.bags_increased}
+                    </TableCell>
+                    <TableCell style={{ textAlign: 'center' }}>
+                      {row?.missed_label_count}
                     </TableCell>
                     <TableCell style={{ textAlign: 'center' }}>
                       <FrinksButton
@@ -564,12 +559,10 @@ const RenderTable = ({ layoutType, data, setRejectIndex }) => {
                     <TableCell style={{ textAlign: 'center' }}>NA</TableCell>
                     <TableCell style={{ textAlign: 'center' }}>NA</TableCell>
                     <TableCell style={{ textAlign: 'center' }}>
-                      {row?.tag_count || 'NA'}
+                      {row?.tag_count}
                     </TableCell>
                     <TableCell style={{ textAlign: 'center' }}>
-                      {row?.aws_missed_labels
-                        ? row?.aws_missed_labels.length
-                        : 'NA'}
+                      {row?.missed_label_count}
                     </TableCell>
                     <TableCell style={{ textAlign: 'center' }}>
                       <FrinksButton
@@ -615,12 +608,12 @@ const RenderTable = ({ layoutType, data, setRejectIndex }) => {
                       padding="none"
                       style={{ textAlign: 'center' }}
                     >
-                      {row?.belt_id}
+                      {row?.belt_id}({row?.vehicle_type === 1 ? 'WL' : 'TL'})
                     </TableCell>
                     <TableCell style={{ textAlign: 'center' }}>NA</TableCell>
                     <TableCell style={{ textAlign: 'center' }}>NA</TableCell>
                     <TableCell style={{ textAlign: 'center' }}>
-                      {row?.bag_count || 'NA'}
+                      {row?.bag_count}
                     </TableCell>
                     <TableCell style={{ textAlign: 'center' }}>
                       {row?.shipment_count}
@@ -653,7 +646,7 @@ const RenderTable = ({ layoutType, data, setRejectIndex }) => {
                       padding="none"
                       style={{ textAlign: 'center' }}
                     >
-                      {row.packer_id}
+                      {row?.belt_id}
                     </TableCell>
                     <TableCell style={{ textAlign: 'center' }}>
                       {row.runtime_performance ? (
@@ -844,15 +837,13 @@ const ReportTable = ({
         <InfoModal
           open={rejectIndex !== null}
           close={() => setRejectIndex(null)}
-          title="Rejected bags"
+          title="Misprint bags"
           hideConfirm
+          hideComment
         >
           <DefectiveBags
-            passedRejectArray={
-              data.rows
-                ? data?.rows[rejectIndex]?.aws_missed_labels
-                : data[rejectIndex]?.aws_missed_labels
-            }
+            belt_id={Array.isArray(data) ? data[rejectIndex]?.belt_id : null}
+            transaction_id={data?.rows[rejectIndex]?.id}
           />
         </InfoModal>
       ) : null}

@@ -19,7 +19,8 @@ const Layout = ({
   maintenanceForm,
   summaryHeader,
   disableMinimumHeight,
-  viewAllFunc
+  viewAllFunc,
+  style
 }) => {
   return (
     <>
@@ -46,7 +47,8 @@ const Layout = ({
       <div
         style={{
           background: `${changeBackground ? 'white' : '#E5E5E5'}`,
-          minHeight: `${disableMinimumHeight ? 'auto' : '70vh'}`
+          minHeight: `${disableMinimumHeight ? 'auto' : '70vh'}`,
+          ...style
         }}
       >
         {children}
@@ -71,7 +73,8 @@ Layout.propTypes = {
   maintenanceForm: PropTypes.func,
   summaryHeader: PropTypes.bool,
   disableMinimumHeight: PropTypes.bool,
-  viewAllFunc: PropTypes.func
+  viewAllFunc: PropTypes.func,
+  style: PropTypes.object
 };
 
 export default Layout;

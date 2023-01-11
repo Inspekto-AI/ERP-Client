@@ -45,7 +45,8 @@ const useStyles = makeStyles(theme => ({
 const getSteps = loaderType => {
   return [
     `Belts' details`,
-    `${loaderType === null ? 'Loader' : loaderType === 0 ? 'Truck' : 'Wagon'
+    `${
+      loaderType === null ? 'Loader' : loaderType === 0 ? 'Truck' : 'Wagon'
     } configuration`,
     'No. of bags needed to filled',
     'Label for print data'
@@ -106,7 +107,12 @@ const QontoStepIcon = props => {
 
 QontoStepIcon.propTypes = { completed: PropTypes.bool };
 
-const Config = ({ close, handleSubmit }) => {
+const Config = ({
+  close,
+  handleSubmit,
+  reverseShipmentFormOpen,
+  setReverseShipmentFormOpen
+}) => {
   const classes = useStyles();
   const [activeStep, setActiveStep] = useState(0);
   const [printingId, setPrintingId] = useState('');
@@ -124,30 +130,42 @@ const Config = ({ close, handleSubmit }) => {
   const [wagonno, setWagonno] = useState('');
   const [gateno, setGateno] = useState('');
   const [labelExample, setLabelExample] = useState('');
+  const [isUsedBeltSelected, setIsUsedBeltSelected] = useState(false);
 
   useEffect(() => {
-    const fetchVehicle = async id => {
+    const fetchVehicle = async (id, vehicleId) => {
       const res = await get('/api/transaction/vehicle', {
         id
       });
+      if (vehicleId) {
+        setLoaderId(vehicleId);
+        setLoaderType(
+          res?.data?.data?.find(obj => obj.id === vehicleId)?.vehicle_type
+        );
+      }
       setVehicleIds(res?.data?.data);
     };
-    if (printingId !== '' && !vehicleIds) {
+    if (reverseShipmentFormOpen && !vehicleIds) {
+      // fetch beltIds
+      fetchVehicle(printingId, reverseShipmentFormOpen);
+    } else if (printingId !== '' && !vehicleIds) {
       // fetch beltIds
       fetchVehicle(printingId);
     }
-  }, [printingId, vehicleIds]);
+  }, [printingId, vehicleIds, reverseShipmentFormOpen]);
 
   useEffect(() => {
     const fetchPrintingBeltsIds = async () => {
-      const res = await get('/api/transaction/printing-belt');
+      const res = await get('/api/transaction/printing-belt', {
+        vehicle_id: reverseShipmentFormOpen
+      });
       setBeltIds(res?.data?.data);
     };
     fetchPrintingBeltsIds();
     return () => {
       setBeltIds(null);
     };
-  }, [printingId]);
+  }, [reverseShipmentFormOpen]);
 
   useEffect(() => {
     if (printingId !== '' && loaderId !== '') {
@@ -165,7 +183,12 @@ const Config = ({ close, handleSubmit }) => {
   }, [activeStep, licenceNumber, gateno, rackno, wagonno]);
 
   useEffect(() => {
-    if (bagType !== '' && bagCount !== '0' && bagCount !== 0 && bagCount !== '') {
+    if (
+      bagType !== '' &&
+      bagCount !== '0' &&
+      bagCount !== 0 &&
+      bagCount !== ''
+    ) {
       setActiveStep(Math.max(3, activeStep));
     }
   }, [activeStep, bagCount, bagType]);
@@ -177,11 +200,11 @@ const Config = ({ close, handleSubmit }) => {
           <div className="form-part">
             {loaderType === 0 ? (
               <div className="input-container">
-                <div className="label">License no.</div>
+                <div className="label">Truck no.</div>
                 <TextField
                   type="text"
                   variant="outlined"
-                  placeholder="License no."
+                  placeholder="Truck no."
                   value={licenceNumber}
                   onChange={e => setLicenceNumber(e.target.value)}
                 />
@@ -189,11 +212,10 @@ const Config = ({ close, handleSubmit }) => {
             ) : (
               <>
                 <div className="input-container">
-                  <div className="label">Rack no.</div>
+                  <div className="label">Rake no.</div>
                   <TextField
-                    type="number"
                     variant="outlined"
-                    placeholder="Rack no."
+                    placeholder="Rake no."
                     value={rackno}
                     onChange={e => setRackno(e.target.value)}
                     InputProps={{
@@ -204,7 +226,6 @@ const Config = ({ close, handleSubmit }) => {
                 <div className="input-container">
                   <div className="label">Wagon no.</div>
                   <TextField
-                    type="number"
                     variant="outlined"
                     placeholder="Wagon no."
                     value={wagonno}
@@ -215,17 +236,20 @@ const Config = ({ close, handleSubmit }) => {
                   />
                 </div>
                 <div className="input-container">
-                  <div className="label">Gate no.</div>
-                  <TextField
-                    type="number"
-                    variant="outlined"
-                    placeholder="Gate no."
-                    value={gateno}
-                    onChange={e => setGateno(e.target.value)}
-                    InputProps={{
-                      inputProps: { min: 0 }
-                    }}
-                  />
+                  <div className="label">Gate/Door no.</div>
+                  <FormControl>
+                    {gateno === '' ? (
+                      <div className="select-label">Gate/Door no.</div>
+                    ) : null}
+                    <Select
+                      variant="outlined"
+                      value={gateno}
+                      onChange={e => setGateno(e.target.value)}
+                    >
+                      <MenuItem value={1}>1</MenuItem>
+                      <MenuItem value={2}>2</MenuItem>
+                    </Select>
+                  </FormControl>
                 </div>
               </>
             )}
@@ -264,17 +288,28 @@ const Config = ({ close, handleSubmit }) => {
                     height={40}
                     width={40}
                     onClick={() =>
-                      setBagCount(Math.max(1, parseInt(bagCount - 1, 10)).toString())
+                      setBagCount(
+                        Math.max(1, parseInt(bagCount, 10) - 1).toString()
+                      )
                     }
                   />
                   <TextField
-                    type="number"
                     variant="outlined"
                     value={bagCount}
-                    onChange={e => setBagCount(e.target.value)}
-                    style={{ width: '100px' }}
+                    onChange={e => {
+                      if (e.target.value === '') setBagCount(1);
+                      else if (!isNaN(e.target.value)) {
+                        setBagCount(
+                          Math.max(
+                            1,
+                            Math.min(parseInt(e.target.value, 10), 2000)
+                          )
+                        );
+                      }
+                    }}
+                    style={{ width: '200px' }}
                     InputProps={{
-                      inputProps: { min: 0 }
+                      inputProps: { min: 0, max: 2000 }
                     }}
                   />
                   <Image
@@ -283,7 +318,11 @@ const Config = ({ close, handleSubmit }) => {
                     layout="fixed"
                     height={40}
                     width={40}
-                    onClick={() => setBagCount(parseInt(bagCount + 1, 10).toString())}
+                    onClick={() =>
+                      setBagCount(
+                        Math.min(2000, parseInt(bagCount, 10) + 1).toString()
+                      )
+                    }
                   />
                 </div>
               </div>
@@ -320,9 +359,15 @@ const Config = ({ close, handleSubmit }) => {
                   variant="outlined"
                   value={printingId}
                   onChange={e => {
+                    setIsUsedBeltSelected(
+                      beltIds.filter(ele => ele?.id === e?.target?.value)[0]
+                        ?.is_busy === 1
+                    );
                     setPrintingId(e.target.value);
-                    setVehicleIds(null);
-                    setLoaderId('');
+                    if (!reverseShipmentFormOpen) {
+                      setVehicleIds(null);
+                      setLoaderId('');
+                    }
                     setLicenceNumber('');
                     setBagCount(0);
                     setBagType('');
@@ -330,11 +375,24 @@ const Config = ({ close, handleSubmit }) => {
                   }}
                 >
                   {beltIds &&
-                    beltIds.map((e, index) => (
-                      <MenuItem value={e.id} key={index}>
-                        {e.machine_id}
-                      </MenuItem>
-                    ))}
+                    beltIds.map((e, index) => {
+                      if (e?.is_busy) return null;
+                      return (
+                        <MenuItem value={e.id} key={index}>
+                          <span className="dropdown-span">
+                            <p>{e.machine_id}</p>
+                            <p
+                              style={{
+                                height: '10px',
+                                width: '10px',
+                                background: `${e.is_busy ? 'red' : 'green'}`,
+                                borderRadius: '100px'
+                              }}
+                            />
+                          </span>
+                        </MenuItem>
+                      );
+                    })}
                 </Select>
               </FormControl>
             </div>
@@ -348,30 +406,40 @@ const Config = ({ close, handleSubmit }) => {
                   variant="outlined"
                   value={loaderId}
                   onChange={e => {
+                    setIsUsedBeltSelected(
+                      vehicleIds.filter(ele => ele?.id === e?.target?.value)[0]
+                        ?.is_busy === 1
+                    );
                     setLoaderId(e.target.value);
                     setLoaderType(
                       vehicleIds.find(obj => obj.id === e.target.value)
                         .vehicle_type
                     );
                   }}
-                  disabled={!vehicleIds}
+                  disabled={!vehicleIds || reverseShipmentFormOpen}
                 >
                   {vehicleIds &&
-                    vehicleIds.map((e, index) => (
-                      <MenuItem value={e.id} key={index}>
-                        <span className="dropdown-span">
-                          <p>{e.machine_id}</p>
-                          <p
-                            style={{
-                              height: '10px',
-                              width: '10px',
-                              background: `${e.is_active ? 'green' : 'red'}`,
-                              borderRadius: '100px'
-                            }}
-                          />
-                        </span>
-                      </MenuItem>
-                    ))}
+                    vehicleIds.map((e, index) => {
+                      if (e?.is_busy) return null;
+                      return (
+                        <MenuItem value={e.id} key={index}>
+                          <span className="dropdown-span">
+                            <p>
+                              {e.machine_id}(
+                              {e?.vehicle_type === 1 ? 'WL' : 'TL'})
+                            </p>
+                            <p
+                              style={{
+                                height: '10px',
+                                width: '10px',
+                                background: `${e.is_busy ? 'red' : 'green'}`,
+                                borderRadius: '100px'
+                              }}
+                            />
+                          </span>
+                        </MenuItem>
+                      );
+                    })}
                 </Select>
               </FormControl>
             </div>
@@ -384,8 +452,9 @@ const Config = ({ close, handleSubmit }) => {
     if (serviceMutation.isSuccess) {
       serviceMutation.reset();
       close();
+      setReverseShipmentFormOpen(null);
     }
-  }, [close, serviceMutation]);
+  }, [close, serviceMutation, setReverseShipmentFormOpen]);
 
   const handleFormSubmit = async () => {
     setInfoModalOpen(false);
@@ -406,7 +475,10 @@ const Config = ({ close, handleSubmit }) => {
     <Layout
       alternateHeader
       title="Create new shipment"
-      close={close}
+      close={e => {
+        close(e);
+        setReverseShipmentFormOpen(null);
+      }}
       hideFooter
     >
       {serviceMutation.isLoading ? <Loader /> : null}
@@ -453,7 +525,7 @@ const Config = ({ close, handleSubmit }) => {
                 save.
               </p>
               <FrinksButton
-                text="SAVE"
+                text={isUsedBeltSelected ? 'Add to Queue' : 'SAVE'}
                 onClick={() => setInfoModalOpen(true)}
                 isInactive={labelExample === ''}
               />
@@ -463,14 +535,21 @@ const Config = ({ close, handleSubmit }) => {
         {infoModalOpen ? (
           <InfoModal
             open={infoModalOpen}
-            close={() => setInfoModalOpen(false)}
             title="Confirm changes"
+            close={() => setInfoModalOpen(false)}
             handleSubmit={() => handleFormSubmit()}
-          >
-            <>
-              <p>Do you want to go ahead and save the changes you made?</p>
-            </>
-          </InfoModal>
+            dataToDisplay={{
+              printingId: beltIds?.find(e => e.id === printingId)?.machine_id,
+              loaderId: vehicleIds?.find(e => e.id === loaderId)?.machine_id,
+              licenceNumber,
+              wagonNo: wagonno,
+              rackNo: rackno,
+              gateNo: gateno,
+              bagType,
+              bagCount,
+              labelExample
+            }}
+          />
         ) : null}
       </Container>
     </Layout>
@@ -479,7 +558,9 @@ const Config = ({ close, handleSubmit }) => {
 
 Config.propTypes = {
   close: PropTypes.func,
-  handleSubmit: PropTypes.func
+  handleSubmit: PropTypes.func,
+  reverseShipmentFormOpen: PropTypes.any,
+  setReverseShipmentFormOpen: PropTypes.func
 };
 
 export default Config;

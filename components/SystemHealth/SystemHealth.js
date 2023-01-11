@@ -1,119 +1,69 @@
-import React from 'react';
 import Card from './Card';
-// import TextField from '@mui/material/TextField';
-// import { AdapterMoment } from '@mui/x-date-pickers/AdapterMoment';
-// import { LocalizationProvider } from '@mui/x-date-pickers/LocalizationProvider';
-// import { DatePicker } from '@mui/x-date-pickers/DatePicker';
+import { get } from 'utils/api';
+import { useState, useEffect } from 'react';
+import Container from './SystemHealth.styles';
 
-export default function SystemHealth() {
-  const offline = [1, 2, 3];
-  const camera = [1, 2, 3, 4, 5, 6, 7, 8];
-  const transmission = [1, 2, 3, 4];
-  const server = [1, 2];
+const SystemHealth = () => {
+  const [healthData, setHealthData] = useState(null);
+  const [defected, setDefected] = useState(null);
 
-  const [value, setValue] = React.useState(new Date());
+  useEffect(() => {
+    const fetchHealth = async () => {
+      const data = await get('/api/analysis/health');
+      setHealthData(data?.data?.data);
+    };
+    if (!healthData) {
+      fetchHealth();
+    }
+  }, [healthData]);
+
+  useEffect(() => {
+    if(healthData){
+      const defectiveElements = [];
+      Object.values(healthData).forEach(e => {
+        e.forEach(ele => {
+          if(ele.started_at && !ele.ended_at){
+            defectiveElements.push(ele);
+          } 
+        })
+      })
+      setDefected(defectiveElements);
+    }
+  }, [healthData])
 
   return (
-    // <LocalizationProvider dateAdapter={AdapterMoment}>
-    <div style={{ padding: '20px 5px 20px 20px', fontFamily: 'Inter' }}>
-      <div
-        style={{
-          display: 'flex',
-          justifyContent: 'space-between',
-          paddingRight: '30px',
-          marginTop: '20px'
-        }}
-      >
-        <h1 style={{ color: '#7209B7', paddingBottom: '20px' }}>
-          System Health Monitoring
-        </h1>
-        {/* <DatePicker
-            label="Select Date"
-            value={value}
-            onChange={newValue => {
-              setValue(newValue);
-            }}
-            renderInput={params => <TextField {...params} />}
-          /> */}
+    <Container>
+      <div className="container">
+        <h1 className="heading">System Health Monitoring</h1>
       </div>
-      {offline.length != 0 && (
-        <>
-          <h3 style={{ float: 'left', color: '#5A5A5A' }}>Offline</h3>
-          <hr
-            style={{
-              margin: '20px 70px 20px 100px',
-              height: '3px',
-              background: '#050317'
-            }}
-          />
-        </>
-      )}
-
-      <div style={{ display: 'flex', flexWrap: 'wrap', paddingBottom: '20px' }}>
-        {offline.map((obj, i) => (
-          <Card active={false} type={'camera'} name={'Xyz Name'} />
-        ))}
-      </div>
-
-      {camera.length != 0 && (
-        <>
-          <h3 style={{ float: 'left', color: '#5A5A5A' }}>Camera</h3>
-          <hr
-            style={{
-              margin: '20px 70px 20px 100px',
-              height: '3px',
-              background: '#050317'
-            }}
-          />
-        </>
-      )}
-
-      <div style={{ display: 'flex', flexWrap: 'wrap', paddingBottom: '20px' }}>
-        {camera.map((obj, i) => (
-          <Card active={true} type={'camera'} name={'691LM1'} />
-        ))}
-      </div>
-
-      {transmission.length != 0 && (
-        <>
-          <h3 style={{ float: 'left', color: '#5A5A5A' }}>
-            Transmission Device
-          </h3>
-          <hr
-            style={{
-              margin: '20px 70px 20px 250px',
-              height: '3px',
-              background: '#050317'
-            }}
-          />
-        </>
-      )}
-
-      <div style={{ display: 'flex', flexWrap: 'wrap', paddingBottom: '20px' }}>
-        {transmission.map((obj, i) => (
-          <Card active={true} type={'transmission'} name={'691LM1'} />
-        ))}
-      </div>
-
-      {server.length != 0 && (
-        <>
-          <h3 style={{ float: 'left', color: '#5A5A5A' }}>Server</h3>
-          <hr
-            style={{
-              margin: '20px 70px 20px 100px',
-              height: '3px',
-              background: '#050317'
-            }}
-          />
-        </>
-      )}
-
-      <div style={{ display: 'flex', flexWrap: 'wrap', paddingBottom: '20px' }}>
-        {server.map((obj, i) => (
-          <Card active={true} type={'server'} name={'691LM1'} />
-        ))}
-      </div>
-    </div>
-    // </LocalizationProvider>
+      {defected && (<>
+        <h3 className="sub-heading">Not Functioning</h3>
+        <hr className="divider" />
+        <div className="card-container">
+          {defected.map((e, index) => {
+            return (
+              <Card active={e.started_at && !e.ended_at?false:true} type={e.entity_type} name={e.entity_name} ip={e.ip_address} key={index} index={index} started_at={e.started_at} />
+            )
+          })}
+        </div>
+      </>)}
+      {healthData && Object.keys(healthData).map((ele) => {
+        return (
+          <>
+            <h3 className="sub-heading">{ele}</h3>
+            <hr className="divider" />
+            <div className="card-container">
+              {healthData[ele].map((e, index) => {
+                return (
+                  <Card active={e.started_at && !e.ended_at?false:true} type={e.entity_type} name={e.entity_name} ip={e.ip_address} key={index} index={index} started_at={e.started_at} />
+                )
+              })}
+            </div>
+          </>
+        )
+      })}
+    </Container>
   );
-}
+};
+
+export default SystemHealth;

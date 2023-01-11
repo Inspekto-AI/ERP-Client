@@ -12,3 +12,16 @@ export const msToTime = milliseconds => {
     minutes < 10 ? `0${minutes}` : minutes
   }:${seconds < 10 ? `0${seconds}` : seconds}`;
 };
+
+export const getStartAndEndDate = dateRange => {
+  if (dateRange) {
+    let start = dateRange[0].startDate;
+    let end = dateRange[0].endDate;
+    start = new Date(start).setUTCHours(18, 30, 0, 999);
+    end = new Date(end).setUTCHours(41, 89, 59, 999);
+    return [start, end];
+  }
+  const start = new Date().setUTCHours(18, 30, 0, 999);
+  const end = new Date().setUTCHours(41, 89, 59, 999);
+  return [start, end];
+};

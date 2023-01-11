@@ -13,16 +13,8 @@ import moment from 'moment';
 import FrinksButton from 'components/FrinksButton';
 import Maintenance from 'components/Maintenance';
 import Notification from 'components/Notification';
-
-const getCount = missedPaths => {
-  let counter = 0;
-  if (missedPaths) {
-    Object.values(missedPaths).forEach(e => {
-      counter += e?.length || 0;
-    });
-  }
-  return counter;
-};
+import Loader from 'components/Loader';
+import { getStartAndEndDate } from 'utils/globalFunctions';
 
 const Summary = () => {
   const [summaryData, setSummaryData] = useState(null);
@@ -32,15 +24,19 @@ const Summary = () => {
   const [maintenanceTickets, setMaintenanceTickets] = useState(null);
   const [maintenanceFormOpen, setMaintenanceFormOpen] = useState(false);
   const [notificationsFormOpen, setNotificationsFormOpen] = useState(false);
+  const [isLoading, setIsLoading] = useState(true);
 
   useEffect(() => {
     const fetchSummary = async () => {
-      const data = await get('/api/analysis/summary');
+      const data = await get('/api/analysis/summary', {
+        dateRange: getStartAndEndDate()
+      });
       setSummaryData(data?.data?.data?.analysis);
       setShiftCount(data?.data?.data?.shift);
       setShiftDate(data?.data?.data?.date);
       setPrintingBelts(data?.data?.data?.belt_info);
       setMaintenanceTickets(data?.data?.data?.maintenance_tickets);
+      setIsLoading(false);
     };
     if (!summaryData) {
       fetchSummary();
@@ -72,6 +68,7 @@ const Summary = () => {
 
   return (
     <Container>
+      {isLoading && <Loader />}
       <div className="analysis-container">
         <div className="head">
           <h2>Shift Summary</h2>
@@ -139,7 +136,7 @@ const Summary = () => {
                     <p className="description">Bags dispatched</p>
                   </div>
                 </Grid>
-                <Grid item xs={6}>
+                {/* <Grid item xs={6}>
                   <div
                     className="count-block"
                     style={{ background: theme.palette.summary['dark-blue'] }}
@@ -156,7 +153,7 @@ const Summary = () => {
                     </p>
                     <p className="description">Packing efficiency</p>
                   </div>
-                </Grid>
+                </Grid> */}
               </Grid>
             </div>
             <div className="maintenance-container">
@@ -238,12 +235,13 @@ const Summary = () => {
                 alternateHeader
                 title="Latest Activity"
                 hideFooter
-                counter={getCount(summaryData?.missedPaths)}
+                counter={summaryData?.total_missed_labels || 0}
                 summaryHeader
                 disableMinimumHeight
                 viewAllFunc={() => setNotificationsFormOpen(true)}
+                style={{ maxHeight: '60vh', overflowY: 'auto' }}
               >
-                <NotificationContainer>
+                <NotificationContainer applyHeightLimit>
                   {summaryData && printingBelts ? (
                     <>
                       {Object.values(summaryData?.missed_paths)?.map(

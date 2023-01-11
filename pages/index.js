@@ -1,38 +1,54 @@
-import { useState, useContext, useEffect } from 'react';
+import PropTypes from 'prop-types';
+import { get, post, put } from 'utils/api';
+import Report from 'components/Report';
+import Loader from 'components/Loader';
 import Layout from 'components/Layout';
-import { useRouter } from 'next/router';
-import Container from 'styles/homepage.styles';
-import AlertModal from 'components/AlertModal/AlertModal';
-import InfoModal from 'components/InfoModal/InfoModal';
-import { SocketContext } from 'context/SocketContext';
 import Config from 'components/Config';
+import { useRouter } from 'next/router';
+import Summary from 'components/Summary';
+import Container from 'styles/homepage.styles';
 import Maintenance from 'components/Maintenance';
 import Notification from 'components/Notification';
-// import ShipmentAnalysis from 'components/ShipmentAnalysis';
 import PrintingAnalysis from 'components/PrintingAnalysis';
 import MaintenanceForm from 'components/MaintenanceForm';
 import { ServiceQuery } from 'reactQueries/shipmentQueries';
-import PropTypes from 'prop-types';
-import { get, post } from 'utils/api';
-import Loader from 'components/Loader';
-import Summary from 'components/Summary';
-import Report from 'components/Report';
 import PackerAnalysis from 'components/PackerAnalysis';
-import SystemHealth from 'components/SystemHealth/SystemHealth';
+import SystemHealth from 'components/SystemHealth';
 import { IS_AWS_FRONTEND } from 'utils/constants';
+import { SocketContext } from 'context/SocketContext';
 import { GlobalContext } from 'context/GlobalContext';
 import LoaderAnalysis from 'components/LoaderAnalysis';
+import InfoModal from 'components/InfoModal/InfoModal';
+import { useState, useContext, useEffect } from 'react';
+import AlertModal from 'components/AlertModal/AlertModal';
 
 const DashboardComponent = ({
   activeSection,
-  activeTransactions,
+  // activeTransactions,
   handleBagIncrement,
   handleStop,
   printingBelts,
   backgroundTransactions,
-  vehicleBelts
+  vehicleBelts,
+  setReverseShipmentFormOpen,
+  ongoingTransactions,
+  queuedTransactions,
+  handleBagDone
 }) => {
   if (activeSection === 0) {
+    return (
+      <LoaderAnalysis
+        vehicleBelts={vehicleBelts}
+        backgroundTransactions={backgroundTransactions}
+        setReverseShipmentFormOpen={setReverseShipmentFormOpen}
+        ongoingTransactions={ongoingTransactions}
+        queuedTransactions={queuedTransactions}
+        handleBagIncrement={handleBagIncrement}
+        handleBagDone={handleBagDone}
+      />
+    );
+  }
+  if (activeSection === 1) {
     return (
       <PrintingAnalysis
         printingBelts={printingBelts}
@@ -40,19 +56,11 @@ const DashboardComponent = ({
       />
     );
   }
-  if (activeSection === 1) {
-    return (
-      <LoaderAnalysis
-        vehicleBelts={vehicleBelts}
-        backgroundTransactions={backgroundTransactions}
-      />
-    );
-  }
   if (activeSection === 2) {
     return (
       <PackerAnalysis
-        activeTransactions={activeTransactions}
-        handleBagIncrement={handleBagIncrement}
+        // activeTransactions={activeTransactions}
+        // handleBagIncrement={handleBagIncrement}
         handleStop={handleStop}
       />
     );
@@ -78,11 +86,44 @@ const Index = () => {
   const [maintenanceForm, setMaintenanceForm] = useState(false);
   const [shipmentFormOpen, setShipmentFormOpen] = useState(false);
   const [alertModalVisible, setAlertModalVisible] = useState(false);
-  const [activeTransactions, setActiveTransactions] = useState({});
+  // const [activeTransactions, setActiveTransactions] = useState({});
   const [maintenanceFormOpen, setMaintenanceFormOpen] = useState(false);
   const [notificationsFormOpen, setNotificationsFormOpen] = useState(false);
   const [backgroundTransactions, setBackgroundTransactions] = useState(null);
   const [activeSection, setActiveSection] = useState(IS_AWS_FRONTEND ? 4 : 0);
+  const [reverseShipmentFormOpen, setReverseShipmentFormOpen] = useState(null);
+  const [ongoingTransactions, setOngoingTransactions] = useState(null);
+  const [queuedTransactions, setQueuedTransactions] = useState(null);
+
+  const handleBagDone = async (
+    transaction_id,
+    vehicle_id,
+    printing_belt_id,
+    machine_id,
+    comment
+  ) => {
+    setIsLoading(true);
+    await put('/api/transaction/shipment-done', {
+      transaction_id,
+      comment,
+      vehicle_id,
+      printing_belt_id
+    });
+    setOngoingTransactions(prevState => {
+      const currData = prevState;
+      delete currData[transaction_id];
+      return currData;
+    });
+    setVehicleBelts(prevState => {
+      const currData = prevState;
+      currData.push({
+        id: vehicle_id,
+        vehicle_id: machine_id
+      });
+      return currData;
+    });
+    setIsLoading(false);
+  };
 
   const handleNewShipment = async data => {
     serviceMutation.mutate(data);
@@ -90,116 +131,94 @@ const Index = () => {
 
   useEffect(() => {
     if (serviceMutation.isSuccess) {
-      setActiveTransactions({
-        ...activeTransactions,
-        [serviceMutation?.data?.data?.id]: {
-          ...serviceMutation?.data?.data
-        }
-      });
       serviceMutation.reset();
       setShipmentFormOpen(false);
+      setReverseShipmentFormOpen(null);
     }
-  }, [activeTransactions, serviceMutation]);
+  }, [serviceMutation]);
 
   const handleBagIncrement = async data => {
     setIsLoading(true);
     const res = await post('/api/transaction/bag-change', data);
-    if (res.data.success) {
-      // modify existing data
-      setActiveTransactions({
-        ...activeTransactions,
-        [data.transaction_id]: {
-          ...activeTransactions[data.transaction_id],
-          limit: data.new_bag_count
+    setOngoingTransactions(
+      Object.keys(ongoingTransactions).map(e => {
+        if (ongoingTransactions[e].id === data.transaction_id) {
+          // modify this entity
+          return {
+            ...ongoingTransactions[e],
+            bag_limit: parseInt(data?.new_bag_limit) + parseInt(data?.old_limit)
+          };
         }
-      });
-    }
+        return ongoingTransactions[e];
+      })
+    );
     setIsLoading(false);
   };
 
   const handleStop = async data => {
     setIsLoading(true);
-    post('/api/transaction/belt-stop', data);
-    const updatedTransactions = activeTransactions;
-    delete updatedTransactions[data?.transaction_id];
-    setActiveTransactions(updatedTransactions);
+    // post('/api/transaction/belt-stop', data);
+    // const updatedTransactions = activeTransactions;
+    // delete updatedTransactions[data?.transaction_id];
+    // setActiveTransactions(updatedTransactions);
     setIsLoading(false);
   };
 
   useEffect(() => {
     const getActiveTransactions = async () => {
       const res = await get('/api/transaction');
-      setActiveTransactions(res?.data?.data?.transactionRes);
+      // setActiveTransactions(res?.data?.data?.transactionRes);
       const backgroundTransactionsRes = res?.data?.data?.backgroundInfo;
       setBackgroundTransactions(backgroundTransactionsRes);
-      const beltMasterRes = {};
-      const vehicleBeltMasterRes = {};
-      const printing_data = res?.data?.data?.printingBeltRes;
-      const vehicle_data = res?.data?.data?.vehicleBeltRes;
-      printing_data?.forEach(e => {
-        beltMasterRes[e?.id] = {
-          tag_machine_id: e?.machine_id,
-          missed_labels: 0,
-          printing_count: 0
-        };
-      });
-      vehicle_data?.forEach(e => {
-        vehicleBeltMasterRes[e?.id] = {
-          bag_machine_id: e?.machine_id,
-          count: 0
-        };
-      });
-      if (backgroundTransactionsRes) {
-        Object.keys(backgroundTransactionsRes).forEach(e => {
-          beltMasterRes[e] = {
-            ...beltMasterRes[e],
-            missed_labels: backgroundTransactionsRes[e]?.missed_labels,
-            printing_count: backgroundTransactionsRes[e]?.printing_count,
-            tag_machine_id: backgroundTransactionsRes[e]?.tag_machine_id,
-            transaction_id: backgroundTransactionsRes[e]?.transaction_id
-          };
-        });
-      }
-      setPrintingBelts(beltMasterRes);
-      setVehicleBelts(vehicleBeltMasterRes);
+      setPrintingBelts(res?.data?.data?.printingBeltRes);
+      setVehicleBelts(res?.data?.data?.vehicleBeltRes);
+      setOngoingTransactions(res?.data?.data?.ongoingTransactions);
+      setQueuedTransactions(res?.data?.data?.queuedTransactions);
     };
     getActiveTransactions();
   }, []);
 
   useEffect(() => {
     socket.on('bag-entry', data => {
-      // console.log(data, 'bag-entry');
+      console.log(data, '----bag-entry');
       const transaction_id = parseInt(data?.transaction_id, 10);
-      setActiveTransactions(prevState => {
+      setOngoingTransactions(prevState => {
+        if (!prevState) return null;
+        if (prevState && Object.keys(prevState).length === 0) return {};
+        if (!(transaction_id in prevState)) return prevState;
         return {
           ...prevState,
           [transaction_id]: {
             ...prevState[transaction_id],
-            bag_count: data?.bag_count
+            bag_count: data?.count
           }
         };
       });
     });
     socket.on('tag-entry', data => {
+      console.log(data, '----tag-entry');
       const transaction_id = parseInt(data?.transaction_id, 10);
-      setActiveTransactions(prevState => {
+      setOngoingTransactions(prevState => {
+        if (!prevState) return null;
+        if (prevState && Object.keys(prevState).length === 0) return {};
+        else if (!(transaction_id in prevState)) return prevState;
         return {
           ...prevState,
           [transaction_id]: {
             ...prevState[transaction_id],
-            printing_count: data?.bag_count,
-            missed_labels: data?.missed_labels
+            missed_label_count: data?.transactionMissed
           }
         };
       });
       const belt_id = parseInt(data?.belt_id, 10);
       setPrintingBelts(prevState => {
+        if (!prevState) return null;
         return {
           ...prevState,
           [belt_id]: {
             ...prevState[belt_id],
-            printing_count: data?.bag_count_background,
-            missed_labels: data?.missed_labels_background
+            tag_count: data?.count,
+            missed_label_count: data?.missed_count
           }
         };
       });
@@ -207,58 +226,80 @@ const Index = () => {
     socket.on('tag-entry-deactivated', data => {
       const belt_id = parseInt(data?.belt_id, 10);
       setPrintingBelts(prevState => {
+        if (!prevState) return null;
         return {
           ...prevState,
           [belt_id]: {
             ...prevState[belt_id],
-            printing_count: data?.bag_count,
-            missed_labels: data?.missed_labels
+            tag_count: data?.count,
+            missed_label_count: data?.missed_count
           }
         };
       });
     });
-    socket.on('new_tag_deactivated_transaction', data => {
-      const belt_id = parseInt(data?.belt_id, 10);
-      setPrintingBelts(prevState => {
+    // socket.on('new_tag_deactivated_transaction', data => {
+    //   const belt_id = parseInt(data?.belt_id, 10);
+    //   setPrintingBelts(prevState => {
+    //     return {
+    //       ...prevState,
+    //       [belt_id]: {
+    //         ...prevState[belt_id],
+    //         transaction_id: data?.transaction_id
+    //       }
+    //     };
+    //   });
+    // });
+    // socket.on('stop', data => {
+    //   const transaction_id = parseInt(data?.transaction_id, 10);
+    //   setActiveTransactions(prevState => {
+    //     if (data?.is_bag_belt) {
+    //       // data of stop is coming from bag belt
+    //       return {
+    //         ...prevState,
+    //         [transaction_id]: {
+    //           ...prevState[transaction_id],
+    //           bag_count_finished_at: new Date()
+    //         }
+    //       };
+    //     }
+    //     return {
+    //       ...prevState,
+    //       [transaction_id]: {
+    //         ...prevState[transaction_id],
+    //         tag_count_finished_at: new Date()
+    //       }
+    //     };
+    //   });
+    // });
+    socket.on('service', data => {
+      const tra_id = parseInt(data?.id, 10);
+      setOngoingTransactions(prevState => {
+        if (!prevState) return null;
         return {
           ...prevState,
-          [belt_id]: {
-            ...prevState[belt_id],
-            transaction_id: data?.transaction_id
-          }
+          [tra_id]: data
         };
       });
-    });
-    socket.on('stop', data => {
-      const transaction_id = parseInt(data?.transaction_id, 10);
-      setActiveTransactions(prevState => {
-        if (data?.is_bag_belt) {
-          // data of stop is coming from bag belt
-          return {
-            ...prevState,
-            [transaction_id]: {
-              ...prevState[transaction_id],
-              bag_count_finished_at: new Date()
-            }
-          };
-        }
-        return {
-          ...prevState,
-          [transaction_id]: {
-            ...prevState[transaction_id],
-            tag_count_finished_at: new Date()
+      setVehicleBelts(prevState => {
+        if (!prevState) return null;
+        const newBelts = prevState.filter(e => {
+          if (e.id !== data.bag_counting_belt_id) {
+            return e;
           }
-        };
+        });
+        return newBelts;
       });
     });
     socket.on('background-reset', () => {
       setPrintingBelts(prevState => {
+        if (!prevState) return null;
         const newState = {};
         Object.keys(prevState).forEach(e => {
           newState[e] = {
-            tag_machine_id: prevState[e]?.tag_machine_id,
-            missed_labels: 0,
-            printing_count: 0
+            printing_id: prevState[e]?.printing_id,
+            missed_label_count: 0,
+            tag_count: 0,
+            id: e
           };
         });
         return newState;
@@ -275,11 +316,13 @@ const Index = () => {
     return <Loader />;
   }
 
-  if (shipmentFormOpen) {
+  if (shipmentFormOpen || reverseShipmentFormOpen) {
     return (
       <Config
         close={() => setShipmentFormOpen(false)}
         handleSubmit={handleNewShipment}
+        reverseShipmentFormOpen={reverseShipmentFormOpen}
+        setReverseShipmentFormOpen={e => setReverseShipmentFormOpen(e)}
       />
     );
   }
@@ -315,7 +358,7 @@ const Index = () => {
                 role="button"
                 tabIndex={0}
               >
-                <h6 style={{ textAlign: 'center' }}>Printing belt</h6>
+                <h6 style={{ textAlign: 'center' }}>Loader belt</h6>
               </div>
               <div
                 className={`option ${activeSection === 1 ? 'active' : ''}`}
@@ -324,17 +367,17 @@ const Index = () => {
                 role="button"
                 tabIndex={0}
               >
-                <h6 style={{ textAlign: 'center' }}>Loader belt</h6>
+                <h6 style={{ textAlign: 'center' }}>Printing belt</h6>
               </div>
               {/* <div
-            className={`option ${activeSection === 2 ? 'active' : ''}`}
-            onClick={() => setActiveSection(2)}
-            onKeyPress={() => setActiveSection(2)}
-            role="button"
-            tabIndex={0}
-          >
-            <h6 style={{ cursor: 'inherit' }}>Packer analytics</h6>
-          </div> */}
+                className={`option ${activeSection === 2 ? 'active' : ''}`}
+                onClick={() => setActiveSection(2)}
+                onKeyPress={() => setActiveSection(2)}
+                role="button"
+                tabIndex={0}
+              >
+                <h6 style={{ cursor: 'inherit' }}>Packer analytics</h6>
+              </div> */}
               <div
                 className={`option ${activeSection === 3 ? 'active' : ''}`}
                 onClick={() => setActiveSection(3)}
@@ -367,12 +410,16 @@ const Index = () => {
         </div>
         <DashboardComponent
           activeSection={activeSection}
-          activeTransactions={activeTransactions}
+          // activeTransactions={activeTransactions}
           handleBagIncrement={handleBagIncrement}
           handleStop={handleStop}
           printingBelts={printingBelts}
           backgroundTransactions={backgroundTransactions}
           vehicleBelts={vehicleBelts}
+          setReverseShipmentFormOpen={e => setReverseShipmentFormOpen(e)}
+          ongoingTransactions={ongoingTransactions}
+          queuedTransactions={queuedTransactions}
+          handleBagDone={handleBagDone}
         />
         {alertModalVisible ? (
           <AlertModal
@@ -398,12 +445,16 @@ const Index = () => {
 
 DashboardComponent.propTypes = {
   activeSection: PropTypes.number,
-  activeTransactions: PropTypes.any,
+  // activeTransactions: PropTypes.any,
   handleBagIncrement: PropTypes.func,
   handleStop: PropTypes.any,
   printingBelts: PropTypes.any,
   backgroundTransactions: PropTypes.any,
-  vehicleBelts: PropTypes.any
+  vehicleBelts: PropTypes.any,
+  setReverseShipmentFormOpen: PropTypes.func,
+  ongoingTransactions: PropTypes.any,
+  queuedTransactions: PropTypes.any,
+  handleBagDone: PropTypes.func
 };
 
 export default Index;

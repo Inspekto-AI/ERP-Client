@@ -87,8 +87,9 @@ const ShipmentTracking = ({
         <InfoModal
           open={rejectModalOpen}
           close={() => setRejectModalOpen(null)}
-          title="Rejected bags"
+          title="Misprint bags"
           hideConfirm
+          hideComment
         >
           <DefectiveBags transaction_id={rejectModalOpen?.transaction_id} />
         </InfoModal>

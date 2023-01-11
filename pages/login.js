@@ -1,12 +1,12 @@
 import Image from 'next/image';
+import Loader from 'components/Loader';
 import { useRouter } from 'next/router';
 import Container from 'styles/loginStyles';
-import { useState, useEffect, useContext } from 'react';
 import { TextField } from '@material-ui/core';
-import { LoginQuery } from 'reactQueries/authQueries';
 import FrinksButton from 'components/FrinksButton';
+import { LoginQuery } from 'reactQueries/authQueries';
 import { GlobalContext } from 'context/GlobalContext';
-import Loader from 'components/Loader';
+import { useState, useEffect, useContext } from 'react';
 
 const Login = () => {
   const router = useRouter();

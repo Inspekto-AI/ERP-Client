@@ -5,17 +5,17 @@ const Container = styled.div`
   background: ${props =>
     props.isError || props.status > 0
       ? props.status === 1
-        ? '#F37500'
-        : '#FC2D1E'
-      : 'white'};
+        ? '#CB952B'
+        : 'white'
+      : '#26A84A'};
   border-radius: 10px;
   padding: ${props => (props.packerCard ? '35px 5px' : '35px 20px')};
   // padding-top: ${props => (props.isError ? '40px' : '20px')};
   padding-top: 20px;
   // padding-bottom: ${props => (props.isError ? '15px' : '25px')};
   padding-bottom: ${props => (props.packerCard ? '8px' : '25px')};
-  width: 280px;
-  min-width: 240px;
+  max-width: 330px;
+  width: 100%;
   position: relative;
 
   .head {
@@ -26,34 +26,43 @@ const Container = styled.div`
 
     .id-container {
       display: flex;
-      align-items: center;
+      align-items: flex-start;
 
       .status {
         background: ${props =>
           props.status === 0
             ? '#01ba8f'
             : props.status === 1
-            ? '#F37500'
-            : '#F72525'};
+            ? 'white'
+            : 'white'};
         height: 18px;
         width: 18px;
         border-radius: 100px;
         border: 2px solid #f5f5f5;
+        margin-top: ${props => (props.printingCard ? '1px' : '4px')};
       }
 
       .id {
         color: ${props =>
-          props.isError || props.status > 0 ? 'white' : 'gray'};
+          props.isError || props.status <= 1 ? 'white' : 'black'};
         font-weight: 600;
         margin-left: 5px;
         font-size: 15px;
+
+        .bag-id {
+          font-size: 18px;
+        }
+
+        .tag-id {
+          font-size: ${props => (props.printingCard ? '18px' : '14px')};
+        }
       }
     }
 
     .timer {
       font-weight: 900;
       font-size: 14px;
-      color: ${props => (props.isError ? 'white' : 'black')};
+      color: ${props => (!props.isError ? 'white' : 'black')};
     }
   }
 
@@ -62,14 +71,13 @@ const Container = styled.div`
     margin-bottom: 10px;
     align-items: center;
     // margin-top: ${props => (props.isError ? '0' : '10px')};
-    margin-top: 10px;
+    margin-top: ${props => (props.printingCard ? '10px' : '75px')};
     padding: ${props => (props.packerCard ? '0 15px' : '0 0')};
 
     h2 {
       margin-right: 10px;
       font-weight: 900;
-      color: ${props =>
-        props.isError ? 'white' : theme.palette.royalBlue.main};
+      color: ${props => (props.status >= 2 ? 'black' : 'white')};
     }
 
     .MuiAvatar-circular {
@@ -78,17 +86,25 @@ const Container = styled.div`
       width: 30px;
       height: 30px;
     }
+
+    .count {
+      font-size: 44px;
+    }
   }
 
   .type {
-    font-size: 14px;
-    color: ${props => (props.isError ? 'white' : theme.palette.grey.grey100)};
+    font-size: 16px;
+    color: ${props =>
+      props.isError || props.status <= 1
+        ? 'white'
+        : theme.palette.grey.grey100};
     margin: 2px 0 20px 0;
-    margin-bottom: 70px;
+    margin-bottom: ${props =>
+      props.status <= 1 ? '70px' : props.status === 1 ? '10px' : '40px'};
 
     span {
       font-weight: 900;
-      color: ${props => (props.isError ? 'white' : 'black')};
+      color: ${props => (!props.isError ? 'white' : 'black')};
     }
   }
 
@@ -101,8 +117,7 @@ const Container = styled.div`
     padding: 8px 12px;
     position: absolute;
     left: 0;
-    // bottom: ${props => (props.isError ? '60px' : '70px')};
-    bottom: 70px;
+    // bottom: ${props => (props.printingCard ? '30px' : '70px')};
     width: 100%;
 
     .count {
@@ -117,10 +132,11 @@ const Container = styled.div`
         font-weight: 600;
         width: 30px;
         height: 30px;
-        font-size: 15px;
+        font-size: 12px;
       }
 
       h6 {
+        font-size: 18px;
         font-weight: 600;
         color: ${props => (props.isError ? 'white' : 'black')};
       }
@@ -136,13 +152,21 @@ const Container = styled.div`
     }
   }
 
+  .action-buttons {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+  }
+
   .view-button {
-    width: 100%;
+    width: ${props =>
+      props.countReached && props.status === 0 ? '48%' : '100%'};
     border: 3px solid ${theme.palette.byzantine.main};
     background: white;
     border-radius: 12px;
     font-size: 15px;
     height: 35px;
+    padding: 20px;
     color: ${theme.palette.byzantine.main};
     font-weight: 900;
 
