@@ -39,7 +39,7 @@ const Container = styled.div`
         width: 18px;
         border-radius: 100px;
         border: 2px solid #f5f5f5;
-        margin-top: ${props => (props.printingCard ? '1px' : '4px')};
+        margin-top: ${props => (props.printingCard ? '1px' : '8px')};
       }
 
       .id {
@@ -50,7 +50,7 @@ const Container = styled.div`
         font-size: 15px;
 
         .bag-id {
-          font-size: 18px;
+          font-size: 25px;
         }
 
         .tag-id {
@@ -269,5 +269,7 @@ const Container = styled.div`
     }
   }
 `;
+
+
 
 export default Container;

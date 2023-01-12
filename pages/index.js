@@ -4,7 +4,6 @@ import Report from 'components/Report';
 import Loader from 'components/Loader';
 import Layout from 'components/Layout';
 import Config from 'components/Config';
-import { useRouter } from 'next/router';
 import Summary from 'components/Summary';
 import Container from 'styles/homepage.styles';
 import Maintenance from 'components/Maintenance';
@@ -16,7 +15,6 @@ import PackerAnalysis from 'components/PackerAnalysis';
 import SystemHealth from 'components/SystemHealth';
 import { IS_AWS_FRONTEND } from 'utils/constants';
 import { SocketContext } from 'context/SocketContext';
-import { GlobalContext } from 'context/GlobalContext';
 import LoaderAnalysis from 'components/LoaderAnalysis';
 import InfoModal from 'components/InfoModal/InfoModal';
 import { useState, useContext, useEffect } from 'react';
@@ -33,7 +31,7 @@ const DashboardComponent = ({
   setReverseShipmentFormOpen,
   ongoingTransactions,
   queuedTransactions,
-  handleBagDone
+  handleBagDone,
 }) => {
   if (activeSection === 0) {
     return (
@@ -75,10 +73,8 @@ const DashboardComponent = ({
 };
 
 const Index = () => {
-  const router = useRouter();
   const serviceMutation = ServiceQuery();
   const socket = useContext(SocketContext);
-  const { userData } = useContext(GlobalContext);
   const [isLoading, setIsLoading] = useState(false);
   const [printingBelts, setPrintingBelts] = useState({});
   const [vehicleBelts, setVehicleBelts] = useState(null);
@@ -94,7 +90,8 @@ const Index = () => {
   const [reverseShipmentFormOpen, setReverseShipmentFormOpen] = useState(null);
   const [ongoingTransactions, setOngoingTransactions] = useState(null);
   const [queuedTransactions, setQueuedTransactions] = useState(null);
-
+  
+  
   const handleBagDone = async (
     transaction_id,
     vehicle_id,
@@ -118,7 +115,7 @@ const Index = () => {
       const currData = prevState;
       currData.push({
         id: vehicle_id,
-        vehicle_id: machine_id
+        vehicle_id: machine_id,
       });
       return currData;
     });
@@ -306,15 +303,6 @@ const Index = () => {
       });
     });
   }, [socket]);
-
-  if (!userData) {
-    return <Loader />;
-  }
-
-  if (userData.isLoggedIn === false) {
-    router.push('/login');
-    return <Loader />;
-  }
 
   if (shipmentFormOpen || reverseShipmentFormOpen) {
     return (

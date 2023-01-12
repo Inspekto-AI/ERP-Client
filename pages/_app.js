@@ -2,16 +2,13 @@ import { useEffect, useState } from 'react';
 import { QueryClient, QueryClientProvider, Hydrate } from 'react-query';
 import CssBaseline from '@material-ui/core/CssBaseline';
 import { ThemeProvider } from '@material-ui/core/styles';
-import { GlobalProvider } from 'context/GlobalContext';
 import { SocketContext, socket } from 'context/SocketContext';
-import CheckAuth from 'components/CheckAuth';
 
 import Head from 'next/head';
 import PropTypes from 'prop-types';
 
 import theme from 'styles/theme';
 import 'styles/globalStyles.css';
-import { CLIENT_NAME } from 'utils/constants';
 
 export default function MyApp({ Component, pageProps }) {
   const [queryClient] = useState(
@@ -52,11 +49,7 @@ export default function MyApp({ Component, pageProps }) {
         <SocketContext.Provider value={socket}>
           <QueryClientProvider client={queryClient}>
             <Hydrate state={pageProps.dehydratedState}>
-              <GlobalProvider>
-                <CheckAuth>
-                  <Component {...pageProps} />
-                </CheckAuth>
-              </GlobalProvider>
+                <Component {...pageProps} />
             </Hydrate>
           </QueryClientProvider>
         </SocketContext.Provider>

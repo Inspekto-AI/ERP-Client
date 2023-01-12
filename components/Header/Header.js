@@ -1,5 +1,5 @@
 import Image from 'next/image';
-import { useState, useContext, useEffect } from 'react';
+import { useState } from 'react';
 import { useRouter } from 'next/router';
 import { Hidden, Button, Popper, Fade } from '@material-ui/core';
 import { BsFillTriangleFill } from 'react-icons/bs';
@@ -7,10 +7,7 @@ import { IoIosMenu } from 'react-icons/io';
 import HeaderDrawer from './HeaderDrawer';
 
 import { IS_AWS_FRONTEND } from 'utils/constants';
-import { LogoutQuery } from 'reactQueries/authQueries';
 import ImageKitLoader from 'utils/ImageLoader';
-import { removeLocalStorage } from 'utils/storage';
-import { GlobalContext } from 'context/GlobalContext';
 import PropTypes from 'prop-types';
 import Container from './Header.styles';
 
@@ -22,17 +19,7 @@ const Header = ({
 }) => {
   const router = useRouter();
   const [anchorEl, setAnchorEl] = useState(null);
-  const logoutMutation = LogoutQuery();
-  const { setUserData } = useContext(GlobalContext);
   const [headerDropDownVisible, setHeaderDropDownVisible] = useState(false);
-
-  useEffect(() => {
-    if (logoutMutation?.isSuccess) {
-      setUserData({ isLoggedIn: false });
-      removeLocalStorage('jwt');
-      router.replace('/login');
-    }
-  }, [logoutMutation?.isSuccess, router, setUserData]);
 
   const handleClick = event => {
     setAnchorEl(anchorEl ? null : event.currentTarget);
@@ -150,22 +137,6 @@ const Header = ({
                       Need Help?
                     </span>
                     <hr />
-                    <div
-                      className="logout-container"
-                      onClick={() => logoutMutation.mutate({})}
-                      onKeyPress={() => logoutMutation.mutate({})}
-                      tabIndex={0}
-                      role="button"
-                    >
-                      Logout
-                      <Image
-                        src="UploadSimple_nuAcn_fBm.svg"
-                        loader={ImageKitLoader}
-                        layout="fixed"
-                        height={20}
-                        width={20}
-                      />
-                    </div>
                   </div>
                 </Fade>
               )}

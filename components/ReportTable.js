@@ -1,5 +1,5 @@
 import Image from 'next/image';
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import {
   Button,
   Table,
@@ -52,6 +52,7 @@ const stableSort = (array, comparator) => {
   stabilizedThis?.sort((a, b) => {
     const order = comparator(a[0], b[0]);
     if (order !== 0) return order;
+
     return a[1] - b[1];
   });
   return stabilizedThis?.map(el => el[0]);
@@ -78,7 +79,11 @@ const shipmentHead = [
     disablePadding: true,
     label: 'Printing Belt ID'
   },
-  { id: 'bag_type', disablePadding: true, label: 'Bag Type' },
+  {
+    id: 'bag_type',
+    disablePadding: true,
+    label: 'Bag Type'
+  },
   {
     id: 'created_at_date',
     disablePadding: true,
@@ -114,7 +119,11 @@ const shipmentHead = [
     disablePadding: true,
     label: 'Misprint bags'
   },
-  { id: 'action', disablePadding: true, label: 'View' }
+  {
+    id: 'action',
+    disablePadding: true,
+    label: 'View'
+  }
 ];
 
 const printingHead = [
@@ -128,7 +137,11 @@ const printingHead = [
     disablePadding: true,
     label: 'Up Time'
   },
-  { id: 'down_time', disablePadding: true, label: 'Down Time' },
+  {
+    id: 'down_time',
+    disablePadding: true,
+    label: 'Down Time'
+  },
   {
     id: 'tag_count_total',
     disablePadding: true,
@@ -139,8 +152,16 @@ const printingHead = [
     disablePadding: true,
     label: 'Misprint bags'
   },
-  { id: 'action', disablePadding: true, label: 'View' },
-  { id: 'shipment_count', disablePadding: true, label: 'No. of Shipments Made' }
+  {
+    id: 'action',
+    disablePadding: true,
+    label: 'View'
+  },
+  {
+    id: 'shipment_count',
+    disablePadding: true,
+    label: 'No. of Shipments Made'
+  }
 ];
 
 const loadingHead = [
@@ -154,13 +175,21 @@ const loadingHead = [
     disablePadding: true,
     label: 'Up Time'
   },
-  { id: 'down_time', disablePadding: true, label: 'Down Time' },
+  {
+    id: 'down_time',
+    disablePadding: true,
+    label: 'Down Time'
+  },
   {
     id: 'bag_count',
     disablePadding: true,
     label: 'No. of Bags Dispatched'
   },
-  { id: 'shipment_count', disablePadding: true, label: 'No. of Shipments Made' }
+  {
+    id: 'shipment_count',
+    disablePadding: true,
+    label: 'No. of Shipments Made'
+  }
 ];
 
 const packerHead = [
@@ -192,6 +221,7 @@ const RenderTableHeader = ({
     case 0:
       return (
         <TableRow>
+          {' '}
           {shipmentHead.map(headCell => (
             <TableCell
               key={headCell.id}
@@ -207,17 +237,18 @@ const RenderTableHeader = ({
                   <span className={classes.visuallyHidden}>
                     {order === 'desc'
                       ? 'sorted descending'
-                      : 'sorted ascending'}
+                      : 'sorted ascending'}{' '}
                   </span>
-                ) : null}
+                ) : null}{' '}
               </TableSortLabel>
             </TableCell>
-          ))}
+          ))}{' '}
         </TableRow>
       );
     case 1:
       return (
         <TableRow>
+          {' '}
           {printingHead.map(headCell => (
             <TableCell
               key={headCell.id}
@@ -235,17 +266,18 @@ const RenderTableHeader = ({
                   <span className={classes.visuallyHidden}>
                     {order === 'desc'
                       ? 'sorted descending'
-                      : 'sorted ascending'}
+                      : 'sorted ascending'}{' '}
                   </span>
-                ) : null}
+                ) : null}{' '}
               </TableSortLabel>
             </TableCell>
-          ))}
+          ))}{' '}
         </TableRow>
       );
     case 2:
       return (
         <TableRow>
+          {' '}
           {loadingHead.map(headCell => (
             <TableCell
               key={headCell.id}
@@ -262,17 +294,18 @@ const RenderTableHeader = ({
                   <span className={classes.visuallyHidden}>
                     {order === 'desc'
                       ? 'sorted descending'
-                      : 'sorted ascending'}
+                      : 'sorted ascending'}{' '}
                   </span>
-                ) : null}
+                ) : null}{' '}
               </TableSortLabel>
             </TableCell>
-          ))}
+          ))}{' '}
         </TableRow>
       );
     default:
       return (
         <TableRow>
+          {' '}
           {packerHead.map(headCell => (
             <TableCell
               key={headCell.id}
@@ -289,12 +322,12 @@ const RenderTableHeader = ({
                   <span className={classes.visuallyHidden}>
                     {order === 'desc'
                       ? 'sorted descending'
-                      : 'sorted ascending'}
+                      : 'sorted ascending'}{' '}
                   </span>
-                ) : null}
+                ) : null}{' '}
               </TableSortLabel>
             </TableCell>
-          ))}
+          ))}{' '}
         </TableRow>
       );
   }
@@ -373,7 +406,8 @@ const EnhancedTableToolbar = props => {
           variant="subtitle1"
           component="div"
         >
-          {numSelected} selected
+          {numSelected}
+          selected
         </Typography>
       ) : (
         <Typography
@@ -385,7 +419,6 @@ const EnhancedTableToolbar = props => {
           Nutrition
         </Typography>
       )}
-
       {numSelected > 0 ? (
         <Tooltip title="Delete">
           <IconButton aria-label="delete">delete</IconButton>
@@ -394,7 +427,7 @@ const EnhancedTableToolbar = props => {
         <Tooltip title="Filter list">
           <IconButton aria-label="filter list">filter</IconButton>
         </Tooltip>
-      )}
+      )}{' '}
     </Toolbar>
   );
 };
@@ -458,6 +491,7 @@ const RenderTable = ({ layoutType, data, setRejectIndex }) => {
             layoutType={layoutType}
           />
           <TableBody>
+            {' '}
             {stableSort(data?.rows, getComparator(order, orderBy))?.map(
               (row, index) => {
                 return (
@@ -468,27 +502,27 @@ const RenderTable = ({ layoutType, data, setRejectIndex }) => {
                       padding="none"
                       style={{ textAlign: 'center' }}
                     >
-                      {row?.id}
+                      {row?.id}{' '}
                     </TableCell>
                     <TableCell style={{ textAlign: 'center' }}>
                       {row?.licence_number === ''
                         ? `Wagon No.- ${row.wagon_no}, Gate/Door No.- ${row.gate_no}, Rake No.- ${row.rack_no}`
-                        : `Truck No.- ${row?.licence_number}`}
+                        : `Truck No.- ${row?.licence_number}`}{' '}
                     </TableCell>
                     <TableCell style={{ textAlign: 'center' }}>
-                      {row?.vehicle?.machine_id || 'NA'}
+                      {row?.vehicle?.machine_id || 'NA'}{' '}
                     </TableCell>
                     <TableCell style={{ textAlign: 'center' }}>
-                      {row?.printing_belt?.machine_id || 'NA'}
+                      {row?.printing_belt?.machine_id || 'NA'}{' '}
                     </TableCell>
                     <TableCell style={{ textAlign: 'center' }}>
-                      {row?.bag_type}
+                      {row?.bag_type}{' '}
                     </TableCell>
                     <TableCell style={{ textAlign: 'center' }}>
-                      {new Date(row?.created_at).toLocaleDateString()}
+                      {new Date(row?.created_at).toLocaleDateString()}{' '}
                     </TableCell>
                     <TableCell style={{ textAlign: 'center' }}>
-                      {new Date(row?.created_at).toLocaleTimeString()}
+                      {new Date(row?.created_at).toLocaleTimeString()}{' '}
                     </TableCell>
                     <TableCell style={{ textAlign: 'center' }}>
                       {moment
@@ -499,19 +533,19 @@ const RenderTable = ({ layoutType, data, setRejectIndex }) => {
                             )
                             .asMilliseconds()
                         )
-                        .format('HH:mm:ss')}
+                        .format('HH:mm:ss')}{' '}
                     </TableCell>
                     <TableCell style={{ textAlign: 'center' }}>
-                      {row?.bag_count || 0}
+                      {row?.bag_count || 0}{' '}
                     </TableCell>
                     <TableCell style={{ textAlign: 'center' }}>
-                      {row?.tag_count}
+                      {row?.tag_count}{' '}
                     </TableCell>
                     <TableCell style={{ textAlign: 'center' }}>
-                      {row?.bags_increased}
+                      {row?.bags_increased}{' '}
                     </TableCell>
                     <TableCell style={{ textAlign: 'center' }}>
-                      {row?.missed_label_count}
+                      {row?.missed_label_count}{' '}
                     </TableCell>
                     <TableCell style={{ textAlign: 'center' }}>
                       <FrinksButton
@@ -529,7 +563,7 @@ const RenderTable = ({ layoutType, data, setRejectIndex }) => {
                   </TableRow>
                 );
               }
-            )}
+            )}{' '}
           </TableBody>
         </Table>
       );
@@ -544,6 +578,7 @@ const RenderTable = ({ layoutType, data, setRejectIndex }) => {
             layoutType={layoutType}
           />
           <TableBody>
+            {' '}
             {stableSort(data, getComparator(order, orderBy))?.map(
               (row, index) => {
                 return (
@@ -554,15 +589,15 @@ const RenderTable = ({ layoutType, data, setRejectIndex }) => {
                       padding="none"
                       style={{ textAlign: 'center' }}
                     >
-                      {row?.belt_id}
+                      {row?.belt_id}{' '}
                     </TableCell>
                     <TableCell style={{ textAlign: 'center' }}>NA</TableCell>
                     <TableCell style={{ textAlign: 'center' }}>NA</TableCell>
                     <TableCell style={{ textAlign: 'center' }}>
-                      {row?.tag_count}
+                      {row?.tag_count}{' '}
                     </TableCell>
                     <TableCell style={{ textAlign: 'center' }}>
-                      {row?.missed_label_count}
+                      {row?.missed_label_count}{' '}
                     </TableCell>
                     <TableCell style={{ textAlign: 'center' }}>
                       <FrinksButton
@@ -578,12 +613,12 @@ const RenderTable = ({ layoutType, data, setRejectIndex }) => {
                       />
                     </TableCell>
                     <TableCell style={{ textAlign: 'center' }}>
-                      {row?.shipment_count}
+                      {row?.shipment_count}{' '}
                     </TableCell>
                   </TableRow>
                 );
               }
-            )}
+            )}{' '}
           </TableBody>
         </Table>
       );
@@ -598,6 +633,7 @@ const RenderTable = ({ layoutType, data, setRejectIndex }) => {
             layoutType={layoutType}
           />
           <TableBody>
+            {' '}
             {stableSort(data, getComparator(order, orderBy))?.map(
               (row, index) => {
                 return (
@@ -613,15 +649,15 @@ const RenderTable = ({ layoutType, data, setRejectIndex }) => {
                     <TableCell style={{ textAlign: 'center' }}>NA</TableCell>
                     <TableCell style={{ textAlign: 'center' }}>NA</TableCell>
                     <TableCell style={{ textAlign: 'center' }}>
-                      {row?.bag_count}
+                      {row?.bag_count}{' '}
                     </TableCell>
                     <TableCell style={{ textAlign: 'center' }}>
-                      {row?.shipment_count}
+                      {row?.shipment_count}{' '}
                     </TableCell>
                   </TableRow>
                 );
               }
-            )}
+            )}{' '}
           </TableBody>
         </Table>
       );
@@ -636,6 +672,7 @@ const RenderTable = ({ layoutType, data, setRejectIndex }) => {
             layoutType={layoutType}
           />
           <TableBody>
+            {' '}
             {stableSort(data, getComparator(order, orderBy))?.map(
               (row, index) => {
                 return (
@@ -646,7 +683,7 @@ const RenderTable = ({ layoutType, data, setRejectIndex }) => {
                       padding="none"
                       style={{ textAlign: 'center' }}
                     >
-                      {row?.belt_id}
+                      {row?.belt_id}{' '}
                     </TableCell>
                     <TableCell style={{ textAlign: 'center' }}>
                       {row.runtime_performance ? (
@@ -662,7 +699,7 @@ const RenderTable = ({ layoutType, data, setRejectIndex }) => {
                         </ProgressBarContainer>
                       ) : (
                         'NA'
-                      )}
+                      )}{' '}
                     </TableCell>
                     <TableCell style={{ textAlign: 'center' }}>
                       {row.overall_performance ? (
@@ -678,12 +715,12 @@ const RenderTable = ({ layoutType, data, setRejectIndex }) => {
                         </ProgressBarContainer>
                       ) : (
                         'NA'
-                      )}
+                      )}{' '}
                     </TableCell>
                   </TableRow>
                 );
               }
-            )}
+            )}{' '}
           </TableBody>
         </Table>
       );
@@ -709,8 +746,24 @@ const ReportTable = ({
   const classes = useStyles();
   const [rowCount, setRowCount] = useState(5);
   const [rejectIndex, setRejectIndex] = useState(null);
+  const [filter, setFilter] = useState(2);
   // const [search, setSearch] = useState('');
+  const [filtervalue, setFilterValue] = useState();
 
+  const handleFilterChange = e => {
+    setFilter(e.target.value);
+  };
+  useEffect(() => {
+    if (filter === 2) {
+      setFilterValue(data);
+    } else {
+      setFilterValue(
+        data && data.length !== 0 && data?.count !== 0
+          ? data.filter(vehicle => vehicle.vehicle_type == filter)
+          : null
+      );
+    }
+  }, [data, filter]);
   const handleRowCountChange = e => {
     setStartCount(0);
     setEndCount(e.target.value);
@@ -725,7 +778,7 @@ const ReportTable = ({
   };
 
   const handleNext = () => {
-    if (endCount < data?.count) {
+    if (endCount < filtervalue?.count) {
       setStartCount(endCount);
       setEndCount(endCount + rowCount);
     }
@@ -736,39 +789,44 @@ const ReportTable = ({
       <div className="header">
         <div className="title">{title}</div>
         <div className="controls">
-          <div className="view">
-            <p>View</p>
-            <Button className="view-toggle-buttons">
-              <Image
-                src="hamburger-icon.svg"
-                loader={ImageKitLoader}
-                layout="fixed"
-                height={25}
-                width={25}
-              />
-            </Button>
-            <Button
-              className="view-toggle-buttons"
-              style={{ marginLeft: '0px' }}
-            >
-              <Image
-                src="graph-icon.svg"
-                loader={ImageKitLoader}
-                layout="fixed"
-                height={25}
-                width={25}
-              />
-            </Button>
-          </div>
-          {/* <div className="search">
-            <p>Search</p>
-            <TextField
-              type="text"
-              variant="outlined"
-              value={search}
-              onChange={e => setSearch(e.target.value)}
-            />
-          </div> */}
+          {layoutType == 1 ? (
+            <div className="view">
+              <p>View</p>
+              <Button className="view-toggle-buttons">
+                <Image
+                  src="hamburger-icon.svg"
+                  loader={ImageKitLoader}
+                  layout="fixed"
+                  height={25}
+                  width={25}
+                />
+              </Button>
+              <Button
+                className="view-toggle-buttons"
+                style={{ marginLeft: '0px' }}
+              >
+                <Image
+                  src="graph-icon.svg"
+                  loader={ImageKitLoader}
+                  layout="fixed"
+                  height={25}
+                  width={25}
+                />
+              </Button>
+            </div>
+          ) : (
+            <div className="view">
+              <select
+                value={filter}
+                onChange={handleFilterChange}
+                style={{ fontSize: '20px' }}
+              >
+                <option value={2}>All</option>
+                <option value={1}>Wagon Loader</option>
+                <option value={0}>Truck Loader</option>
+              </select>
+            </div>
+          )}{' '}
         </div>
       </div>
       <div className="table-container">
@@ -777,7 +835,7 @@ const ReportTable = ({
             <TableContainer>
               <RenderTable
                 layoutType={layoutType}
-                data={data}
+                data={data && data?.count!=0?filter == 2 ? data : filtervalue:data}
                 setRejectIndex={e => setRejectIndex(e)}
               />
             </TableContainer>
@@ -802,8 +860,10 @@ const ReportTable = ({
                 </div>
                 <div className="pipe" />
                 <div className="total-records">
-                  Showing {data?.count === 0 ? 0 : startCount + 1} to{' '}
-                  {Math.min(endCount, data?.count)} of {data?.count} entries
+                  Showing {data?.count === 0 ? 0 : startCount + 1}
+                  to {Math.min(endCount, data?.count)}
+                  of {data?.count}
+                  entries
                 </div>
               </div>
               <div className="right">
@@ -830,7 +890,7 @@ const ReportTable = ({
                 </div>
               </div>
             </div>
-          )}
+          )}{' '}
         </div>
       </div>
       {rejectIndex !== null ? (
@@ -846,7 +906,7 @@ const ReportTable = ({
             transaction_id={data?.rows[rejectIndex]?.id}
           />
         </InfoModal>
-      ) : null}
+      ) : null}{' '}
     </Container>
   );
 };
@@ -859,7 +919,9 @@ ReportTable.propTypes = {
   endCount: PropTypes.number,
   setStartCount: PropTypes.func,
   setEndCount: PropTypes.func,
-  hideRowCount: PropTypes.bool
+  hideRowCount: PropTypes.bool,
+  filtervalue: PropTypes.any,
+  filter: PropTypes.number
 };
 
 export default ReportTable;
