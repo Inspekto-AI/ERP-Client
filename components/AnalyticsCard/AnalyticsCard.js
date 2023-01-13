@@ -54,7 +54,8 @@ const AnalyticsCard = ({
     );
     return () => clearInterval(interval);
   }, [data?.created_at]);
-  return (<Container
+  return (
+    <Container
       packerCard={packerCard}
       progressBackground={
         getStatus(Math.min((data.count * 100) / PACKER_LIMIT, 100)).colorCode
@@ -87,7 +88,12 @@ const AnalyticsCard = ({
                 {' '}
                 {printingCard || packerCard ? null : (
                   <div className="bag-id">
-                    <div>
+                    <div
+                      style={{
+                        display: 'flex',
+                        marginLeft: '2px',
+                        alignItems: 'center'
+                      }}>
                       {' '}
                       <span>{data?.vehicle_id}&nbsp;</span>{' '}
                       {data?.vehicle_type === 1 ? (
@@ -96,26 +102,26 @@ const AnalyticsCard = ({
                           alt="(Wl)"
                           loader={ImageKitLoader}
                           layout="fixed"
-                          height={25}
-                          width={25}
+                          height={22}
+                          width={22}
                         />
                       ) : (
                         <Image
-                            src="van.png"
-                            alt="(TL)"
+                          src="van.png"
+                          alt="(TL)"
                           loader={ImageKitLoader}
                           layout="fixed"
-                          height={25}
-                          width={25}
+                          height={22}
+                          width={22}
                         />
-                      )}
+                      )}{' '}
                     </div>{' '}
                   </div>
                 )}
                 {status < 2 && loaderCard ? (
-                  <p className="tag-id"> {data?.printing_id}</p>
+                  <p className="tag-id">{data?.printing_id}</p>
                 ) : printingCard ? (
-                  <p className="tag-id"> {data?.printing_id}</p>
+                  <p className="tag-id">{data?.printing_id}</p>
                 ) : null}{' '}
               </>
             )}{' '}

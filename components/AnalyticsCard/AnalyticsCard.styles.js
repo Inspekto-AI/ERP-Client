@@ -26,7 +26,6 @@ const Container = styled.div`
 
     .id-container {
       display: flex;
-      align-items: flex-start;
 
       .status {
         background: ${props =>
@@ -49,8 +48,10 @@ const Container = styled.div`
         margin-left: 5px;
         font-size: 15px;
 
-        .bag-id {
-          font-size: 25px;
+        span {
+          font-size: 20px;
+          padding-right: 4px;
+          padding-top: 3px;
         }
 
         .tag-id {
@@ -71,7 +72,7 @@ const Container = styled.div`
     margin-bottom: 10px;
     align-items: center;
     // margin-top: ${props => (props.isError ? '0' : '10px')};
-    margin-top: ${props => (props.printingCard ? '10px' : '75px')};
+    margin-top: ${props => (props.printingCard ? '10px' : '54px')};
     padding: ${props => (props.packerCard ? '0 15px' : '0 0')};
 
     h2 {
