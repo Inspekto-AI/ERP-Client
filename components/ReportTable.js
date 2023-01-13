@@ -85,21 +85,6 @@ const shipmentHead = [
     label: 'Bag Type'
   },
   {
-    id: 'created_at_date',
-    disablePadding: true,
-    label: 'Start Date'
-  },
-  {
-    id: 'created_at_time',
-    disablePadding: true,
-    label: 'Start Time'
-  },
-  {
-    id: 'bag_count_completed_at',
-    disablePadding: true,
-    label: 'Loading Time'
-  },
-  {
     id: 'bag_count_total',
     disablePadding: true,
     label: 'Bags Dispatched'
@@ -120,6 +105,21 @@ const shipmentHead = [
     label: 'Misprint bags'
   },
   {
+    id: 'created_at_date',
+    disablePadding: true,
+    label: 'Start Date'
+  },
+  {
+    id: 'created_at_time',
+    disablePadding: true,
+    label: 'Start Time'
+  },
+  {
+    id: 'bag_count_completed_at',
+    disablePadding: true,
+    label: 'Loading Time'
+  },
+  {
     id: 'action',
     disablePadding: true,
     label: 'View'
@@ -132,16 +132,16 @@ const printingHead = [
     disablePadding: true,
     label: 'Belt ID'
   },
-  {
-    id: 'up_time',
-    disablePadding: true,
-    label: 'Up Time'
-  },
-  {
-    id: 'down_time',
-    disablePadding: true,
-    label: 'Down Time'
-  },
+  // {
+  //   id: 'up_time',
+  //   disablePadding: true,
+  //   label: 'Up Time'
+  // },
+  // {
+  //   id: 'down_time',
+  //   disablePadding: true,
+  //   label: 'Down Time'
+  // },
   {
     id: 'tag_count_total',
     disablePadding: true,
@@ -170,16 +170,16 @@ const loadingHead = [
     disablePadding: true,
     label: 'Loader ID'
   },
-  {
-    id: 'up_time',
-    disablePadding: true,
-    label: 'Up Time'
-  },
-  {
-    id: 'down_time',
-    disablePadding: true,
-    label: 'Down Time'
-  },
+  // {
+  //   id: 'up_time',
+  //   disablePadding: true,
+  //   label: 'Up Time'
+  // },
+  // {
+  //   id: 'down_time',
+  //   disablePadding: true,
+  //   label: 'Down Time'
+  // },
   {
     id: 'bag_count',
     disablePadding: true,
@@ -519,6 +519,18 @@ const RenderTable = ({ layoutType, data, setRejectIndex }) => {
                       {row?.bag_type}{' '}
                     </TableCell>
                     <TableCell style={{ textAlign: 'center' }}>
+                      {row?.bag_count || 0}{' '}
+                    </TableCell>
+                    <TableCell style={{ textAlign: 'center' }}>
+                      {row?.tag_count}{' '}
+                    </TableCell>
+                    <TableCell style={{ textAlign: 'center' }}>
+                      {row?.bags_increased}{' '}
+                    </TableCell>
+                    <TableCell style={{ textAlign: 'center' }}>
+                      {row?.missed_label_count}{' '}
+                    </TableCell>
+                    <TableCell style={{ textAlign: 'center' }}>
                       {new Date(row?.created_at).toLocaleDateString()}{' '}
                     </TableCell>
                     <TableCell style={{ textAlign: 'center' }}>
@@ -534,18 +546,6 @@ const RenderTable = ({ layoutType, data, setRejectIndex }) => {
                             .asMilliseconds()
                         )
                         .format('HH:mm:ss')}{' '}
-                    </TableCell>
-                    <TableCell style={{ textAlign: 'center' }}>
-                      {row?.bag_count || 0}{' '}
-                    </TableCell>
-                    <TableCell style={{ textAlign: 'center' }}>
-                      {row?.tag_count}{' '}
-                    </TableCell>
-                    <TableCell style={{ textAlign: 'center' }}>
-                      {row?.bags_increased}{' '}
-                    </TableCell>
-                    <TableCell style={{ textAlign: 'center' }}>
-                      {row?.missed_label_count}{' '}
                     </TableCell>
                     <TableCell style={{ textAlign: 'center' }}>
                       <FrinksButton
@@ -591,8 +591,8 @@ const RenderTable = ({ layoutType, data, setRejectIndex }) => {
                     >
                       {row?.belt_id}{' '}
                     </TableCell>
-                    <TableCell style={{ textAlign: 'center' }}>NA</TableCell>
-                    <TableCell style={{ textAlign: 'center' }}>NA</TableCell>
+                    {/* <TableCell style={{ textAlign: 'center' }}>NA</TableCell>
+                    <TableCell style={{ textAlign: 'center' }}>NA</TableCell> */}
                     <TableCell style={{ textAlign: 'center' }}>
                       {row?.tag_count}{' '}
                     </TableCell>
@@ -646,8 +646,8 @@ const RenderTable = ({ layoutType, data, setRejectIndex }) => {
                     >
                       {row?.belt_id}({row?.vehicle_type === 1 ? 'WL' : 'TL'})
                     </TableCell>
-                    <TableCell style={{ textAlign: 'center' }}>NA</TableCell>
-                    <TableCell style={{ textAlign: 'center' }}>NA</TableCell>
+                    {/* <TableCell style={{ textAlign: 'center' }}>NA</TableCell>
+                    <TableCell style={{ textAlign: 'center' }}>NA</TableCell> */}
                     <TableCell style={{ textAlign: 'center' }}>
                       {row?.bag_count}{' '}
                     </TableCell>
@@ -893,7 +893,7 @@ const ReportTable = ({
         >
           <DefectiveBags
             belt_id={Array.isArray(data) ? data[rejectIndex]?.belt_id : null}
-            transaction_id={data?.rows[rejectIndex]?.id}
+            transaction_id={data?.rows ? data?.rows[rejectIndex]?.id : null}
           />
         </InfoModal>
       ) : null}{' '}
