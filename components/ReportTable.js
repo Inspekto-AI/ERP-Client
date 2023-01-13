@@ -1,5 +1,5 @@
 import Image from 'next/image';
-import { useState, useEffect } from 'react';
+import { useState } from 'react';
 import {
   Button,
   Table,
@@ -741,29 +741,14 @@ const ReportTable = ({
   endCount,
   setStartCount,
   setEndCount,
-  hideRowCount
+  hideRowCount,
+  filter,
+  setFilter
 }) => {
   const classes = useStyles();
   const [rowCount, setRowCount] = useState(5);
   const [rejectIndex, setRejectIndex] = useState(null);
-  const [filter, setFilter] = useState(2);
-  // const [search, setSearch] = useState('');
-  const [filtervalue, setFilterValue] = useState();
 
-  const handleFilterChange = e => {
-    setFilter(e.target.value);
-  };
-  useEffect(() => {
-    if (filter === 2) {
-      setFilterValue(data);
-    } else {
-      setFilterValue(
-        data && data.length !== 0 && data?.count !== 0
-          ? data.filter(vehicle => vehicle.vehicle_type == filter)
-          : null
-      );
-    }
-  }, [data, filter]);
   const handleRowCountChange = e => {
     setStartCount(0);
     setEndCount(e.target.value);
@@ -778,7 +763,7 @@ const ReportTable = ({
   };
 
   const handleNext = () => {
-    if (endCount < filtervalue?.count) {
+    if (endCount < data?.count) {
       setStartCount(endCount);
       setEndCount(endCount + rowCount);
     }
@@ -816,15 +801,20 @@ const ReportTable = ({
             </div>
           ) : (
             <div className="view">
-              <select
+              <Select
                 value={filter}
-                onChange={handleFilterChange}
-                style={{ fontSize: '20px' }}
+                onChange={e => setFilter(e.target.value)}
+                style={{
+                  fontSize: '14px',
+                  background: 'white',
+                  padding: '10px'
+                }}
+                variant="outlined"
               >
-                <option value={2}>All</option>
-                <option value={1}>Wagon Loader</option>
-                <option value={0}>Truck Loader</option>
-              </select>
+                <MenuItem value={2}>All</MenuItem>
+                <MenuItem value={1}>Wagon Loader</MenuItem>
+                <MenuItem value={0}>Truck Loader</MenuItem>
+              </Select>
             </div>
           )}{' '}
         </div>
@@ -835,7 +825,7 @@ const ReportTable = ({
             <TableContainer>
               <RenderTable
                 layoutType={layoutType}
-                data={data && data?.count!=0?filter == 2 ? data : filtervalue:data}
+                data={data}
                 setRejectIndex={e => setRejectIndex(e)}
               />
             </TableContainer>
@@ -920,8 +910,8 @@ ReportTable.propTypes = {
   setStartCount: PropTypes.func,
   setEndCount: PropTypes.func,
   hideRowCount: PropTypes.bool,
-  filtervalue: PropTypes.any,
-  filter: PropTypes.number
+  filter: PropTypes.number,
+  setFilter: PropTypes.func
 };
 
 export default ReportTable;

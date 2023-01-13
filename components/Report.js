@@ -13,9 +13,9 @@ const Report = () => {
   const [shipmentStartTrackBar, setShipmentStartTrackBar] = useState(0);
   const [shipmentEndTrackBar, setShipmentEndTrackBar] = useState(5);
 
-  const [packerReport, setPackerReport] = useState(null);
-  const [packerStartTrackBar, setPackerStartTrackBar] = useState(0);
-  const [packerEndTrackBar, setPackerEndTrackBar] = useState(5);
+  // const [packerReport, setPackerReport] = useState(null);
+  // const [packerStartTrackBar, setPackerStartTrackBar] = useState(0);
+  // const [packerEndTrackBar, setPackerEndTrackBar] = useState(5);
 
   const [printingReport, setPrintingReport] = useState(null);
   const [printingStartTrackBar, setPrintingStartTrackBar] = useState(0);
@@ -24,6 +24,7 @@ const Report = () => {
   const [loaderReport, setLoaderReport] = useState(null);
   const [loaderStartTrackBar, setLoaderStartTrackBar] = useState(0);
   const [loaderEndTrackBar, setLoaderEndTrackBar] = useState(5);
+  const [loaderFilterReport, setLoaderFilterReport] = useState(null);
 
   const [datePickerOpen, setDatePickerOpen] = useState(false);
   const [date, setDate] = useState([
@@ -33,12 +34,15 @@ const Report = () => {
       key: 'selection'
     }
   ]);
+  const [shipmentFilter, setShipmentFilter] = useState(2);
+  const [loaderFilter, setLoaderFilter] = useState(2);
 
   const fetchReports = async () => {
     const fetchShipmentReport = async () => {
       const res = await get('/api/analysis/shipment-report', {
         dateRange: getStartAndEndDate(date),
-        trackbar: [shipmentStartTrackBar, shipmentEndTrackBar]
+        trackbar: [shipmentStartTrackBar, shipmentEndTrackBar],
+        shipmentFilter
       });
       setShipmentReport(res.data.data);
     };
@@ -56,13 +60,13 @@ const Report = () => {
       });
       setLoaderReport(res.data.data);
     };
-    const fetchPackerReport = async () => {
-      const res = await get('/api/analysis/packer-report', {
-        dateRange: getStartAndEndDate(date),
-        trackbar: [packerStartTrackBar, packerEndTrackBar]
-      });
-      setPackerReport(res.data.data);
-    };
+    // const fetchPackerReport = async () => {
+    //   const res = await get('/api/analysis/packer-report', {
+    //     dateRange: getStartAndEndDate(date),
+    //     trackbar: [packerStartTrackBar, packerEndTrackBar]
+    //   });
+    //   setPackerReport(res.data.data);
+    // };
     await Promise.all([
       fetchShipmentReport(),
       fetchPrintingReport(),
@@ -80,12 +84,23 @@ const Report = () => {
     const fetchShipmentReport = async () => {
       const res = await get('/api/analysis/shipment-report', {
         dateRange: getStartAndEndDate(date),
-        trackbar: [shipmentStartTrackBar, shipmentEndTrackBar]
+        trackbar: [shipmentStartTrackBar, shipmentEndTrackBar],
+        shipmentFilter
       });
       setShipmentReport(res.data.data);
     };
     fetchShipmentReport();
-  }, [shipmentStartTrackBar, shipmentEndTrackBar]);
+  }, [shipmentStartTrackBar, shipmentEndTrackBar, shipmentFilter]);
+
+  useEffect(() => {
+    if (loaderReport) {
+      if (loaderFilter === 2) setLoaderFilterReport(loaderReport);
+      else if (loaderFilter === 1)
+        setLoaderFilterReport(loaderReport.filter(e => e.vehicle_type === 1));
+      else
+        setLoaderFilterReport(loaderReport.filter(e => e.vehicle_type === 0));
+    }
+  }, [loaderFilter, loaderReport]);
 
   useEffect(() => {
     fetchReports();
@@ -135,6 +150,8 @@ const Report = () => {
             endCount={shipmentEndTrackBar}
             setStartCount={e => setShipmentStartTrackBar(e)}
             setEndCount={e => setShipmentEndTrackBar(e)}
+            filter={shipmentFilter}
+            setFilter={e => setShipmentFilter(e)}
           />
           <ReportTable
             title="Printing Bay"
@@ -149,12 +166,14 @@ const Report = () => {
           <ReportTable
             title="Loading bay"
             layoutType={2}
-            data={loaderReport}
+            data={loaderFilterReport}
             startCount={loaderStartTrackBar}
             endCount={loaderEndTrackBar}
             setStartCount={e => setLoaderStartTrackBar(e)}
             setEndCount={e => setLoaderEndTrackBar(e)}
             hideRowCount
+            filter={loaderFilter}
+            setFilter={e => setLoaderFilter(e)}
           />
           {/* <ReportTable
             title="Packer Analytics"
