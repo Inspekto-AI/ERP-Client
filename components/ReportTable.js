@@ -807,7 +807,7 @@ const ReportTable = ({
                 style={{
                   fontSize: '14px',
                   background: 'white',
-                  padding: '10px'
+                  width: '160px'
                 }}
                 variant="outlined"
               >
