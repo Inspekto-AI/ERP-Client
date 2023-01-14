@@ -5,10 +5,19 @@ import { getLocalStorage, setLocalStorage } from './storage';
 export const axiosInstance = axios.create({
   baseURL: BASE_URL,
   headers: {
-    Accept: 'application/json',
-    'Content-Type': 'application/json',
-    pragma: 'no-cache'
-  }
+    'Content-Type': 'application/json'
+  },
+  maxContentLength: Infinity,
+  maxBodyLength: Infinity
+});
+
+export const axiosFileInstance = axios.create({
+  baseURL: BASE_URL,
+  headers: {
+    'Content-Type': 'application/pdf'
+  },
+  maxContentLength: Infinity,
+  maxBodyLength: Infinity
 });
 
 axiosInstance.interceptors.request.use(config => {
@@ -28,8 +37,35 @@ axiosInstance.interceptors.response.use(
   }
 );
 
+axiosFileInstance.interceptors.request.use(config => {
+  config.headers.Authorization = `${getLocalStorage('jwt')}`;
+  return config;
+});
+
+axiosFileInstance.interceptors.response.use(
+  async res => {
+    if (res.headers.authorization) {
+      setLocalStorage('jwt', res.headers.authorization);
+    }
+    return res;
+  },
+  err => {
+    return Promise.reject(err);
+  }
+);
+
 export const get = (url, payload) =>
-  axiosInstance.get(url, { withCredentials: true, params: payload });
+  axiosInstance.get(url, {
+    withCredentials: true,
+    params: payload
+  });
+
+export const getFile = (url, payload) =>
+  axiosFileInstance.get(url, {
+    withCredentials: true,
+    params: payload,
+    responseEncoding: 'binary'
+  });
 
 export const post = (url, body) =>
   axiosInstance.post(url, body, { withCredentials: true });

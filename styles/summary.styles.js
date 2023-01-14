@@ -133,6 +133,22 @@ const Container = styled.div`
     padding-bottom: 15px;
     margin-top: 20px;
   }
+
+  .controllers {
+    min-width: 390px;
+    display:flex;
+    align-items:center;
+    justify-content: space-between;
+  }
+
+  .download-button {
+    padding:0;
+    min-width: 0;
+    border-radius: 100%;
+    font-size: 35px;
+    padding: 5px;
+    margin-top: 3px;
+  }
 `;
 
 export default Container;

@@ -4,9 +4,24 @@ import ReportTable from 'components/ReportTable';
 import { DateRange } from 'react-date-range';
 import 'react-date-range/dist/styles.css'; // main css file
 import 'react-date-range/dist/theme/default.css'; // theme css file
-import { get } from 'utils/api';
+import { get, getFile } from 'utils/api';
 import FrinksButton from './FrinksButton';
 import { getStartAndEndDate } from 'utils/globalFunctions';
+import { AiOutlineCloudDownload } from 'react-icons/ai';
+import { Button } from '@material-ui/core';
+
+
+
+const downloadPDF = pdf => {
+  const linkSource = `data:application/pdf;base64,${pdf}`;
+  const downloadLink = document.createElement('a');
+  const fileName = 'report.pdf';
+  downloadLink.href = linkSource;
+  downloadLink.download = fileName;
+  downloadLink.click();
+};
+
+
 
 const Report = () => {
   const [shipmentReport, setShipmentReport] = useState(null);
@@ -75,10 +90,19 @@ const Report = () => {
     ]);
   };
 
-  const handleSearch = async () => {
+  const  handleDownload = async () => {
+    const res = await getFile('/api/analysis/reports', {
+    dateRange: getStartAndEndDate(date),
+   })
+
+
+   downloadPDF(res.data);
+  };
+
+  const handleSearch = async ()=>{
     await fetchReports();
     setDatePickerOpen(false);
-  };
+  }
 
   useEffect(() => {
     const fetchShipmentReport = async () => {
@@ -117,6 +141,14 @@ const Report = () => {
       <div className="analysis-container">
         <div className="head">
           <h2 className="report-header">Reports</h2>
+          <div className="controllers">
+            <Button
+            variant='outlined'
+            className='download-button'
+            color="primary"
+            onClick={handleDownload}>
+              <AiOutlineCloudDownload />
+            </Button>
           <div className="search-container">
             <div
               className="date-range-container"
@@ -139,6 +171,7 @@ const Report = () => {
                 rangeColors={['#051c3f']}
               />
             </div>
+          </div>
           </div>
         </div>
         <div className="report-container">
