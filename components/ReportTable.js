@@ -85,12 +85,12 @@ const shipmentHead = [
     label: 'Bag Type'
   },
   {
-    id: 'bag_count_total',
+    id: 'bag_count',
     disablePadding: true,
     label: 'Bags Dispatched'
   },
   {
-    id: 'tag_count_total',
+    id: 'tag_count',
     disablePadding: true,
     label: 'Bags Packed'
   },
