@@ -21,7 +21,7 @@ export const getStartAndEndDate = dateRange => {
     end = new Date(end).setUTCHours(41, 89, 59, 999);
     return [start, end];
   }
-  const start = new Date().setUTCHours(18, 30, 0, 999);
-  const end = new Date().setUTCHours(41, 89, 59, 999);
+  const start = new Date().setUTCHours(-6, 30, 0, 999);
+  const end = new Date().setUTCHours(17, 89, 59, 999);
   return [start, end];
 };

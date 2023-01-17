@@ -321,7 +321,7 @@ const InfoModal = ({
 
 InfoModal.propTypes = {
   open: PropTypes.any,
-  close: PropTypes.func,
+  close: PropTypes.any,
   title: PropTypes.string,
   children: PropTypes.any,
   hideConfirm: PropTypes.bool,

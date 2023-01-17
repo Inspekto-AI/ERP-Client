@@ -10,8 +10,6 @@ import { getStartAndEndDate } from 'utils/globalFunctions';
 import { AiOutlineCloudDownload } from 'react-icons/ai';
 import { Button } from '@material-ui/core';
 
-
-
 const downloadPDF = pdf => {
   const linkSource = `data:application/pdf;base64,${pdf}`;
   const downloadLink = document.createElement('a');
@@ -20,8 +18,6 @@ const downloadPDF = pdf => {
   downloadLink.download = fileName;
   downloadLink.click();
 };
-
-
 
 const Report = () => {
   const [shipmentReport, setShipmentReport] = useState(null);
@@ -90,19 +86,18 @@ const Report = () => {
     ]);
   };
 
-  const  handleDownload = async () => {
+  const handleDownload = async () => {
     const res = await getFile('/api/analysis/reports', {
-    dateRange: getStartAndEndDate(date),
-   })
+      dateRange: getStartAndEndDate(date)
+    });
 
-
-   downloadPDF(res.data);
+    downloadPDF(res.data);
   };
 
-  const handleSearch = async ()=>{
+  const handleSearch = async () => {
     await fetchReports();
     setDatePickerOpen(false);
-  }
+  };
 
   useEffect(() => {
     const fetchShipmentReport = async () => {
@@ -143,35 +138,36 @@ const Report = () => {
           <h2 className="report-header">Reports</h2>
           <div className="controllers">
             <Button
-            variant='outlined'
-            className='download-button'
-            color="primary"
-            onClick={handleDownload}>
+              variant="outlined"
+              className="download-button"
+              color="primary"
+              onClick={handleDownload}
+            >
               <AiOutlineCloudDownload />
             </Button>
-          <div className="search-container">
-            <div
-              className="date-range-container"
-              onClick={() => setDatePickerOpen(true)}
-              onKeyPress={() => setDatePickerOpen(true)}
-              onBlur={handleBlur}
-              tabIndex={0}
-              role="button"
-            >
-              {datePickerOpen ? (
-                <div className="date-done-btn" onBlur={handleBlur}>
-                  <FrinksButton text="Search" onClick={handleSearch} />
-                </div>
-              ) : null}
-              <DateRange
-                editableDateInputs
-                onChange={item => setDate([item.selection])}
-                moveRangeOnFirstSelection={false}
-                ranges={date}
-                rangeColors={['#051c3f']}
-              />
+            <div className="search-container">
+              <div
+                className="date-range-container"
+                onClick={() => setDatePickerOpen(true)}
+                onKeyPress={() => setDatePickerOpen(true)}
+                onBlur={handleBlur}
+                tabIndex={0}
+                role="button"
+              >
+                {datePickerOpen ? (
+                  <div className="date-done-btn" onBlur={handleBlur}>
+                    <FrinksButton text="Search" onClick={handleSearch} />
+                  </div>
+                ) : null}
+                <DateRange
+                  editableDateInputs
+                  onChange={item => setDate([item.selection])}
+                  moveRangeOnFirstSelection={false}
+                  ranges={date}
+                  rangeColors={['#051c3f']}
+                />
+              </div>
             </div>
-          </div>
           </div>
         </div>
         <div className="report-container">

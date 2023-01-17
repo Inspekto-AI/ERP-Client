@@ -129,7 +129,7 @@ const AlertModal = ({ open, close }) => {
 };
 
 AlertModal.propTypes = {
-  open: PropTypes.bool.isRequired,
+  open: PropTypes.any.isRequired,
   close: PropTypes.func.isRequired
 };
 export default AlertModal;
