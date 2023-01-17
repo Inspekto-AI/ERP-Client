@@ -31,7 +31,7 @@ const DashboardComponent = ({
   setReverseShipmentFormOpen,
   ongoingTransactions,
   queuedTransactions,
-  handleBagDone,
+  handleBagDone
 }) => {
   if (activeSection === 0) {
     return (
@@ -90,8 +90,7 @@ const Index = () => {
   const [reverseShipmentFormOpen, setReverseShipmentFormOpen] = useState(null);
   const [ongoingTransactions, setOngoingTransactions] = useState(null);
   const [queuedTransactions, setQueuedTransactions] = useState(null);
-  
-  
+
   const handleBagDone = async (
     transaction_id,
     vehicle_id,
@@ -115,7 +114,7 @@ const Index = () => {
       const currData = prevState;
       currData.push({
         id: vehicle_id,
-        vehicle_id: machine_id,
+        vehicle_id: machine_id
       });
       return currData;
     });
@@ -177,7 +176,7 @@ const Index = () => {
 
   useEffect(() => {
     socket.on('bag-entry', data => {
-      console.log(data, '----bag-entry');
+      // console.log(data, '----bag-entry');
       const transaction_id = parseInt(data?.transaction_id, 10);
       setOngoingTransactions(prevState => {
         if (!prevState) return null;
@@ -193,7 +192,7 @@ const Index = () => {
       });
     });
     socket.on('tag-entry', data => {
-      console.log(data, '----tag-entry');
+      // console.log(data, '----tag-entry');
       const transaction_id = parseInt(data?.transaction_id, 10);
       setOngoingTransactions(prevState => {
         if (!prevState) return null;
