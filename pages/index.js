@@ -202,7 +202,8 @@ const Index = () => {
           ...prevState,
           [transaction_id]: {
             ...prevState[transaction_id],
-            missed_label_count: data?.transactionMissed
+            missed_label_count: data?.transactionMissed,
+            tag_count: data.tag_count
           }
         };
       });

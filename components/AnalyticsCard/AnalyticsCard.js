@@ -5,7 +5,7 @@ import { IoMdAdd } from 'react-icons/io';
 import { Avatar, Button, Grid, LinearProgress } from '@material-ui/core';
 import { BiRightArrowAlt } from 'react-icons/bi';
 import { msToTime } from 'utils/globalFunctions';
-import { PACKER_LIMIT } from 'utils/constants';
+import { DEACTIVATE_LOADER_SOLUTION, PACKER_LIMIT } from 'utils/constants';
 import Container from './AnalyticsCard.styles';
 import FrinksButton from 'components/FrinksButton';
 import Image from 'next/image';
@@ -93,7 +93,8 @@ const AnalyticsCard = ({
                         display: 'flex',
                         marginLeft: '2px',
                         alignItems: 'center'
-                      }}>
+                      }}
+                    >
                       {' '}
                       <span>{data?.vehicle_id}&nbsp;</span>{' '}
                       {data?.vehicle_type === 1 ? (
@@ -159,11 +160,19 @@ const AnalyticsCard = ({
       )}
       {status > 1 ? null : (
         <div className="count-container">
-          <h2 className="count">
-            {' '}
-            {printingCard ? data?.tag_count || 0 : data?.bag_count || 0}
-            {printingCard ? null : `/${data?.bag_limit || '0'}`}{' '}
-          </h2>
+          {DEACTIVATE_LOADER_SOLUTION ? (
+            <h2 className="count">
+              {' '}
+              {data?.tag_count || 0}
+              {printingCard ? null : `/${data?.bag_limit || '0'}`}{' '}
+            </h2>
+          ) : (
+            <h2 className="count">
+              {' '}
+              {printingCard ? data?.tag_count || 0 : data?.bag_count || 0}
+              {printingCard ? null : `/${data?.bag_limit || '0'}`}{' '}
+            </h2>
+          )}
           {printingCard ? null : (
             <Avatar onClick={bagModifyModalOpen}>
               <IoMdAdd />
