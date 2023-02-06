@@ -13,7 +13,7 @@ import MaintenanceForm from 'components/MaintenanceForm';
 import { ServiceQuery } from 'reactQueries/shipmentQueries';
 import PackerAnalysis from 'components/PackerAnalysis';
 import SystemHealth from 'components/SystemHealth';
-import { IS_AWS_FRONTEND } from 'utils/constants';
+import { IS_AWS_FRONTEND, DEACTIVATE_PRINTING_SOLUTION } from 'utils/constants';
 import { SocketContext } from 'context/SocketContext';
 import LoaderAnalysis from 'components/LoaderAnalysis';
 import InfoModal from 'components/InfoModal/InfoModal';
@@ -190,6 +190,19 @@ const Index = () => {
           }
         };
       });
+      if(DEACTIVATE_PRINTING_SOLUTION){
+        setPrintingBelts(prevState => {
+          const belt_id = parseInt(data?.belt_id, 10);
+          if (!prevState) return null;
+          return {
+            ...prevState,
+            [belt_id]: {
+              ...prevState[belt_id],
+              tag_count: data?.count
+            }
+          };
+        });
+      }
     });
     socket.on('tag-entry', data => {
       // console.log(data, '----tag-entry');

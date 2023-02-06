@@ -2,7 +2,7 @@ import { useState, useEffect } from 'react';
 import PropTypes from 'prop-types';
 import { GrFlag } from 'react-icons/gr';
 import { IoMdAdd } from 'react-icons/io';
-import { Avatar, Button, Grid, LinearProgress } from '@material-ui/core';
+import { Avatar, Button, LinearProgress } from '@material-ui/core';
 import { BiRightArrowAlt } from 'react-icons/bi';
 import { msToTime } from 'utils/globalFunctions';
 import { DEACTIVATE_LOADER_SOLUTION, PACKER_LIMIT } from 'utils/constants';
@@ -39,7 +39,6 @@ const AnalyticsCard = ({
   setDetailModalOpen,
   setReverseShipmentFormOpen,
   handleBagDone,
-  filter
 }) => {
   const [timeDifference, setTimeDifference] = useState(0);
   useEffect(() => {
@@ -61,7 +60,7 @@ const AnalyticsCard = ({
         getStatus(Math.min((data.count * 100) / PACKER_LIMIT, 100)).colorCode
       }
       status={status}
-      countReached={data.bag_limit <= data.bag_count}
+      countReached={(DEACTIVATE_LOADER_SOLUTION?data.bag_limit <= data.tag_count:data.bag_limit <= data.bag_count)}
       printingCard={printingCard}
     >
       {' '}
@@ -239,15 +238,14 @@ const AnalyticsCard = ({
                     className="view-button"
                     onClick={setDetailModalOpen}
                   >
-                    {' '}
                     {status == 0
-                      ? data.bag_limit <= data.bag_count
+                      ? (DEACTIVATE_LOADER_SOLUTION ? data.bag_limit <= data.tag_count : data.bag_limit <= data.bag_count)
                         ? 'View'
                         : 'View Details'
                       : 'Edit'}{' '}
-                    {data.bag_limit <= data.bag_count || status == 1 ? null : (
+                    {(DEACTIVATE_LOADER_SOLUTION ? data.bag_limit <= data.tag_count : data.bag_limit <= data.bag_count) || status == 1 ? null : (
                       <BiRightArrowAlt />
-                    )}{' '}
+                    )}
                   </Button>
                   {status == 1 && (
                     <Button
@@ -265,7 +263,7 @@ const AnalyticsCard = ({
                   )}{' '}
                 </>
               )}
-              {data.bag_limit <= data.bag_count && status === 0 ? (
+              {(DEACTIVATE_LOADER_SOLUTION?data.bag_limit <= data.tag_count:data.bag_limit <= data.bag_count )&& status === 0 ? (
                 <FrinksButton
                   variant="filled"
                   className="view-button"
