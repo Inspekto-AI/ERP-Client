@@ -13,8 +13,8 @@ export const msToTime = milliseconds => {
   }:${seconds < 10 ? `0${seconds}` : seconds}`;
 };
 
-export const getStartAndEndDate = (dateRange, subtractDay) => {
-  if (dateRange && !subtractDay) {
+export const getStartAndEndDate = (dateRange) => {
+  if (dateRange) {
     let start = dateRange[0].startDate;
     let end = dateRange[0].endDate;
     start = new Date(start).setUTCHours(18, 30, 0, 999);
