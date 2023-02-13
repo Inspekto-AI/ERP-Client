@@ -850,9 +850,9 @@ const ReportTable = ({
                 </div>
                 <div className="pipe" />
                 <div className="total-records">
-                  Showing {data?.count === 0 ? 0 : startCount + 1}
-                  to {Math.min(endCount, data?.count)}
-                  of {data?.count}
+                  Showing {data?.count === 0 ? 0 : startCount + 1}{' '}
+                  to {Math.min(endCount, data?.count)}{' '}
+                  of {data?.count}{' '}
                   entries
                 </div>
               </div>

@@ -37,6 +37,8 @@ const Report = () => {
   const [loaderEndTrackBar, setLoaderEndTrackBar] = useState(5);
   const [loaderFilterReport, setLoaderFilterReport] = useState(null);
 
+  console.log(printingReport);
+
   const [datePickerOpen, setDatePickerOpen] = useState(false);
   const [date, setDate] = useState([
     {
@@ -48,10 +50,10 @@ const Report = () => {
   const [shipmentFilter, setShipmentFilter] = useState(2);
   const [loaderFilter, setLoaderFilter] = useState(2);
 
-  const fetchReports = async () => {
+  const fetchReports = async (subtractDay) => {
     const fetchShipmentReport = async () => {
       const res = await get('/api/analysis/shipment-report', {
-        dateRange: getStartAndEndDate(date),
+        dateRange: getStartAndEndDate(date, subtractDay),
         trackbar: [shipmentStartTrackBar, shipmentEndTrackBar],
         shipmentFilter
       });
@@ -59,21 +61,21 @@ const Report = () => {
     };
     const fetchPrintingReport = async () => {
       const res = await get('/api/analysis/printing-report', {
-        dateRange: getStartAndEndDate(date),
+        dateRange: getStartAndEndDate(date, subtractDay),
         trackbar: [printingStartTrackBar, printingEndTrackBar]
       });
       setPrintingReport(res.data.data);
     };
     const fetchLoadingReport = async () => {
       const res = await get('/api/analysis/loading-report', {
-        dateRange: getStartAndEndDate(date),
+        dateRange: getStartAndEndDate(date, subtractDay),
         trackbar: [loaderStartTrackBar, loaderEndTrackBar]
       });
       setLoaderReport(res.data.data);
     };
     // const fetchPackerReport = async () => {
     //   const res = await get('/api/analysis/packer-report', {
-    //     dateRange: getStartAndEndDate(date),
+    //     dateRange: getStartAndEndDate(date, subtractDay),
     //     trackbar: [packerStartTrackBar, packerEndTrackBar]
     //   });
     //   setPackerReport(res.data.data);
@@ -122,8 +124,10 @@ const Report = () => {
   }, [loaderFilter, loaderReport]);
 
   useEffect(() => {
-    fetchReports();
-  }, []);
+    if(date){
+      fetchReports(true);
+    }
+  }, [date]);
 
   const handleBlur = e => {
     if (!e.currentTarget.contains(e.relatedTarget)) {
