@@ -218,7 +218,7 @@ const Index = () => {
       }
     });
     socket.on('tag-entry', data => {
-      // console.log(data, '----tag-entry');
+      console.log(data, '----tag-entry');
       const transaction_id = parseInt(data?.transaction_id, 10);
       if(data.transactionMissed%10 === 0){
         setAlertCounter(prevState=>prevState+1);
