@@ -18,7 +18,9 @@ import { SocketContext } from 'context/SocketContext';
 import LoaderAnalysis from 'components/LoaderAnalysis';
 import InfoModal from 'components/InfoModal/InfoModal';
 import { useState, useContext, useEffect } from 'react';
-import AlertModal from 'components/AlertModal/AlertModal';
+
+import Alert from '@material-ui/lab/Alert';
+import {  Button } from '@material-ui/core';
 
 const DashboardComponent = ({
   activeSection,
@@ -31,7 +33,7 @@ const DashboardComponent = ({
   setReverseShipmentFormOpen,
   ongoingTransactions,
   queuedTransactions,
-  handleBagDone
+  handleBagDone,
 }) => {
   if (activeSection === 0) {
     return (
@@ -81,8 +83,6 @@ const Index = () => {
   const [infoModalOpen, setInfoModalOpen] = useState(false);
   const [maintenanceForm, setMaintenanceForm] = useState(false);
   const [shipmentFormOpen, setShipmentFormOpen] = useState(false);
-  const [alertModalVisible, setAlertModalVisible] = useState(false);
-  // const [activeTransactions, setActiveTransactions] = useState({});
   const [maintenanceFormOpen, setMaintenanceFormOpen] = useState(false);
   const [notificationsFormOpen, setNotificationsFormOpen] = useState(false);
   const [backgroundTransactions, setBackgroundTransactions] = useState(null);
@@ -90,6 +90,9 @@ const Index = () => {
   const [reverseShipmentFormOpen, setReverseShipmentFormOpen] = useState(null);
   const [ongoingTransactions, setOngoingTransactions] = useState(null);
   const [queuedTransactions, setQueuedTransactions] = useState(null);
+  const [missPrintTransactionId,setmissPrintTransactionId] = useState({});
+  const [alertCounter, setAlertCounter] = useState(0);
+  
 
   const handleBagDone = async (
     transaction_id,
@@ -124,6 +127,14 @@ const Index = () => {
   const handleNewShipment = async data => {
     serviceMutation.mutate(data);
   };
+
+  const alertsnooze = (e)=>{
+    const transactiondata = missPrintTransactionId;
+    delete transactiondata[e];
+    setmissPrintTransactionId(transactiondata);
+    setAlertCounter(prevState=>prevState-1);
+  }
+
 
   useEffect(() => {
     if (serviceMutation.isSuccess) {
@@ -172,6 +183,7 @@ const Index = () => {
       setQueuedTransactions(res?.data?.data?.queuedTransactions);
     };
     getActiveTransactions();
+
   }, []);
 
   useEffect(() => {
@@ -190,6 +202,7 @@ const Index = () => {
           }
         };
       });
+
       if(DEACTIVATE_PRINTING_SOLUTION){
         setPrintingBelts(prevState => {
           const belt_id = parseInt(data?.belt_id, 10);
@@ -207,6 +220,16 @@ const Index = () => {
     socket.on('tag-entry', data => {
       // console.log(data, '----tag-entry');
       const transaction_id = parseInt(data?.transaction_id, 10);
+      if(data.transactionMissed%10 === 0){
+        setAlertCounter(prevState=>prevState+1);
+        setmissPrintTransactionId(prevState => {
+          return {
+            ...prevState,
+            [transaction_id]:data?.belt_id
+          }
+        })
+
+      }
       setOngoingTransactions(prevState => {
         if (!prevState) return null;
         if (prevState && Object.keys(prevState).length === 0) return {};
@@ -247,40 +270,6 @@ const Index = () => {
         };
       });
     });
-    // socket.on('new_tag_deactivated_transaction', data => {
-    //   const belt_id = parseInt(data?.belt_id, 10);
-    //   setPrintingBelts(prevState => {
-    //     return {
-    //       ...prevState,
-    //       [belt_id]: {
-    //         ...prevState[belt_id],
-    //         transaction_id: data?.transaction_id
-    //       }
-    //     };
-    //   });
-    // });
-    // socket.on('stop', data => {
-    //   const transaction_id = parseInt(data?.transaction_id, 10);
-    //   setActiveTransactions(prevState => {
-    //     if (data?.is_bag_belt) {
-    //       // data of stop is coming from bag belt
-    //       return {
-    //         ...prevState,
-    //         [transaction_id]: {
-    //           ...prevState[transaction_id],
-    //           bag_count_finished_at: new Date()
-    //         }
-    //       };
-    //     }
-    //     return {
-    //       ...prevState,
-    //       [transaction_id]: {
-    //         ...prevState[transaction_id],
-    //         tag_count_finished_at: new Date()
-    //       }
-    //     };
-    //   });
-    // });
     socket.on('service', data => {
       const tra_id = parseInt(data?.id, 10);
       setOngoingTransactions(prevState => {
@@ -316,6 +305,7 @@ const Index = () => {
       });
     });
   }, [socket]);
+
 
   if (shipmentFormOpen || reverseShipmentFormOpen) {
     return (
@@ -422,12 +412,25 @@ const Index = () => {
           queuedTransactions={queuedTransactions}
           handleBagDone={handleBagDone}
         />
-        {alertModalVisible ? (
-          <AlertModal
-            open={alertModalVisible}
-            close={() => setAlertModalVisible(false)}
-          />
-        ) : null}
+        {alertCounter!=0 ?
+        (<div className='alert'>
+          {
+            Object.keys(missPrintTransactionId).map((e,index)=>{
+              return (
+                <Alert style={{marginTop:'6px'}}
+                action={
+                  <Button color="inherit" size="small" onClick={()=>alertsnooze(e)}>
+                    Snooze
+                  </Button>
+                }
+                key={index}
+              >
+                This is a success alert — check it out!
+              </Alert>
+              )
+            })
+          }
+        </div>):null }
         {infoModalOpen ? (
           <InfoModal
             open={infoModalOpen}
@@ -455,7 +458,8 @@ DashboardComponent.propTypes = {
   setReverseShipmentFormOpen: PropTypes.func,
   ongoingTransactions: PropTypes.any,
   queuedTransactions: PropTypes.any,
-  handleBagDone: PropTypes.func
+  handleBagDone: PropTypes.func,
+  alertsnooze: PropTypes.func
 };
 
 export default Index;

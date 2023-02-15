@@ -38,6 +38,11 @@ const Container = styled.div `
       }
     }
   }
+  .alert {
+    position: fixed;
+    margin-left: 78%;
+    margin-top: -90%;
+  }
 
   .analysis-container {
     padding: 30px 60px 20px 60px;
