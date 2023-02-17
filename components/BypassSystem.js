@@ -1,17 +1,15 @@
-import { useState, useEffect } from 'react';
+import { useState } from 'react';
 
-import { Button, makeStyles, TextField, Modal,Fade } from '@material-ui/core';
 import FrinksButton from 'components/FrinksButton';
+import { Button, makeStyles, Modal, Fade } from '@material-ui/core';
 
-import { AiFillEyeInvisible } from 'react-icons/ai';
+import axios from 'axios';
 import { AiFillEye } from 'react-icons/ai';
+import Input from '@material-ui/core/Input';
+import { AiFillEyeInvisible } from 'react-icons/ai';
 import IconButton from '@material-ui/core/IconButton';
 import InputAdornment from '@material-ui/core/InputAdornment';
 import { post } from 'utils/api';
-
-
-import Input from '@material-ui/core/Input';
-import { event } from 'jquery';
 
 const useStyles = makeStyles(theme => ({
   modal: {
@@ -50,14 +48,14 @@ const useStyles = makeStyles(theme => ({
     background: 'white'
   },
   form: {
-    padding:'30px'
+    padding: '30px'
   },
   label: {
     fontSize: '24px',
-    paddingBottom:'24px'
+    paddingBottom: '24px'
   },
   input: {
-    width:'100%'
+    width: '100%'
   },
   desc: {
     [theme.breakpoints.down(960)]: {
@@ -66,14 +64,15 @@ const useStyles = makeStyles(theme => ({
   },
   submitContainer: {
     display: 'flex',
-    paddingTop:'20px'
+    paddingTop: '20px',
+    justifyContent: 'space-between'
   },
   formInfo: {
     [theme.breakpoints.down(960)]: {
       marginBottom: '20px'
     },
     fontSize: '18px',
-    paddingRight:'170px'
+    paddingRight: '170px'
   },
   sure: {
     display: 'flex',
@@ -81,119 +80,146 @@ const useStyles = makeStyles(theme => ({
 
   },
   cancel: {
-    paddingRight:'20px'
+    paddingRight: '20px'
+  },
+  error: {
+    color: 'red'
   }
 }));
 
-const BypassSystem = ({ open,Closebypass}) => {
+const BypassSystem = ({ open, close, trippingStatus, setTrippingStatus }) => {
   const classes = useStyles();
+  const [confirm, setConfirm] = useState(true);
   const [values, setValues] = useState({
     password: '',
     showPassword: false
   });
-  const handleClickShowPassword = () => {
-    setValues({ ...values, showPassword: !values.showPassword });
-  };
-
-  const handleMouseDownPassword = event => {
-    event.preventDefault();
-  };
+  const [error, setError] = useState(null);
 
   const handlePasswordChange = event => {
-    setValues( {
-        ...values,
-        password: event.target.value
-    } );
+    setError(null);
+    setValues({
+      ...values,
+      password: event.target.value
+    });
   };
-  
-  const [confirm, setConfirm] = useState(true)
-  const [bypass, setBypass] = useState();
 
-  const confirmPassword =()=> {
-    setConfirm(false)
+  const handleSubmit = async () => {
+    if(trippingStatus){
+      try {
+        await post('/api/configuration/enable-belt-tripping');
+        setTrippingStatus(false);
+        close();
+      } catch (err) {
+        close();
+      }
+    }else{
+      if (values.password.length >= 5) {
+        const res = await axios.post(`/api/bypass/${values?.password}`);
+        if (!res.data.success) {
+          setConfirm(true);
+          setError(res.data.error);
+        } else {
+          setTrippingStatus(true);
+          close();
+        }
+      } else {
+        setConfirm(true);
+        setError("Password incorrect");
+      }
+    }
   }
-  const cancel = () => {
-    setConfirm(true)
-  }
-  const submit = () => {
-    
-  }
- 
 
   return (
     <Modal open={open}
-    className={classes.modal}>
+      className={classes.modal}>
       <Fade in={open}>
-      <div className={classes.formContainer}>
-        <div className={classes.heading}>
-          <div className={classes.title}>
-            <p className={classes.desc}>Bypass Belt Tripping</p>
+        <div className={classes.formContainer}>
+          <div className={classes.heading}>
+            <div className={classes.title}>
+              <p className={classes.desc}>Bypass Belt Tripping</p>
+            </div>
+            <div className={classes.close}>
+              <Button onClick={() => close()} style={{ whiteSpace: 'nowrap' }}>
+                X Close
+              </Button>
+            </div>
           </div>
-          <div className={classes.close}>
-            <Button onClick={() => Closebypass()} style={{ whiteSpace: 'nowrap' }}>
-              X Close
-            </Button>
-          </div>
-        </div>
           <form>
-            {confirm?(
-          <div className={classes.form}>
-            <div className={classes.label}>Enter your password here </div>
-              <div className="password-container">
-                <Input
-                className={classes.input}
-                variant="outlined"
-                type={values.showPassword ? 'text' : 'password'}
-                  onChange={handlePasswordChange}
-                    value={values.password}
-                    autoComplete="none"
-                    autoFocus={false}
-                endAdornment={
-                  <InputAdornment position="end">
-                    <IconButton
-                      onClick={handleClickShowPassword}
-                      onMouseDown={handleMouseDownPassword}
-                    >
-                      {values.showPassword ? (
-                        <AiFillEyeInvisible />
-                      ) : (
-                        <AiFillEye />
-                      )}
-                    </IconButton>
-                  </InputAdornment>
-                }
-              />
-            </div>
-            <div className={classes.submitContainer}>
-              <p className={classes.formInfo}>
-                Click on Bypass Belt Tripping
-              </p>
-              <FrinksButton
-                text="Bypass Belt Tripping"
-                onClick={confirmPassword}
-              />
-            </div>
-          </div>):(
-          <div className={classes.form}>
-                  <div className={classes.label}>Are You sure, You want to Bypass your system ? </div>
-                  <div className={classes.sure}>
-            <div className={classes.cancel}>
-              <FrinksButton
-                text="Cancel"
-                onClick={cancel}
+            {confirm ? (
+              <>
+                {trippingStatus ? (
+                  <div className={classes.form}>
+                  <div className={classes.label}>Deactivate bypass? System will start controlling the belts.</div>
+                  <div className={classes.submitContainer}>
+                    <p className={classes.formInfo}>{' '}</p>
+                    <FrinksButton
+                      text="Enable belt tripping"
+                      onClick={() => setConfirm(false)}
+                    />
+                  </div>
+                </div>
+                ) : (<div className={classes.form}>
+                  <div className={classes.label}>Enter your password here </div>
+                  <div className="password-container">
+                    <Input
+                      className={classes.input}
+                      variant="outlined"
+                      type={values.showPassword ? 'text' : 'password'}
+                      onChange={handlePasswordChange}
+                      value={values.password}
+                      autoComplete="none"
+                      autoFocus={false}
+                      error={error !== null}
+                      endAdornment={
+                        <InputAdornment position="end">
+                          <IconButton
+                            onClick={() => setValues({ ...values, showPassword: !values.showPassword })}
+                            onMouseDown={() => setValues({ ...values, showPassword: !values.showPassword })}
+                          >
+                            {values.showPassword ? (
+                              <AiFillEyeInvisible />
+                            ) : (
+                              <AiFillEye />
+                            )}
+                          </IconButton>
+                        </InputAdornment>
+                      }
+                    />
+                    <p className={classes.error}>{error}</p>
+                  </div>
+                  <div className={classes.submitContainer}>
+                    <p className={classes.formInfo}>
+                      Click on Bypass Belt Tripping
+                    </p>
+                    <FrinksButton
+                      text="Bypass Belt Tripping"
+                      onClick={() => setConfirm(false)}
+                    />
+                  </div>
+                </div>)}
+              </>
+            ) : (
+              <div className={classes.form}>
+                <div className={classes.label}>{trippingStatus?'Are you sure, you want to enable belt tripping?':'Are you sure, you want to bypass your system?'}</div>
+                <div className={classes.sure}>
+                  <div className={classes.cancel}>
+                    <FrinksButton
+                      text="Cancel"
+                      onClick={() => setConfirm(true)}
                     />
                   </div>
                   <div className={classes.submit}>
-              <FrinksButton
-                text="Confirm"
-                onClick={submit}
+                    <FrinksButton
+                      text="Confirm"
+                      onClick={handleSubmit}
                     />
-            </div>
                   </div>
-                  </div>)}
-        </form>
+                </div>
+              </div>)}
+          </form>
         </div>
-        </Fade>
+      </Fade>
     </Modal>
   );
 };

@@ -58,6 +58,11 @@ const Container = styled.div`
       background: ${theme.palette.purple.main};
       font-weight: 600;
     }
+
+    .red-button {
+      background: red;
+      font-weight: 600;
+    }
   }
 
   .notification {

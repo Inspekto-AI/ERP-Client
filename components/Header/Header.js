@@ -1,5 +1,5 @@
 import Image from 'next/image';
-import { useState, useEffect } from 'react';
+import { useState, useContext } from 'react';
 import { useRouter } from 'next/router';
 import { Hidden, Button, Popper, Fade } from '@material-ui/core';
 import { BsFillTriangleFill } from 'react-icons/bs';
@@ -11,26 +11,24 @@ import ImageKitLoader from 'utils/ImageLoader';
 import PropTypes from 'prop-types';
 import Container from './Header.styles';
 import BypassSystem from 'components/BypassSystem';
+import { GlobalContext } from 'context/GlobalContext';
 
 const Header = ({
   openShipmentForm,
   openMaintenanceForm,
   openNotificationForm,
   maintenanceForm,
-  close
 }) => {
   const router = useRouter();
   const [anchorEl, setAnchorEl] = useState(null);
   const [headerDropDownVisible, setHeaderDropDownVisible] = useState(false);
   const [bypassSystem, setBypassSystem] = useState(false);
-  
 
-  
+  const { trippingStatus, setTrippingStatus } = useContext(GlobalContext);
 
   const handleClick = event => {
     setAnchorEl(anchorEl ? null : event.currentTarget);
   };
-
 
   const open = Boolean(anchorEl);
   const id = open ? 'transitions-popper' : undefined;
@@ -61,10 +59,10 @@ const Header = ({
                 <Button
                   variant="contained"
                   color="primary"
-                  className="purple-button"
+                  className={trippingStatus ? 'red-button' : 'purple-button'}
                   onClick={() => setBypassSystem(true)}
                 >
-                  <p className="button-label">BYPASS SYSTEM</p>
+                  <p className="button-label">{trippingStatus ? 'BYPASSED' : 'BYPASS SYSTEM'}</p>
                 </Button>
                 <Button
                   variant="contained"
@@ -166,6 +164,7 @@ const Header = ({
           >
             <IoIosMenu />
           </Button>
+          close
         </Hidden>
       </nav>
       <Hidden mdUp>
@@ -176,16 +175,18 @@ const Header = ({
           openMaintenanceForm={openMaintenanceForm}
           openNotificationForm={openNotificationForm}
           maintenanceForm={maintenanceForm}
-          // bypassSystem={bypassSystem}
+        // bypassSystem={bypassSystem}
         />
       </Hidden>
       {bypassSystem ? (
         <BypassSystem
-          
           open={bypassSystem}
-          Closebypass = {()=>setBypassSystem(false)}/>
-        
-      ):null}
+          close={() => setBypassSystem(false)}
+          trippingStatus={trippingStatus}
+          setTrippingStatus={(e)=>setTrippingStatus(e)}
+        />
+
+      ) : null}
     </Container>
   );
 };

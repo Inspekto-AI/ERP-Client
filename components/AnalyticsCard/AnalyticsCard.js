@@ -101,7 +101,6 @@ const AnalyticsCard = ({
                           src="freight-wagon(1).png"
                           alt="(Wl)"
                           loader={ImageKitLoader}
-                          layout="fixed"
                           height={22}
                           width={22}
                         />
@@ -110,7 +109,6 @@ const AnalyticsCard = ({
                           src="van.png"
                           alt="(TL)"
                           loader={ImageKitLoader}
-                          layout="fixed"
                           height={22}
                           width={22}
                         />
