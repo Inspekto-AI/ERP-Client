@@ -417,15 +417,15 @@ const Index = () => {
           {
             Object.keys(missPrintTransactionId).map((e,index)=>{
               return (
-                <Alert style={{marginTop:'6px'}}
+                <Alert  severity="warning" style={{backgroundColor: 'red'}} 
                 action={
-                  <Button color="inherit" size="small" onClick={()=>alertsnooze(e)}>
+                  <Button color="inherit" size="small" onClick={()=>alertsnooze(e)} style={{backgroundColor:'white'}}>
                     Snooze
                   </Button>
                 }
                 key={index}
               >
-                This is a success alert — check it out!
+                {`10 misprint bags passed from - ${missPrintTransactionId[e]}`}
               </Alert>
               )
             })
