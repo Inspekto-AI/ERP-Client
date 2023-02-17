@@ -129,9 +129,11 @@ const Index = () => {
 
   const alertsnooze = e => {
     const transactiondata = missPrintTransactionId;
+    console.log(transactiondata);
     delete transactiondata[e];
     setmissPrintTransactionId(transactiondata);
-    setAlertCounter(prevState => prevState - 1);
+    setAlertCounter(Object.keys(missPrintTransactionId).length - 1);
+    console.log(alertCounter, 'after snooze');
   };
 
   useEffect(() => {
@@ -215,17 +217,20 @@ const Index = () => {
       }
     });
     socket.on('tag-entry', data => {
-      console.log(data, '----tag-entry');
+      // console.log(data, '----tag-entry');
       const transaction_id = parseInt(data?.transaction_id, 10);
       if (data.transactionMissed % 10 === 0) {
-        setAlertCounter(prevState => prevState + 1);
+        setAlertCounter(Object.keys(missPrintTransactionId).length + 1);
         setmissPrintTransactionId(prevState => {
           return {
             ...prevState,
-            [transaction_id]: data?.belt_id,
-            missed_count: data?.transactionMissed
+            [transaction_id]: {
+              belt_id: data?.belt_id
+            }
           };
         });
+        console.log(missPrintTransactionId, 'Transaction object before snooze');
+        console.log(alertCounter, 'before snooze');
       }
       setOngoingTransactions(prevState => {
         if (!prevState) return null;
@@ -402,7 +407,7 @@ const Index = () => {
         {alertCounter != 0 ? (
           <div className="alert">
             {Object.keys(missPrintTransactionId).map((e, index) => {
-              console.log(e, index);
+              // console.log(e, index);
               return (
                 <Alert
                   severity="warning"
@@ -419,7 +424,7 @@ const Index = () => {
                   }
                   key={index}
                 >
-                  {` misprint bags passed from - ${missPrintTransactionId[e]}`}
+                  {` misprint bags passed from - `}
                 </Alert>
               );
             })}
