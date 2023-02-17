@@ -93,7 +93,7 @@ const Index = () => {
   const [missPrintTransactionId,setmissPrintTransactionId] = useState({});
   const [alertCounter, setAlertCounter] = useState(0);
   
-  console.log(alertCounter,'-------------------');
+
   const handleBagDone = async (
     transaction_id,
     vehicle_id,
@@ -222,7 +222,6 @@ const Index = () => {
       const transaction_id = parseInt(data?.transaction_id, 10);
       if(data.transactionMissed%10 === 0){
         setAlertCounter(prevState=>prevState+1);
-        console.log(setAlertCounter,"9999999999999999999");
         setmissPrintTransactionId(prevState => {
           return {
             ...prevState,
@@ -361,15 +360,6 @@ const Index = () => {
               >
                 <h6 style={{ textAlign: 'center' }}>Printing belt</h6>
               </div>
-              {/* <div
-                className={`option ${activeSection === 2 ? 'active' : ''}`}
-                onClick={() => setActiveSection(2)}
-                onKeyPress={() => setActiveSection(2)}
-                role="button"
-                tabIndex={0}
-              >
-                <h6 style={{ cursor: 'inherit' }}>Packer analytics</h6>
-              </div> */}
               <div
                 className={`option ${activeSection === 3 ? 'active' : ''}`}
                 onClick={() => setActiveSection(3)}
@@ -413,7 +403,7 @@ const Index = () => {
           queuedTransactions={queuedTransactions}
           handleBagDone={handleBagDone}
         />
-        {alertCounter > 0 ?
+        {alertCounter!=0 ?
         (<div className='alert'>
           {
             Object.keys(missPrintTransactionId).map((e,index)=>{
