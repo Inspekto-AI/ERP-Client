@@ -20,7 +20,7 @@ import InfoModal from 'components/InfoModal/InfoModal';
 import { useState, useContext, useEffect } from 'react';
 
 import Alert from '@material-ui/lab/Alert';
-import {  Button } from '@material-ui/core';
+import { Button } from '@material-ui/core';
 
 const DashboardComponent = ({
   activeSection,
@@ -33,7 +33,7 @@ const DashboardComponent = ({
   setReverseShipmentFormOpen,
   ongoingTransactions,
   queuedTransactions,
-  handleBagDone,
+  handleBagDone
 }) => {
   if (activeSection === 0) {
     return (
@@ -90,9 +90,8 @@ const Index = () => {
   const [reverseShipmentFormOpen, setReverseShipmentFormOpen] = useState(null);
   const [ongoingTransactions, setOngoingTransactions] = useState(null);
   const [queuedTransactions, setQueuedTransactions] = useState(null);
-  const [missPrintTransactionId,setmissPrintTransactionId] = useState({});
+  const [missPrintTransactionId, setmissPrintTransactionId] = useState({});
   const [alertCounter, setAlertCounter] = useState(0);
-  
 
   const handleBagDone = async (
     transaction_id,
@@ -128,13 +127,12 @@ const Index = () => {
     serviceMutation.mutate(data);
   };
 
-  const alertsnooze = (e)=>{
+  const alertsnooze = e => {
     const transactiondata = missPrintTransactionId;
     delete transactiondata[e];
     setmissPrintTransactionId(transactiondata);
-    setAlertCounter(prevState=>prevState-1);
-  }
-
+    setAlertCounter(prevState => prevState - 1);
+  };
 
   useEffect(() => {
     if (serviceMutation.isSuccess) {
@@ -183,7 +181,6 @@ const Index = () => {
       setQueuedTransactions(res?.data?.data?.queuedTransactions);
     };
     getActiveTransactions();
-
   }, []);
 
   useEffect(() => {
@@ -203,7 +200,7 @@ const Index = () => {
         };
       });
 
-      if(DEACTIVATE_PRINTING_SOLUTION){
+      if (DEACTIVATE_PRINTING_SOLUTION) {
         setPrintingBelts(prevState => {
           const belt_id = parseInt(data?.belt_id, 10);
           if (!prevState) return null;
@@ -220,15 +217,15 @@ const Index = () => {
     socket.on('tag-entry', data => {
       console.log(data, '----tag-entry');
       const transaction_id = parseInt(data?.transaction_id, 10);
-      if(data.transactionMissed%10 === 0){
-        setAlertCounter(prevState=>prevState+1);
+      if (data.transactionMissed % 10 === 0) {
+        setAlertCounter(prevState => prevState + 1);
         setmissPrintTransactionId(prevState => {
           return {
             ...prevState,
-            [transaction_id]:data?.belt_id
-          }
-        })
-
+            [transaction_id]: data?.belt_id,
+            missed_count: data?.transactionMissed
+          };
+        });
       }
       setOngoingTransactions(prevState => {
         if (!prevState) return null;
@@ -305,7 +302,6 @@ const Index = () => {
       });
     });
   }, [socket]);
-
 
   if (shipmentFormOpen || reverseShipmentFormOpen) {
     return (
@@ -403,26 +399,32 @@ const Index = () => {
           queuedTransactions={queuedTransactions}
           handleBagDone={handleBagDone}
         />
-        {alertCounter!=0 ?
-        (<div className='alert'>
-          {
-            Object.keys(missPrintTransactionId).map((e,index)=>{
-              console.log(missPrintTransactionId[e])
+        {alertCounter != 0 ? (
+          <div className="alert">
+            {Object.keys(missPrintTransactionId).map((e, index) => {
+              console.log(e, index);
               return (
-                <Alert  severity="warning" style={{backgroundColor: 'red'}} 
-                action={
-                  <Button color="inherit" size="small" onClick={()=>alertsnooze(e)} style={{backgroundColor:'white'}}>
-                    Snooze
-                  </Button>
-                }
-                key={index}
-              >
-                {`10 misprint bags passed from - ${missPrintTransactionId[e]}`}
-              </Alert>
-              )
-            })
-          }
-        </div>):null }
+                <Alert
+                  severity="warning"
+                  style={{ backgroundColor: 'red', marginBottom: '0.938em' }}
+                  action={
+                    <Button
+                      color="inherit"
+                      size="small"
+                      onClick={() => alertsnooze(e)}
+                      style={{ backgroundColor: 'white' }}
+                    >
+                      Snooze
+                    </Button>
+                  }
+                  key={index}
+                >
+                  {` misprint bags passed from - ${missPrintTransactionId[e]}`}
+                </Alert>
+              );
+            })}
+          </div>
+        ) : null}
         {infoModalOpen ? (
           <InfoModal
             open={infoModalOpen}

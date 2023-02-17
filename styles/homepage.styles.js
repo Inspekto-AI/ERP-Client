@@ -1,7 +1,7 @@
 import styled from '@emotion/styled';
 import theme from 'styles/theme';
 
-const Container = styled.div `
+const Container = styled.div`
   .trackbar {
     background: white;
     display: flex;
@@ -38,11 +38,6 @@ const Container = styled.div `
       }
     }
   }
-  .alert {
-    position: fixed;
-    margin-left: 78%;
-    margin-top: -90%;
-  }
 
   .analysis-container {
     padding: 30px 60px 20px 60px;
@@ -53,9 +48,7 @@ const Container = styled.div `
     }
 
     .head {
-      color: ${
-    theme.palette.trypanBlue.main
-};
+      color: ${theme.palette.trypanBlue.main};
       display: flex;
       align-items: center;
       justify-content: space-between;
@@ -125,12 +118,12 @@ const Container = styled.div `
 
   .alert {
     position: fixed;
-    top : 3.520833vw;
-    right : 1.0416666666666667vw;
+    top: 3.520833vw;
+    right: 1.0416666666666667vw;
   }
   .MuiAlert-message {
-    color:white;
-    font-size:0.8333333333333334vw;
+    color: white;
+    font-size: 0.8333333333333334vw;
     padding-top: 4%;
   }
   .MuiButton-textSizeSmall {
