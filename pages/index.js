@@ -131,7 +131,7 @@ const Index = () => {
     const transactiondata = missPrintTransactionId;
     delete transactiondata[e];
     setmissPrintTransactionId(transactiondata);
-    setAlertCounter(prevState => prevState - 1);
+    setAlertCounter(Object.keys(missPrintTransactionId).length - 1);
   };
 
   useEffect(() => {
@@ -215,22 +215,14 @@ const Index = () => {
       }
     });
     socket.on('tag-entry', data => {
-      console.log(data, '----tag-entry');
+      // console.log(data, '----tag-entry');
       const transaction_id = parseInt(data?.transaction_id, 10);
-      if (data.transactionMissed % 10 === 0) {
-        setAlertCounter(prevState => prevState + 1);
-        setmissPrintTransactionId(prevState => {
-          return {
-            ...prevState,
-            [transaction_id]: data?.belt_id,
-            missed_count: data?.transactionMissed
-          };
-        });
-      }
+      let machine_id = null;
       setOngoingTransactions(prevState => {
         if (!prevState) return null;
         if (prevState && Object.keys(prevState).length === 0) return {};
         else if (!(transaction_id in prevState)) return prevState;
+        machine_id = prevState[transaction_id]?.printing_id;
         return {
           ...prevState,
           [transaction_id]: {
@@ -240,6 +232,19 @@ const Index = () => {
           }
         };
       });
+      if (data.transactionMissed % 10 === 0) {
+        setAlertCounter(Object.keys(missPrintTransactionId).length + 1);
+        setmissPrintTransactionId(prevState => {
+          return {
+            ...prevState,
+            [transaction_id]: {
+              belt_id: data?.belt_id,
+              machine_id,
+              missed_count: data?.transactionMissed
+            }
+          };
+        });
+      }
       const belt_id = parseInt(data?.belt_id, 10);
       setPrintingBelts(prevState => {
         if (!prevState) return null;
@@ -405,7 +410,7 @@ const Index = () => {
               return (
                 <Alert
                   severity="warning"
-                  style={{ backgroundColor: 'red', marginBottom: '0.938em' }}
+                  style={{ backgroundColor: 'red', marginBottom: '0.938em',width: '500px' }}
                   action={
                     <Button
                       color="inherit"
@@ -418,7 +423,7 @@ const Index = () => {
                   }
                   key={index}
                 >
-                  {` misprint bags passed from - `}
+                  {`${missPrintTransactionId[e].missed_count} misprint bags passed from - ${missPrintTransactionId[e].machine_id}`}
                 </Alert>
               );
             })}

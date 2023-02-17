@@ -29,7 +29,7 @@ const LoaderAnalysis = ({
       setFiltervehicle(vehicleBelts && vehicleBelts.length !== 0 ?(vehicleBelts.filter(vehicle=>vehicle.vehicle_type===filterButton)):null)
     }
     
-  }, [vehicleBelts, filterButton]);
+  }, [vehicleBelts?.length, filterButton]);
   
 
 
