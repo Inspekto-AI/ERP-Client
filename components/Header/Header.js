@@ -1,5 +1,5 @@
 import Image from 'next/image';
-import { useState } from 'react';
+import { useState, useContext } from 'react';
 import { useRouter } from 'next/router';
 import { Hidden, Button, Popper, Fade } from '@material-ui/core';
 import { BsFillTriangleFill } from 'react-icons/bs';
@@ -10,16 +10,21 @@ import { IS_AWS_FRONTEND } from 'utils/constants';
 import ImageKitLoader from 'utils/ImageLoader';
 import PropTypes from 'prop-types';
 import Container from './Header.styles';
+import BypassSystem from 'components/BypassSystem';
+import { GlobalContext } from 'context/GlobalContext';
 
 const Header = ({
   openShipmentForm,
   openMaintenanceForm,
   openNotificationForm,
-  maintenanceForm
+  maintenanceForm,
 }) => {
   const router = useRouter();
   const [anchorEl, setAnchorEl] = useState(null);
   const [headerDropDownVisible, setHeaderDropDownVisible] = useState(false);
+  const [bypassSystem, setBypassSystem] = useState(false);
+
+  const { trippingStatus, setTrippingStatus } = useContext(GlobalContext);
 
   const handleClick = event => {
     setAnchorEl(anchorEl ? null : event.currentTarget);
@@ -51,6 +56,14 @@ const Header = ({
           <div className="links">
             {IS_AWS_FRONTEND ? null : (
               <>
+                <Button
+                  variant="contained"
+                  color="primary"
+                  className={trippingStatus ? 'red-button' : 'purple-button'}
+                  onClick={() => setBypassSystem(true)}
+                >
+                  <p className="button-label">{trippingStatus ? 'BYPASSED' : 'BYPASS SYSTEM'}</p>
+                </Button>
                 <Button
                   variant="contained"
                   color="primary"
@@ -151,6 +164,7 @@ const Header = ({
           >
             <IoIosMenu />
           </Button>
+          close
         </Hidden>
       </nav>
       <Hidden mdUp>
@@ -161,8 +175,18 @@ const Header = ({
           openMaintenanceForm={openMaintenanceForm}
           openNotificationForm={openNotificationForm}
           maintenanceForm={maintenanceForm}
+        // bypassSystem={bypassSystem}
         />
       </Hidden>
+      {bypassSystem ? (
+        <BypassSystem
+          open={bypassSystem}
+          close={() => setBypassSystem(false)}
+          trippingStatus={trippingStatus}
+          setTrippingStatus={(e)=>setTrippingStatus(e)}
+        />
+
+      ) : null}
     </Container>
   );
 };
@@ -171,7 +195,9 @@ Header.propTypes = {
   openShipmentForm: PropTypes.func,
   openMaintenanceForm: PropTypes.func,
   openNotificationForm: PropTypes.func,
-  maintenanceForm: PropTypes.func
+  maintenanceForm: PropTypes.func,
+  bypassSystem: PropTypes.bool,
+  Closebypass: PropTypes.func
 };
 
 export default Header;

@@ -3,6 +3,8 @@ import { QueryClient, QueryClientProvider, Hydrate } from 'react-query';
 import CssBaseline from '@material-ui/core/CssBaseline';
 import { ThemeProvider } from '@material-ui/core/styles';
 import { SocketContext, socket } from 'context/SocketContext';
+import { GlobalProvider } from 'context/GlobalContext';
+import InitCheck from 'components/InitCheck';
 
 import Head from 'next/head';
 import PropTypes from 'prop-types';
@@ -49,7 +51,11 @@ export default function MyApp({ Component, pageProps }) {
         <SocketContext.Provider value={socket}>
           <QueryClientProvider client={queryClient}>
             <Hydrate state={pageProps.dehydratedState}>
-                <Component {...pageProps} />
+              <GlobalProvider>
+                <InitCheck>
+                  <Component {...pageProps} />
+                </InitCheck>
+              </GlobalProvider>
             </Hydrate>
           </QueryClientProvider>
         </SocketContext.Provider>
