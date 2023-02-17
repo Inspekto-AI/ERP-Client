@@ -93,7 +93,7 @@ const Index = () => {
   const [missPrintTransactionId,setmissPrintTransactionId] = useState({});
   const [alertCounter, setAlertCounter] = useState(0);
   
-
+  console.log(alertCounter,'-------------------');
   const handleBagDone = async (
     transaction_id,
     vehicle_id,
@@ -222,6 +222,7 @@ const Index = () => {
       const transaction_id = parseInt(data?.transaction_id, 10);
       if(data.transactionMissed%10 === 0){
         setAlertCounter(prevState=>prevState+1);
+        console.log(setAlertCounter,"9999999999999999999");
         setmissPrintTransactionId(prevState => {
           return {
             ...prevState,
@@ -412,10 +413,11 @@ const Index = () => {
           queuedTransactions={queuedTransactions}
           handleBagDone={handleBagDone}
         />
-        {alertCounter!=0 ?
+        {alertCounter > 0 ?
         (<div className='alert'>
           {
             Object.keys(missPrintTransactionId).map((e,index)=>{
+              console.log(missPrintTransactionId[e])
               return (
                 <Alert  severity="warning" style={{backgroundColor: 'red'}} 
                 action={
