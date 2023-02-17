@@ -122,6 +122,24 @@ const Container = styled.div `
       padding-bottom: 40px;
     }
   }
+
+  .alert {
+    position: fixed;
+    top : 3.520833vw;
+    right : 1.0416666666666667vw;
+  }
+  .MuiAlert-message {
+    color:white;
+    font-size:0.8333333333333334vw;
+    padding-top: 4%;
+  }
+  .MuiButton-textSizeSmall {
+    padding: 13px 18px;
+    font-size: 0.8125rem;
+  }
+  .MuiAlert-standardWarning .MuiAlert-icon {
+    font-size: 2.0833333333333335vw;
+  }
 `;
 
 export default Container;
