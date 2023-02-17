@@ -402,7 +402,6 @@ const Index = () => {
         {alertCounter != 0 ? (
           <div className="alert">
             {Object.keys(missPrintTransactionId).map((e, index) => {
-              console.log(e, index);
               return (
                 <Alert
                   severity="warning"
@@ -419,7 +418,7 @@ const Index = () => {
                   }
                   key={index}
                 >
-                  {` misprint bags passed from - ${missPrintTransactionId[e]}`}
+                  {` misprint bags passed from - `}
                 </Alert>
               );
             })}
