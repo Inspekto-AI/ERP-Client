@@ -3,8 +3,9 @@ import Image from 'next/image';
 import DefectiveBagsContainer from 'styles/defectiveBags.styles';
 import PropTypes from 'prop-types';
 import { BASE_URL } from 'utils/constants';
-import { get } from 'utils/api';
+import { get, put } from 'utils/api';
 import { getStartAndEndDate } from 'utils/globalFunctions';
+import { Button } from '@material-ui/core';
 
 const DefectiveBags = ({ transaction_id, belt_id }) => {
   const [rejectBags, setRejectBags] = useState(null);
@@ -27,11 +28,25 @@ const DefectiveBags = ({ transaction_id, belt_id }) => {
     else fetchRejectBagsByBelt();
   }, [belt_id, transaction_id]);
 
+  const removeFromMissprint = async (id, image_location, index) => {
+    const response = await put(
+      `/api/transaction/mark-false-positive?id=${id}&image_location=${image_location}`
+    );
+
+    if (response?.data?.success) {
+      const newrejectbags = [...rejectBags];
+      newrejectbags[index] = { ...newrejectbags[index], is_false_positive: 1 };
+      setRejectBags(newrejectbags);
+    }
+  };
+  console.log(rejectBags, 'rejectbags');
+
   return (
     <DefectiveBagsContainer>
       {rejectBags && rejectBags.length > 0 ? (
         <>
           {rejectBags.map((e, index) => {
+            console.log(e, index);
             return (
               <div className="defect" key={index}>
                 <div className={`title ${index === 0 ? 'active' : ''}`}>
@@ -63,6 +78,18 @@ const DefectiveBags = ({ transaction_id, belt_id }) => {
                   <div className="description">
                     <div className="heading">Alert #{index + 1}</div>
                     <div className="sub-heading">Bag tag missing</div>
+                    {e?.is_false_positive === 1 ? null : (
+                      <Button
+                        onClick={() =>
+                          removeFromMissprint(e?.id, e?.local_image_path, index)
+                        }
+                        variant="outlined"
+                        color="secondary"
+                        style={{ fontSize: '10px', fontWeight: '600' }}
+                      >
+                        INCORRECT ALERT?
+                      </Button>
+                    )}
                   </div>
                 </div>
               </div>
