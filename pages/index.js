@@ -232,7 +232,7 @@ const Index = () => {
           }
         };
       });
-      if (data.transactionMissed % 10 === 0) {
+      if (data.transactionMissed>0 && data.transactionMissed % 10 === 0) {
         setAlertCounter(Object.keys(missPrintTransactionId).length + 1);
         setmissPrintTransactionId(prevState => {
           return {
