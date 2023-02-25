@@ -123,16 +123,22 @@ const Container = styled.div`
   }
   .MuiAlert-message {
     color: white;
-    font-size: 0.8333333333333334vw;
-    padding-top: 4%;
+    font-size: 16px;
   }
   .MuiButton-textSizeSmall {
-    padding: 13px 18px;
+    padding: 5px 18px;
     font-size: 0.8125rem;
   }
   .MuiAlert-standardWarning .MuiAlert-icon {
-    font-size: 2.0833333333333335vw;
+    font-size: 2.2.083333vw;
   }
+  .MuiAlert-action {
+    display: flex;
+    align-items: center;
+    margin-left: auto;
+    margin-right: -8px;
+    padding-left: 16px;
+}
 `;
 
 export default Container;
