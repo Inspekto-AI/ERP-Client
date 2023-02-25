@@ -133,7 +133,7 @@ const Index = () => {
     const transactiondata = missPrintTransactionId;
     delete transactiondata[e];
     setmissPrintTransactionId(transactiondata);
-    setAlertCounter(Object.keys(missPrintTransactionId).length - 1);
+    setAlertCounter(prevState=>prevState-1);
   };
 
   useEffect(() => {
@@ -238,8 +238,11 @@ const Index = () => {
           }
         };
       });
-      if (data.transactionMissed % 10 === 0) {
-        setAlertCounter(Object.keys(missPrintTransactionId).length + 1);
+      if (data.transactionMissed>0 && data.transactionMissed % 10 === 0) {
+        console.log(Object.keys(missPrintTransactionId),"------------------ missprint")
+        // setAlertCounter(Object.keys(missPrintTransactionId).length + 1);
+        setAlertCounter(prevState=>prevState+1);
+        
         setmissPrintTransactionId(prevState => {
           return {
             ...prevState,
@@ -336,7 +339,6 @@ const Index = () => {
   if (maintenanceForm) {
     return <MaintenanceForm close={() => setMaintenanceForm(false)} />;
   }
-
   return (
     <Layout
       openShipmentForm={() => setShipmentFormOpen(true)}
