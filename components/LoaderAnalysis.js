@@ -20,13 +20,18 @@ const LoaderAnalysis = ({
   const [bagModifyModalOpen, setBagModifyModalOpen] = useState(null);
   const [filterButton, setFilterButton] = useState(2);
   const [filterVehicle, setFiltervehicle] = useState();
-  
+
   useEffect(() => {
     if (filterButton === 2) {
-      setFiltervehicle(vehicleBelts)
-    }
-    else {
-      setFiltervehicle(vehicleBelts && vehicleBelts.length !== 0 ?(vehicleBelts.filter(vehicle=>vehicle.vehicle_type===filterButton)):null)
+      setFiltervehicle(vehicleBelts);
+    } else {
+      setFiltervehicle(
+        vehicleBelts && vehicleBelts.length !== 0
+          ? vehicleBelts.filter(
+              vehicle => vehicle.vehicle_type === filterButton
+            )
+          : null
+      );
     }
     
   }, [vehicleBelts?.length, filterButton]);
@@ -175,9 +180,9 @@ const LoaderAnalysis = ({
             >
               {' '}
               {filterVehicle &&
-                  filterVehicle?.map((e, index) => (
+                filterVehicle?.map((e, index) => (
                   // console.log(e.vehicle_type),
-                  
+
                   <Grid
                     item
                     xs={12}
@@ -250,7 +255,7 @@ LoaderAnalysis.propTypes = {
   ongoingTransactions: PropTypes.any,
   handleBagDone: PropTypes.func,
   filterButton: PropTypes.number,
-  filterVehicle: PropTypes.any,
+  filterVehicle: PropTypes.any
 };
 
 export default LoaderAnalysis;
