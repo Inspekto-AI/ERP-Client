@@ -98,6 +98,7 @@ const Index = () => {
     vehicle_id,
     printing_belt_id,
     machine_id,
+    vehicle_type,
     comment
   ) => {
     setIsLoading(true);
@@ -116,7 +117,8 @@ const Index = () => {
       const currData = prevState;
       currData.push({
         id: vehicle_id,
-        vehicle_id: machine_id
+        vehicle_id: machine_id,
+        vehicle_type
       });
       return currData;
     });
@@ -144,20 +146,24 @@ const Index = () => {
 
   const handleBagIncrement = async data => {
     setIsLoading(true);
-    const res = await post('/api/transaction/bag-change', data);
-    setOngoingTransactions(
-      Object.keys(ongoingTransactions).map(e => {
-        if (ongoingTransactions[e].id === data.transaction_id) {
-          // modify this entity
-          return {
-            ...ongoingTransactions[e],
-            bag_limit: parseInt(data?.new_bag_limit) + parseInt(data?.old_limit)
-          };
-        }
-        return ongoingTransactions[e];
-      })
-    );
-    setIsLoading(false);
+    try {
+      await post('/api/transaction/bag-change', data);
+      setOngoingTransactions(
+        Object.keys(ongoingTransactions).map(e => {
+          if (ongoingTransactions[e].id === data.transaction_id) {
+            // modify this entity
+            return {
+              ...ongoingTransactions[e],
+              bag_limit: parseInt(data?.new_bag_limit) + parseInt(data?.old_limit)
+            };
+          }
+          return ongoingTransactions[e];
+        })
+      );
+      setIsLoading(false);
+    } catch (error) {
+      setIsLoading(false);
+    }
   };
 
   const handleStop = async data => {
@@ -352,7 +358,8 @@ const Index = () => {
               >
                 <h6 style={{ textAlign: 'center' }}>Loader belt</h6>
               </div>
-              <div
+              {DEACTIVATE_PRINTING_SOLUTION?(null):(
+                <div
                 className={`option ${activeSection === 1 ? 'active' : ''}`}
                 onClick={() => setActiveSection(1)}
                 onKeyPress={() => setActiveSection(1)}
@@ -361,6 +368,7 @@ const Index = () => {
               >
                 <h6 style={{ textAlign: 'center' }}>Printing belt</h6>
               </div>
+              )}
               <div
                 className={`option ${activeSection === 3 ? 'active' : ''}`}
                 onClick={() => setActiveSection(3)}

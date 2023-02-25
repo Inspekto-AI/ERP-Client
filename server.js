@@ -4,6 +4,7 @@ const crypto = require('crypto');
 const express = require('express');
 const path = require('path');
 const { spawn } = require("child_process");
+const { default: axios } = require('axios');
 
 const app = next({ dev: process.env.NODE_ENV !== 'production' });
 
@@ -26,6 +27,7 @@ app.prepare().then(() => {
             passwordData.is_belt_deactivated = true;
             passwordData.master_password = newPassword;
             fs.writeFileSync(filePath, JSON.stringify(passwordData),{encoding:'utf8',flag:'w'});
+            axios.post('http://localhost:9000/api/configuration/disable-belt-tripping');
             return res.send({success: true, error: null});
         }
         res.send({success: false, error: "Password incorrect"});

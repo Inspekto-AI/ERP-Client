@@ -191,6 +191,7 @@ const InfoModal = ({
       open?.bag_counting_belt_id,
       open?.printing_belt_id,
       open?.vehicle_id,
+      open?.vehicle_type,
       comment
     );
     close();
