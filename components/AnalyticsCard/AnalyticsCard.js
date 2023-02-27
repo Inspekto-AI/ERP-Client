@@ -270,7 +270,8 @@ const AnalyticsCard = ({
                       data?.id,
                       data?.bag_counting_belt_id,
                       data?.printing_belt_id,
-                      data?.vehicle_id
+                      data?.vehicle_id,
+                      data?.vehicle_type
                     )
                   }
                   text="Done"
