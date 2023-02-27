@@ -33,7 +33,7 @@ const LoaderAnalysis = ({
           : null
       );
     }
-  }, [vehicleBelts, filterButton]);
+  }, [vehicleBelts?.length, filterButton]);
 
   return (
     <>
