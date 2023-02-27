@@ -62,8 +62,10 @@ const Report = () => {
         dateRange: getStartAndEndDate(date),
         trackbar: [printingStartTrackBar, printingEndTrackBar]
       });
+      // setPrintingReport(res.data.data);
       setPrintingReport(res.data.data);
     };
+
     const fetchLoadingReport = async () => {
       const res = await get('/api/analysis/loading-report', {
         dateRange: getStartAndEndDate(date),
@@ -179,9 +181,29 @@ const Report = () => {
             setFilter={e => setShipmentFilter(e)}
           />
           <ReportTable
-            title="Printing Bay"
+            title="Printing Bay(Shift A)"
             layoutType={1}
-            data={printingReport}
+            data={printingReport ? printingReport[0] : null}
+            startCount={printingStartTrackBar}
+            endCount={printingEndTrackBar}
+            setStartCount={e => setPrintingStartTrackBar(e)}
+            setEndCount={e => setPrintingEndTrackBar(e)}
+            hideRowCount
+          />
+          <ReportTable
+            title="Printing Bay(Shift B)"
+            layoutType={1}
+            data={printingReport ? printingReport[1] : null}
+            startCount={printingStartTrackBar}
+            endCount={printingEndTrackBar}
+            setStartCount={e => setPrintingStartTrackBar(e)}
+            setEndCount={e => setPrintingEndTrackBar(e)}
+            hideRowCount
+          />
+          <ReportTable
+            title="Printing Bay(Shift C)"
+            layoutType={1}
+            data={printingReport ? printingReport[2] : null}
             startCount={printingStartTrackBar}
             endCount={printingEndTrackBar}
             setStartCount={e => setPrintingStartTrackBar(e)}

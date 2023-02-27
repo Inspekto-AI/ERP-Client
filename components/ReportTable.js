@@ -57,7 +57,6 @@ const stableSort = (array, comparator) => {
   });
   return stabilizedThis?.map(el => el[0]);
 };
-
 const shipmentHead = [
   {
     id: 'id',
@@ -209,7 +208,6 @@ const packerHead = [
     label: 'Overall Performance'
   }
 ];
-
 const RenderTableHeader = ({
   layoutType,
   order,
@@ -506,8 +504,8 @@ const RenderTable = ({ layoutType, data, setRejectIndex }) => {
                     </TableCell>
                     <TableCell style={{ textAlign: 'center' }}>
                       {row?.licence_number === ''
-                        ? `Wagon No.- ${row.wagon_no}, Gate/Door No.- ${row.gate_no}, Rake No.- ${row.rack_no}`
-                        : `Truck No.- ${row?.licence_number}`}{' '}
+                        ? `W - ${row.wagon_no}, Gate/Door No.- ${row.gate_no}, Rake No.- ${row.rack_no}`
+                        : `T - ${row?.licence_number}`}{' '}
                     </TableCell>
                     <TableCell style={{ textAlign: 'center' }}>
                       {row?.vehicle?.machine_id || 'NA'}{' '}
@@ -850,10 +848,8 @@ const ReportTable = ({
                 </div>
                 <div className="pipe" />
                 <div className="total-records">
-                  Showing {data?.count === 0 ? 0 : startCount + 1}{' '}
-                  to {Math.min(endCount, data?.count)}{' '}
-                  of {data?.count}{' '}
-                  entries
+                  Showing {data?.count === 0 ? 0 : startCount + 1} to{' '}
+                  {Math.min(endCount, data?.count)} of {data?.count} entries
                 </div>
               </div>
               <div className="right">
