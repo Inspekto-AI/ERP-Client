@@ -21,7 +21,7 @@ const Container = styled.div`
     color: #5a5a5a;
   }
 
-  .sub-header{
+  .sub-header {
     display: flex;
     align-items: center;
     justify-content: space-between;
@@ -49,24 +49,24 @@ export const CardContainer = styled.div`
   margin-left: 0;
   border: solid 1px;
   border-radius: 4px;
-  background: ${props => props.active ? '#00C1F3' : '#FF5742'};
+  background: ${props => (props.active ? '#00C1F3' : '#FF5742')};
   color: white;
   font-size: 18px;
 
-  .downtime{
+  .downtime {
     font-size: 14px;
     padding-left: 10px;
   }
 
-  .container{
+  .container {
     display: flex;
   }
 
-  .image-container{
+  .image-container {
     padding: 10px;
   }
 
-  .info{
+  .info {
     padding: 20px 10px;
   }
 `;

@@ -13,7 +13,7 @@ export const msToTime = milliseconds => {
   }:${seconds < 10 ? `0${seconds}` : seconds}`;
 };
 
-export const getStartAndEndDate = (dateRange) => {
+export const getStartAndEndDate = dateRange => {
   if (dateRange) {
     let start = dateRange[0].startDate;
     let end = dateRange[0].endDate;

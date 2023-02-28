@@ -88,9 +88,9 @@ const Index = () => {
   const [backgroundTransactions, setBackgroundTransactions] = useState(null);
   const [activeSection, setActiveSection] = useState(IS_AWS_FRONTEND ? 4 : 0);
   const [reverseShipmentFormOpen, setReverseShipmentFormOpen] = useState(null);
+  const [missPrintTransactionId, setmissPrintTransactionId] = useState({});
   const [ongoingTransactions, setOngoingTransactions] = useState(null);
   const [queuedTransactions, setQueuedTransactions] = useState(null);
-  const [missPrintTransactionId, setmissPrintTransactionId] = useState({});
   const [alertCounter, setAlertCounter] = useState(0);
 
   const handleBagDone = async (
@@ -106,23 +106,10 @@ const Index = () => {
       transaction_id,
       comment,
       vehicle_id,
-      printing_belt_id
+      printing_belt_id,
+      machine_id,
+      vehicle_type,
     });
-    setOngoingTransactions(prevState => {
-      const currData = prevState;
-      delete currData[transaction_id];
-      return currData;
-    });
-    setVehicleBelts(prevState => {
-      const currData = prevState;
-      currData.push({
-        id: vehicle_id,
-        vehicle_id: machine_id,
-        vehicle_type
-      });
-      return currData;
-    });
-    setIsLoading(false);
   };
 
   const handleNewShipment = async data => {
@@ -133,7 +120,7 @@ const Index = () => {
     const transactiondata = missPrintTransactionId;
     delete transactiondata[e];
     setmissPrintTransactionId(transactiondata);
-    setAlertCounter(prevState=>prevState-1);
+    setAlertCounter(prevState => prevState - 1);
   };
 
   useEffect(() => {
@@ -148,37 +135,23 @@ const Index = () => {
     setIsLoading(true);
     try {
       await post('/api/transaction/bag-change', data);
-      setOngoingTransactions(
-        Object.keys(ongoingTransactions).map(e => {
-          if (ongoingTransactions[e].id === data.transaction_id) {
-            // modify this entity
-            return {
-              ...ongoingTransactions[e],
-              bag_limit: parseInt(data?.new_bag_limit) + parseInt(data?.old_limit)
-            };
-          }
-          return ongoingTransactions[e];
-        })
-      );
-      setIsLoading(false);
     } catch (error) {
       setIsLoading(false);
     }
   };
 
-  const handleStop = async data => {
-    setIsLoading(true);
+  const handleStop = async () => {
+    // setIsLoading(true);
     // post('/api/transaction/belt-stop', data);
     // const updatedTransactions = activeTransactions;
     // delete updatedTransactions[data?.transaction_id];
     // setActiveTransactions(updatedTransactions);
-    setIsLoading(false);
+    // setIsLoading(false);
   };
 
   useEffect(() => {
     const getActiveTransactions = async () => {
       const res = await get('/api/transaction');
-      // setActiveTransactions(res?.data?.data?.transactionRes);
       const backgroundTransactionsRes = res?.data?.data?.backgroundInfo;
       setBackgroundTransactions(backgroundTransactionsRes);
       setPrintingBelts(res?.data?.data?.printingBeltRes);
@@ -191,7 +164,6 @@ const Index = () => {
 
   useEffect(() => {
     socket.on('bag-entry', data => {
-      // console.log(data, '----bag-entry');
       const transaction_id = parseInt(data?.transaction_id, 10);
       setOngoingTransactions(prevState => {
         if (!prevState) return null;
@@ -221,7 +193,6 @@ const Index = () => {
       }
     });
     socket.on('tag-entry', data => {
-      // console.log(data, '----tag-entry');
       const transaction_id = parseInt(data?.transaction_id, 10);
       let machine_id = null;
       setOngoingTransactions(prevState => {
@@ -238,11 +209,10 @@ const Index = () => {
           }
         };
       });
-      if (data.transactionMissed>0 && data.transactionMissed % 10 === 0) {
-        console.log(Object.keys(missPrintTransactionId),"------------------ missprint")
+      if (data.transactionMissed > 0 && data.transactionMissed % 10 === 0) {
         // setAlertCounter(Object.keys(missPrintTransactionId).length + 1);
-        setAlertCounter(prevState=>prevState+1);
-        
+        setAlertCounter(prevState => prevState + 1);
+
         setmissPrintTransactionId(prevState => {
           return {
             ...prevState,
@@ -315,6 +285,41 @@ const Index = () => {
         return newState;
       });
     });
+    socket.on('bag-done', (data) => {
+      const { transaction_id, vehicle_id, machine_id, vehicle_type } = data;
+      setOngoingTransactions(prevState => {
+        const currData = { ...prevState };
+        delete currData[transaction_id];
+        return currData;
+      });
+      setVehicleBelts(prevState => {
+        const currData = [...prevState];
+        currData.push({
+          id: vehicle_id,
+          vehicle_id: machine_id,
+          vehicle_type
+        });
+        return currData;
+      });
+      setIsLoading(false);
+    });
+
+    socket.on('bag-update', (data) => {
+      setOngoingTransactions(prevState => {
+        const updatedTransactions = Object.keys(prevState).map(e => {
+          if (prevState[e].id === data.transaction_id) {
+            // modify this entity
+            return {
+              ...prevState[e],
+              bag_limit: parseInt(data?.new_bag_limit)
+            };
+          }
+          return prevState[e];
+        });
+        return updatedTransactions;
+      });
+      setIsLoading(false);
+    });
   }, [socket]);
 
   if (shipmentFormOpen || reverseShipmentFormOpen) {
@@ -360,16 +365,16 @@ const Index = () => {
               >
                 <h6 style={{ textAlign: 'center' }}>Loader belt</h6>
               </div>
-              {DEACTIVATE_PRINTING_SOLUTION?(null):(
+              {DEACTIVATE_PRINTING_SOLUTION ? (null) : (
                 <div
-                className={`option ${activeSection === 1 ? 'active' : ''}`}
-                onClick={() => setActiveSection(1)}
-                onKeyPress={() => setActiveSection(1)}
-                role="button"
-                tabIndex={0}
-              >
-                <h6 style={{ textAlign: 'center' }}>Printing belt</h6>
-              </div>
+                  className={`option ${activeSection === 1 ? 'active' : ''}`}
+                  onClick={() => setActiveSection(1)}
+                  onKeyPress={() => setActiveSection(1)}
+                  role="button"
+                  tabIndex={0}
+                >
+                  <h6 style={{ textAlign: 'center' }}>Printing belt</h6>
+                </div>
               )}
               <div
                 className={`option ${activeSection === 3 ? 'active' : ''}`}
@@ -420,7 +425,7 @@ const Index = () => {
               return (
                 <Alert
                   severity="warning"
-                  style={{ backgroundColor: 'red', marginBottom: '0.938em',width: '500px' }}
+                  style={{ backgroundColor: 'red', marginBottom: '0.938em', width: '500px' }}
                   action={
                     <Button
                       color="inherit"

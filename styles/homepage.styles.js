@@ -138,7 +138,7 @@ const Container = styled.div`
     margin-left: auto;
     margin-right: -8px;
     padding-left: 16px;
-}
+  }
 `;
 
 export default Container;
