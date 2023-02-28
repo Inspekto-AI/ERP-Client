@@ -166,13 +166,14 @@ const InfoModal = ({
   const [error, setError] = useState('');
 
   const handleFormSubmit = async () => {
-    if (
-      !dataToDisplay &&
-      (comment === '' || newBagCount === 0 || newBagCount === '0')
-    ) {
-      setError('* All fields are required');
-      return;
-    }
+    // if (
+    //   !dataToDisplay &&
+    //   (comment === '' || newBagCount === 0 || newBagCount === '0')
+    // ) {
+    //   setError('* All fields are required');
+    //   return;
+    // }
+    console.log('hello------------');
     await handleSubmit({
       transaction_id: open.id || open.transaction_id,
       new_bag_limit: newBagCount,
