@@ -38,7 +38,7 @@ const AnalyticsCard = ({
   bagModifyModalOpen,
   setDetailModalOpen,
   setReverseShipmentFormOpen,
-  handleBagDone,
+  handleBagDone
 }) => {
   const [timeDifference, setTimeDifference] = useState(0);
   useEffect(() => {
@@ -60,7 +60,11 @@ const AnalyticsCard = ({
         getStatus(Math.min((data.count * 100) / PACKER_LIMIT, 100)).colorCode
       }
       status={status}
-      countReached={(DEACTIVATE_LOADER_SOLUTION?data.bag_limit <= data.tag_count:data.bag_limit <= data.bag_count)}
+      countReached={
+        DEACTIVATE_LOADER_SOLUTION
+          ? data.bag_limit <= data.tag_count
+          : data.bag_limit <= data.bag_count
+      }
       printingCard={printingCard}
     >
       {' '}
@@ -237,11 +241,18 @@ const AnalyticsCard = ({
                     onClick={setDetailModalOpen}
                   >
                     {status == 0
-                      ? (DEACTIVATE_LOADER_SOLUTION ? data.bag_limit <= data.tag_count : data.bag_limit <= data.bag_count)
+                      ? (
+                          DEACTIVATE_LOADER_SOLUTION
+                            ? data.bag_limit <= data.tag_count
+                            : data.bag_limit <= data.bag_count
+                        )
                         ? 'View'
                         : 'View Details'
                       : 'Edit'}{' '}
-                    {(DEACTIVATE_LOADER_SOLUTION ? data.bag_limit <= data.tag_count : data.bag_limit <= data.bag_count) || status == 1 ? null : (
+                    {(DEACTIVATE_LOADER_SOLUTION
+                      ? data.bag_limit <= data.tag_count
+                      : data.bag_limit <= data.bag_count) ||
+                    status == 1 ? null : (
                       <BiRightArrowAlt />
                     )}
                   </Button>
@@ -261,7 +272,9 @@ const AnalyticsCard = ({
                   )}{' '}
                 </>
               )}
-              {(DEACTIVATE_LOADER_SOLUTION?data.bag_limit <= data.tag_count:data.bag_limit <= data.bag_count )&& status === 0 ? (
+              {(DEACTIVATE_LOADER_SOLUTION
+                ? data.bag_limit <= data.tag_count
+                : data.bag_limit <= data.bag_count) && status === 0 ? (
                 <FrinksButton
                   variant="filled"
                   className="view-button"
