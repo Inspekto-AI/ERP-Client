@@ -4,10 +4,10 @@ import MaintenanceTicket from 'components/MaintenanceTicket';
 import PropTypes from 'prop-types';
 import { useEffect, useState } from 'react';
 import { get } from 'utils/api';
-import index from './InfoModal';
 
 const Maintenance = ({ close }) => {
   const [activemaintenance, setActiveMaintenance] = useState(null);
+
   useEffect(() => {
     const maintenance = async () => {
       try {
@@ -19,6 +19,13 @@ const Maintenance = ({ close }) => {
     };
     maintenance();
   }, []);
+
+  const removeMaintenanceTicket = (id) => {
+    setActiveMaintenance(activemaintenance.filter((e) => {
+      if (e?.id != id) return e;
+    }));
+  }
+
   return (
     <Layout
       alternateHeader
@@ -28,11 +35,15 @@ const Maintenance = ({ close }) => {
     >
       <Container>
         <div className="heading">Active Tickets</div>
-        {activemaintenance
+        {activemaintenance && activemaintenance.length > 0
           ? activemaintenance.map((e, index) => (
-              <MaintenanceTicket data={e} isActive index={index} />
-            ))
-          : null}
+            <MaintenanceTicket data={e} isActive index={index} removeMaintenanceTicket={(id) => removeMaintenanceTicket(id)} key={index} />
+          ))
+          : (
+            <div className='no-tickets' >
+              No active maintenance tickets
+            </div>
+          )}
 
         {/* <div className="heading">Previous Tickets</div>
         <div className="previous-tickets">

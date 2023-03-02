@@ -93,7 +93,6 @@ const MaintenanceForm = ({ close }) => {
 
   const handleSubmit = () => {
     setInfoModalOpen(false);
-    console.log('maintenence -------------------------');
     maintenanceMutation.mutate({
       machine_type: machineType,
       belt_id: beltId,
@@ -227,6 +226,7 @@ const MaintenanceForm = ({ close }) => {
           open={infoModalOpen}
           close={() => setInfoModalOpen(false)}
           title="Confirm changes"
+          hideComment
           handleSubmit={() => handleSubmit()}
         >
           <>

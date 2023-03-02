@@ -2,34 +2,27 @@ import FrinksButton from 'components/FrinksButton';
 import PropTypes from 'prop-types';
 import Container from './MaintenanceTicket.styles';
 import moment from 'moment';
-import { useEffect, useState } from 'react';
 import { put } from 'utils/api';
 
-const MaintenanceTicket = ({ data, isActive }) => {
-  // const [maintenancedata, setMaintenanaceData] = useState(data);
+const MaintenanceTicket = ({ data, isActive, removeMaintenanceTicket }) => {
 
   const handleTicketResolved = async data => {
-    // console.log(maintenancedata, '=======');
     try {
-      await put('/api/transaction/maintenance', {
-        id: data?.id,
-        printing_belt_id: data?.printing_belt_id,
-        loader_belt_id: data?.loader_belt_id
-      });
-      // setMaintenanaceData(data);
-      console.log(data, '===============');
+      await put('/api/transaction/maintenance', { id: data?.id });
+      // maintenance done remove the ticket
+      removeMaintenanceTicket(data?.id);
     } catch (err) {
       console.log(err);
     }
   };
-  console.log(data);
+
   return (
     <Container isActive={isActive}>
       <div className="left">
         <div className="title">Ticket # {data.id} </div>
-        <div className="sub-title">{data.reason}</div>
+        <div className="sub-title">{data.printing_belt ? `Printing belt - ${data.printing_belt.machine_id} under maintenance | Reason - ${data.reason}` : `Loading belt - ${data.loader_belt.machine_id} under maintenance | Reason - ${data.reason}`}</div>
         <div className="time">
-          {moment(new Date(data.duration)).format('h:mm A')}
+          {moment(new Date(data.duration)).format('DD-MM-YYYY HH:mm:ss')}
         </div>
       </div>
       <div className="right">

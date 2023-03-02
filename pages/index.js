@@ -92,7 +92,7 @@ const Index = () => {
   const [queuedTransactions, setQueuedTransactions] = useState(null);
   const [missPrintTransactionId, setmissPrintTransactionId] = useState({});
   const [alertCounter, setAlertCounter] = useState(0);
-  const [activeMaintenance, setactiveMaintenance] = useState(null);
+
   const handleBagDone = async (
     transaction_id,
     vehicle_id,
@@ -115,7 +115,7 @@ const Index = () => {
     });
     setVehicleBelts(prevState => {
       const currData = prevState;
-      currData.push({
+      currData?.push({
         id: vehicle_id,
         vehicle_id: machine_id,
         vehicle_type
@@ -179,7 +179,6 @@ const Index = () => {
   useEffect(() => {
     const getActiveTransactions = async () => {
       const res = await get('/api/transaction');
-      // setActiveTransactions(res?.data?.data?.transactionRes);
       const backgroundTransactionsRes = res?.data?.data?.backgroundInfo;
       setBackgroundTransactions(backgroundTransactionsRes);
       setPrintingBelts(res?.data?.data?.printingBeltRes);
@@ -192,7 +191,6 @@ const Index = () => {
 
   useEffect(() => {
     socket.on('bag-entry', data => {
-      // console.log(data, '----bag-entry');
       const transaction_id = parseInt(data?.transaction_id, 10);
       setOngoingTransactions(prevState => {
         if (!prevState) return null;
@@ -222,7 +220,6 @@ const Index = () => {
       }
     });
     socket.on('tag-entry', data => {
-      // console.log(data, '----tag-entry');
       const transaction_id = parseInt(data?.transaction_id, 10);
       let machine_id = null;
       setOngoingTransactions(prevState => {
@@ -240,13 +237,7 @@ const Index = () => {
         };
       });
       if (data.transactionMissed > 0 && data.transactionMissed % 10 === 0) {
-        console.log(
-          Object.keys(missPrintTransactionId),
-          '------------------ missprint'
-        );
-        // setAlertCounter(Object.keys(missPrintTransactionId).length + 1);
         setAlertCounter(prevState => prevState + 1);
-
         setmissPrintTransactionId(prevState => {
           return {
             ...prevState,
@@ -318,6 +309,15 @@ const Index = () => {
         });
         return newState;
       });
+    });
+    socket.on('release-belt', data => {
+      const activateBelts = new Set(data.activate_loading_ids);
+      const deactivateBelts = new Set(data.deactivate_loading_ids);
+      setVehicleBelts(prevState => prevState?.map(e => {
+        if (activateBelts.has(e?.id)) return { ...e, is_active: 1 };
+        else if (deactivateBelts.has(e?.id)) return { ...e, is_active: 0 };
+        return e;
+      }));
     });
   }, [socket]);
 

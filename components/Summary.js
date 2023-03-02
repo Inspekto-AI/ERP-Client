@@ -181,17 +181,9 @@ const Summary = () => {
                             </div>
                             <div className="notification">
                               <div className="ticket-title">Ticket #{e.id}</div>
-                              {e.printing_belt ? (
-                                <div className="description">
-                                  Printing belt | Printing belt{' '}
-                                  {e?.printing_belt?.machine_id} | {e.reason}
-                                </div>
-                              ) : (
-                                <div className="description">
-                                  Vehicle belt | Vehicle belt{' '}
-                                  {e?.loader_belt?.machine_id} | {e.reason}
-                                </div>
-                              )}
+                              <div className="description">
+                                {e.printing_belt ? `Printing belt - ${e.printing_belt.machine_id} under maintenance | Reason - ${e.reason}` : `Loading belt - ${e.loader_belt.machine_id} under maintenance | Reason - ${e.reason}`}
+                              </div>
                               <div className="button-container">
                                 {/* <FrinksButton
                             variant="outlined"
@@ -284,9 +276,8 @@ const Summary = () => {
                                             <Image
                                               src={element.local_image_path}
                                               loader={() =>
-                                                `${BASE_URL}/api/transaction/images?image_location=${
-                                                  element.local_image_path ||
-                                                  element.local_image_location
+                                                `${BASE_URL}/api/transaction/images?image_location=${element.local_image_path ||
+                                                element.local_image_location
                                                 }`
                                               }
                                               layout="fill"
