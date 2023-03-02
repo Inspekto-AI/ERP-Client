@@ -88,9 +88,9 @@ const Index = () => {
   const [backgroundTransactions, setBackgroundTransactions] = useState(null);
   const [activeSection, setActiveSection] = useState(IS_AWS_FRONTEND ? 4 : 0);
   const [reverseShipmentFormOpen, setReverseShipmentFormOpen] = useState(null);
+  const [missPrintTransactionId, setmissPrintTransactionId] = useState({});
   const [ongoingTransactions, setOngoingTransactions] = useState(null);
   const [queuedTransactions, setQueuedTransactions] = useState(null);
-  const [missPrintTransactionId, setmissPrintTransactionId] = useState({});
   const [alertCounter, setAlertCounter] = useState(0);
 
   const handleBagDone = async (
@@ -106,24 +106,10 @@ const Index = () => {
       transaction_id,
       comment,
       vehicle_id,
-      printing_belt_id
+      printing_belt_id,
+      machine_id,
+      vehicle_type,
     });
-    setOngoingTransactions(prevState => {
-      const currData = prevState;
-      delete currData[transaction_id];
-      return currData;
-    });
-    setVehicleBelts(prevState => {
-      const currData = prevState;
-      currData?.push({
-        id: vehicle_id,
-        vehicle_id: machine_id,
-        vehicle_type,
-        is_active: 1
-      });
-      return currData;
-    });
-    setIsLoading(false);
   };
 
   const handleNewShipment = async data => {
@@ -149,32 +135,18 @@ const Index = () => {
     setIsLoading(true);
     try {
       await post('/api/transaction/bag-change', data);
-      setOngoingTransactions(
-        Object.keys(ongoingTransactions).map(e => {
-          if (ongoingTransactions[e].id === data.transaction_id) {
-            // modify this entity
-            return {
-              ...ongoingTransactions[e],
-              bag_limit:
-                parseInt(data?.new_bag_limit) + parseInt(data?.old_limit)
-            };
-          }
-          return ongoingTransactions[e];
-        })
-      );
-      setIsLoading(false);
     } catch (error) {
       setIsLoading(false);
     }
   };
 
-  const handleStop = async data => {
-    setIsLoading(true);
+  const handleStop = async () => {
+    // setIsLoading(true);
     // post('/api/transaction/belt-stop', data);
     // const updatedTransactions = activeTransactions;
     // delete updatedTransactions[data?.transaction_id];
     // setActiveTransactions(updatedTransactions);
-    setIsLoading(false);
+    // setIsLoading(false);
   };
 
   useEffect(() => {
@@ -238,7 +210,9 @@ const Index = () => {
         };
       });
       if (data.transactionMissed > 0 && data.transactionMissed % 10 === 0) {
+        // setAlertCounter(Object.keys(missPrintTransactionId).length + 1);
         setAlertCounter(prevState => prevState + 1);
+
         setmissPrintTransactionId(prevState => {
           return {
             ...prevState,
@@ -321,164 +295,194 @@ const Index = () => {
         else if (deactivateBelts.has(e?.id)) return { ...e, is_active: 0 };
         return e;
       }));
-    });
-  }, [socket]);
+      socket.on('bag-done', (data) => {
+        const { transaction_id, vehicle_id, machine_id, vehicle_type } = data;
+        setOngoingTransactions(prevState => {
+          const currData = { ...prevState };
+          delete currData[transaction_id];
+          return currData;
+        });
+        setVehicleBelts(prevState => {
+          const currData = [...prevState];
+          currData.push({
+            id: vehicle_id,
+            vehicle_id: machine_id,
+            vehicle_type
+          });
+          return currData;
+        });
+        setIsLoading(false);
+      });
 
-  if (shipmentFormOpen || reverseShipmentFormOpen) {
+      socket.on('bag-update', (data) => {
+        setOngoingTransactions(prevState => {
+          const updatedTransactions = Object.keys(prevState).map(e => {
+            if (prevState[e].id === data.transaction_id) {
+              // modify this entity
+              return {
+                ...prevState[e],
+                bag_limit: parseInt(data?.new_bag_limit)
+              };
+            }
+            return prevState[e];
+          });
+          return updatedTransactions;
+        });
+        setIsLoading(false);
+      });
+    }, [socket]);
+
+    if (shipmentFormOpen || reverseShipmentFormOpen) {
+      return (
+        <Config
+          close={() => setShipmentFormOpen(false)}
+          handleSubmit={handleNewShipment}
+          reverseShipmentFormOpen={reverseShipmentFormOpen}
+          setReverseShipmentFormOpen={e => setReverseShipmentFormOpen(e)}
+        />
+      );
+    }
+
+    if (maintenanceFormOpen) {
+      return <Maintenance close={() => setMaintenanceFormOpen(false)} />;
+    }
+
+    if (notificationsFormOpen) {
+      return <Notification close={() => setNotificationsFormOpen(false)} />;
+    }
+
+    if (maintenanceForm) {
+      return <MaintenanceForm close={() => setMaintenanceForm(false)} />;
+    }
     return (
-      <Config
-        close={() => setShipmentFormOpen(false)}
-        handleSubmit={handleNewShipment}
-        reverseShipmentFormOpen={reverseShipmentFormOpen}
-        setReverseShipmentFormOpen={e => setReverseShipmentFormOpen(e)}
-      />
-    );
-  }
-
-  if (maintenanceFormOpen) {
-    return <Maintenance close={() => setMaintenanceFormOpen(false)} />;
-  }
-
-  if (notificationsFormOpen) {
-    return <Notification close={() => setNotificationsFormOpen(false)} />;
-  }
-
-  if (maintenanceForm) {
-    return <MaintenanceForm close={() => setMaintenanceForm(false)} />;
-  }
-  return (
-    <Layout
-      openShipmentForm={() => setShipmentFormOpen(true)}
-      openMaintenanceForm={() => setMaintenanceFormOpen(true)}
-      openNotificationForm={() => setNotificationsFormOpen(true)}
-      maintenanceForm={() => setMaintenanceForm(true)}
-    >
-      <Container>
-        {isLoading ? <Loader /> : null}
-        <div className="trackbar">
-          {IS_AWS_FRONTEND ? null : (
-            <>
-              <div
-                className={`option ${activeSection === 0 ? 'active' : ''}`}
-                onClick={() => setActiveSection(0)}
-                onKeyPress={() => setActiveSection(0)}
-                role="button"
-                tabIndex={0}
-              >
-                <h6 style={{ textAlign: 'center' }}>Loader belt</h6>
-              </div>
-              {DEACTIVATE_PRINTING_SOLUTION ? null : (
+      <Layout
+        openShipmentForm={() => setShipmentFormOpen(true)}
+        openMaintenanceForm={() => setMaintenanceFormOpen(true)}
+        openNotificationForm={() => setNotificationsFormOpen(true)}
+        maintenanceForm={() => setMaintenanceForm(true)}
+      >
+        <Container>
+          {isLoading ? <Loader /> : null}
+          <div className="trackbar">
+            {IS_AWS_FRONTEND ? null : (
+              <>
                 <div
-                  className={`option ${activeSection === 1 ? 'active' : ''}`}
-                  onClick={() => setActiveSection(1)}
-                  onKeyPress={() => setActiveSection(1)}
+                  className={`option ${activeSection === 0 ? 'active' : ''}`}
+                  onClick={() => setActiveSection(0)}
+                  onKeyPress={() => setActiveSection(0)}
                   role="button"
                   tabIndex={0}
                 >
-                  <h6 style={{ textAlign: 'center' }}>Printing belt</h6>
+                  <h6 style={{ textAlign: 'center' }}>Loader belt</h6>
                 </div>
-              )}
-              <div
-                className={`option ${activeSection === 3 ? 'active' : ''}`}
-                onClick={() => setActiveSection(3)}
-                onKeyPress={() => setActiveSection(3)}
-                role="button"
-                tabIndex={0}
-              >
-                <h6 style={{ textAlign: 'center' }}>Summary</h6>
-              </div>
-            </>
-          )}
-          <div
-            className={`option ${activeSection === 4 ? 'active' : ''}`}
-            onClick={() => setActiveSection(4)}
-            onKeyPress={() => setActiveSection(4)}
-            role="button"
-            tabIndex={0}
-          >
-            <h6 style={{ textAlign: 'center' }}>Reports</h6>
-          </div>
-          <div
-            className={`option ${activeSection === 5 ? 'active' : ''}`}
-            onClick={() => setActiveSection(5)}
-            onKeyPress={() => setActiveSection(5)}
-            role="button"
-            tabIndex={0}
-          >
-            <h6 style={{ textAlign: 'center' }}>System Health</h6>
-          </div>
-        </div>
-        <DashboardComponent
-          activeSection={activeSection}
-          // activeTransactions={activeTransactions}
-          handleBagIncrement={handleBagIncrement}
-          handleStop={handleStop}
-          printingBelts={printingBelts}
-          backgroundTransactions={backgroundTransactions}
-          vehicleBelts={vehicleBelts}
-          setReverseShipmentFormOpen={e => setReverseShipmentFormOpen(e)}
-          ongoingTransactions={ongoingTransactions}
-          queuedTransactions={queuedTransactions}
-          handleBagDone={handleBagDone}
-        />
-        {alertCounter != 0 ? (
-          <div className="alert">
-            {Object.keys(missPrintTransactionId).map((e, index) => {
-              return (
-                <Alert
-                  severity="warning"
-                  style={{
-                    backgroundColor: 'red',
-                    marginBottom: '0.938em',
-                    width: '500px'
-                  }}
-                  action={
-                    <Button
-                      color="inherit"
-                      size="small"
-                      onClick={() => alertsnooze(e)}
-                      style={{ backgroundColor: 'white' }}
-                    >
-                      Snooze
-                    </Button>
-                  }
-                  key={index}
+                {DEACTIVATE_PRINTING_SOLUTION ? (null) : (
+                  <div
+                    className={`option ${activeSection === 1 ? 'active' : ''}`}
+                    onClick={() => setActiveSection(1)}
+                    onKeyPress={() => setActiveSection(1)}
+                    role="button"
+                    tabIndex={0}
+                  >
+                    <h6 style={{ textAlign: 'center' }}>Printing belt</h6>
+                  </div>
+                )}
+                <div
+                  className={`option ${activeSection === 3 ? 'active' : ''}`}
+                  onClick={() => setActiveSection(3)}
+                  onKeyPress={() => setActiveSection(3)}
+                  role="button"
+                  tabIndex={0}
                 >
-                  {`${missPrintTransactionId[e].missed_count} misprint bags passed from - ${missPrintTransactionId[e].machine_id}`}
-                </Alert>
-              );
-            })}
+                  <h6 style={{ textAlign: 'center' }}>Summary</h6>
+                </div>
+              </>
+            )}
+            <div
+              className={`option ${activeSection === 4 ? 'active' : ''}`}
+              onClick={() => setActiveSection(4)}
+              onKeyPress={() => setActiveSection(4)}
+              role="button"
+              tabIndex={0}
+            >
+              <h6 style={{ textAlign: 'center' }}>Reports</h6>
+            </div>
+            <div
+              className={`option ${activeSection === 5 ? 'active' : ''}`}
+              onClick={() => setActiveSection(5)}
+              onKeyPress={() => setActiveSection(5)}
+              role="button"
+              tabIndex={0}
+            >
+              <h6 style={{ textAlign: 'center' }}>System Health</h6>
+            </div>
           </div>
-        ) : null}
-        {infoModalOpen ? (
-          <InfoModal
-            open={infoModalOpen}
-            close={() => setInfoModalOpen(false)}
-            title="Confirm changes"
-          >
-            <>
-              <p>Do you want to go ahead and save the changes you made?</p>
-            </>
-          </InfoModal>
-        ) : null}
-      </Container>
-    </Layout>
-  );
-};
+          <DashboardComponent
+            activeSection={activeSection}
+            // activeTransactions={activeTransactions}
+            handleBagIncrement={handleBagIncrement}
+            handleStop={handleStop}
+            printingBelts={printingBelts}
+            backgroundTransactions={backgroundTransactions}
+            vehicleBelts={vehicleBelts}
+            setReverseShipmentFormOpen={e => setReverseShipmentFormOpen(e)}
+            ongoingTransactions={ongoingTransactions}
+            queuedTransactions={queuedTransactions}
+            handleBagDone={handleBagDone}
+          />
+          {alertCounter != 0 ? (
+            <div className="alert">
+              {Object.keys(missPrintTransactionId).map((e, index) => {
+                return (
+                  <Alert
+                    severity="warning"
+                    style={{ backgroundColor: 'red', marginBottom: '0.938em', width: '500px' }}
+                    action={
+                      <Button
+                        color="inherit"
+                        size="small"
+                        onClick={() => alertsnooze(e)}
+                        style={{ backgroundColor: 'white' }}
+                      >
+                        Snooze
+                      </Button>
+                    }
+                    key={index}
+                  >
+                    {`${missPrintTransactionId[e].missed_count} misprint bags passed from - ${missPrintTransactionId[e].machine_id}`}
+                  </Alert>
+                );
+              })}
+            </div>
+          ) : null}
+          {infoModalOpen ? (
+            <InfoModal
+              open={infoModalOpen}
+              close={() => setInfoModalOpen(false)}
+              title="Confirm changes"
+            >
+              <>
+                <p>Do you want to go ahead and save the changes you made?</p>
+              </>
+            </InfoModal>
+          ) : null}
+        </Container>
+      </Layout>
+    );
+  };
 
-DashboardComponent.propTypes = {
-  activeSection: PropTypes.number,
-  // activeTransactions: PropTypes.any,
-  handleBagIncrement: PropTypes.func,
-  handleStop: PropTypes.any,
-  printingBelts: PropTypes.any,
-  backgroundTransactions: PropTypes.any,
-  vehicleBelts: PropTypes.any,
-  setReverseShipmentFormOpen: PropTypes.func,
-  ongoingTransactions: PropTypes.any,
-  queuedTransactions: PropTypes.any,
-  handleBagDone: PropTypes.func,
-  alertsnooze: PropTypes.func
-};
+  DashboardComponent.propTypes = {
+    activeSection: PropTypes.number,
+    // activeTransactions: PropTypes.any,
+    handleBagIncrement: PropTypes.func,
+    handleStop: PropTypes.any,
+    printingBelts: PropTypes.any,
+    backgroundTransactions: PropTypes.any,
+    vehicleBelts: PropTypes.any,
+    setReverseShipmentFormOpen: PropTypes.func,
+    ongoingTransactions: PropTypes.any,
+    queuedTransactions: PropTypes.any,
+    handleBagDone: PropTypes.func,
+    alertsnooze: PropTypes.func
+  };
 
-export default Index;
+  export default Index;

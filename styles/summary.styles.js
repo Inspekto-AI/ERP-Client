@@ -136,13 +136,13 @@ const Container = styled.div`
 
   .controllers {
     min-width: 390px;
-    display:flex;
-    align-items:center;
+    display: flex;
+    align-items: center;
     justify-content: space-between;
   }
 
   .download-button {
-    padding:0;
+    padding: 0;
     min-width: 0;
     border-radius: 100%;
     font-size: 35px;
