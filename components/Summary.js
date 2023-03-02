@@ -44,17 +44,14 @@ const Summary = () => {
   }, [summaryData]);
 
   const markMaintenanceComplete = async id => {
-    const data = await put('/api/transaction/maintenance', { id });
-    if (data?.data?.success) {
-      // remove ticket from list
-      const newTickets = maintenanceTickets.map(e => {
-        if (e.id !== id) return e;
-      });
-      if (newTickets[0]) {
-        setMaintenanceTickets(newTickets);
-      } else {
-        setMaintenanceTickets(null);
-      }
+    try {
+      await put('/api/transaction/maintenance', { id });
+      setMaintenanceTickets(prevData => prevData.map(e => {
+        if (e.id === id) return { ...e, marked_complete: 1 };
+        return e;
+      }))
+    } catch (err) {
+      console.log(err);
     }
   };
 
@@ -165,6 +162,7 @@ const Summary = () => {
                 summaryHeader
                 disableMinimumHeight
                 viewAllFunc={() => setMaintenanceFormOpen(true)}
+                style={{ maxHeight: '60vh', overflowY: 'auto' }}
               >
                 <MaintenanceContainer>
                   {maintenanceTickets && maintenanceTickets.length > 0 ? (
@@ -186,21 +184,21 @@ const Summary = () => {
                               </div>
                               <div className="button-container">
                                 {/* <FrinksButton
-                            variant="outlined"
-                            color="inherit"
-                            text="Edit Ticket"
-                            style={{
-                              fontSize: '12px',
-                              height: '40px',
-                              marginRight: '14px'
-                            }}
-                          /> */}
-                                <FrinksButton
+                                  variant="outlined"
+                                  color="inherit"
+                                  text="Edit Ticket"
+                                  style={{
+                                    fontSize: '12px',
+                                    height: '40px',
+                                    marginRight: '14px'
+                                  }}
+                                /> */}
+                                {e.marked_complete ? null : (<FrinksButton
                                   color="inherit"
                                   text="Mark Complete"
                                   style={{ fontSize: '12px', height: '40px' }}
                                   onClick={() => markMaintenanceComplete(e.id)}
-                                />
+                                />)}
                               </div>
                             </div>
                           </div>

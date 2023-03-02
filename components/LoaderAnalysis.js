@@ -28,12 +28,12 @@ const LoaderAnalysis = ({
       setFiltervehicle(
         vehicleBelts && vehicleBelts.length !== 0
           ? vehicleBelts.filter(
-              vehicle => vehicle.vehicle_type === filterButton
-            )
+            vehicle => vehicle.vehicle_type === filterButton
+          )
           : null
       );
     }
-  }, [vehicleBelts?.length, filterButton]);
+  }, [vehicleBelts, filterButton]);
 
   return (
     <>
@@ -58,7 +58,7 @@ const LoaderAnalysis = ({
             <hr />
           </div>
           {ongoingTransactions &&
-          Object.keys(ongoingTransactions)?.length === 0 ? (
+            Object.keys(ongoingTransactions)?.length === 0 ? (
             <p
               style={{
                 fontSize: '20px',

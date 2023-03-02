@@ -173,7 +173,6 @@ const InfoModal = ({
     //   setError('* All fields are required');
     //   return;
     // }
-    console.log('hello------------');
     await handleSubmit({
       transaction_id: open.id || open.transaction_id,
       new_bag_limit: newBagCount,

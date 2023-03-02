@@ -118,7 +118,8 @@ const Index = () => {
       currData?.push({
         id: vehicle_id,
         vehicle_id: machine_id,
-        vehicle_type
+        vehicle_type,
+        is_active: 1
       });
       return currData;
     });
@@ -314,7 +315,9 @@ const Index = () => {
       const activateBelts = new Set(data.activate_loading_ids);
       const deactivateBelts = new Set(data.deactivate_loading_ids);
       setVehicleBelts(prevState => prevState?.map(e => {
-        if (activateBelts.has(e?.id)) return { ...e, is_active: 1 };
+        if (activateBelts.has(e?.id)) {
+          return { ...e, is_active: 1 };
+        }
         else if (deactivateBelts.has(e?.id)) return { ...e, is_active: 0 };
         return e;
       }));
