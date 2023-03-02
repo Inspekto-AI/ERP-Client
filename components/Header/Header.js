@@ -17,7 +17,7 @@ const Header = ({
   openShipmentForm,
   openMaintenanceForm,
   openNotificationForm,
-  maintenanceForm,
+  maintenanceForm
 }) => {
   const router = useRouter();
   const [anchorEl, setAnchorEl] = useState(null);
@@ -25,6 +25,14 @@ const Header = ({
   const [bypassSystem, setBypassSystem] = useState(false);
 
   const { trippingStatus, setTrippingStatus } = useContext(GlobalContext);
+  const [maintenance, setMaintenance] = useState(null);
+
+  // const openMaintenanceForm = async () => {
+  //   const res = await get('/api/transaction/maintenance');
+  //   console.log(res, '------------------------');
+
+  //   setMaintenance(res?.data?.data);
+  // };
 
   const handleClick = event => {
     setAnchorEl(anchorEl ? null : event.currentTarget);
@@ -62,7 +70,9 @@ const Header = ({
                   className={trippingStatus ? 'red-button' : 'purple-button'}
                   onClick={() => setBypassSystem(true)}
                 >
-                  <p className="button-label">{trippingStatus ? 'BYPASSED' : 'BYPASS SYSTEM'}</p>
+                  <p className="button-label">
+                    {trippingStatus ? 'BYPASSED' : 'BYPASS SYSTEM'}
+                  </p>
                 </Button>
                 <Button
                   variant="contained"
@@ -175,7 +185,7 @@ const Header = ({
           openMaintenanceForm={openMaintenanceForm}
           openNotificationForm={openNotificationForm}
           maintenanceForm={maintenanceForm}
-        // bypassSystem={bypassSystem}
+          // bypassSystem={bypassSystem}
         />
       </Hidden>
       {bypassSystem ? (
@@ -183,9 +193,8 @@ const Header = ({
           open={bypassSystem}
           close={() => setBypassSystem(false)}
           trippingStatus={trippingStatus}
-          setTrippingStatus={(e)=>setTrippingStatus(e)}
+          setTrippingStatus={e => setTrippingStatus(e)}
         />
-
       ) : null}
     </Container>
   );

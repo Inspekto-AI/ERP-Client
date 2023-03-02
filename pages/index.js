@@ -92,7 +92,7 @@ const Index = () => {
   const [queuedTransactions, setQueuedTransactions] = useState(null);
   const [missPrintTransactionId, setmissPrintTransactionId] = useState({});
   const [alertCounter, setAlertCounter] = useState(0);
-
+  const [activeMaintenance, setactiveMaintenance] = useState(null);
   const handleBagDone = async (
     transaction_id,
     vehicle_id,
@@ -133,7 +133,7 @@ const Index = () => {
     const transactiondata = missPrintTransactionId;
     delete transactiondata[e];
     setmissPrintTransactionId(transactiondata);
-    setAlertCounter(prevState=>prevState-1);
+    setAlertCounter(prevState => prevState - 1);
   };
 
   useEffect(() => {
@@ -154,7 +154,8 @@ const Index = () => {
             // modify this entity
             return {
               ...ongoingTransactions[e],
-              bag_limit: parseInt(data?.new_bag_limit) + parseInt(data?.old_limit)
+              bag_limit:
+                parseInt(data?.new_bag_limit) + parseInt(data?.old_limit)
             };
           }
           return ongoingTransactions[e];
@@ -238,11 +239,14 @@ const Index = () => {
           }
         };
       });
-      if (data.transactionMissed>0 && data.transactionMissed % 10 === 0) {
-        console.log(Object.keys(missPrintTransactionId),"------------------ missprint")
+      if (data.transactionMissed > 0 && data.transactionMissed % 10 === 0) {
+        console.log(
+          Object.keys(missPrintTransactionId),
+          '------------------ missprint'
+        );
         // setAlertCounter(Object.keys(missPrintTransactionId).length + 1);
-        setAlertCounter(prevState=>prevState+1);
-        
+        setAlertCounter(prevState => prevState + 1);
+
         setmissPrintTransactionId(prevState => {
           return {
             ...prevState,
@@ -360,16 +364,16 @@ const Index = () => {
               >
                 <h6 style={{ textAlign: 'center' }}>Loader belt</h6>
               </div>
-              {DEACTIVATE_PRINTING_SOLUTION?(null):(
+              {DEACTIVATE_PRINTING_SOLUTION ? null : (
                 <div
-                className={`option ${activeSection === 1 ? 'active' : ''}`}
-                onClick={() => setActiveSection(1)}
-                onKeyPress={() => setActiveSection(1)}
-                role="button"
-                tabIndex={0}
-              >
-                <h6 style={{ textAlign: 'center' }}>Printing belt</h6>
-              </div>
+                  className={`option ${activeSection === 1 ? 'active' : ''}`}
+                  onClick={() => setActiveSection(1)}
+                  onKeyPress={() => setActiveSection(1)}
+                  role="button"
+                  tabIndex={0}
+                >
+                  <h6 style={{ textAlign: 'center' }}>Printing belt</h6>
+                </div>
               )}
               <div
                 className={`option ${activeSection === 3 ? 'active' : ''}`}
@@ -420,7 +424,11 @@ const Index = () => {
               return (
                 <Alert
                   severity="warning"
-                  style={{ backgroundColor: 'red', marginBottom: '0.938em',width: '500px' }}
+                  style={{
+                    backgroundColor: 'red',
+                    marginBottom: '0.938em',
+                    width: '500px'
+                  }}
                   action={
                     <Button
                       color="inherit"

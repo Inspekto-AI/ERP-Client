@@ -6,7 +6,9 @@ const Container = styled.div`
     props.isError || props.status > 0
       ? props.status === 1
         ? '#CB952B'
-        : 'white'
+        : props.active === 1
+        ? 'white'
+        : 'red'
       : '#26A84A'};
   border-radius: 10px;
   padding: ${props => (props.packerCard ? '35px 5px' : '35px 20px')};
@@ -270,7 +272,5 @@ const Container = styled.div`
     }
   }
 `;
-
-
 
 export default Container;

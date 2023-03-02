@@ -53,6 +53,7 @@ const AnalyticsCard = ({
     );
     return () => clearInterval(interval);
   }, [data?.created_at]);
+  // console.log(data, 'Sourav');
   return (
     <Container
       packerCard={packerCard}
@@ -60,6 +61,7 @@ const AnalyticsCard = ({
         getStatus(Math.min((data.count * 100) / PACKER_LIMIT, 100)).colorCode
       }
       status={status}
+      active={data?.is_active}
       countReached={
         DEACTIVATE_LOADER_SOLUTION
           ? data.bag_limit <= data.tag_count
@@ -221,18 +223,20 @@ const AnalyticsCard = ({
             <div className="action-buttons">
               {' '}
               {status > 1 ? (
-                <Button
-                  variant="contained"
-                  className="view-button"
-                  onClick={() => setReverseShipmentFormOpen(data?.id)}
-                  style={{
-                    color: '#008847',
-                    borderColor: '#008847',
-                    margin: '0px 30px'
-                  }}
-                >
-                  Create
-                </Button>
+                data.is_active === 1 ? (
+                  <Button
+                    variant="contained"
+                    className="view-button"
+                    onClick={() => setReverseShipmentFormOpen(data?.id)}
+                    style={{
+                      color: '#008847',
+                      borderColor: '#008847',
+                      margin: '0px 30px'
+                    }}
+                  >
+                    Create
+                  </Button>
+                ) : null
               ) : (
                 <>
                   <Button

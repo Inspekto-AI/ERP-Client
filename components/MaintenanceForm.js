@@ -1,4 +1,5 @@
 import { useState, useEffect } from 'react';
+import { useRouter } from 'next/router';
 import Container from 'styles/maintenanceForm.styles';
 import PropTypes from 'prop-types';
 import {
@@ -68,7 +69,7 @@ const MaintenanceForm = ({ close }) => {
   const [infoModalOpen, setInfoModalOpen] = useState(false);
   const [beltIdList, setBeltIdList] = useState(null);
   const maintenanceMutation = MaintenanceQuery();
-
+  const router = useRouter();
   useEffect(() => {
     const fetchBeltIds = async type => {
       const res = await get('/api/transaction/beltIds', {
@@ -85,6 +86,7 @@ const MaintenanceForm = ({ close }) => {
   useEffect(() => {
     if (maintenanceMutation.isSuccess) {
       maintenanceMutation.reset();
+      router.push('/');
       close();
     }
   }, [close, maintenanceMutation]);
