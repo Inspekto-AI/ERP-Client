@@ -25,7 +25,6 @@ const Header = ({
   const [bypassSystem, setBypassSystem] = useState(false);
 
   const { trippingStatus, setTrippingStatus } = useContext(GlobalContext);
-  const [maintenance, setMaintenance] = useState(null);
 
   // const openMaintenanceForm = async () => {
   //   const res = await get('/api/transaction/maintenance');
@@ -185,7 +184,7 @@ const Header = ({
           openMaintenanceForm={openMaintenanceForm}
           openNotificationForm={openNotificationForm}
           maintenanceForm={maintenanceForm}
-          // bypassSystem={bypassSystem}
+        // bypassSystem={bypassSystem}
         />
       </Hidden>
       {bypassSystem ? (

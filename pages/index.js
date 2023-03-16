@@ -102,7 +102,7 @@ const Index = () => {
     comment
   ) => {
     setIsLoading(true);
-    await put('/api/transaction/shipment-done', {
+    await put('/api/shipment/done', {
       transaction_id,
       comment,
       vehicle_id,
@@ -151,7 +151,7 @@ const Index = () => {
 
   useEffect(() => {
     const getActiveTransactions = async () => {
-      const res = await get('/api/transaction');
+      const res = await get('/api/shipment');
       const backgroundTransactionsRes = res?.data?.data?.backgroundInfo;
       setBackgroundTransactions(backgroundTransactionsRes);
       setPrintingBelts(res?.data?.data?.printingBeltRes);

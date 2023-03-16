@@ -45,8 +45,7 @@ const useStyles = makeStyles(theme => ({
 const getSteps = loaderType => {
   return [
     `Belts' details`,
-    `${
-      loaderType === null ? 'Loader' : loaderType === 0 ? 'Truck' : 'Wagon'
+    `${loaderType === null ? 'Loader' : loaderType === 0 ? 'Truck' : 'Wagon'
     } configuration`,
     'No. of bags needed to filled',
     'Label for print data'
@@ -134,7 +133,7 @@ const Config = ({
 
   useEffect(() => {
     const fetchVehicle = async (id, vehicleId) => {
-      const res = await get('/api/transaction/vehicle', {
+      const res = await get('/api/shipment/vehicle', {
         id
       });
       if (vehicleId) {
@@ -156,7 +155,7 @@ const Config = ({
 
   useEffect(() => {
     const fetchPrintingBeltsIds = async () => {
-      const res = await get('/api/transaction/printing-belt', {
+      const res = await get('/api/shipment/printing-belt', {
         vehicle_id: reverseShipmentFormOpen
       });
       setBeltIds(res?.data?.data);
