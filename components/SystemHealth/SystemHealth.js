@@ -10,7 +10,7 @@ const SystemHealth = () => {
 
   useEffect(() => {
     const fetchHealth = async () => {
-      const data = await get('/api/analysis/health');
+      const data = await get('/api/stats/inoperational-device-stats');
       setHealthData(data?.data?.data);
     };
     fetchHealth();
@@ -18,7 +18,7 @@ const SystemHealth = () => {
 
   useEffect(() => {
     const fetchHealth = async () => {
-      const data = await get('/api/analysis/health');
+      const data = await get('/api/stats/inoperational-device-stats');
       setHealthData(data?.data?.data);
     };
     const interval = setInterval(
@@ -29,13 +29,13 @@ const SystemHealth = () => {
   }, []);
 
   useEffect(() => {
-    if(healthData){
+    if (healthData) {
       const defectiveElements = [];
       Object.values(healthData).forEach(e => {
         e.forEach(ele => {
-          if(ele.started_at && !ele.ended_at){
+          if (ele.started_at && !ele.ended_at) {
             defectiveElements.push(ele);
-          } 
+          }
         })
       })
       setDefected(defectiveElements);
@@ -47,7 +47,7 @@ const SystemHealth = () => {
       <div className="container">
         <h1 className="heading">System Health Monitoring</h1>
       </div>
-      {defected && defected.length>0 && (
+      {defected && defected.length > 0 && (
         <div>
           <div className="sub-header">
             <h3 className="sub-heading">Not Functioning</h3>
@@ -56,7 +56,7 @@ const SystemHealth = () => {
           <div className="card-container">
             {defected.map((e, index) => {
               return (
-                <Card active={e.started_at && !e.ended_at?false:true} type={e.entity_type} name={e.entity_name} ip={e.ip_address} key={index} index={index} started_at={e.started_at} />
+                <Card active={e.started_at && !e.ended_at ? false : true} type={e.entity_type} name={e.entity_name} ip={e.ip_address} key={index} index={index} started_at={e.started_at} />
               )
             })}
           </div>
@@ -72,7 +72,7 @@ const SystemHealth = () => {
             <div className="card-container">
               {healthData[ele].map((e, index) => {
                 return (
-                  <Card active={e.started_at && !e.ended_at?false:true} type={e.entity_type} name={e.entity_name} ip={e.ip_address} key={index} index={index} started_at={e.started_at} />
+                  <Card active={e.started_at && !e.ended_at ? false : true} type={e.entity_type} name={e.entity_name} ip={e.ip_address} key={index} index={index} started_at={e.started_at} />
                 )
               })}
             </div>

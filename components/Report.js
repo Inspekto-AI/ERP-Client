@@ -50,7 +50,7 @@ const Report = () => {
 
   const fetchReports = async () => {
     const fetchShipmentReport = async () => {
-      const res = await get('/api/analysis/shipment-report', {
+      const res = await get('/api/stats/shipment-stats', {
         dateRange: getStartAndEndDate(date),
         trackbar: [shipmentStartTrackBar, shipmentEndTrackBar],
         shipmentFilter
@@ -58,16 +58,15 @@ const Report = () => {
       setShipmentReport(res.data.data);
     };
     const fetchPrintingReport = async () => {
-      const res = await get('/api/analysis/printing-report', {
+      const res = await get('/api/stats/printing-stats', {
         dateRange: getStartAndEndDate(date),
         trackbar: [printingStartTrackBar, printingEndTrackBar]
       });
-      // setPrintingReport(res.data.data);
       setPrintingReport(res.data.data);
     };
 
     const fetchLoadingReport = async () => {
-      const res = await get('/api/analysis/loading-report', {
+      const res = await get('/api/stats/loading-stats', {
         dateRange: getStartAndEndDate(date),
         trackbar: [loaderStartTrackBar, loaderEndTrackBar]
       });
@@ -103,7 +102,7 @@ const Report = () => {
 
   useEffect(() => {
     const fetchShipmentReport = async () => {
-      const res = await get('/api/analysis/shipment-report', {
+      const res = await get('/api/stats/shipment-stats', {
         dateRange: getStartAndEndDate(date),
         trackbar: [shipmentStartTrackBar, shipmentEndTrackBar],
         shipmentFilter

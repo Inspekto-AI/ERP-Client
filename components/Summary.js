@@ -28,7 +28,7 @@ const Summary = () => {
 
   useEffect(() => {
     const fetchSummary = async () => {
-      const data = await get('/api/analysis/summary', {
+      const data = await get('/api/stats/summarized-stats', {
         dateRange: getStartAndEndDate()
       });
       setSummaryData(data?.data?.data?.analysis);
@@ -71,7 +71,7 @@ const Summary = () => {
           <h2>Shift Summary</h2>
           <div className="date-container">
             <div className="date-display">
-              Shift {shiftCount} - {new Date(shiftDate).toLocaleDateString()}
+              Shift {shiftCount} - {shiftDate}
             </div>
           </div>
         </div>
