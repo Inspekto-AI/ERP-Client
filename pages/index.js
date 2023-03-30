@@ -28,7 +28,6 @@ const DashboardComponent = ({
   handleBagIncrement,
   handleStop,
   printingBelts,
-  backgroundTransactions,
   vehicleBelts,
   setReverseShipmentFormOpen,
   ongoingTransactions,
@@ -39,7 +38,6 @@ const DashboardComponent = ({
     return (
       <LoaderAnalysis
         vehicleBelts={vehicleBelts}
-        backgroundTransactions={backgroundTransactions}
         setReverseShipmentFormOpen={setReverseShipmentFormOpen}
         ongoingTransactions={ongoingTransactions}
         queuedTransactions={queuedTransactions}
@@ -52,7 +50,6 @@ const DashboardComponent = ({
     return (
       <PrintingAnalysis
         printingBelts={printingBelts}
-        backgroundTransactions={backgroundTransactions}
       />
     );
   }
@@ -85,7 +82,6 @@ const Index = () => {
   const [shipmentFormOpen, setShipmentFormOpen] = useState(false);
   const [maintenanceFormOpen, setMaintenanceFormOpen] = useState(false);
   const [notificationsFormOpen, setNotificationsFormOpen] = useState(false);
-  const [backgroundTransactions, setBackgroundTransactions] = useState(null);
   const [activeSection, setActiveSection] = useState(IS_AWS_FRONTEND ? 4 : 0);
   const [reverseShipmentFormOpen, setReverseShipmentFormOpen] = useState(null);
   const [missPrintTransactionId, setmissPrintTransactionId] = useState({});
@@ -152,8 +148,6 @@ const Index = () => {
   useEffect(() => {
     const getActiveTransactions = async () => {
       const res = await get('/api/shipment');
-      const backgroundTransactionsRes = res?.data?.data?.backgroundInfo;
-      setBackgroundTransactions(backgroundTransactionsRes);
       setPrintingBelts(res?.data?.data?.printingBeltRes);
       setVehicleBelts(res?.data?.data?.vehicleBeltRes);
       setOngoingTransactions(res?.data?.data?.ongoingTransactions);
@@ -306,11 +300,14 @@ const Index = () => {
       });
       setVehicleBelts(prevState => {
         const currData = [...prevState];
-        currData.push({
-          id: vehicle_id,
-          vehicle_id: machine_id,
-          vehicle_type
-        });
+        if (currData.filter(e => e.id === vehicle_id).length === 0) {
+          currData.push({
+            id: vehicle_id,
+            vehicle_id: machine_id,
+            vehicle_type,
+            is_active: 1
+          });
+        }
         return currData;
       });
       setIsLoading(false);
@@ -424,7 +421,6 @@ const Index = () => {
           handleBagIncrement={handleBagIncrement}
           handleStop={handleStop}
           printingBelts={printingBelts}
-          backgroundTransactions={backgroundTransactions}
           vehicleBelts={vehicleBelts}
           setReverseShipmentFormOpen={e => setReverseShipmentFormOpen(e)}
           ongoingTransactions={ongoingTransactions}
@@ -478,7 +474,6 @@ DashboardComponent.propTypes = {
   handleBagIncrement: PropTypes.func,
   handleStop: PropTypes.any,
   printingBelts: PropTypes.any,
-  backgroundTransactions: PropTypes.any,
   vehicleBelts: PropTypes.any,
   setReverseShipmentFormOpen: PropTypes.func,
   ongoingTransactions: PropTypes.any,
