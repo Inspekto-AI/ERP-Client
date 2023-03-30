@@ -80,7 +80,7 @@ const PrintingAnalysis = ({ printingBelts }) => {
           hideConfirm
           hideComment
         >
-          <DefectiveBags belt_id={rejectModalOpen?.printing_id} />
+          <DefectiveBags belt_id={rejectModalOpen?.printing_belt_id} />
         </InfoModal>
       ) : null}
     </>

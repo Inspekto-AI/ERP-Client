@@ -12,13 +12,13 @@ const DefectiveBags = ({ transaction_id, belt_id }) => {
 
   useEffect(() => {
     const fetchRejectBags = async () => {
-      const res = await get('/api/transaction/fetch-reject', {
-        transaction_id
+      const res = await get('/api/shipment/reject-bags', {
+        shipment_id: transaction_id
       });
       setRejectBags(res?.data?.data);
     };
     const fetchRejectBagsByBelt = async () => {
-      const res = await get('/api/transaction/fetch-reject-belt-bags', {
+      const res = await get('/api/shipment/reject-belt-bags', {
         machine_id: belt_id,
         dateRange: getStartAndEndDate()
       });
@@ -39,7 +39,6 @@ const DefectiveBags = ({ transaction_id, belt_id }) => {
       setRejectBags(newrejectbags);
     }
   };
-  console.log(rejectBags, 'rejectbags');
 
   return (
     <DefectiveBagsContainer>
@@ -69,7 +68,7 @@ const DefectiveBags = ({ transaction_id, belt_id }) => {
                       // }
                       layout="fill"
                       loader={() =>
-                        `${BASE_URL}/api/transaction/images?image_location=${e.local_image_path}`
+                        `${BASE_URL}/api/shipment/images?image_location=${e.local_image_path}`
                       }
                       objectFit="contain"
                       objectPosition="top"

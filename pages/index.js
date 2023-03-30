@@ -224,7 +224,7 @@ const Index = () => {
           };
         });
       }
-      const belt_id = parseInt(data?.belt_id, 10);
+      const belt_id = data?.belt_id;
       setPrintingBelts(prevState => {
         if (!prevState) return null;
         return {
@@ -238,7 +238,7 @@ const Index = () => {
       });
     });
     socket.on('tag-entry-deactivated', data => {
-      const belt_id = parseInt(data?.belt_id, 10);
+      const belt_id = data?.belt_id;
       setPrintingBelts(prevState => {
         if (!prevState) return null;
         return {
