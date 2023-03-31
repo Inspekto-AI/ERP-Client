@@ -11,7 +11,7 @@ const Maintenance = ({ close }) => {
   useEffect(() => {
     const maintenance = async () => {
       try {
-        const result = await get('/api/transaction/maintenance');
+        const result = await get('/api/maintenance');
         setActiveMaintenance(result?.data?.data);
       } catch (error) {
         console.log(error, 'maintenanceTicket,-----------------------');

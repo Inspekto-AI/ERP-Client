@@ -1,16 +1,9 @@
-import
-{ Button, makeStyles } from '@material-ui/core';
+import { Button, makeStyles } from '@material-ui/core';
 import PropTypes from 'prop-types';
 import Image from 'next/image';
 import ImageKitLoader from 'utils/ImageLoader';
-import { useState, useContext, useEffect } from 'react';
 
-
-
-
-
-
-const useStyles = makeStyles( theme => ( {
+const useStyles = makeStyles(theme => ({
     buttonStyle: {
         position: 'relative',
         fontWeight: '900',
@@ -20,7 +13,7 @@ const useStyles = makeStyles( theme => ( {
         borderRadius: theme.root.borderRadius,
         background: theme.palette.byzantine.main,
         overflow: 'hidden',
-        [ theme.breakpoints.down( 'sm' ) ]: {
+        [theme.breakpoints.down('sm')]: {
             height: 'auto'
         },
         '&:hover': {
@@ -38,7 +31,7 @@ const useStyles = makeStyles( theme => ( {
         color: theme.palette.byzantine.main,
         borderColor: theme.palette.byzantine.main,
         overflow: 'hidden',
-        [ theme.breakpoints.down( 'sm' ) ]: {
+        [theme.breakpoints.down('sm')]: {
             height: 'auto'
         },
         '&:hover': {
@@ -46,9 +39,9 @@ const useStyles = makeStyles( theme => ( {
             background: theme.palette.gradient.pink
         }
     }
-} ) );
+}));
 
-const FrinksButton = ( {
+const FrinksButton = ({
     text,
     isInactive,
     type,
@@ -56,12 +49,12 @@ const FrinksButton = ( {
     variant,
     style,
     image,
-} ) => {
-  const classes = useStyles();
+}) => {
+    const classes = useStyles();
 
     return (<Button variant={
-            variant || 'contained'
-        }
+        variant || 'contained'
+    }
         color="primary"
         className={
             variant === 'outlined' ? classes.buttonOutlined : classes.buttonStyle
@@ -70,12 +63,12 @@ const FrinksButton = ( {
         type={type}
         onClick={onClick}
         style={style}> {
-        image ? <Image src={image}
-            loader={ImageKitLoader}
-            layout="fixed"
-            height={35}
-            width={35}/> : text
-    } </Button>);
+            image ? <Image src={image}
+                loader={ImageKitLoader}
+                layout="fixed"
+                height={35}
+                width={35} /> : text
+        } </Button>);
 };
 
 FrinksButton.propTypes = {

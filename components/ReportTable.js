@@ -375,13 +375,13 @@ const useToolbarStyles = makeStyles(theme => ({
   highlight:
     theme.palette.type === 'light'
       ? {
-          color: theme.palette.secondary.main,
-          backgroundColor: lighten(theme.palette.secondary.light, 0.85)
-        }
+        color: theme.palette.secondary.main,
+        backgroundColor: lighten(theme.palette.secondary.light, 0.85)
+      }
       : {
-          color: theme.palette.text.primary,
-          backgroundColor: theme.palette.secondary.dark
-        },
+        color: theme.palette.text.primary,
+        backgroundColor: theme.palette.secondary.dark
+      },
   title: {
     flex: '1 1 100%'
   }
@@ -500,7 +500,7 @@ const RenderTable = ({ layoutType, data, setRejectIndex }) => {
                       padding="none"
                       style={{ textAlign: 'center' }}
                     >
-                      {row?.id}{' '}
+                      {row?.shipment_id}{' '}
                     </TableCell>
                     <TableCell style={{ textAlign: 'center' }}>
                       {row?.licence_number === ''
@@ -508,25 +508,25 @@ const RenderTable = ({ layoutType, data, setRejectIndex }) => {
                         : `T - ${row?.licence_number}`}{' '}
                     </TableCell>
                     <TableCell style={{ textAlign: 'center' }}>
-                      {row?.vehicle?.machine_id || 'NA'}{' '}
+                      {row?.loader_id || 'NA'}{' '}
                     </TableCell>
                     <TableCell style={{ textAlign: 'center' }}>
-                      {row?.printing_belt?.machine_id || 'NA'}{' '}
+                      {row?.printing_belt_id || 'NA'}{' '}
                     </TableCell>
                     <TableCell style={{ textAlign: 'center' }}>
                       {row?.bag_type}{' '}
                     </TableCell>
                     <TableCell style={{ textAlign: 'center' }}>
-                      {row?.bag_count || 0}{' '}
+                      {row?.loading_count || 0}{' '}
                     </TableCell>
                     <TableCell style={{ textAlign: 'center' }}>
-                      {row?.tag_count}{' '}
+                      {row?.printing_count}{' '}
                     </TableCell>
                     <TableCell style={{ textAlign: 'center' }}>
                       {row?.bags_increased}{' '}
                     </TableCell>
                     <TableCell style={{ textAlign: 'center' }}>
-                      {row?.missed_label_count}{' '}
+                      {row?.misprinting_count}{' '}
                     </TableCell>
                     <TableCell style={{ textAlign: 'center' }}>
                       {new Date(row?.created_at).toLocaleDateString()}{' '}
@@ -555,7 +555,7 @@ const RenderTable = ({ layoutType, data, setRejectIndex }) => {
                           height: '30px'
                         }}
                         onClick={() => setRejectIndex(index)}
-                        isInactive={row?.aws_missed_labels?.length === 0}
+                        isInactive={row?.misprinting_count === 0}
                       />
                     </TableCell>
                   </TableRow>

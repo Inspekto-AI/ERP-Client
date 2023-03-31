@@ -3,6 +3,6 @@ import { useMutation } from 'react-query';
 
 export const MaintenanceQuery = () => {
   return useMutation(values =>
-    post('/api/transaction/maintenance', values).then(res => res.data)
+    post('/api/maintenance', values).then(res => res.data)
   );
 };

@@ -72,7 +72,7 @@ const MaintenanceForm = ({ close }) => {
   const router = useRouter();
   useEffect(() => {
     const fetchBeltIds = async type => {
-      const res = await get('/api/transaction/beltIds', {
+      const res = await get('/api/maintenance/belts', {
         type
       });
       setBeltIdList(res?.data?.data);

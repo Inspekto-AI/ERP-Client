@@ -6,13 +6,16 @@ import ImageKitLoader from 'utils/ImageLoader';
 import { Button } from '@material-ui/core';
 import PropTypes from 'prop-types';
 import { get } from 'utils/api';
+import { getStartAndEndDate } from 'utils/globalFunctions';
 
 const Notification = ({ close }) => {
   const [missingData, setMissingData] = useState(null);
 
   useEffect(() => {
     const fetchPrintingBeltsIds = async () => {
-      const res = await get('/api/transaction/notifications');
+      const res = await get('/api/notification', {
+        dateRange: getStartAndEndDate()
+      });
       setMissingData(res?.data?.data);
     };
     fetchPrintingBeltsIds();
@@ -20,8 +23,6 @@ const Notification = ({ close }) => {
       setMissingData(null);
     };
   }, []);
-
-  console.log(missingData);
 
   return (
     <Layout

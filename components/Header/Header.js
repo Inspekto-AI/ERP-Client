@@ -26,13 +26,6 @@ const Header = ({
 
   const { trippingStatus, setTrippingStatus } = useContext(GlobalContext);
 
-  // const openMaintenanceForm = async () => {
-  //   const res = await get('/api/transaction/maintenance');
-  //   console.log(res, '------------------------');
-
-  //   setMaintenance(res?.data?.data);
-  // };
-
   const handleClick = event => {
     setAnchorEl(anchorEl ? null : event.currentTarget);
   };

@@ -88,7 +88,7 @@ const Report = () => {
   };
 
   const handleDownload = async () => {
-    const res = await getFile('/api/analysis/reports', {
+    const res = await getFile('/api/report/datewise', {
       dateRange: getStartAndEndDate(date)
     });
 

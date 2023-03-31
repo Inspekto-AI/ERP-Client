@@ -5,7 +5,7 @@
   "scripts": {
     "dev": "nodemon server.js",
     "build": "next build && next export",
-    "start": "next start",
+    "start": "node server.js",
     "lint": "eslint --ignore-path .gitignore .",
     "lint:fix": "eslint --ignore-path .gitignore --fix ."
   },

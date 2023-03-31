@@ -45,7 +45,7 @@ const Summary = () => {
 
   const markMaintenanceComplete = async id => {
     try {
-      await put('/api/transaction/maintenance', { id });
+      await put('/api/maintenance', { id });
       setMaintenanceTickets(prevData => prevData.map(e => {
         if (e.id === id) return { ...e, marked_complete: 1 };
         return e;
@@ -180,7 +180,7 @@ const Summary = () => {
                             <div className="notification">
                               <div className="ticket-title">Ticket #{e.id}</div>
                               <div className="description">
-                                {e.printing_belt ? `Printing belt - ${e.printing_belt.machine_id} under maintenance | Reason - ${e.reason}` : `Loading belt - ${e.loader_belt.machine_id} under maintenance | Reason - ${e.reason}`}
+                                {e.printing_belt ? `Printing belt - ${e.printing_belt_id} under maintenance | Reason - ${e.reason}` : `Loading belt - ${e.loading_belt_id} under maintenance | Reason - ${e.reason}`}
                               </div>
                               <div className="button-container">
                                 {/* <FrinksButton
