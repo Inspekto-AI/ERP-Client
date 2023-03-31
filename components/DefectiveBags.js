@@ -12,13 +12,13 @@ const DefectiveBags = ({ transaction_id, belt_id }) => {
 
   useEffect(() => {
     const fetchRejectBags = async () => {
-      const res = await get('/api/transaction/fetch-reject', {
-        transaction_id
+      const res = await get('/api/shipment/reject-bags', {
+        shipment_id: transaction_id
       });
       setRejectBags(res?.data?.data);
     };
     const fetchRejectBagsByBelt = async () => {
-      const res = await get('/api/transaction/fetch-reject-belt-bags', {
+      const res = await get('/api/shipment/reject-belt-bags', {
         machine_id: belt_id,
         dateRange: getStartAndEndDate()
       });
@@ -30,7 +30,7 @@ const DefectiveBags = ({ transaction_id, belt_id }) => {
 
   const removeFromMissprint = async (id, image_location, index) => {
     const response = await put(
-      `/api/transaction/mark-false-positive?id=${id}&image_location=${image_location}`
+      `/api/shipment/mark-false-positive?id=${id}&image_location=${image_location}`
     );
 
     if (response?.data?.success) {
@@ -39,14 +39,12 @@ const DefectiveBags = ({ transaction_id, belt_id }) => {
       setRejectBags(newrejectbags);
     }
   };
-  console.log(rejectBags, 'rejectbags');
 
   return (
     <DefectiveBagsContainer>
       {rejectBags && rejectBags.length > 0 ? (
         <>
           {rejectBags.map((e, index) => {
-            console.log(e, index);
             return (
               <div className="defect" key={index}>
                 <div className={`title ${index === 0 ? 'active' : ''}`}>
@@ -69,7 +67,7 @@ const DefectiveBags = ({ transaction_id, belt_id }) => {
                       // }
                       layout="fill"
                       loader={() =>
-                        `${BASE_URL}/api/transaction/images?image_location=${e.local_image_path}`
+                        `${BASE_URL}/api/shipment/images?image_location=${e.local_image_path}`
                       }
                       objectFit="contain"
                       objectPosition="top"
@@ -81,7 +79,7 @@ const DefectiveBags = ({ transaction_id, belt_id }) => {
                     {e?.is_false_positive === 1 ? null : (
                       <Button
                         onClick={() =>
-                          removeFromMissprint(e?.id, e?.local_image_path, index)
+                          removeFromMissprint(e?.misprint_id, e?.local_image_path, index)
                         }
                         variant="outlined"
                         color="secondary"

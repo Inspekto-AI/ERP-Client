@@ -274,7 +274,7 @@ const Summary = () => {
                                             <Image
                                               src={element.local_image_path}
                                               loader={() =>
-                                                `${BASE_URL}/api/transaction/images?image_location=${element.local_image_path ||
+                                                `${BASE_URL}/api/shipment/images?image_location=${element.local_image_path ||
                                                 element.local_image_location
                                                 }`
                                               }
