@@ -18,6 +18,7 @@ import { SocketContext } from 'context/SocketContext';
 import LoaderAnalysis from 'components/LoaderAnalysis';
 import InfoModal from 'components/InfoModal/InfoModal';
 import { useState, useContext, useEffect } from 'react';
+import { GlobalContext } from 'context/GlobalContext';
 
 import Alert from '@material-ui/lab/Alert';
 import { Button } from '@material-ui/core';
@@ -88,6 +89,7 @@ const Index = () => {
   const [ongoingTransactions, setOngoingTransactions] = useState(null);
   const [queuedTransactions, setQueuedTransactions] = useState(null);
   const [alertCounter, setAlertCounter] = useState(0);
+  const { setBeltTrippingEnabled } = useContext(GlobalContext);
 
   const handleBagDone = async (
     transaction_id,
@@ -130,7 +132,7 @@ const Index = () => {
   const handleBagIncrement = async data => {
     setIsLoading(true);
     try {
-      await post('/api/transaction/bag-change', data);
+      await post('/api/shipment/bag-change', data);
     } catch (error) {
       setIsLoading(false);
     }
@@ -152,6 +154,7 @@ const Index = () => {
       setVehicleBelts(res?.data?.data?.vehicleBeltRes);
       setOngoingTransactions(res?.data?.data?.ongoingTransactions);
       setQueuedTransactions(res?.data?.data?.queuedTransactions);
+      setBeltTrippingEnabled(res?.data?.data?.enableBeltTripping);
     };
     getActiveTransactions();
   }, []);

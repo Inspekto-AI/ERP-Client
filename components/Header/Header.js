@@ -24,7 +24,7 @@ const Header = ({
   const [headerDropDownVisible, setHeaderDropDownVisible] = useState(false);
   const [bypassSystem, setBypassSystem] = useState(false);
 
-  const { trippingStatus, setTrippingStatus } = useContext(GlobalContext);
+  const { trippingStatus, setTrippingStatus, beltTrippingEnabled } = useContext(GlobalContext);
 
   const handleClick = event => {
     setAnchorEl(anchorEl ? null : event.currentTarget);
@@ -56,16 +56,18 @@ const Header = ({
           <div className="links">
             {IS_AWS_FRONTEND ? null : (
               <>
-                <Button
-                  variant="contained"
-                  color="primary"
-                  className={trippingStatus ? 'red-button' : 'purple-button'}
-                  onClick={() => setBypassSystem(true)}
-                >
-                  <p className="button-label">
-                    {trippingStatus ? 'BYPASSED' : 'BYPASS SYSTEM'}
-                  </p>
-                </Button>
+                {beltTrippingEnabled && (
+                  <Button
+                    variant="contained"
+                    color="primary"
+                    className={trippingStatus ? 'red-button' : 'purple-button'}
+                    onClick={() => setBypassSystem(true)}
+                  >
+                    <p className="button-label">
+                      {trippingStatus ? 'BYPASSED' : 'BYPASS SYSTEM'}
+                    </p>
+                  </Button>
+                )}
                 <Button
                   variant="contained"
                   color="primary"

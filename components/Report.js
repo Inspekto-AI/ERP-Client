@@ -45,13 +45,14 @@ const Report = () => {
       key: 'selection'
     }
   ]);
+  const [dateUnAltered, setDateUnAltered] = useState(true);
   const [shipmentFilter, setShipmentFilter] = useState(2);
   const [loaderFilter, setLoaderFilter] = useState(2);
 
   const fetchReports = async () => {
     const fetchShipmentReport = async () => {
       const res = await get('/api/stats/shipment-stats', {
-        dateRange: getStartAndEndDate(date),
+        dateRange: getStartAndEndDate(date, dateUnAltered),
         trackbar: [shipmentStartTrackBar, shipmentEndTrackBar],
         shipmentFilter
       });
@@ -59,7 +60,7 @@ const Report = () => {
     };
     const fetchPrintingReport = async () => {
       const res = await get('/api/stats/printing-stats', {
-        dateRange: getStartAndEndDate(date),
+        dateRange: getStartAndEndDate(date, dateUnAltered),
         trackbar: [printingStartTrackBar, printingEndTrackBar]
       });
       setPrintingReport(res.data.data);
@@ -67,14 +68,15 @@ const Report = () => {
 
     const fetchLoadingReport = async () => {
       const res = await get('/api/stats/loading-stats', {
-        dateRange: getStartAndEndDate(date),
-        trackbar: [loaderStartTrackBar, loaderEndTrackBar]
+        dateRange: getStartAndEndDate(date, dateUnAltered),
+        trackbar: [loaderStartTrackBar, loaderEndTrackBar],
+        loaderFilter
       });
       setLoaderReport(res.data.data);
     };
     // const fetchPackerReport = async () => {
     //   const res = await get('/api/analysis/packer-report', {
-    //     dateRange: getStartAndEndDate(date),
+    //     dateRange: getStartAndEndDate(date, dateUnAltered),
     //     trackbar: [packerStartTrackBar, packerEndTrackBar]
     //   });
     //   setPackerReport(res.data.data);
@@ -87,9 +89,14 @@ const Report = () => {
     ]);
   };
 
+  useEffect(() => {
+    fetchReports();
+  }, [])
+
+
   const handleDownload = async () => {
     const res = await getFile('/api/report/datewise', {
-      dateRange: getStartAndEndDate(date)
+      dateRange: getStartAndEndDate(date, dateUnAltered)
     });
 
     downloadPDF(res.data);
@@ -99,18 +106,6 @@ const Report = () => {
     await fetchReports();
     setDatePickerOpen(false);
   };
-
-  useEffect(() => {
-    const fetchShipmentReport = async () => {
-      const res = await get('/api/stats/shipment-stats', {
-        dateRange: getStartAndEndDate(date),
-        trackbar: [shipmentStartTrackBar, shipmentEndTrackBar],
-        shipmentFilter
-      });
-      setShipmentReport(res.data.data);
-    };
-    fetchShipmentReport();
-  }, [shipmentStartTrackBar, shipmentEndTrackBar, shipmentFilter]);
 
   useEffect(() => {
     if (loaderReport) {
@@ -158,7 +153,10 @@ const Report = () => {
                 ) : null}
                 <DateRange
                   editableDateInputs
-                  onChange={item => setDate([item.selection])}
+                  onChange={item => {
+                    setDate([item.selection]);
+                    setDateUnAltered(false);
+                  }}
                   moveRangeOnFirstSelection={false}
                   ranges={date}
                   rangeColors={['#051c3f']}
