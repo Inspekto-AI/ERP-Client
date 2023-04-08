@@ -889,7 +889,7 @@ const ReportTable = ({
         >
           <DefectiveBags
             belt_id={Array.isArray(data) ? data[rejectIndex]?.belt_id : null}
-            transaction_id={data?.rows ? data?.rows[rejectIndex]?.id : null}
+            transaction_id={data?.rows ? data?.rows[rejectIndex]?.shipment_id : null}
           />
         </InfoModal>
       ) : null}{' '}

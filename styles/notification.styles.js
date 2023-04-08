@@ -58,22 +58,17 @@ const Container = styled.div`
     padding-top: 27px;
   }
 
-  .outer-image-container {
-    width: 50%;
-  }
-
   .image {
     display: flex;
     align-items: flex-start;
-    @media (max-width: 900px) {
-      width: 60%;
-    }
+    flex-direction: column;
+    margin-bottom: 15px;
 
     .image-container {
       position: relative;
       width: 100px;
       aspect-ratio: 1.5/1;
-      margin: 2px 24px 14px 0;
+      margin: 2px 24px 2px 0;
     }
 
     .time {
@@ -116,13 +111,8 @@ const Container = styled.div`
     }
 
     .image-container {
-      display: flex;
-      align-items: center;
-      justify-content: flex-start;
-
-      .image {
-        flex-direction: column;
-      }
+      display: grid;
+      grid-template-columns: repeat(5, 1fr);
     }
   }
 
