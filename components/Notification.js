@@ -7,6 +7,7 @@ import PropTypes from 'prop-types';
 import { get } from 'utils/api';
 import { getStartAndEndDate } from 'utils/globalFunctions';
 import moment from 'moment';
+import { BASE_URL } from 'utils/constants';
 
 const Notification = ({ close }) => {
   const [missingData, setMissingData] = useState(null);
@@ -68,12 +69,17 @@ const Notification = ({ close }) => {
                   </div>
                   <div className={`${'image-container'} ${'outer-image-container'}`}>
                     {missingData[e].map((ele, idx) => {
+                      console.log(ele);
                       return (
                         <div className="image" key={idx}>
                           <div className="image-container">
                             <Image
                               src={ele.local_image_path}
-                              loader={ImageKitLoader}
+                              loader={() =>
+                                `${BASE_URL}/api/shipment/images?image_location=${ele.local_image_path ||
+                                ele.local_image_location
+                                }`
+                              }
                               layout="fill"
                               objectFit="contain"
                             />
