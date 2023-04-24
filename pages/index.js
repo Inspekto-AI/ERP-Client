@@ -13,7 +13,6 @@ import MaintenanceForm from 'components/MaintenanceForm';
 import { ServiceQuery } from 'reactQueries/shipmentQueries';
 import PackerAnalysis from 'components/PackerAnalysis';
 import SystemHealth from 'components/SystemHealth';
-import { IS_AWS_FRONTEND, DEACTIVATE_PRINTING_SOLUTION } from 'utils/constants';
 import { SocketContext } from 'context/SocketContext';
 import LoaderAnalysis from 'components/LoaderAnalysis';
 import InfoModal from 'components/InfoModal/InfoModal';
@@ -83,13 +82,13 @@ const Index = () => {
   const [shipmentFormOpen, setShipmentFormOpen] = useState(false);
   const [maintenanceFormOpen, setMaintenanceFormOpen] = useState(false);
   const [notificationsFormOpen, setNotificationsFormOpen] = useState(false);
-  const [activeSection, setActiveSection] = useState(IS_AWS_FRONTEND ? 4 : 0);
+  const [activeSection, setActiveSection] = useState(0);
   const [reverseShipmentFormOpen, setReverseShipmentFormOpen] = useState(null);
   const [missPrintTransactionId, setmissPrintTransactionId] = useState({});
   const [ongoingTransactions, setOngoingTransactions] = useState(null);
   const [queuedTransactions, setQueuedTransactions] = useState(null);
   const [alertCounter, setAlertCounter] = useState(0);
-  const { setBeltTrippingEnabled } = useContext(GlobalContext);
+  const { setBeltTrippingEnabled, deactivatePrintingSolution: DEACTIVATE_PRINTING_SOLUTION } = useContext(GlobalContext);
 
   const handleBagDone = async (
     transaction_id,
@@ -366,39 +365,37 @@ const Index = () => {
       <Container>
         {isLoading ? <Loader /> : null}
         <div className="trackbar">
-          {IS_AWS_FRONTEND ? null : (
-            <>
+          <>
+            <div
+              className={`option ${activeSection === 0 ? 'active' : ''}`}
+              onClick={() => setActiveSection(0)}
+              onKeyPress={() => setActiveSection(0)}
+              role="button"
+              tabIndex={0}
+            >
+              <h6 style={{ textAlign: 'center' }}>Loader belt</h6>
+            </div>
+            {DEACTIVATE_PRINTING_SOLUTION ? (null) : (
               <div
-                className={`option ${activeSection === 0 ? 'active' : ''}`}
-                onClick={() => setActiveSection(0)}
-                onKeyPress={() => setActiveSection(0)}
+                className={`option ${activeSection === 1 ? 'active' : ''}`}
+                onClick={() => setActiveSection(1)}
+                onKeyPress={() => setActiveSection(1)}
                 role="button"
                 tabIndex={0}
               >
-                <h6 style={{ textAlign: 'center' }}>Loader belt</h6>
+                <h6 style={{ textAlign: 'center' }}>Printing belt</h6>
               </div>
-              {DEACTIVATE_PRINTING_SOLUTION ? (null) : (
-                <div
-                  className={`option ${activeSection === 1 ? 'active' : ''}`}
-                  onClick={() => setActiveSection(1)}
-                  onKeyPress={() => setActiveSection(1)}
-                  role="button"
-                  tabIndex={0}
-                >
-                  <h6 style={{ textAlign: 'center' }}>Printing belt</h6>
-                </div>
-              )}
-              <div
-                className={`option ${activeSection === 3 ? 'active' : ''}`}
-                onClick={() => setActiveSection(3)}
-                onKeyPress={() => setActiveSection(3)}
-                role="button"
-                tabIndex={0}
-              >
-                <h6 style={{ textAlign: 'center' }}>Summary</h6>
-              </div>
-            </>
-          )}
+            )}
+            <div
+              className={`option ${activeSection === 3 ? 'active' : ''}`}
+              onClick={() => setActiveSection(3)}
+              onKeyPress={() => setActiveSection(3)}
+              role="button"
+              tabIndex={0}
+            >
+              <h6 style={{ textAlign: 'center' }}>Summary</h6>
+            </div>
+          </>
           <div
             className={`option ${activeSection === 4 ? 'active' : ''}`}
             onClick={() => setActiveSection(4)}

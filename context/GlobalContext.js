@@ -6,6 +6,10 @@ export const GlobalContext = createContext();
 export const GlobalProvider = ({ children }) => {
   const [beltTrippingEnabled, setBeltTrippingEnabled] = useState(false);
   const [trippingStatus, setTrippingStatus] = useState(null);
+  const [userData, setUserData] = useState(null);
+  const [bagTypes, setBagTypes] = useState(null);
+  const [deactivateLoaderSolution, setDeactivateLoaderSolution] = useState(0);
+  const [deactivatePrintingSolution, setDeactivatePrintingSolution] = useState(0);
 
   return (
     <GlobalContext.Provider
@@ -13,7 +17,15 @@ export const GlobalProvider = ({ children }) => {
         trippingStatus,
         setTrippingStatus,
         beltTrippingEnabled,
-        setBeltTrippingEnabled
+        setBeltTrippingEnabled,
+        userData,
+        setUserData,
+        bagTypes,
+        setBagTypes,
+        deactivateLoaderSolution,
+        setDeactivateLoaderSolution,
+        deactivatePrintingSolution,
+        setDeactivatePrintingSolution
       }}
     >
       {children}

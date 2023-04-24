@@ -5,6 +5,7 @@ import { ThemeProvider } from '@material-ui/core/styles';
 import { SocketContext, socket } from 'context/SocketContext';
 import { GlobalProvider } from 'context/GlobalContext';
 import InitCheck from 'components/InitCheck';
+import CheckAuth from 'components/CheckAuth';
 
 import Head from 'next/head';
 import PropTypes from 'prop-types';
@@ -52,9 +53,11 @@ export default function MyApp({ Component, pageProps }) {
           <QueryClientProvider client={queryClient}>
             <Hydrate state={pageProps.dehydratedState}>
               <GlobalProvider>
-                <InitCheck>
-                  <Component {...pageProps} />
-                </InitCheck>
+                <CheckAuth>
+                  <InitCheck>
+                    <Component {...pageProps} />
+                  </InitCheck>
+                </CheckAuth>
               </GlobalProvider>
             </Hydrate>
           </QueryClientProvider>

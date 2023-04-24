@@ -78,7 +78,7 @@ const SettingHeader = ({
         <p>{title}</p>
         {counter ? <div className={classes.counter}>{counter}</div> : null}
       </div>
-      <div
+      {close ? (<div
         className={classes.close}
         style={{ right: `${summaryHeader ? '-20px' : '0'}` }}
       >
@@ -92,7 +92,7 @@ const SettingHeader = ({
         ) : (
           <Button onClick={() => close()}>X Close</Button>
         )}
-      </div>
+      </div>) : null}
     </nav>
   );
 };

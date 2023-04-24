@@ -1,15 +1,16 @@
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useContext } from 'react';
 import PropTypes from 'prop-types';
 import { GrFlag } from 'react-icons/gr';
 import { IoMdAdd } from 'react-icons/io';
 import { Avatar, Button, LinearProgress } from '@material-ui/core';
 import { BiRightArrowAlt } from 'react-icons/bi';
 import { msToTime } from 'utils/globalFunctions';
-import { DEACTIVATE_LOADER_SOLUTION, PACKER_LIMIT } from 'utils/constants';
+import { PACKER_LIMIT } from 'utils/constants';
 import Container from './AnalyticsCard.styles';
 import FrinksButton from 'components/FrinksButton';
 import Image from 'next/image';
 import ImageKitLoader from 'utils/ImageLoader';
+import { GlobalContext } from 'context/GlobalContext';
 
 export const getStatus = progressPercentage => {
   if (progressPercentage <= 20) {
@@ -41,6 +42,8 @@ const AnalyticsCard = ({
   handleBagDone
 }) => {
   const [timeDifference, setTimeDifference] = useState(0);
+  const { deactivateLoaderSolution: DEACTIVATE_LOADER_SOLUTION } = useContext(GlobalContext);
+
   useEffect(() => {
     const interval = setInterval(
       () =>
@@ -246,17 +249,17 @@ const AnalyticsCard = ({
                   >
                     {status == 0
                       ? (
-                          DEACTIVATE_LOADER_SOLUTION
-                            ? data.bag_limit <= data.tag_count
-                            : data.bag_limit <= data.bag_count
-                        )
+                        DEACTIVATE_LOADER_SOLUTION
+                          ? data.bag_limit <= data.tag_count
+                          : data.bag_limit <= data.bag_count
+                      )
                         ? 'View'
                         : 'View Details'
                       : 'Edit'}{' '}
                     {(DEACTIVATE_LOADER_SOLUTION
                       ? data.bag_limit <= data.tag_count
                       : data.bag_limit <= data.bag_count) ||
-                    status == 1 ? null : (
+                      status == 1 ? null : (
                       <BiRightArrowAlt />
                     )}
                   </Button>

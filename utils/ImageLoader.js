@@ -1,7 +1,4 @@
-import { IS_AWS_FRONTEND } from 'utils/constants';
-
 const ImageKitLoader = ({ src, width, quality }) => {
-  if (IS_AWS_FRONTEND) return src;
   if (src[0] === '/') src = src.slice(1);
   const params = [`w-${width}`];
   if (quality) {

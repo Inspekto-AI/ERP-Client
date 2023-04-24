@@ -23,8 +23,9 @@ import { ServiceQuery } from 'reactQueries/shipmentQueries';
 import FrinksButton from 'components/FrinksButton';
 import Loader from 'components/Loader';
 import InfoModal from 'components/InfoModal';
-import { BAG_TYPES } from 'utils/constants';
+import { GlobalContext } from 'context/GlobalContext';
 import { get } from 'utils/api';
+import { useContext } from 'react';
 
 const useStyles = makeStyles(theme => ({
   root: {
@@ -130,6 +131,7 @@ const Config = ({
   const [gateno, setGateno] = useState('');
   const [labelExample, setLabelExample] = useState('');
   const [isUsedBeltSelected, setIsUsedBeltSelected] = useState(false);
+  const { bagTypes: BAG_TYPES } = useContext(GlobalContext);
 
   useEffect(() => {
     const fetchVehicle = async (id, vehicleId) => {

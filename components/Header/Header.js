@@ -6,7 +6,6 @@ import { BsFillTriangleFill } from 'react-icons/bs';
 import { IoIosMenu } from 'react-icons/io';
 import HeaderDrawer from './HeaderDrawer';
 
-import { IS_AWS_FRONTEND } from 'utils/constants';
 import ImageKitLoader from 'utils/ImageLoader';
 import PropTypes from 'prop-types';
 import Container from './Header.styles';
@@ -54,72 +53,70 @@ const Header = ({
 
         <Hidden smDown>
           <div className="links">
-            {IS_AWS_FRONTEND ? null : (
-              <>
-                {beltTrippingEnabled && (
-                  <Button
-                    variant="contained"
-                    color="primary"
-                    className={trippingStatus ? 'red-button' : 'purple-button'}
-                    onClick={() => setBypassSystem(true)}
-                  >
-                    <p className="button-label">
-                      {trippingStatus ? 'BYPASSED' : 'BYPASS SYSTEM'}
-                    </p>
-                  </Button>
-                )}
+            <>
+              {beltTrippingEnabled && (
                 <Button
                   variant="contained"
                   color="primary"
-                  onClick={() => openShipmentForm()}
+                  className={trippingStatus ? 'red-button' : 'purple-button'}
+                  onClick={() => setBypassSystem(true)}
                 >
-                  <p className="button-label">+ NEW SHIPMENT</p>
+                  <p className="button-label">
+                    {trippingStatus ? 'BYPASSED' : 'BYPASS SYSTEM'}
+                  </p>
                 </Button>
-                <Button
-                  variant="contained"
-                  color="primary"
-                  className="purple-button"
-                  onClick={() => maintenanceForm()}
+              )}
+              <Button
+                variant="contained"
+                color="primary"
+                onClick={() => openShipmentForm()}
+              >
+                <p className="button-label">+ NEW SHIPMENT</p>
+              </Button>
+              <Button
+                variant="contained"
+                color="primary"
+                className="purple-button"
+                onClick={() => maintenanceForm()}
+              >
+                <p className="button-label">+ NEW MAINTENANCE TICKET</p>
+              </Button>
+              <div className="notification">
+                <div
+                  className="icon"
+                  onClick={() => openNotificationForm()}
+                  onKeyPress={() => openNotificationForm()}
+                  role="button"
+                  tabIndex={0}
                 >
-                  <p className="button-label">+ NEW MAINTENANCE TICKET</p>
-                </Button>
-                <div className="notification">
-                  <div
-                    className="icon"
-                    onClick={() => openNotificationForm()}
-                    onKeyPress={() => openNotificationForm()}
-                    role="button"
-                    tabIndex={0}
-                  >
-                    {/* <div className="counter">20</div> */}
-                    <Image
-                      src="notification_fU5rQCmps.svg"
-                      loader={ImageKitLoader}
-                      layout="fixed"
-                      height={20}
-                      width={20}
-                    />
-                  </div>
-                  <hr />
-                  <div
-                    className="icon"
-                    onClick={() => openMaintenanceForm()}
-                    onKeyPress={() => openMaintenanceForm()}
-                    role="button"
-                    tabIndex={0}
-                  >
-                    {/* <div className="counter blue-counter">20</div> */}
-                    <Image
-                      src="warning_QhrmDxvk4.svg"
-                      loader={ImageKitLoader}
-                      layout="fixed"
-                      height={20}
-                      width={20}
-                    />
-                  </div>
+                  {/* <div className="counter">20</div> */}
+                  <Image
+                    src="notification_fU5rQCmps.svg"
+                    loader={ImageKitLoader}
+                    layout="fixed"
+                    height={20}
+                    width={20}
+                  />
                 </div>
-              </>
-            )}
+                <hr />
+                <div
+                  className="icon"
+                  onClick={() => openMaintenanceForm()}
+                  onKeyPress={() => openMaintenanceForm()}
+                  role="button"
+                  tabIndex={0}
+                >
+                  {/* <div className="counter blue-counter">20</div> */}
+                  <Image
+                    src="warning_QhrmDxvk4.svg"
+                    loader={ImageKitLoader}
+                    layout="fixed"
+                    height={20}
+                    width={20}
+                  />
+                </div>
+              </div>
+            </>
             <Button className="menu-button" onClick={handleClick}>
               <Image
                 src="DotsThreeOutlineVertical_yfCTGQ8ny.svg"
