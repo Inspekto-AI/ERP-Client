@@ -4,7 +4,7 @@ import FrinksButton from "./FrinksButton";
 const PythonDataExtraction = ({ dataExtractionStatus, setDataExtractionStatus }) => {
     const updateFunc = async () => {
         const res = await put('/api/configuration/data-extraction');
-        setDataExtractionStatus(res?.data?.data["data-extraction"]);
+        setDataExtractionStatus(res?.data?.data.dataExtraction);
     }
 
     return (
