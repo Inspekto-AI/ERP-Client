@@ -19,7 +19,7 @@ const Admin = () => {
     useEffect(() => {
         const fetchStatus = async () => {
             const res = await get('/api/configuration/data-extraction');
-            setDataExtractionStatus(res.data.data ? true : false);
+            setDataExtractionStatus(res?.data?.data?.dataExtractionStatus ? true : false);
         }
         fetchStatus();
     }, [])
