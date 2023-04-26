@@ -7,7 +7,7 @@ import Container from 'styles/admin.styles';
 import { MdOutlineExpandMore } from 'react-icons/md';
 import { Accordion, AccordionDetails, AccordionSummary } from '@material-ui/core';
 import UpdateDatabase from 'components/UpdateDatabase';
-import UpdateDeployment from 'components/UpdateDeployment';
+import UpdateModelWeights from 'components/UpdateModelWeights';
 import PythonDataExtraction from 'components/PythonDataExtraction';
 import { get } from 'utils/api';
 
@@ -22,7 +22,7 @@ const Admin = () => {
             setDataExtractionStatus(res?.data?.data?.dataExtractionStatus ? true : false);
         }
         fetchStatus();
-    }, [])
+    }, []);
 
 
     if (!userData) {
@@ -51,10 +51,10 @@ const Admin = () => {
                     <AccordionSummary
                         expandIcon={<MdOutlineExpandMore />}
                     >
-                        Update Deployment
+                        Update Weight Files
                     </AccordionSummary>
                     <AccordionDetails>
-                        <UpdateDeployment />
+                        <UpdateModelWeights />
                     </AccordionDetails>
                 </Accordion>
                 <Accordion>

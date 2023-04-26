@@ -1,16 +1,18 @@
+import { put } from "utils/api";
 import FrinksButton from "./FrinksButton";
 
 const UpdateAll = () => {
     const updateFunc = async () => {
-        console.log('UpdateAll');
+        await put('/api/configuration/update-weights');
+        location.replace('/');
     }
 
     return (
         <div className="center">
             <p className="update-scope">
-                Updates all values by fetching info from AWS and form and restarts necessary modules
+                Updates all weight files
             </p>
-            <FrinksButton text="Update All" onClick={updateFunc} />
+            <FrinksButton text="Update Weights" onClick={updateFunc} />
         </div>
     )
 }
