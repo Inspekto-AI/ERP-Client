@@ -741,7 +741,9 @@ const ReportTable = ({
   setEndCount,
   hideRowCount,
   filter,
-  setFilter
+  setFilter,
+  date,
+  dateUnAltered
 }) => {
   const classes = useStyles();
   const [rowCount, setRowCount] = useState(5);
@@ -890,6 +892,8 @@ const ReportTable = ({
           <DefectiveBags
             belt_id={Array.isArray(data) ? data[rejectIndex]?.belt_id : null}
             transaction_id={data?.rows ? data?.rows[rejectIndex]?.shipment_id : null}
+            date={date}
+            dateUnAltered={dateUnAltered}
           />
         </InfoModal>
       ) : null}{' '}

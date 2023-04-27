@@ -7,7 +7,7 @@ import { get, put } from 'utils/api';
 import { getStartAndEndDate } from 'utils/globalFunctions';
 import { Button } from '@material-ui/core';
 
-const DefectiveBags = ({ transaction_id, belt_id }) => {
+const DefectiveBags = ({ transaction_id, belt_id, date, dateUnAltered }) => {
   const [rejectBags, setRejectBags] = useState(null);
 
   useEffect(() => {
@@ -20,7 +20,7 @@ const DefectiveBags = ({ transaction_id, belt_id }) => {
     const fetchRejectBagsByBelt = async () => {
       const res = await get('/api/shipment/reject-belt-bags', {
         machine_id: belt_id,
-        dateRange: getStartAndEndDate()
+        dateRange: getStartAndEndDate(date, dateUnAltered)
       });
       setRejectBags(res?.data?.data);
     };

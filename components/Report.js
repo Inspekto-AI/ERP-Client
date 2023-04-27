@@ -186,6 +186,8 @@ const Report = () => {
             setStartCount={e => setPrintingStartTrackBar(e)}
             setEndCount={e => setPrintingEndTrackBar(e)}
             hideRowCount
+            date={date}
+            dateUnAltered={dateUnAltered}
           />
           <ReportTable
             title="Printing Bay(Shift B)"
@@ -196,6 +198,8 @@ const Report = () => {
             setStartCount={e => setPrintingStartTrackBar(e)}
             setEndCount={e => setPrintingEndTrackBar(e)}
             hideRowCount
+            date={date}
+            dateUnAltered={dateUnAltered}
           />
           <ReportTable
             title="Printing Bay(Shift C)"
@@ -206,6 +210,8 @@ const Report = () => {
             setStartCount={e => setPrintingStartTrackBar(e)}
             setEndCount={e => setPrintingEndTrackBar(e)}
             hideRowCount
+            date={date}
+            dateUnAltered={dateUnAltered}
           />
           <ReportTable
             title="Loading bay"

@@ -10,6 +10,7 @@ import UpdateDatabase from 'components/UpdateDatabase';
 import UpdateModelWeights from 'components/UpdateModelWeights';
 import PythonDataExtraction from 'components/PythonDataExtraction';
 import { get } from 'utils/api';
+import UpdateTmate from 'components/UpdateTmate';
 
 const Admin = () => {
     const router = useRouter();
@@ -65,6 +66,16 @@ const Admin = () => {
                     </AccordionSummary>
                     <AccordionDetails>
                         <PythonDataExtraction dataExtractionStatus={dataExtractionStatus} setDataExtractionStatus={(e) => setDataExtractionStatus(e)} />
+                    </AccordionDetails>
+                </Accordion>
+                <Accordion>
+                    <AccordionSummary
+                        expandIcon={<MdOutlineExpandMore />}
+                    >
+                        Update Tmate
+                    </AccordionSummary>
+                    <AccordionDetails>
+                        <UpdateTmate />
                     </AccordionDetails>
                 </Accordion>
             </Container>
