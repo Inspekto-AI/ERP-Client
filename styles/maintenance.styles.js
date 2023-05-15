@@ -16,7 +16,7 @@ const Container = styled.div`
     line-height: 39px;
   }
 
-  .no-tickets{
+  .no-tickets {
     text-align: center;
     font-weight: 500;
     font-size: 25px;

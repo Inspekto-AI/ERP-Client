@@ -8,8 +8,9 @@ export const msToTime = milliseconds => {
   minutes %= 60;
   hours %= 24;
 
-  return `${hours < 10 ? `0${hours}` : hours}:${minutes < 10 ? `0${minutes}` : minutes
-    }:${seconds < 10 ? `0${seconds}` : seconds}`;
+  return `${hours < 10 ? `0${hours}` : hours}:${
+    minutes < 10 ? `0${minutes}` : minutes
+  }:${seconds < 10 ? `0${seconds}` : seconds}`;
 };
 
 export const getStartAndEndDate = (dateRange, addADay) => {

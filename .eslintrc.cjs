@@ -11,7 +11,7 @@ module.exports = {
   extends: ['airbnb-base', 'prettier', 'prettier/prettier'],
   plugins: ['prettier'],
   parserOptions: {
-    ecmaVersion: 12
+    ecmaVersion: 2020
   },
   rules: {
     camelcase: 'off',
