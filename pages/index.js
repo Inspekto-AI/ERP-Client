@@ -26,13 +26,13 @@ const DashboardComponent = ({
   activeSection,
   // activeTransactions,
   handleBagIncrement,
-  handleStop,
   printingBelts,
   vehicleBelts,
   setReverseShipmentFormOpen,
   ongoingTransactions,
   queuedTransactions,
-  handleBagDone
+  handleBagDone,
+  handleBeltReset
 }) => {
   if (activeSection === 0) {
     return (
@@ -43,6 +43,7 @@ const DashboardComponent = ({
         queuedTransactions={queuedTransactions}
         handleBagIncrement={handleBagIncrement}
         handleBagDone={handleBagDone}
+        handleBeltReset={handleBeltReset}
       />
     );
   }
@@ -50,15 +51,16 @@ const DashboardComponent = ({
     return (
       <PrintingAnalysis
         printingBelts={printingBelts}
+        handleBeltReset={handleBeltReset}
       />
     );
   }
   if (activeSection === 2) {
     return (
       <PackerAnalysis
-        // activeTransactions={activeTransactions}
-        // handleBagIncrement={handleBagIncrement}
-        handleStop={handleStop}
+      // activeTransactions={activeTransactions}
+      // handleBagIncrement={handleBagIncrement}
+      // handleStop={handleStop}
       />
     );
   }
@@ -89,6 +91,31 @@ const Index = () => {
   const [queuedTransactions, setQueuedTransactions] = useState(null);
   const [alertCounter, setAlertCounter] = useState(0);
   const { setBeltTrippingEnabled, deactivatePrintingSolution: DEACTIVATE_PRINTING_SOLUTION } = useContext(GlobalContext);
+
+  const handleBeltReset = async (
+    id,
+    bag_counting_belt_id,
+    printing_belt_id
+  ) => {
+    try {
+      await put('/api/shipment/reset-belt', {
+        belt_id: printing_belt_id || id
+      })
+      // on success reset belt
+      setPrintingBelts(prevState => {
+        if (!prevState) return null;
+        return {
+          ...prevState,
+          [printing_belt_id || id]: {
+            ...prevState[printing_belt_id || id],
+            is_belt_running: true
+          }
+        };
+      });
+    } catch (error) {
+      console.log(error);
+    }
+  }
 
   const handleBagDone = async (
     transaction_id,
@@ -135,15 +162,6 @@ const Index = () => {
     } catch (error) {
       setIsLoading(false);
     }
-  };
-
-  const handleStop = async () => {
-    // setIsLoading(true);
-    // post('/api/transaction/belt-stop', data);
-    // const updatedTransactions = activeTransactions;
-    // delete updatedTransactions[data?.transaction_id];
-    // setActiveTransactions(updatedTransactions);
-    // setIsLoading(false);
   };
 
   useEffect(() => {
@@ -331,6 +349,19 @@ const Index = () => {
       });
       setIsLoading(false);
     });
+
+    socket.on('tripping_belt', ({ belt_id }) => {
+      setPrintingBelts(prevState => {
+        if (!prevState) return null;
+        return {
+          ...prevState,
+          [belt_id]: {
+            ...prevState[belt_id],
+            is_belt_running: false
+          }
+        };
+      });
+    });
   }, [socket]);
 
   if (shipmentFormOpen || reverseShipmentFormOpen) {
@@ -419,13 +450,13 @@ const Index = () => {
           activeSection={activeSection}
           // activeTransactions={activeTransactions}
           handleBagIncrement={handleBagIncrement}
-          handleStop={handleStop}
           printingBelts={printingBelts}
           vehicleBelts={vehicleBelts}
           setReverseShipmentFormOpen={e => setReverseShipmentFormOpen(e)}
           ongoingTransactions={ongoingTransactions}
           queuedTransactions={queuedTransactions}
           handleBagDone={handleBagDone}
+          handleBeltReset={handleBeltReset}
         />
         {alertCounter != 0 ? (
           <div className="alert">
@@ -472,14 +503,14 @@ DashboardComponent.propTypes = {
   activeSection: PropTypes.number,
   // activeTransactions: PropTypes.any,
   handleBagIncrement: PropTypes.func,
-  handleStop: PropTypes.any,
   printingBelts: PropTypes.any,
   vehicleBelts: PropTypes.any,
   setReverseShipmentFormOpen: PropTypes.func,
   ongoingTransactions: PropTypes.any,
   queuedTransactions: PropTypes.any,
   handleBagDone: PropTypes.func,
-  alertsnooze: PropTypes.func
+  alertsnooze: PropTypes.func,
+  handleBeltReset: PropTypes.func
 };
 
 export default Index;

@@ -7,7 +7,7 @@ import AddMoreBagsModal from 'components/AddMoreBagsModal';
 import DefectiveBags from 'components/DefectiveBags';
 import InfoModal from 'components/InfoModal';
 
-const PrintingAnalysis = ({ printingBelts }) => {
+const PrintingAnalysis = ({ printingBelts, handleBeltReset }) => {
   const [detailModalOpen, setDetailModalOpen] = useState(null);
   const [rejectModalOpen, setRejectModalOpen] = useState(null);
 
@@ -47,6 +47,7 @@ const PrintingAnalysis = ({ printingBelts }) => {
                           ...printingBelts[e]
                         })
                       }
+                      handleBeltReset={handleBeltReset}
                       printingCard
                       status={0}
                     />
@@ -88,7 +89,8 @@ const PrintingAnalysis = ({ printingBelts }) => {
 };
 
 PrintingAnalysis.propTypes = {
-  printingBelts: PropTypes.any
+  printingBelts: PropTypes.any,
+  handleBeltReset: PropTypes.func
 };
 
 export default PrintingAnalysis;

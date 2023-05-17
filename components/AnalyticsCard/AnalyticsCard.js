@@ -39,7 +39,8 @@ const AnalyticsCard = ({
   bagModifyModalOpen,
   setDetailModalOpen,
   setReverseShipmentFormOpen,
-  handleBagDone
+  handleBagDone,
+  handleBeltReset
 }) => {
   const [timeDifference, setTimeDifference] = useState(0);
   const { deactivateLoaderSolution: DEACTIVATE_LOADER_SOLUTION } = useContext(GlobalContext);
@@ -67,33 +68,32 @@ const AnalyticsCard = ({
       active={data?.is_active}
       countReached={
         DEACTIVATE_LOADER_SOLUTION
-          ? data.bag_limit <= data.tag_count
-          : data.bag_limit <= data.bag_count
+          ? data?.bag_limit <= data?.tag_count
+          : data?.bag_limit <= data?.bag_count
       }
       printingCard={printingCard}
+      isRunning={data?.is_belt_running}
     >
-      {' '}
+
       <div className="error">
-        {' '}
         <div className="title">
-          {' '}
           <GrFlag />
-          Error Occured{' '}
+          Attention Required
         </div>
-        <div className="know-more-button">
-          <p>Know more</p>{' '}
-        </div>{' '}
+        {/* <div className="know-more-button">
+          <p>Know more</p>
+        </div> */}
       </div>
       <div className="head" style={{ flexDirection: 'row' }}>
         <div className="id-container">
-          <div className="status" />{' '}
+          <div className="status" />
           <div className="id">
-            {' '}
+
             {packerCard ? (
               <p> {data?.id}</p>
             ) : (
               <>
-                {' '}
+
                 {printingCard || packerCard ? null : (
                   <div className="bag-id">
                     <div
@@ -103,8 +103,8 @@ const AnalyticsCard = ({
                         alignItems: 'center'
                       }}
                     >
-                      {' '}
-                      <span>{data?.vehicle_id}&nbsp;</span>{' '}
+
+                      <span>{data?.vehicle_id}&nbsp;</span>
                       {data?.vehicle_type === 1 ? (
                         <Image
                           src="freight-wagon(1).png"
@@ -121,29 +121,29 @@ const AnalyticsCard = ({
                           height={22}
                           width={22}
                         />
-                      )}{' '}
-                    </div>{' '}
+                      )}
+                    </div>
                   </div>
                 )}
                 {status < 2 && loaderCard ? (
                   <p className="tag-id">{data?.printing_id}</p>
                 ) : printingCard ? (
                   <p className="tag-id">{data?.printing_id}</p>
-                ) : null}{' '}
+                ) : null}
               </>
-            )}{' '}
+            )}
           </div>
-        </div>{' '}
+        </div>
         <div className="timer">
-          {' '}
+
           {printingCard || status > 1 ? null : (
             <>
-              {' '}
+
               {data?.count_finished_at
                 ? msToTime(data?.count_finished_at - data?.created_at)
-                : timeDifference}{' '}
+                : timeDifference}
             </>
-          )}{' '}
+          )}
         </div>
       </div>
       {status === 0 && !printingCard && (
@@ -156,10 +156,10 @@ const AnalyticsCard = ({
         >
           <div className="count">
             <h6>
-              {' '}
+
               {data?.vehicle_type === 1
                 ? `Wagon No.- ${data?.wagon_no}`
-                : `Truck No.- ${data?.licence_number}`}{' '}
+                : `Truck No.- ${data?.licence_number}`}
             </h6>
           </div>
         </div>
@@ -168,43 +168,43 @@ const AnalyticsCard = ({
         <div className="count-container">
           {DEACTIVATE_LOADER_SOLUTION ? (
             <h2 className="count">
-              {' '}
+
               {data?.tag_count || 0}
-              {printingCard ? null : `/${data?.bag_limit || '0'}`}{' '}
+              {printingCard ? null : `/${data?.bag_limit || '0'}`}
             </h2>
           ) : (
             <h2 className="count">
-              {' '}
+
               {printingCard ? data?.tag_count || 0 : data?.bag_count || 0}
-              {printingCard ? null : `/${data?.bag_limit || '0'}`}{' '}
+              {printingCard ? null : `/${data?.bag_limit || '0'}`}
             </h2>
           )}
           {printingCard ? null : (
             <Avatar onClick={bagModifyModalOpen}>
               <IoMdAdd />
             </Avatar>
-          )}{' '}
+          )}
         </div>
       )}
       {packerCard ? null : (
         <>
-          {' '}
+
           {status > 1 ? null : (
             <>
               <div className="type">
-                {' '}
+
                 {printingCard ? null : (
                   <>
                     <span>Bag type:</span>
-                    {data.bag_type}{' '}
+                    {data.bag_type}
                   </>
-                )}{' '}
+                )}
               </div>
               {status > 1 ? null : (
                 <div
                   className="rejected"
                   style={{
-                    bottom: printingCard ? '30px' : '80px'
+                    bottom: printingCard ? data?.is_belt_running === false ? '80px' : '30px' : '80px'
                   }}
                 >
                   <div className="count">
@@ -219,12 +219,40 @@ const AnalyticsCard = ({
                     View
                   </Button>
                 </div>
-              )}{' '}
+              )}
             </>
           )}
-          {printingCard ? null : (
+          {printingCard ? (
+            <>
+              {data?.is_belt_running === false ? (
+                <FrinksButton
+                  variant="filled"
+                  className="view-button"
+                  onClick={() =>
+                    handleBeltReset(
+                      data?.id,
+                      data?.bag_counting_belt_id,
+                      data?.printing_belt_id,
+                      data?.vehicle_id,
+                      data?.vehicle_type
+                    )
+                  }
+                  text="Reset"
+                  style={{
+                    borderTopWidth: '3px',
+                    borderRightWidth: '3px',
+                    borderBottomWidth: '3px',
+                    borderLeftWidth: '3px',
+                    padding: '5px 15px',
+                    width: '100%',
+                    height: '45px',
+                    color: 'white'
+                  }}
+                />
+              ) : null}
+            </>
+          ) : (
             <div className="action-buttons">
-              {' '}
               {status > 1 ? (
                 data.is_active === 1 ? (
                   <Button
@@ -248,18 +276,18 @@ const AnalyticsCard = ({
                     onClick={setDetailModalOpen}
                   >
                     {status == 0
-                      ? (
+                      ? ((
                         DEACTIVATE_LOADER_SOLUTION
-                          ? data.bag_limit <= data.tag_count
-                          : data.bag_limit <= data.bag_count
-                      )
+                          ? data?.bag_limit <= data?.tag_count
+                          : data?.bag_limit <= data?.bag_count
+                      ) || data?.is_belt_running === false)
                         ? 'View'
                         : 'View Details'
-                      : 'Edit'}{' '}
-                    {(DEACTIVATE_LOADER_SOLUTION
-                      ? data.bag_limit <= data.tag_count
-                      : data.bag_limit <= data.bag_count) ||
-                      status == 1 ? null : (
+                      : 'Edit'}
+                    {((DEACTIVATE_LOADER_SOLUTION
+                      ? data?.bag_limit <= data?.tag_count
+                      : data?.bag_limit <= data?.bag_count) ||
+                      status == 1 || data?.is_belt_running === false) ? null : (
                       <BiRightArrowAlt />
                     )}
                   </Button>
@@ -276,12 +304,12 @@ const AnalyticsCard = ({
                     >
                       Start
                     </Button>
-                  )}{' '}
+                  )}
                 </>
               )}
               {(DEACTIVATE_LOADER_SOLUTION
-                ? data.bag_limit <= data.tag_count
-                : data.bag_limit <= data.bag_count) && status === 0 ? (
+                ? data?.bag_limit <= data?.tag_count
+                : data?.bag_limit <= data?.bag_count) && status === 0 ? (
                 <FrinksButton
                   variant="filled"
                   className="view-button"
@@ -306,9 +334,38 @@ const AnalyticsCard = ({
                     color: 'white'
                   }}
                 />
-              ) : null}{' '}
+              ) : (
+                <>
+                  {data?.is_belt_running === false ? (
+                    <FrinksButton
+                      variant="filled"
+                      className="view-button"
+                      onClick={() =>
+                        handleBeltReset(
+                          data?.id,
+                          data?.bag_counting_belt_id,
+                          data?.printing_belt_id,
+                          data?.vehicle_id,
+                          data?.vehicle_type
+                        )
+                      }
+                      text="Reset"
+                      style={{
+                        borderTopWidth: '3px',
+                        borderRightWidth: '3px',
+                        borderBottomWidth: '3px',
+                        borderLeftWidth: '3px',
+                        padding: '5px 15px',
+                        width: '48%',
+                        height: '45px',
+                        color: 'white'
+                      }}
+                    />
+                  ) : null}
+                </>
+              )}
             </div>
-          )}{' '}
+          )}
         </>
       )}
       {packerCard ? (
@@ -322,15 +379,15 @@ const AnalyticsCard = ({
           <div className="productivity">
             <span className="bold">Productivity:&nbsp;</span>
             <span>
-              {' '}
+
               {
                 getStatus(Math.min((data.count * 100) / PACKER_LIMIT, 100))
                   .status
-              }{' '}
+              }
             </span>
           </div>
         </div>
-      ) : null}{' '}
+      ) : null}
     </Container>
   );
 };
@@ -345,7 +402,8 @@ AnalyticsCard.propTypes = {
   setDetailModalOpen: PropTypes.func,
   loaderCard: PropTypes.bool,
   setReverseShipmentFormOpen: PropTypes.func,
-  handleBagDone: PropTypes.func
+  handleBagDone: PropTypes.func,
+  handleBeltReset: PropTypes.func
 };
 
 export default AnalyticsCard;

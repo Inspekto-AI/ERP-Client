@@ -13,7 +13,8 @@ const LoaderAnalysis = ({
   handleBagIncrement,
   ongoingTransactions,
   setReverseShipmentFormOpen,
-  handleBagDone
+  handleBagDone,
+  handleBeltReset
 }) => {
   const [detailModalOpen, setDetailModalOpen] = useState(null);
   const [rejectModalOpen, setRejectModalOpen] = useState(null);
@@ -110,6 +111,7 @@ const LoaderAnalysis = ({
                       handleBagDone={handleBagDone}
                       loaderCard
                       status={0}
+                      handleBeltReset={handleBeltReset}
                     />
                   </Grid>
                 ))}{' '}
@@ -252,7 +254,8 @@ LoaderAnalysis.propTypes = {
   ongoingTransactions: PropTypes.any,
   handleBagDone: PropTypes.func,
   filterButton: PropTypes.number,
-  filterVehicle: PropTypes.any
+  filterVehicle: PropTypes.any,
+  handleBeltReset: PropTypes.func
 };
 
 export default LoaderAnalysis;
