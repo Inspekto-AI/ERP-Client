@@ -93,7 +93,6 @@ const AnalyticsCard = ({
               <p> {data?.id}</p>
             ) : (
               <>
-
                 {printingCard || packerCard ? null : (
                   <div className="bag-id">
                     <div
