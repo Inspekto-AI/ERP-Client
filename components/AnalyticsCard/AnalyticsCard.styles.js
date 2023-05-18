@@ -90,7 +90,7 @@ const Container = styled.div`
     font-size: 16px;
     color: ${props => props.isRunning === false || props.status <= 1 ? 'white' : theme.palette.grey.grey100};
     margin: 2px 0 20px 0;
-    margin-bottom: ${props => props.status <= 1 ? '70px' : props.status === 1 ? '10px' : '40px'};
+    margin-bottom: ${props => props.status <= 1 ? props.printingCard ? '70px' : '10px' : props.status === 1 ? '10px' : '40px'};
 
     span {
       font-weight: 900;

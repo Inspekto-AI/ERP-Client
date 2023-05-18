@@ -187,11 +187,9 @@ const AnalyticsCard = ({
       )}
       {packerCard ? null : (
         <>
-
           {status > 1 ? null : (
             <>
               <div className="type">
-
                 {printingCard ? null : (
                   <>
                     <span>Bag type:</span>
@@ -199,7 +197,7 @@ const AnalyticsCard = ({
                   </>
                 )}
               </div>
-              {status > 1 ? null : (
+              {status > 1 || !printingCard ? null : (
                 <div
                   className="rejected"
                   style={{

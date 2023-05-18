@@ -73,11 +73,11 @@ const shipmentHead = [
     disablePadding: true,
     label: 'Loader ID'
   },
-  {
-    id: 'printing_belt.machine_id',
-    disablePadding: true,
-    label: 'Printing Belt ID'
-  },
+  // {
+  //   id: 'printing_belt.machine_id',
+  //   disablePadding: true,
+  //   label: 'Printing Belt ID'
+  // },
   {
     id: 'bag_type',
     disablePadding: true,
@@ -98,11 +98,11 @@ const shipmentHead = [
     disablePadding: true,
     label: 'Bags Increased'
   },
-  {
-    id: 'aws_missed_labels',
-    disablePadding: true,
-    label: 'Misprint bags'
-  },
+  // {
+  //   id: 'aws_missed_labels',
+  //   disablePadding: true,
+  //   label: 'Misprint bags'
+  // },
   {
     id: 'created_at_date',
     disablePadding: true,
@@ -156,11 +156,11 @@ const printingHead = [
     disablePadding: true,
     label: 'View'
   },
-  {
-    id: 'shipment_count',
-    disablePadding: true,
-    label: 'No. of Shipments Made'
-  }
+  // {
+  //   id: 'shipment_count',
+  //   disablePadding: true,
+  //   label: 'No. of Shipments Made'
+  // }
 ];
 
 const loadingHead = [
@@ -508,11 +508,11 @@ const RenderTable = ({ layoutType, data, setRejectIndex }) => {
                         : `T - ${row?.licence_number}`}{' '}
                     </TableCell>
                     <TableCell style={{ textAlign: 'center' }}>
-                      {row?.loader_id || 'NA'}{' '}
+                      {row?.loading_belt_id || 'NA'}{' '}
                     </TableCell>
-                    <TableCell style={{ textAlign: 'center' }}>
+                    {/* <TableCell style={{ textAlign: 'center' }}>
                       {row?.printing_belt_id || 'NA'}{' '}
-                    </TableCell>
+                    </TableCell> */}
                     <TableCell style={{ textAlign: 'center' }}>
                       {row?.bag_type}{' '}
                     </TableCell>
@@ -525,9 +525,9 @@ const RenderTable = ({ layoutType, data, setRejectIndex }) => {
                     <TableCell style={{ textAlign: 'center' }}>
                       {row?.bags_increased}{' '}
                     </TableCell>
-                    <TableCell style={{ textAlign: 'center' }}>
+                    {/* <TableCell style={{ textAlign: 'center' }}>
                       {row?.misprinting_count}{' '}
-                    </TableCell>
+                    </TableCell> */}
                     <TableCell style={{ textAlign: 'center' }}>
                       {new Date(row?.created_at).toLocaleDateString()}{' '}
                     </TableCell>
@@ -610,9 +610,9 @@ const RenderTable = ({ layoutType, data, setRejectIndex }) => {
                         isInactive={row?.aws_missed_labels?.length === 0}
                       />
                     </TableCell>
-                    <TableCell style={{ textAlign: 'center' }}>
+                    {/* <TableCell style={{ textAlign: 'center' }}>
                       {row?.shipment_count}{' '}
-                    </TableCell>
+                    </TableCell> */}
                   </TableRow>
                 );
               }
