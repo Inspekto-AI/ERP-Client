@@ -6,21 +6,26 @@ import PropTypes from 'prop-types';
 import AddMoreBagsModal from 'components/AddMoreBagsModal';
 import DefectiveBags from 'components/DefectiveBags';
 import InfoModal from 'components/InfoModal';
-import FilterButton from './FilterButton';
+// import FilterButton from './FilterButton';
 
-const LoaderAnalysis = ({
+function LoaderAnalysis({
   vehicleBelts,
   handleBagIncrement,
   ongoingTransactions,
   setReverseShipmentFormOpen,
   handleBagDone,
-  handleBeltReset
-}) => {
+  handleBeltReset,
+  vehicleType,
+}) {
   const [detailModalOpen, setDetailModalOpen] = useState(null);
   const [rejectModalOpen, setRejectModalOpen] = useState(null);
   const [bagModifyModalOpen, setBagModifyModalOpen] = useState(null);
   const [filterButton, setFilterButton] = useState(2);
   const [filterVehicle, setFiltervehicle] = useState();
+
+  useEffect(() => {
+    setFilterButton(vehicleType);
+  }, [vehicleType]);
 
   useEffect(() => {
     if (filterButton === 2) {
@@ -29,9 +34,9 @@ const LoaderAnalysis = ({
       setFiltervehicle(
         vehicleBelts && vehicleBelts.length !== 0
           ? vehicleBelts.filter(
-            vehicle => vehicle.vehicle_type === filterButton
+            (vehicle) => vehicle.vehicle_type === filterButton,
           )
-          : null
+          : null,
       );
     }
   }, [vehicleBelts, filterButton]);
@@ -40,8 +45,12 @@ const LoaderAnalysis = ({
     <>
       <div className="analysis-container">
         <div className="head">
-          <h2>Loader Analysis</h2>
-          <div className="search-container"></div>
+          <h2>
+            {vehicleType ? 'Wagon' : 'Truck'}
+            {' '}
+            Analysis
+          </h2>
+          <div className="search-container" />
         </div>
         <div className="analytics">
           <div className="shipment-type">
@@ -52,40 +61,45 @@ const LoaderAnalysis = ({
                 width: '18px',
                 borderRadius: '100px',
                 border: '2px solid #f5f5f5',
-                marginRight: '4px'
+                marginRight: '4px',
               }}
             />
-            <span className="category-name">Active Loader</span>
+            <span className="category-name">
+              Active{' '}
+              {vehicleType ? 'Wagon' : 'Truck'}
+              {' '}
+              Loaders
+            </span>
             <hr />
           </div>
-          {ongoingTransactions &&
-            Object.keys(ongoingTransactions)?.length === 0 ? (
-            <p
-              style={{
-                fontSize: '20px',
-                textAlign: 'center',
-                color: 'gray'
-              }}
-            >
-              <AiOutlineExclamationCircle style={{ fontSize: '70px' }} />
-              <br />
-              No shipment created.
-              <br />
-              Please create a shipment first.
-            </p>
-          ) : (
-            <Grid
-              container
-              spacing={2}
-              style={{
-                backgroundColor: '#4DA76638',
-                padding: '20px 10px 0',
-                borderRadius: '10px'
-              }}
-            >
-              {' '}
-              {ongoingTransactions &&
-                Object.keys(ongoingTransactions)?.map((e, index) => (
+          {ongoingTransactions
+            && Object.keys(ongoingTransactions)?.length === 0 ? (
+              <p
+                style={{
+                  fontSize: '20px',
+                  textAlign: 'center',
+                  color: 'gray',
+                }}
+              >
+                <AiOutlineExclamationCircle style={{ fontSize: '70px' }} />
+                <br />
+                No shipment created.
+                <br />
+                Please create a shipment first.
+              </p>
+            ) : (
+              <Grid
+                container
+                spacing={2}
+                style={{
+                  backgroundColor: '#4DA76638',
+                  padding: '20px 10px 0',
+                  borderRadius: '10px',
+                }}
+              >
+                {' '}
+                {ongoingTransactions
+                && Object.keys(ongoingTransactions)?.filter((e) => ongoingTransactions[e].vehicle_type === vehicleType)?.map((e, index) => (
                   <Grid
                     item
                     xs={12}
@@ -97,26 +111,20 @@ const LoaderAnalysis = ({
                   >
                     <AnalyticsCard
                       data={{
-                        ...ongoingTransactions[e]
+                        ...ongoingTransactions[e],
                       }}
-                      rejectModalOpen={() =>
-                        setRejectModalOpen(ongoingTransactions[e])
-                      }
-                      setDetailModalOpen={() =>
-                        setDetailModalOpen(ongoingTransactions[e])
-                      }
-                      bagModifyModalOpen={() =>
-                        setBagModifyModalOpen(ongoingTransactions[e])
-                      }
+                      rejectModalOpen={() => setRejectModalOpen(ongoingTransactions[e])}
+                      setDetailModalOpen={() => setDetailModalOpen(ongoingTransactions[e])}
+                      bagModifyModalOpen={() => setBagModifyModalOpen(ongoingTransactions[e])}
                       handleBagDone={handleBagDone}
                       loaderCard
                       status={0}
                       handleBeltReset={handleBeltReset}
                     />
                   </Grid>
-                ))}{' '}
-            </Grid>
-          )}
+                ))}
+              </Grid>
+            )}
           <div className="shipment-type" style={{ marginTop: '20px' }}>
             <div
               style={{
@@ -125,13 +133,18 @@ const LoaderAnalysis = ({
                 width: '18px',
                 borderRadius: '100px',
                 border: '2px solid #f5f5f5',
-                marginRight: '4px'
+                marginRight: '4px',
               }}
             />
-            <span className="category-name">Inactive loaders</span>
+            <span className="category-name">
+              Inactive{' '}
+              {vehicleType ? 'Wagon' : 'Truck'}
+              {' '}
+              Loaders
+            </span>
             <hr />
           </div>
-          <div className="filter-bottom">
+          {/* <div className="filter-bottom">
             <FilterButton
               text="All"
               index={2}
@@ -152,20 +165,18 @@ const LoaderAnalysis = ({
               filtervalue={filterButton}
               setFilterValue={e => setFilterButton(e)}
             />
-          </div>
+          </div> */}
           {filterVehicle && filterVehicle?.length === 0 ? (
             <p
               style={{
                 fontSize: '20px',
                 textAlign: 'center',
-                color: 'gray'
+                color: 'gray',
               }}
             >
               <AiOutlineExclamationCircle style={{ fontSize: '70px' }} />
               <br />
-              No shipment created.
-              <br />
-              Please create a shipment first.
+              Nothing to show here
             </p>
           ) : (
             <Grid
@@ -174,12 +185,12 @@ const LoaderAnalysis = ({
               style={{
                 backgroundColor: '#C0C0C0',
                 padding: '20px 10px 0',
-                borderRadius: '10px'
+                borderRadius: '10px',
               }}
             >
               {' '}
-              {filterVehicle &&
-                filterVehicle?.map((e, index) => (
+              {filterVehicle
+                && filterVehicle?.map((e, index) => (
                   // console.log(e.vehicle_type),
 
                   <Grid
@@ -199,9 +210,11 @@ const LoaderAnalysis = ({
                       filter={filterButton}
                     />
                   </Grid>
-                ))}{' '}
+                ))}
+              {' '}
             </Grid>
-          )}{' '}
+          )}
+          {' '}
         </div>
       </div>
       {detailModalOpen ? (
@@ -238,15 +251,16 @@ const LoaderAnalysis = ({
           onlyBags
           open={bagModifyModalOpen}
           close={() => setBagModifyModalOpen(null)}
-          handleSubmit={e => {
+          handleSubmit={(e) => {
             handleBagIncrement(e);
             setBagModifyModalOpen(null);
           }}
         />
-      ) : null}{' '}
+      ) : null}
+      {' '}
     </>
   );
-};
+}
 
 LoaderAnalysis.propTypes = {
   vehicleBelts: PropTypes.any,
@@ -255,7 +269,7 @@ LoaderAnalysis.propTypes = {
   handleBagDone: PropTypes.func,
   filterButton: PropTypes.number,
   filterVehicle: PropTypes.any,
-  handleBeltReset: PropTypes.func
+  handleBeltReset: PropTypes.func,
 };
 
 export default LoaderAnalysis;

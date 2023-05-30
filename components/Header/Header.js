@@ -1,23 +1,25 @@
 import Image from 'next/image';
 import { useState, useContext } from 'react';
 import { useRouter } from 'next/router';
-import { Hidden, Button, Popper, Fade } from '@material-ui/core';
+import {
+  Hidden, Button, Popper, Fade,
+} from '@material-ui/core';
 import { BsFillTriangleFill } from 'react-icons/bs';
 import { IoIosMenu } from 'react-icons/io';
-import HeaderDrawer from './HeaderDrawer';
 
 import ImageKitLoader from 'utils/ImageLoader';
 import PropTypes from 'prop-types';
-import Container from './Header.styles';
 import BypassSystem from 'components/BypassSystem';
 import { GlobalContext } from 'context/GlobalContext';
+import Container from './Header.styles';
+import HeaderDrawer from './HeaderDrawer';
 
-const Header = ({
+function Header({
   openShipmentForm,
   openMaintenanceForm,
   openNotificationForm,
-  maintenanceForm
-}) => {
+  maintenanceForm,
+}) {
   const router = useRouter();
   const [anchorEl, setAnchorEl] = useState(null);
   const [headerDropDownVisible, setHeaderDropDownVisible] = useState(false);
@@ -25,7 +27,7 @@ const Header = ({
 
   const { trippingStatus, setTrippingStatus, beltTrippingEnabled } = useContext(GlobalContext);
 
-  const handleClick = event => {
+  const handleClick = (event) => {
     setAnchorEl(anchorEl ? null : event.currentTarget);
   };
 
@@ -53,70 +55,68 @@ const Header = ({
 
         <Hidden smDown>
           <div className="links">
-            <>
-              {beltTrippingEnabled && (
-                <Button
-                  variant="contained"
-                  color="primary"
-                  className={trippingStatus ? 'red-button' : 'purple-button'}
-                  onClick={() => setBypassSystem(true)}
-                >
-                  <p className="button-label">
-                    {trippingStatus ? 'BYPASSED' : 'BYPASS SYSTEM'}
-                  </p>
-                </Button>
-              )}
-              <Button
-                variant="contained"
-                color="primary"
-                onClick={() => openShipmentForm()}
+            {beltTrippingEnabled && (
+            <Button
+              variant="contained"
+              color="primary"
+              className={trippingStatus ? 'red-button' : 'purple-button'}
+              onClick={() => setBypassSystem(true)}
+            >
+              <p className="button-label">
+                {trippingStatus ? 'BYPASSED' : 'BYPASS SYSTEM'}
+              </p>
+            </Button>
+            )}
+            <Button
+              variant="contained"
+              color="primary"
+              onClick={() => openShipmentForm()}
+            >
+              <p className="button-label">+ NEW SHIPMENT</p>
+            </Button>
+            <Button
+              variant="contained"
+              color="primary"
+              className="purple-button"
+              onClick={() => maintenanceForm()}
+            >
+              <p className="button-label">+ NEW MAINTENANCE TICKET</p>
+            </Button>
+            <div className="notification">
+              <div
+                className="icon"
+                onClick={() => openNotificationForm()}
+                onKeyPress={() => openNotificationForm()}
+                role="button"
+                tabIndex={0}
               >
-                <p className="button-label">+ NEW SHIPMENT</p>
-              </Button>
-              <Button
-                variant="contained"
-                color="primary"
-                className="purple-button"
-                onClick={() => maintenanceForm()}
-              >
-                <p className="button-label">+ NEW MAINTENANCE TICKET</p>
-              </Button>
-              <div className="notification">
-                <div
-                  className="icon"
-                  onClick={() => openNotificationForm()}
-                  onKeyPress={() => openNotificationForm()}
-                  role="button"
-                  tabIndex={0}
-                >
-                  {/* <div className="counter">20</div> */}
-                  <Image
-                    src="notification_fU5rQCmps.svg"
-                    loader={ImageKitLoader}
-                    layout="fixed"
-                    height={20}
-                    width={20}
-                  />
-                </div>
-                <hr />
-                <div
-                  className="icon"
-                  onClick={() => openMaintenanceForm()}
-                  onKeyPress={() => openMaintenanceForm()}
-                  role="button"
-                  tabIndex={0}
-                >
-                  {/* <div className="counter blue-counter">20</div> */}
-                  <Image
-                    src="warning_QhrmDxvk4.svg"
-                    loader={ImageKitLoader}
-                    layout="fixed"
-                    height={20}
-                    width={20}
-                  />
-                </div>
+                {/* <div className="counter">20</div> */}
+                <Image
+                  src="notification_fU5rQCmps.svg"
+                  loader={ImageKitLoader}
+                  layout="fixed"
+                  height={20}
+                  width={20}
+                />
               </div>
-            </>
+              <hr />
+              <div
+                className="icon"
+                onClick={() => openMaintenanceForm()}
+                onKeyPress={() => openMaintenanceForm()}
+                role="button"
+                tabIndex={0}
+              >
+                {/* <div className="counter blue-counter">20</div> */}
+                <Image
+                  src="warning_QhrmDxvk4.svg"
+                  loader={ImageKitLoader}
+                  layout="fixed"
+                  height={20}
+                  width={20}
+                />
+              </div>
+            </div>
             <Button className="menu-button" onClick={handleClick}>
               <Image
                 src="DotsThreeOutlineVertical_yfCTGQ8ny.svg"
@@ -135,12 +135,12 @@ const Header = ({
               disablePortal
               modifiers={{
                 flip: {
-                  enabled: false
+                  enabled: false,
                 },
                 preventOverflow: {
                   enabled: true,
-                  boundariesElement: 'viewport'
-                }
+                  boundariesElement: 'viewport',
+                },
               }}
             >
               {({ TransitionProps }) => (
@@ -184,12 +184,12 @@ const Header = ({
           open={bypassSystem}
           close={() => setBypassSystem(false)}
           trippingStatus={trippingStatus}
-          setTrippingStatus={e => setTrippingStatus(e)}
+          setTrippingStatus={(e) => setTrippingStatus(e)}
         />
       ) : null}
     </Container>
   );
-};
+}
 
 Header.propTypes = {
   openShipmentForm: PropTypes.func,
@@ -197,7 +197,7 @@ Header.propTypes = {
   openNotificationForm: PropTypes.func,
   maintenanceForm: PropTypes.func,
   bypassSystem: PropTypes.bool,
-  Closebypass: PropTypes.func
+  Closebypass: PropTypes.func,
 };
 
 export default Header;

@@ -9,20 +9,19 @@ import { getStartAndEndDate } from 'utils/globalFunctions';
 import moment from 'moment';
 import { BASE_URL } from 'utils/constants';
 
-const Notification = ({ close }) => {
+function Notification({ close }) {
   const [missingData, setMissingData] = useState(null);
   const [totalCount, setTotalCount] = useState(0);
 
   useEffect(() => {
     const fetchPrintingBeltsIds = async () => {
       const res = await get('/api/notification', {
-        dateRange: getStartAndEndDate()
+        dateRange: getStartAndEndDate(),
       });
       setMissingData(res?.data?.data);
       let count = 0;
       // res?.data?.data?.forEach(e => console.log(e));
-      if (res?.data?.data)
-        Object.values(res?.data?.data).forEach(e => count += e.length)
+      if (res?.data?.data) Object.values(res?.data?.data).forEach((e) => count += e.length);
       setTotalCount(count);
     };
     fetchPrintingBeltsIds();
@@ -63,9 +62,20 @@ const Notification = ({ close }) => {
                   <div className="info-container">
                     <div className="info">
                       <div className="title">Incorrect bags</div>
-                      <div className="sub-title">{missingData[e].length} bags passed unmarked from Belt - {e}.</div>
+                      <div className="sub-title">
+                        {missingData[e].length}
+                        {' '}
+                        bags passed unmarked from Belt -
+                        {' '}
+                        {e}
+                        .
+                      </div>
                     </div>
-                    <div className="count">{missingData[e].length} bags</div>
+                    <div className="count">
+                      {missingData[e].length}
+                      {' '}
+                      bags
+                    </div>
                   </div>
                   <div className={`${'image-container'} ${'outer-image-container'}`}>
                     {missingData[e].map((ele, idx) => {
@@ -75,32 +85,30 @@ const Notification = ({ close }) => {
                           <div className="image-container">
                             <Image
                               src={ele.local_image_path}
-                              loader={() =>
-                                `${BASE_URL}/api/shipment/images?image_location=${ele.local_image_path ||
-                                ele.local_image_location
-                                }`
-                              }
+                              loader={() => `${BASE_URL}/api/shipment/images?image_location=${ele.local_image_path
+                                || ele.local_image_location
+                              }`}
                               layout="fill"
                               objectFit="contain"
                             />
                           </div>
                           <div className="time">{moment(ele.created_at).format('hh:mm')}</div>
                         </div>
-                      )
+                      );
                     })}
                   </div>
                 </div>
               </div>
-            )
+            );
           }
         })}
       </Container>
     </Layout>
   );
-};
+}
 
 Notification.propTypes = {
-  close: PropTypes.func
+  close: PropTypes.func,
 };
 
 export default Notification;

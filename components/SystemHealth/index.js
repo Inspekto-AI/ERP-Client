@@ -1,9 +1,7 @@
-import SystemHealth from "./SystemHealth"
+import SystemHealth from './SystemHealth';
 
-const index = ({...props}) => {
-  return (
-    <SystemHealth {...props} />
-  )
-}
+const index = ({ ...props }) => (
+  <SystemHealth {...props} />
+);
 
-export default index
+export default index;

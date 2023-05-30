@@ -8,22 +8,22 @@ import {
   FormControl,
   Select,
   MenuItem,
-  TextField
+  TextField,
 } from '@material-ui/core';
 import InfoModal from 'components/InfoModal';
 import FrinksButton from 'components/FrinksButton';
-import { MaintenanceQuery } from 'reactQueries/maintenanceQueries';
+import MaintenanceQuery from 'reactQueries/maintenanceQueries';
 import Loader from 'components/Loader';
 import { get } from 'utils/api';
 
-const useStyles = makeStyles(theme => ({
+const useStyles = makeStyles((theme) => ({
   title: {
     width: '100%',
     color: theme.palette.trypanBlue.main,
     fontSize: '30px',
     fontWeight: '900',
     position: 'relative',
-    fontFamily: 'Titillium Web'
+    fontFamily: 'Titillium Web',
   },
   close: {
     marginTop: '10px',
@@ -31,9 +31,9 @@ const useStyles = makeStyles(theme => ({
       color: 'black',
 
       '& .MuiButton-label': {
-        fontWeight: '900'
-      }
-    }
+        fontWeight: '900',
+      },
+    },
   },
   heading: {
     display: 'flex',
@@ -41,25 +41,25 @@ const useStyles = makeStyles(theme => ({
     padding: '20px 40px',
     [theme.breakpoints.down(960)]: {
       flexDirection: 'column-reverse',
-      alignItems: 'end'
-    }
+      alignItems: 'end',
+    },
   },
   formContainer: {
-    background: 'white'
+    background: 'white',
   },
   desc: {
     [theme.breakpoints.down(960)]: {
-      textAlign: 'center'
-    }
+      textAlign: 'center',
+    },
   },
   formInfo: {
     [theme.breakpoints.down(960)]: {
-      marginBottom: '20px'
-    }
-  }
+      marginBottom: '20px',
+    },
+  },
 }));
 
-const MaintenanceForm = ({ close }) => {
+function MaintenanceForm({ close }) {
   const classes = useStyles();
   const [machineType, setMachineType] = useState('');
   const [beltId, setBeltId] = useState('');
@@ -71,9 +71,9 @@ const MaintenanceForm = ({ close }) => {
   const maintenanceMutation = MaintenanceQuery();
   const router = useRouter();
   useEffect(() => {
-    const fetchBeltIds = async type => {
+    const fetchBeltIds = async (type) => {
       const res = await get('/api/maintenance/belts', {
-        type
+        type,
       });
       setBeltIdList(res?.data?.data);
     };
@@ -98,7 +98,7 @@ const MaintenanceForm = ({ close }) => {
       belt_id: beltId,
       reason,
       comments,
-      down_till: new Date(downTill).getTime()
+      down_till: new Date(downTill).getTime(),
     });
   };
 
@@ -128,7 +128,7 @@ const MaintenanceForm = ({ close }) => {
                 <Select
                   variant="outlined"
                   value={machineType}
-                  onChange={e => {
+                  onChange={(e) => {
                     setMachineType(e.target.value);
                     setBeltId('');
                     setBeltIdList(null);
@@ -148,11 +148,11 @@ const MaintenanceForm = ({ close }) => {
                 <Select
                   variant="outlined"
                   value={beltId}
-                  onChange={e => setBeltId(e.target.value)}
+                  onChange={(e) => setBeltId(e.target.value)}
                   disabled={machineType === ''}
                 >
-                  {beltIdList &&
-                    beltIdList.map((e, index) => (
+                  {beltIdList
+                    && beltIdList.map((e, index) => (
                       <MenuItem value={e.id} key={index}>
                         {e.machine_id}
                       </MenuItem>
@@ -169,7 +169,7 @@ const MaintenanceForm = ({ close }) => {
                 <Select
                   variant="outlined"
                   value={reason}
-                  onChange={e => setReason(e.target.value)}
+                  onChange={(e) => setReason(e.target.value)}
                 >
                   <MenuItem value="Belt down for maintenance">
                     Belt down for maintenance
@@ -187,7 +187,7 @@ const MaintenanceForm = ({ close }) => {
                 variant="outlined"
                 placeholder="Down till"
                 value={downTill}
-                onChange={e => setDownTill(e.target.value)}
+                onChange={(e) => setDownTill(e.target.value)}
               />
             </div>
             <div className="input-container">
@@ -197,7 +197,7 @@ const MaintenanceForm = ({ close }) => {
                 variant="outlined"
                 placeholder="Comments"
                 value={comments}
-                onChange={e => setComments(e.target.value)}
+                onChange={(e) => setComments(e.target.value)}
                 multiline
                 rows={4}
               />
@@ -211,10 +211,10 @@ const MaintenanceForm = ({ close }) => {
                 text="Create Ticket"
                 onClick={() => setInfoModalOpen(true)}
                 isInactive={
-                  machineType === '' ||
-                  beltId === '' ||
-                  reason === '' ||
-                  downTill === ''
+                  machineType === ''
+                  || beltId === ''
+                  || reason === ''
+                  || downTill === ''
                 }
               />
             </div>
@@ -236,10 +236,10 @@ const MaintenanceForm = ({ close }) => {
       ) : null}
     </Container>
   );
-};
+}
 
 MaintenanceForm.propTypes = {
-  close: PropTypes.func
+  close: PropTypes.func,
 };
 
 export default MaintenanceForm;

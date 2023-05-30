@@ -10,7 +10,7 @@ import Maintenance from 'components/Maintenance';
 import Notification from 'components/Notification';
 import PrintingAnalysis from 'components/PrintingAnalysis';
 import MaintenanceForm from 'components/MaintenanceForm';
-import { ServiceQuery } from 'reactQueries/shipmentQueries';
+import ServiceQuery from 'reactQueries/shipmentQueries';
 import PackerAnalysis from 'components/PackerAnalysis';
 import SystemHealth from 'components/SystemHealth';
 import { SocketContext } from 'context/SocketContext';
@@ -22,7 +22,7 @@ import { GlobalContext } from 'context/GlobalContext';
 import Alert from '@material-ui/lab/Alert';
 import { Button } from '@material-ui/core';
 
-const DashboardComponent = ({
+function DashboardComponent({
   activeSection,
   // activeTransactions,
   handleBagIncrement,
@@ -32,8 +32,8 @@ const DashboardComponent = ({
   ongoingTransactions,
   queuedTransactions,
   handleBagDone,
-  handleBeltReset
-}) => {
+  handleBeltReset,
+}) {
   if (activeSection === 0) {
     return (
       <LoaderAnalysis
@@ -44,10 +44,25 @@ const DashboardComponent = ({
         handleBagIncrement={handleBagIncrement}
         handleBagDone={handleBagDone}
         handleBeltReset={handleBeltReset}
+        vehicleType={0} // DISPLAY ALL TRUCKS
       />
     );
   }
   if (activeSection === 1) {
+    return (
+      <LoaderAnalysis
+        vehicleBelts={vehicleBelts}
+        setReverseShipmentFormOpen={setReverseShipmentFormOpen}
+        ongoingTransactions={ongoingTransactions}
+        queuedTransactions={queuedTransactions}
+        handleBagIncrement={handleBagIncrement}
+        handleBagDone={handleBagDone}
+        handleBeltReset={handleBeltReset}
+        vehicleType={1} // DISPLAY ALL WAGONS
+      />
+    );
+  }
+  if (activeSection === 2) {
     return (
       <PrintingAnalysis
         printingBelts={printingBelts}
@@ -55,25 +70,21 @@ const DashboardComponent = ({
       />
     );
   }
-  if (activeSection === 2) {
+  if (activeSection === 3) {
     return (
-      <PackerAnalysis
-      // activeTransactions={activeTransactions}
-      // handleBagIncrement={handleBagIncrement}
-      // handleStop={handleStop}
-      />
+      <PackerAnalysis />
     );
   }
-  if (activeSection === 3) {
+  if (activeSection === 4) {
     return <Summary />;
   }
   if (activeSection == 5) {
-    return <SystemHealth />;
+    return <Report />;
   }
-  return <Report />;
-};
+  return <SystemHealth />;
+}
 
-const Index = () => {
+function Index() {
   const serviceMutation = ServiceQuery();
   const socket = useContext(SocketContext);
   const [isLoading, setIsLoading] = useState(false);
@@ -95,27 +106,27 @@ const Index = () => {
   const handleBeltReset = async (
     id,
     bag_counting_belt_id,
-    printing_belt_id
+    printing_belt_id,
   ) => {
     try {
       await put('/api/shipment/reset-belt', {
-        belt_id: printing_belt_id || id
-      })
+        belt_id: printing_belt_id || id,
+      });
       // on success reset belt
-      setPrintingBelts(prevState => {
+      setPrintingBelts((prevState) => {
         if (!prevState) return null;
         return {
           ...prevState,
           [printing_belt_id || id]: {
             ...prevState[printing_belt_id || id],
-            is_belt_running: true
-          }
+            is_belt_running: true,
+          },
         };
       });
     } catch (error) {
       console.log(error);
     }
-  }
+  };
 
   const handleBagDone = async (
     transaction_id,
@@ -123,7 +134,7 @@ const Index = () => {
     printing_belt_id,
     machine_id,
     vehicle_type,
-    comment
+    comment,
   ) => {
     setIsLoading(true);
     await put('/api/shipment/done', {
@@ -136,15 +147,15 @@ const Index = () => {
     });
   };
 
-  const handleNewShipment = async data => {
+  const handleNewShipment = async (data) => {
     serviceMutation.mutate(data);
   };
 
-  const alertsnooze = e => {
+  const alertsnooze = (e) => {
     const transactiondata = missPrintTransactionId;
     delete transactiondata[e];
     setmissPrintTransactionId(transactiondata);
-    setAlertCounter(prevState => prevState - 1);
+    setAlertCounter((prevState) => prevState - 1);
   };
 
   useEffect(() => {
@@ -155,7 +166,7 @@ const Index = () => {
     }
   }, [serviceMutation]);
 
-  const handleBagIncrement = async data => {
+  const handleBagIncrement = async (data) => {
     setIsLoading(true);
     try {
       await post('/api/shipment/bag-change', data);
@@ -177,9 +188,9 @@ const Index = () => {
   }, []);
 
   useEffect(() => {
-    socket.on('bag-entry', data => {
+    socket.on('bag-entry', (data) => {
       const transaction_id = parseInt(data?.transaction_id, 10);
-      setOngoingTransactions(prevState => {
+      setOngoingTransactions((prevState) => {
         if (!prevState) return null;
         if (prevState && Object.keys(prevState).length === 0) return {};
         if (!(transaction_id in prevState)) return prevState;
@@ -187,96 +198,94 @@ const Index = () => {
           ...prevState,
           [transaction_id]: {
             ...prevState[transaction_id],
-            bag_count: data?.count
-          }
+            bag_count: data?.count,
+          },
         };
       });
 
       if (DEACTIVATE_PRINTING_SOLUTION) {
-        setPrintingBelts(prevState => {
+        setPrintingBelts((prevState) => {
           const belt_id = parseInt(data?.belt_id, 10);
           if (!prevState) return null;
           return {
             ...prevState,
             [belt_id]: {
               ...prevState[belt_id],
-              tag_count: data?.count
-            }
+              tag_count: data?.count,
+            },
           };
         });
       }
     });
-    socket.on('tag-entry', data => {
+    socket.on('tag-entry', (data) => {
       const transaction_id = parseInt(data?.transaction_id, 10);
       let machine_id = null;
-      setOngoingTransactions(prevState => {
+      setOngoingTransactions((prevState) => {
         if (!prevState) return null;
         if (prevState && Object.keys(prevState).length === 0) return {};
-        else if (!(transaction_id in prevState)) return prevState;
+        if (!(transaction_id in prevState)) return prevState;
         machine_id = prevState[transaction_id]?.printing_id;
         return {
           ...prevState,
           [transaction_id]: {
             ...prevState[transaction_id],
             missed_label_count: data?.transactionMissed,
-            tag_count: data.tag_count
-          }
+            tag_count: data.tag_count,
+          },
         };
       });
       if (data.transactionMissed > 0 && data.transactionMissed % 10 === 0) {
         // setAlertCounter(Object.keys(missPrintTransactionId).length + 1);
-        setAlertCounter(prevState => prevState + 1);
+        setAlertCounter((prevState) => prevState + 1);
 
-        setmissPrintTransactionId(prevState => {
-          return {
-            ...prevState,
-            [transaction_id]: {
-              belt_id: data?.belt_id,
-              machine_id,
-              missed_count: data?.transactionMissed
-            }
-          };
-        });
+        setmissPrintTransactionId((prevState) => ({
+          ...prevState,
+          [transaction_id]: {
+            belt_id: data?.belt_id,
+            machine_id,
+            missed_count: data?.transactionMissed,
+          },
+        }));
       }
       const belt_id = data?.belt_id;
-      setPrintingBelts(prevState => {
+      setPrintingBelts((prevState) => {
         if (!prevState) return null;
         return {
           ...prevState,
           [belt_id]: {
             ...prevState[belt_id],
             tag_count: data?.count,
-            missed_label_count: data?.missed_count
-          }
+            missed_label_count: data?.missed_count,
+          },
         };
       });
     });
-    socket.on('tag-entry-deactivated', data => {
+    socket.on('tag-entry-deactivated', (data) => {
       const belt_id = data?.belt_id;
-      setPrintingBelts(prevState => {
+      setPrintingBelts((prevState) => {
         if (!prevState) return null;
         return {
           ...prevState,
           [belt_id]: {
             ...prevState[belt_id],
             tag_count: data?.count,
-            missed_label_count: data?.missed_count
-          }
+            missed_label_count: data?.missed_count,
+          },
         };
       });
     });
-    socket.on('service', data => {
+    socket.on('service', (data) => {
       const tra_id = parseInt(data?.id, 10);
-      setOngoingTransactions(prevState => {
+      setOngoingTransactions((prevState) => {
         if (!prevState) return null;
         return {
           ...prevState,
-          [tra_id]: data
+          [tra_id]: data,
         };
       });
-      setVehicleBelts(prevState => {
+      setVehicleBelts((prevState) => {
         if (!prevState) return null;
-        const newBelts = prevState.filter(e => {
+        const newBelts = prevState.filter((e) => {
           if (e.id !== data.bag_counting_belt_id) {
             return e;
           }
@@ -285,47 +294,48 @@ const Index = () => {
       });
     });
     socket.on('background-reset', () => {
-      setPrintingBelts(prevState => {
+      setPrintingBelts((prevState) => {
         if (!prevState) return null;
         const newState = {};
-        Object.keys(prevState).forEach(e => {
+        Object.keys(prevState).forEach((e) => {
           newState[e] = {
             printing_id: prevState[e]?.printing_id,
             missed_label_count: 0,
             tag_count: 0,
-            id: e
+            id: e,
           };
         });
         return newState;
       });
     });
-    socket.on('release-belt', data => {
+    socket.on('release-belt', (data) => {
       const activateBelts = new Set(data.activate_loading_ids);
       const deactivateBelts = new Set(data.deactivate_loading_ids);
-      setVehicleBelts(prevState => prevState?.map(e => {
+      setVehicleBelts((prevState) => prevState?.map((e) => {
         if (activateBelts.has(e?.id)) {
           return { ...e, is_active: 1 };
-        }
-        else if (deactivateBelts.has(e?.id)) return { ...e, is_active: 0 };
+        } if (deactivateBelts.has(e?.id)) return { ...e, is_active: 0 };
         return e;
       }));
-    })
+    });
 
     socket.on('bag-done', (data) => {
-      const { transaction_id, vehicle_id, machine_id, vehicle_type } = data;
-      setOngoingTransactions(prevState => {
+      const {
+        transaction_id, vehicle_id, machine_id, vehicle_type,
+      } = data;
+      setOngoingTransactions((prevState) => {
         const currData = { ...prevState };
         delete currData[transaction_id];
         return currData;
       });
-      setVehicleBelts(prevState => {
+      setVehicleBelts((prevState) => {
         const currData = [...prevState];
-        if (currData.filter(e => e.id === vehicle_id).length === 0) {
+        if (currData.filter((e) => e.id === vehicle_id).length === 0) {
           currData.push({
             id: vehicle_id,
             vehicle_id: machine_id,
             vehicle_type,
-            is_active: 1
+            is_active: 1,
           });
         }
         return currData;
@@ -334,13 +344,13 @@ const Index = () => {
     });
 
     socket.on('bag-update', (data) => {
-      setOngoingTransactions(prevState => {
-        const updatedTransactions = Object.keys(prevState).map(e => {
+      setOngoingTransactions((prevState) => {
+        const updatedTransactions = Object.keys(prevState).map((e) => {
           if (prevState[e].id === data.transaction_id) {
             // modify this entity
             return {
               ...prevState[e],
-              bag_limit: parseInt(data?.new_bag_limit)
+              bag_limit: parseInt(data?.new_bag_limit),
             };
           }
           return prevState[e];
@@ -351,14 +361,14 @@ const Index = () => {
     });
 
     socket.on('tripping_belt', ({ belt_id }) => {
-      setPrintingBelts(prevState => {
+      setPrintingBelts((prevState) => {
         if (!prevState) return null;
         return {
           ...prevState,
           [belt_id]: {
             ...prevState[belt_id],
-            is_belt_running: false
-          }
+            is_belt_running: false,
+          },
         };
       });
     });
@@ -370,7 +380,7 @@ const Index = () => {
         close={() => setShipmentFormOpen(false)}
         handleSubmit={handleNewShipment}
         reverseShipmentFormOpen={reverseShipmentFormOpen}
-        setReverseShipmentFormOpen={e => setReverseShipmentFormOpen(e)}
+        setReverseShipmentFormOpen={(e) => setReverseShipmentFormOpen(e)}
       />
     );
   }
@@ -396,37 +406,35 @@ const Index = () => {
       <Container>
         {isLoading ? <Loader /> : null}
         <div className="trackbar">
-          <>
+          <div
+            className={`option ${activeSection === 0 ? 'active' : ''}`}
+            onClick={() => setActiveSection(0)}
+            onKeyPress={() => setActiveSection(0)}
+            role="button"
+            tabIndex={0}
+          >
+            <h6 style={{ textAlign: 'center' }}>Truck belts</h6>
+          </div>
+          <div
+            className={`option ${activeSection === 1 ? 'active' : ''}`}
+            onClick={() => setActiveSection(1)}
+            onKeyPress={() => setActiveSection(1)}
+            role="button"
+            tabIndex={0}
+          >
+            <h6 style={{ textAlign: 'center' }}>Wagon belts</h6>
+          </div>
+          {DEACTIVATE_PRINTING_SOLUTION ? (null) : (
             <div
-              className={`option ${activeSection === 0 ? 'active' : ''}`}
-              onClick={() => setActiveSection(0)}
-              onKeyPress={() => setActiveSection(0)}
+              className={`option ${activeSection === 2 ? 'active' : ''}`}
+              onClick={() => setActiveSection(2)}
+              onKeyPress={() => setActiveSection(2)}
               role="button"
               tabIndex={0}
             >
-              <h6 style={{ textAlign: 'center' }}>Loader belt</h6>
+              <h6 style={{ textAlign: 'center' }}>Printing belt</h6>
             </div>
-            {DEACTIVATE_PRINTING_SOLUTION ? (null) : (
-              <div
-                className={`option ${activeSection === 1 ? 'active' : ''}`}
-                onClick={() => setActiveSection(1)}
-                onKeyPress={() => setActiveSection(1)}
-                role="button"
-                tabIndex={0}
-              >
-                <h6 style={{ textAlign: 'center' }}>Printing belt</h6>
-              </div>
-            )}
-            <div
-              className={`option ${activeSection === 3 ? 'active' : ''}`}
-              onClick={() => setActiveSection(3)}
-              onKeyPress={() => setActiveSection(3)}
-              role="button"
-              tabIndex={0}
-            >
-              <h6 style={{ textAlign: 'center' }}>Summary</h6>
-            </div>
-          </>
+          )}
           <div
             className={`option ${activeSection === 4 ? 'active' : ''}`}
             onClick={() => setActiveSection(4)}
@@ -434,12 +442,21 @@ const Index = () => {
             role="button"
             tabIndex={0}
           >
-            <h6 style={{ textAlign: 'center' }}>Reports</h6>
+            <h6 style={{ textAlign: 'center' }}>Summary</h6>
           </div>
           <div
             className={`option ${activeSection === 5 ? 'active' : ''}`}
             onClick={() => setActiveSection(5)}
             onKeyPress={() => setActiveSection(5)}
+            role="button"
+            tabIndex={0}
+          >
+            <h6 style={{ textAlign: 'center' }}>Reports</h6>
+          </div>
+          <div
+            className={`option ${activeSection === 6 ? 'active' : ''}`}
+            onClick={() => setActiveSection(6)}
+            onKeyPress={() => setActiveSection(6)}
             role="button"
             tabIndex={0}
           >
@@ -452,7 +469,7 @@ const Index = () => {
           handleBagIncrement={handleBagIncrement}
           printingBelts={printingBelts}
           vehicleBelts={vehicleBelts}
-          setReverseShipmentFormOpen={e => setReverseShipmentFormOpen(e)}
+          setReverseShipmentFormOpen={(e) => setReverseShipmentFormOpen(e)}
           ongoingTransactions={ongoingTransactions}
           queuedTransactions={queuedTransactions}
           handleBagDone={handleBagDone}
@@ -460,27 +477,25 @@ const Index = () => {
         />
         {alertCounter != 0 ? (
           <div className="alert">
-            {Object.keys(missPrintTransactionId).map((e, index) => {
-              return (
-                <Alert
-                  severity="warning"
-                  style={{ backgroundColor: 'red', marginBottom: '0.938em', width: '500px' }}
-                  action={
-                    <Button
-                      color="inherit"
-                      size="small"
-                      onClick={() => alertsnooze(e)}
-                      style={{ backgroundColor: 'white' }}
-                    >
-                      Snooze
-                    </Button>
-                  }
-                  key={index}
-                >
-                  {`${missPrintTransactionId[e].missed_count} misprint bags passed from - ${missPrintTransactionId[e].machine_id}`}
-                </Alert>
-              );
-            })}
+            {Object.keys(missPrintTransactionId).map((e, index) => (
+              <Alert
+                severity="warning"
+                style={{ backgroundColor: 'red', marginBottom: '0.938em', width: '500px' }}
+                action={(
+                  <Button
+                    color="inherit"
+                    size="small"
+                    onClick={() => alertsnooze(e)}
+                    style={{ backgroundColor: 'white' }}
+                  >
+                    Snooze
+                  </Button>
+                  )}
+                key={index}
+              >
+                {`${missPrintTransactionId[e].missed_count} misprint bags passed from - ${missPrintTransactionId[e].machine_id}`}
+              </Alert>
+            ))}
           </div>
         ) : null}
         {infoModalOpen ? (
@@ -497,7 +512,7 @@ const Index = () => {
       </Container>
     </Layout>
   );
-};
+}
 
 DashboardComponent.propTypes = {
   activeSection: PropTypes.number,
@@ -510,7 +525,7 @@ DashboardComponent.propTypes = {
   queuedTransactions: PropTypes.any,
   handleBagDone: PropTypes.func,
   alertsnooze: PropTypes.func,
-  handleBeltReset: PropTypes.func
+  handleBeltReset: PropTypes.func,
 };
 
 export default Index;

@@ -1,9 +1,11 @@
 import { makeStyles } from '@material-ui/core/styles';
-import { Modal, Backdrop, Fade, Button } from '@material-ui/core';
+import {
+  Modal, Backdrop, Fade, Button,
+} from '@material-ui/core';
 import PropTypes from 'prop-types';
 import Image from 'next/image';
 import theme from 'styles/theme';
-import { AlertTitle, Alert as MuiAlert } from "@material-ui/lab";
+import { AlertTitle, Alert as MuiAlert } from '@material-ui/lab';
 
 import ImageKitLoader from 'utils/ImageLoader';
 import { fontWeight } from '@mui/system';
@@ -13,7 +15,7 @@ const useStyles = makeStyles(() => ({
     display: 'flex',
     padding: '10px',
     alignItems: 'flex-start',
-    justifyContent: 'center'
+    justifyContent: 'center',
   },
   paper: {
     position: 'relative',
@@ -26,19 +28,19 @@ const useStyles = makeStyles(() => ({
     alignItems: 'center',
     borderRadius: '0.625em',
     marginTop: '3.75em',
-    marginLeft: '60%'
+    marginLeft: '60%',
   },
   close: {
     top: '10px',
     right: '10px',
     cursor: 'pointer',
-    position: 'absolute'
+    position: 'absolute',
   },
   imgContainer: {
     textAlign: 'center',
     '&:img': {
-      width: '60px'
-    }
+      width: '60px',
+    },
   },
   button: {
     textTransform: 'capitalize',
@@ -47,23 +49,23 @@ const useStyles = makeStyles(() => ({
     color: 'white',
     background: 'yellow',
     '&:hover': {
-      background: 'pink'
-    }
+      background: 'pink',
+    },
   },
   title: {
     display: 'flex',
-    alignItems: 'center'
+    alignItems: 'center',
   },
   heading: {
     color: 'white',
-    marginLeft: '2.5em'
+    marginLeft: '2.5em',
   },
   bold: {
-    fontWeight: '900'
+    fontWeight: '900',
   },
   subHeading: {
     marginTop: '1.25em',
-    fontSize: '0.8333333333333334vw'
+    fontSize: '0.8333333333333334vw',
   },
   actionButton: {
     background: 'white',
@@ -76,17 +78,17 @@ const useStyles = makeStyles(() => ({
 
     '&:hover': {
       background: theme.palette.gradient.pink,
-      color: 'white'
-    }
+      color: 'white',
+    },
   },
   h4: {
     fontSize: '1.4583333333333333vw',
-    lineHeight: '1.71875vw'
-  }
-  
+    lineHeight: '1.71875vw',
+  },
+
 }));
 
-const AlertModal = ({ open, close,alertsnooze }) => {
+function AlertModal({ open, close, alertsnooze }) {
   const classes = useStyles();
 
   return (
@@ -97,7 +99,7 @@ const AlertModal = ({ open, close,alertsnooze }) => {
       className={classes.modal}
       BackdropComponent={Backdrop}
       BackdropProps={{
-        timeout: 500
+        timeout: 500,
       }}
     >
       <Fade in={open}>
@@ -114,7 +116,9 @@ const AlertModal = ({ open, close,alertsnooze }) => {
             </div>
             <div className={classes.heading}>
               <h4 className={classes.h4}>
-                Loader #6: <span className={classes.bold}>Incorrect bags</span>
+                Loader #6:
+                {' '}
+                <span className={classes.bold}>Incorrect bags</span>
               </h4>
               <p className={classes.subHeading}>
                 Here is a subtitle for this table
@@ -133,24 +137,23 @@ const AlertModal = ({ open, close,alertsnooze }) => {
       </Fade>
     </Modal>
 
-
-    // <MuiAlert
-    //   className={classes.alert}
-    //   open={open}
-    //   // onClose={() => handleClose(alert)}
-    //   id={alert.id}
-    //   elevation={6}
-    //   variant="filled"
-    //   severity={alert.type}
-    // >
-    //   <AlertTitle>hello</AlertTitle>
-    //   alert 
-    // </MuiAlert>
+  // <MuiAlert
+  //   className={classes.alert}
+  //   open={open}
+  //   // onClose={() => handleClose(alert)}
+  //   id={alert.id}
+  //   elevation={6}
+  //   variant="filled"
+  //   severity={alert.type}
+  // >
+  //   <AlertTitle>hello</AlertTitle>
+  //   alert
+  // </MuiAlert>
   );
-};
+}
 
 AlertModal.propTypes = {
   open: PropTypes.any.isRequired,
-  close: PropTypes.func.isRequired
+  close: PropTypes.func.isRequired,
 };
 export default AlertModal;

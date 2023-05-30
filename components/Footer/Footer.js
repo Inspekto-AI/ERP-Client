@@ -4,7 +4,7 @@ import { Grid } from '@material-ui/core';
 import ImageKitLoader from 'utils/ImageLoader';
 import Container from './Footer.styles';
 
-const Footer = () => {
+function Footer() {
   return (
     <Container>
       <footer className="footer">
@@ -24,6 +24,6 @@ const Footer = () => {
       </footer>
     </Container>
   );
-};
+}
 
 export default Footer;

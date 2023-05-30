@@ -3,9 +3,9 @@ import styled from '@emotion/styled';
 const Container = styled.div`
   margin: auto;
   ${
-    '' /* min-width: 1080px;
+  '' /* min-width: 1080px;
   max-width: 1080px; */
-  }
+}
   width: 80%;
   padding-top: 80px;
   padding-bottom: 50px;

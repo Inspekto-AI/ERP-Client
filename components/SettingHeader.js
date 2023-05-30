@@ -7,7 +7,7 @@ const viewAllButton = {
   background: 'white',
   color: theme.palette.byzantine.main,
   fontSize: '14px',
-  height: '40px'
+  height: '40px',
 };
 
 const useStyles = makeStyles(() => ({
@@ -16,14 +16,14 @@ const useStyles = makeStyles(() => ({
     alignItems: 'center',
     height: '100px',
     background: theme.palette.royalBlue.main,
-    position: 'relative'
+    position: 'relative',
   },
   title: {
     color: 'white',
     fontSize: '30px',
     fontWeight: '900',
     position: 'relative',
-    fontFamily: 'Titillium Web'
+    fontFamily: 'Titillium Web',
   },
   counter: {
     background: theme.palette.flickrPink.main,
@@ -37,7 +37,7 @@ const useStyles = makeStyles(() => ({
     fontSize: '24px',
     top: '50%',
     right: '0',
-    transform: 'translate(120%, -50%)'
+    transform: 'translate(120%, -50%)',
   },
   close: {
     position: 'absolute',
@@ -49,19 +49,19 @@ const useStyles = makeStyles(() => ({
       color: 'white',
 
       '& .MuiButton-label': {
-        fontWeight: '900'
-      }
-    }
-  }
+        fontWeight: '900',
+      },
+    },
+  },
 }));
 
-const SettingHeader = ({
+function SettingHeader({
   title,
   counter,
   close,
   summaryHeader,
-  viewAllFunc
-}) => {
+  viewAllFunc,
+}) {
   const classes = useStyles();
 
   return (
@@ -71,38 +71,40 @@ const SettingHeader = ({
         padding: `${summaryHeader ? '0 20px' : '0 60px'}`,
         justifyContent: `${summaryHeader ? 'flex-start' : 'center'}`,
         borderTopLeftRadius: `${summaryHeader ? '5px' : '0'}`,
-        borderTopRightRadius: `${summaryHeader ? '5px' : '0'}`
+        borderTopRightRadius: `${summaryHeader ? '5px' : '0'}`,
       }}
     >
       <div className={classes.title}>
         <p>{title}</p>
         {counter ? <div className={classes.counter}>{counter}</div> : null}
       </div>
-      {close ? (<div
-        className={classes.close}
-        style={{ right: `${summaryHeader ? '-20px' : '0'}` }}
-      >
-        {summaryHeader ? (
-          <FrinksButton
-            text="VIEW ALL"
-            onClick={viewAllFunc}
-            style={summaryHeader ? viewAllButton : null}
-            variant="outlined"
-          />
-        ) : (
-          <Button onClick={() => close()}>X Close</Button>
-        )}
-      </div>) : null}
+      {close ? (
+        <div
+          className={classes.close}
+          style={{ right: `${summaryHeader ? '-20px' : '0'}` }}
+        >
+          {summaryHeader ? (
+            <FrinksButton
+              text="VIEW ALL"
+              onClick={viewAllFunc}
+              style={summaryHeader ? viewAllButton : null}
+              variant="outlined"
+            />
+          ) : (
+            <Button onClick={() => close()}>X Close</Button>
+          )}
+        </div>
+      ) : null}
     </nav>
   );
-};
+}
 
 SettingHeader.propTypes = {
   title: PropTypes.string.isRequired,
   counter: PropTypes.number,
   close: PropTypes.func,
   summaryHeader: PropTypes.bool,
-  viewAllFunc: PropTypes.func
+  viewAllFunc: PropTypes.func,
 };
 
 export default SettingHeader;

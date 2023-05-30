@@ -49,7 +49,7 @@ export const CardContainer = styled.div`
   margin-left: 0;
   border: solid 1px;
   border-radius: 4px;
-  background: ${props => (props.active ? '#00C1F3' : '#FF5742')};
+  background: ${(props) => (props.active ? '#00C1F3' : '#FF5742')};
   color: white;
   font-size: 18px;
 

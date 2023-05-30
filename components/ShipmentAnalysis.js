@@ -7,11 +7,11 @@ import AddMoreBagsModal from 'components/AddMoreBagsModal';
 import DefectiveBags from 'components/DefectiveBags';
 import InfoModal from 'components/InfoModal';
 
-const ShipmentTracking = ({
+function ShipmentTracking({
   activeTransactions,
   handleBagIncrement,
-  handleStop
-}) => {
+  handleStop,
+}) {
   const [detailModalOpen, setDetailModalOpen] = useState(null);
   const [rejectModalOpen, setRejectModalOpen] = useState(null);
   const [bagModifyModalOpen, setBagModifyModalOpen] = useState(null);
@@ -24,8 +24,8 @@ const ShipmentTracking = ({
           <div className="search-container" />
         </div>
         <div className="analytics">
-          {activeTransactions &&
-          Object.keys(activeTransactions)?.length === 0 ? (
+          {activeTransactions
+          && Object.keys(activeTransactions)?.length === 0 ? (
             <p style={{ fontSize: '20px', textAlign: 'center', color: 'gray' }}>
               <AiOutlineExclamationCircle style={{ fontSize: '70px' }} />
               <br />
@@ -33,39 +33,33 @@ const ShipmentTracking = ({
               <br />
               Please create a shipment first.
             </p>
-          ) : (
-            <Grid container className="par">
-              {activeTransactions &&
-                Object.keys(activeTransactions)?.map((e, index) => (
+            ) : (
+              <Grid container className="par">
+                {activeTransactions
+                && Object.keys(activeTransactions)?.map((e, index) => (
                   <div key={index} className="childd">
                     <AnalyticsCard
                       data={{
                         transaction_id: e,
-                        ...activeTransactions[e]
+                        ...activeTransactions[e],
                       }}
-                      rejectModalOpen={() =>
-                        setRejectModalOpen({
-                          transaction_id: e,
-                          ...activeTransactions[e]
-                        })
-                      }
-                      bagModifyModalOpen={() =>
-                        setBagModifyModalOpen({
-                          transaction_id: e,
-                          ...activeTransactions[e]
-                        })
-                      }
-                      setDetailModalOpen={() =>
-                        setDetailModalOpen({
-                          transaction_id: e,
-                          ...activeTransactions[e]
-                        })
-                      }
+                      rejectModalOpen={() => setRejectModalOpen({
+                        transaction_id: e,
+                        ...activeTransactions[e],
+                      })}
+                      bagModifyModalOpen={() => setBagModifyModalOpen({
+                        transaction_id: e,
+                        ...activeTransactions[e],
+                      })}
+                      setDetailModalOpen={() => setDetailModalOpen({
+                        transaction_id: e,
+                        ...activeTransactions[e],
+                      })}
                     />
                   </div>
                 ))}
-            </Grid>
-          )}
+              </Grid>
+            )}
         </div>
       </div>
       {detailModalOpen ? (
@@ -73,11 +67,11 @@ const ShipmentTracking = ({
           open={detailModalOpen}
           close={() => setDetailModalOpen(null)}
           heading="Transaction details"
-          handleSubmit={e => {
+          handleSubmit={(e) => {
             handleBagIncrement(e);
             setDetailModalOpen(null);
           }}
-          handleStop={e => {
+          handleStop={(e) => {
             handleStop(e);
             setDetailModalOpen(null);
           }}
@@ -99,7 +93,7 @@ const ShipmentTracking = ({
           open={bagModifyModalOpen}
           close={() => setBagModifyModalOpen(null)}
           onlyBags
-          handleSubmit={e => {
+          handleSubmit={(e) => {
             handleBagIncrement(e);
             setBagModifyModalOpen(null);
           }}
@@ -107,12 +101,12 @@ const ShipmentTracking = ({
       ) : null}
     </>
   );
-};
+}
 
 ShipmentTracking.propTypes = {
   activeTransactions: PropTypes.any,
   handleBagIncrement: PropTypes.func,
-  handleStop: PropTypes.any
+  handleStop: PropTypes.any,
 };
 
 export default ShipmentTracking;

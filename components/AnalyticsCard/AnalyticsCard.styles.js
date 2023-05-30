@@ -2,13 +2,19 @@ import styled from '@emotion/styled';
 import theme from 'styles/theme';
 
 const Container = styled.div`
-  background: ${props => props.isRunning === false || props.status > 0 ? (props.status === 1 ? '#CB952B' : (props.active === 1 && props.isRunning !== false ? 'white' : theme.palette.error.main)) : '#26A84A'};
+  background: ${(props) => (props.isRunning === false || props.status > 0
+    ? props.status === 1
+      ? '#CB952B'
+      : props.active === 1 && props.isRunning !== false
+        ? 'white'
+        : theme.palette.error.main
+    : '#26A84A')};
   border-radius: 10px;
-  padding: ${props => (props.packerCard ? '35px 5px' : '35px 20px')};
-  padding-top: ${props => (props.isRunning === false ? '40px' : '20px')};
+  padding: ${(props) => (props.packerCard ? '35px 5px' : '35px 20px')};
+  padding-top: ${(props) => (props.isRunning === false ? '40px' : '20px')};
   // padding-top: 20px;
-  padding-bottom: ${props => (props.isRunning === false ? '15px' : '25px')};
-  padding-bottom: ${props => (props.packerCard ? '8px' : '25px')};
+  padding-bottom: ${(props) => (props.isRunning === false ? '15px' : '25px')};
+  padding-bottom: ${(props) => (props.packerCard ? '8px' : '25px')};
   max-width: 330px;
   width: 100%;
   position: relative;
@@ -17,27 +23,26 @@ const Container = styled.div`
     font-size: 18px;
     margin-bottom: 20px;
     align-items: flex-start !important;
-    padding: ${props => (props.packerCard ? '0 15px' : '0 0')};
+    padding: ${(props) => (props.packerCard ? '0 15px' : '0 0')};
 
     .id-container {
       display: flex;
 
       .status {
-        background: ${props =>
-    props.status === 0
-      ? '#01ba8f'
-      : props.status === 1
-        ? 'white'
-        : 'white'};
+        background: ${(props) => (props.status === 0
+    ? '#01ba8f'
+    : props.status === 1
+      ? 'white'
+      : 'white')};
         height: 18px;
         width: 18px;
         border-radius: 100px;
         border: 2px solid #f5f5f5;
-        margin-top: ${props => (props.printingCard ? '1px' : '8px')};
+        margin-top: ${(props) => (props.printingCard ? '1px' : '8px')};
       }
 
       .id {
-        color: ${props => props.isRunning === false || props.status <= 1 ? 'white' : 'black'};
+        color: ${(props) => (props.isRunning === false || props.status <= 1 ? 'white' : 'black')};
         font-weight: 600;
         margin-left: 5px;
         font-size: 15px;
@@ -49,7 +54,7 @@ const Container = styled.div`
         }
 
         .tag-id {
-          font-size: ${props => (props.printingCard ? '18px' : '14px')};
+          font-size: ${(props) => (props.printingCard ? '18px' : '14px')};
         }
       }
     }
@@ -65,13 +70,17 @@ const Container = styled.div`
     display: flex;
     margin-bottom: 10px;
     align-items: center;
-    margin-top: ${props => (props.printingCard ? '10px' : props.isRunning === false ? '34px' : '54px')};
-    padding: ${props => (props.packerCard ? '0 15px' : '0 0')};
+    margin-top: ${(props) => (props.printingCard
+    ? '10px'
+    : props.isRunning === false
+      ? '34px'
+      : '54px')};
+    padding: ${(props) => (props.packerCard ? '0 15px' : '0 0')};
 
     h2 {
       margin-right: 10px;
       font-weight: 900;
-      color: ${props => (props.status >= 2 ? 'black' : 'white')};
+      color: ${(props) => (props.status >= 2 ? 'black' : 'white')};
     }
 
     .MuiAvatar-circular {
@@ -88,9 +97,17 @@ const Container = styled.div`
 
   .type {
     font-size: 16px;
-    color: ${props => props.isRunning === false || props.status <= 1 ? 'white' : theme.palette.grey.grey100};
+    color: ${(props) => (props.isRunning === false || props.status <= 1
+    ? 'white'
+    : theme.palette.grey.grey100)};
     margin: 2px 0 20px 0;
-    margin-bottom: ${props => props.status <= 1 ? props.printingCard ? '70px' : '10px' : props.status === 1 ? '10px' : '40px'};
+    margin-bottom: ${(props) => (props.status <= 1
+    ? props.printingCard
+      ? '70px'
+      : '10px'
+    : props.status === 1
+      ? '10px'
+      : '40px')};
 
     span {
       font-weight: 900;
@@ -99,14 +116,14 @@ const Container = styled.div`
   }
 
   .rejected {
-    background: ${props => props.isRunning === false ? 'white' : '#f5f5f5'};
+    background: ${(props) => (props.isRunning === false ? 'white' : '#f5f5f5')};
     display: flex;
     align-items: center;
     justify-content: space-between;
     padding: 8px 12px;
     position: absolute;
     left: 0;
-    // bottom: ${props => (props.printingCard ? '30px' : '70px')};
+    // bottom: ${(props) => (props.printingCard ? '30px' : '70px')};
     width: 100%;
 
     .count {
@@ -147,7 +164,9 @@ const Container = styled.div`
   }
 
   .view-button {
-    width: ${props => props.countReached && props.status === 0 || props?.isRunning === false ? '48%' : '100%'};
+    width: ${(props) => ((props.countReached && props.status === 0) || props?.isRunning === false
+    ? '48%'
+    : '100%')};
     border: 3px solid ${theme.palette.byzantine.main};
     background: white;
     border-radius: 12px;
@@ -194,7 +213,7 @@ const Container = styled.div`
     -moz-box-shadow: 1px 4px 12px -8px black;
     box-shadow: 1px 4px 12px -8px black;
     color: white;
-    display: ${props => (props.isRunning === false ? 'flex' : 'none')};
+    display: ${(props) => (props.isRunning === false ? 'flex' : 'none')};
     background: ${theme.palette.error.main};
     border-top-left-radius: 10px;
     border-top-right-radius: 10px;
@@ -239,7 +258,7 @@ const Container = styled.div`
     }
 
     .MuiLinearProgress-barColorPrimary {
-      background-color: ${props => props.progressBackground};
+      background-color: ${(props) => props.progressBackground};
     }
 
     .productivity {

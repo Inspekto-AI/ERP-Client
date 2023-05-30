@@ -3,7 +3,7 @@ import PropTypes from 'prop-types';
 import InfoModal from 'components/InfoModal';
 // import { msToTime } from 'utils/globalFunctions';
 
-const AddMoreBagsModal = ({
+function AddMoreBagsModal({
   open,
   close,
   heading,
@@ -13,8 +13,8 @@ const AddMoreBagsModal = ({
   handleSubmit,
   showDivision,
   hideModify,
-  handleBagDone
-}) => {
+  handleBagDone,
+}) {
   // const [timeDifference, setTimeDifference] = useState(0);
 
   // useEffect(() => {
@@ -69,7 +69,10 @@ const AddMoreBagsModal = ({
             <div className="hints">
               <div className="key">Bags Filled</div>
               <div className="value">
-                {open.bag_count} / {open.bag_limit}
+                {open.bag_count}
+                {' '}
+                /
+                {open.bag_limit}
               </div>
             </div>
           </div>
@@ -87,7 +90,7 @@ const AddMoreBagsModal = ({
       )}
     </InfoModal>
   );
-};
+}
 
 AddMoreBagsModal.propTypes = {
   open: PropTypes.any,
@@ -98,7 +101,7 @@ AddMoreBagsModal.propTypes = {
   handleStop: PropTypes.any,
   printingCard: PropTypes.bool,
   hideModify: PropTypes.bool,
-  handleBagDone: PropTypes.func
+  handleBagDone: PropTypes.func,
 };
 
 export default AddMoreBagsModal;

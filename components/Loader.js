@@ -15,15 +15,15 @@ const useStyles = makeStyles(() => ({
     background: '#ffffff8c',
     top: 0,
     left: 0,
-    zIndex: 9999
+    zIndex: 9999,
   },
   loader: {
     color: theme.palette.royalBlue.main,
-    marginTop: '20px'
-  }
+    marginTop: '20px',
+  },
 }));
 
-const Loader = () => {
+function Loader() {
   const classes = useStyles();
   return (
     <div className={classes.root}>
@@ -38,6 +38,6 @@ const Loader = () => {
       <CircularProgress className={classes.loader} />
     </div>
   );
-};
+}
 
 export default Loader;

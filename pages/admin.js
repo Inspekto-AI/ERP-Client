@@ -12,75 +12,77 @@ import PythonDataExtraction from 'components/PythonDataExtraction';
 import { get } from 'utils/api';
 import UpdateTmate from 'components/UpdateTmate';
 
-const Admin = () => {
-    const router = useRouter();
-    const { userData } = useContext(GlobalContext);
-    const [dataExtractionStatus, setDataExtractionStatus] = useState(false);
+function Admin() {
+  const router = useRouter();
+  const { userData } = useContext(GlobalContext);
+  const [dataExtractionStatus, setDataExtractionStatus] = useState(false);
 
-    useEffect(() => {
-        const fetchStatus = async () => {
-            const res = await get('/api/configuration/data-extraction');
-            setDataExtractionStatus(res?.data?.data?.dataExtractionStatus ? true : false);
-        }
-        fetchStatus();
-    }, []);
+  useEffect(() => {
+    const fetchStatus = async () => {
+      const res = await get('/api/configuration/data-extraction');
+      setDataExtractionStatus(!!res?.data?.data?.dataExtractionStatus);
+    };
+    fetchStatus();
+  }, []);
 
+  if (!userData) {
+    return <Loader />;
+  }
 
-    if (!userData) {
-        return <Loader />;
-    }
+  if (userData.isLoggedIn === false) {
+    router.push('/login');
+    return <Loader />;
+  }
 
-    if (userData.isLoggedIn === false) {
-        router.push('/login');
-        return <Loader />;
-    }
-
-    return (
-        <Layout alternateHeader title='Admin Portal'>
-            <Container>
-                <Accordion>
-                    <AccordionSummary
-                        expandIcon={<MdOutlineExpandMore />}
-                    >
-                        Update Database
-                    </AccordionSummary>
-                    <AccordionDetails>
-                        <UpdateDatabase />
-                    </AccordionDetails>
-                </Accordion>
-                <Accordion>
-                    <AccordionSummary
-                        expandIcon={<MdOutlineExpandMore />}
-                    >
-                        Update Weight Files
-                    </AccordionSummary>
-                    <AccordionDetails>
-                        <UpdateModelWeights />
-                    </AccordionDetails>
-                </Accordion>
-                <Accordion>
-                    <AccordionSummary
-                        expandIcon={<MdOutlineExpandMore />}
-                    >
-                        Python Data Extraction
-                    </AccordionSummary>
-                    <AccordionDetails>
-                        <PythonDataExtraction dataExtractionStatus={dataExtractionStatus} setDataExtractionStatus={(e) => setDataExtractionStatus(e)} />
-                    </AccordionDetails>
-                </Accordion>
-                <Accordion>
-                    <AccordionSummary
-                        expandIcon={<MdOutlineExpandMore />}
-                    >
-                        Update Tmate
-                    </AccordionSummary>
-                    <AccordionDetails>
-                        <UpdateTmate />
-                    </AccordionDetails>
-                </Accordion>
-            </Container>
-        </Layout>
-    )
+  return (
+    <Layout alternateHeader title="Admin Portal">
+      <Container>
+        <Accordion>
+          <AccordionSummary
+            expandIcon={<MdOutlineExpandMore />}
+          >
+            Update Database
+          </AccordionSummary>
+          <AccordionDetails>
+            <UpdateDatabase />
+          </AccordionDetails>
+        </Accordion>
+        <Accordion>
+          <AccordionSummary
+            expandIcon={<MdOutlineExpandMore />}
+          >
+            Update Weight Files
+          </AccordionSummary>
+          <AccordionDetails>
+            <UpdateModelWeights />
+          </AccordionDetails>
+        </Accordion>
+        <Accordion>
+          <AccordionSummary
+            expandIcon={<MdOutlineExpandMore />}
+          >
+            Python Data Extraction
+          </AccordionSummary>
+          <AccordionDetails>
+            <PythonDataExtraction
+              dataExtractionStatus={dataExtractionStatus}
+              setDataExtractionStatus={(e) => setDataExtractionStatus(e)}
+            />
+          </AccordionDetails>
+        </Accordion>
+        <Accordion>
+          <AccordionSummary
+            expandIcon={<MdOutlineExpandMore />}
+          >
+            Update Tmate
+          </AccordionSummary>
+          <AccordionDetails>
+            <UpdateTmate />
+          </AccordionDetails>
+        </Accordion>
+      </Container>
+    </Layout>
+  );
 }
 
 export default Admin;

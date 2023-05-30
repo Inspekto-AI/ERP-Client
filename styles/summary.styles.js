@@ -16,9 +16,9 @@ const Container = styled.div`
 
   .left-portion {
     ${
-      '' /* width: 50%;
+  '' /* width: 50%;
     padding-right: 20px; */
-    }
+}
     padding-right: 20px;
     flex: 1 1 400px;
 
@@ -29,9 +29,9 @@ const Container = styled.div`
 
   .right-portion {
     ${
-      '' /* width: 50%;
+  '' /* width: 50%;
     padding-left: 20px; */
-    }
+}
     padding-right: 20px;
     flex: 1 1 400px;
 
@@ -115,11 +115,11 @@ const Container = styled.div`
   }
 
   .rdrMonthAndYearWrapper {
-    display: ${props => (props.datePickerOpen ? 'flex' : 'none')};
+    display: ${(props) => (props.datePickerOpen ? 'flex' : 'none')};
   }
 
   .rdrMonth {
-    display: ${props => (props.datePickerOpen ? 'block' : 'none')};
+    display: ${(props) => (props.datePickerOpen ? 'block' : 'none')};
   }
 
   .date-done-btn {

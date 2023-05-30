@@ -15,18 +15,17 @@ import 'styles/globalStyles.css';
 
 export default function MyApp({ Component, pageProps }) {
   const [queryClient] = useState(
-    () =>
-      new QueryClient({
-        defaultOptions: {
-          queries: {
-            refetchOnWindowFocus: false,
-            refetchOnmount: false,
-            refetchOnReconnect: false,
-            retry: false,
-            staleTime: 86400000
-          }
-        }
-      })
+    () => new QueryClient({
+      defaultOptions: {
+        queries: {
+          refetchOnWindowFocus: false,
+          refetchOnmount: false,
+          refetchOnReconnect: false,
+          retry: false,
+          staleTime: 86400000,
+        },
+      },
+    }),
   );
 
   useEffect(() => {
@@ -69,5 +68,5 @@ export default function MyApp({ Component, pageProps }) {
 
 MyApp.propTypes = {
   Component: PropTypes.elementType.isRequired,
-  pageProps: PropTypes.object.isRequired
+  pageProps: PropTypes.object.isRequired,
 };

@@ -1,6 +1,5 @@
 const fs = require('fs');
 const next = require('next');
-const crypto = require('crypto');
 const express = require('express');
 const path = require('path');
 const { spawn } = require('child_process');
@@ -16,7 +15,7 @@ app
     const server = express();
     server.get('/api/init', async (req, res) => {
       const passwordData = JSON.parse(
-        fs.readFileSync(path.join(__dirname, '..', 'password.json'), 'utf8')
+        fs.readFileSync(path.join(__dirname, '..', 'password.json'), 'utf8'),
       );
       res.send(passwordData.is_belt_deactivated);
     });
@@ -34,24 +33,22 @@ app
         passwordData.master_password = newPassword;
         fs.writeFileSync(filePath, JSON.stringify(passwordData), {
           encoding: 'utf8',
-          flag: 'w'
+          flag: 'w',
         });
         axios.post(
-          'http://localhost:9000/api/configuration/disable-belt-tripping'
+          'http://localhost:9000/api/configuration/disable-belt-tripping',
         );
         return res.send({ success: true, error: null });
       }
-      res.send({ success: false, error: 'Password incorrect' });
+      return res.send({ success: false, error: 'Password incorrect' });
     });
-    server.get('*', (req, res) => {
-      return handle(req, res);
-    });
-    server.listen(3000, err => {
+    server.get('*', (req, res) => handle(req, res));
+    server.listen(3000, (err) => {
       if (err) throw err;
       console.log('> Ready on http://localhost:3000');
     });
   })
-  .catch(ex => {
+  .catch((ex) => {
     console.error(ex.stack);
     process.exit(1);
   });

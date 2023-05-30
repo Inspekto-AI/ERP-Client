@@ -16,7 +16,7 @@ import Notification from 'components/Notification';
 import Loader from 'components/Loader';
 import { getStartAndEndDate } from 'utils/globalFunctions';
 
-const Summary = () => {
+function Summary() {
   const [summaryData, setSummaryData] = useState(null);
   const [shiftDate, setShiftDate] = useState(null);
   const [printingBelts, setPrintingBelts] = useState(null);
@@ -29,7 +29,7 @@ const Summary = () => {
   useEffect(() => {
     const fetchSummary = async () => {
       const data = await get('/api/stats/summarized-stats', {
-        dateRange: getStartAndEndDate()
+        dateRange: getStartAndEndDate(),
       });
       setSummaryData(data?.data?.data?.analysis);
       setShiftCount(data?.data?.data?.shift);
@@ -43,13 +43,13 @@ const Summary = () => {
     }
   }, [summaryData]);
 
-  const markMaintenanceComplete = async id => {
+  const markMaintenanceComplete = async (id) => {
     try {
       await put('/api/maintenance', { id });
-      setMaintenanceTickets(prevData => prevData.map(e => {
+      setMaintenanceTickets((prevData) => prevData.map((e) => {
         if (e.id === id) return { ...e, marked_complete: 1 };
         return e;
-      }))
+      }));
     } catch (err) {
       console.log(err);
     }
@@ -71,7 +71,13 @@ const Summary = () => {
           <h2>Shift Summary</h2>
           <div className="date-container">
             <div className="date-display">
-              Shift {shiftCount} - {shiftDate}
+              Shift
+              {' '}
+              {shiftCount}
+              {' '}
+              -
+              {' '}
+              {shiftDate}
             </div>
           </div>
         </div>
@@ -167,23 +173,25 @@ const Summary = () => {
                 <MaintenanceContainer>
                   {maintenanceTickets && maintenanceTickets.length > 0 ? (
                     <>
-                      {maintenanceTickets.map((e, index) => {
-                        return (
-                          <div className="defect active" key={index}>
-                            <div className="title">
-                              {new Date(e.created_at).toLocaleString()}
+                      {maintenanceTickets.map((e, index) => (
+                        <div className="defect active" key={index}>
+                          <div className="title">
+                            {new Date(e.created_at).toLocaleString()}
+                          </div>
+                          <div className="stepper">
+                            <div className="blank-thumb" />
+                            <div className="vr" />
+                          </div>
+                          <div className="notification">
+                            <div className="ticket-title">
+                              Ticket #
+                              {e.id}
                             </div>
-                            <div className="stepper">
-                              <div className="blank-thumb" />
-                              <div className="vr" />
+                            <div className="description">
+                              {e.printing_belt ? `Printing belt - ${e.printing_belt_id} under maintenance | Reason - ${e.reason}` : `Loading belt - ${e.loading_belt_id} under maintenance | Reason - ${e.reason}`}
                             </div>
-                            <div className="notification">
-                              <div className="ticket-title">Ticket #{e.id}</div>
-                              <div className="description">
-                                {e.printing_belt ? `Printing belt - ${e.printing_belt_id} under maintenance | Reason - ${e.reason}` : `Loading belt - ${e.loading_belt_id} under maintenance | Reason - ${e.reason}`}
-                              </div>
-                              <div className="button-container">
-                                {/* <FrinksButton
+                            <div className="button-container">
+                              {/* <FrinksButton
                                   variant="outlined"
                                   color="inherit"
                                   text="Edit Ticket"
@@ -193,23 +201,24 @@ const Summary = () => {
                                     marginRight: '14px'
                                   }}
                                 /> */}
-                                {e.marked_complete ? null : (<FrinksButton
+                              {e.marked_complete ? null : (
+                                <FrinksButton
                                   color="inherit"
                                   text="Mark Complete"
                                   style={{ fontSize: '12px', height: '40px' }}
                                   onClick={() => markMaintenanceComplete(e.id)}
-                                />)}
-                              </div>
+                                />
+                              )}
                             </div>
                           </div>
-                        );
-                      })}
+                        </div>
+                      ))}
                     </>
                   ) : (
                     <p
                       style={{
                         padding: '20px',
-                        textAlign: 'center'
+                        textAlign: 'center',
                       }}
                     >
                       No maintenance ticket found
@@ -258,7 +267,9 @@ const Summary = () => {
                                   <div className="info">
                                     <div className="title">Incorrect bags</div>
                                     <div className="sub-title">
-                                      {e.length} bags passed unmarked.
+                                      {e.length}
+                                      {' '}
+                                      bags passed unmarked.
                                     </div>
                                   </div>
                                   <div className="count">
@@ -273,11 +284,9 @@ const Summary = () => {
                                           <div className="image-container">
                                             <Image
                                               src={element.local_image_path}
-                                              loader={() =>
-                                                `${BASE_URL}/api/shipment/images?image_location=${element.local_image_path ||
-                                                element.local_image_location
-                                                }`
-                                              }
+                                              loader={() => `${BASE_URL}/api/shipment/images?image_location=${element.local_image_path
+                                                || element.local_image_location
+                                              }`}
                                               layout="fill"
                                               objectFit="contain"
                                               objectPosition="top"
@@ -285,7 +294,7 @@ const Summary = () => {
                                           </div>
                                           <div className="time">
                                             {moment(
-                                              new Date(element.created_at)
+                                              new Date(element.created_at),
                                             ).format('h:mm A')}
                                           </div>
                                         </div>
@@ -301,14 +310,14 @@ const Summary = () => {
                               </div>
                             </div>
                           );
-                        }
+                        },
                       )}
                     </>
                   ) : (
                     <p
                       style={{
                         padding: '20px',
-                        textAlign: 'center'
+                        textAlign: 'center',
                       }}
                     >
                       No new activities found
@@ -322,6 +331,6 @@ const Summary = () => {
       </div>
     </Container>
   );
-};
+}
 
 export default Summary;

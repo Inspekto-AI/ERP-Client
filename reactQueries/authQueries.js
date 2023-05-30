@@ -6,12 +6,6 @@ export const fetchCheckAuth = async () => {
   return res.data;
 };
 
-export const CheckAuth = () => {
-  return useQuery('checkAuth', () => fetchCheckAuth());
-};
+export const CheckAuth = () => useQuery('checkAuth', () => fetchCheckAuth());
 
-export const LoginQuery = () => {
-  return useMutation(values =>
-    post('/api/users/login', values).then(res => res.data)
-  );
-};
+export const LoginQuery = () => useMutation((values) => post('/api/users/login', values).then((res) => res.data));

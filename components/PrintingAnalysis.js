@@ -7,7 +7,7 @@ import AddMoreBagsModal from 'components/AddMoreBagsModal';
 import DefectiveBags from 'components/DefectiveBags';
 import InfoModal from 'components/InfoModal';
 
-const PrintingAnalysis = ({ printingBelts, handleBeltReset }) => {
+function PrintingAnalysis({ printingBelts, handleBeltReset }) {
   const [detailModalOpen, setDetailModalOpen] = useState(null);
   const [rejectModalOpen, setRejectModalOpen] = useState(null);
 
@@ -16,7 +16,7 @@ const PrintingAnalysis = ({ printingBelts, handleBeltReset }) => {
       <div className="analysis-container">
         <div className="head">
           <h2>Printing Analysis</h2>
-          <div className="search-container"></div>
+          <div className="search-container" />
         </div>
         <div className="analytics">
           {printingBelts && Object.keys(printingBelts)?.length === 0 ? (
@@ -28,25 +28,21 @@ const PrintingAnalysis = ({ printingBelts, handleBeltReset }) => {
             </p>
           ) : (
             <Grid container spacing={2}>
-              {printingBelts &&
-                Object.keys(printingBelts)?.map((e, index) => (
+              {printingBelts
+                && Object.keys(printingBelts)?.map((e, index) => (
                   <Grid item xs={12} sm={6} md={4} lg={3} key={index}>
                     <AnalyticsCard
                       data={{
-                        ...printingBelts[e]
+                        ...printingBelts[e],
                       }}
-                      rejectModalOpen={() =>
-                        setRejectModalOpen({
-                          ...printingBelts[e],
-                          printing_belt_id: e
-                        })
-                      }
-                      setDetailModalOpen={() =>
-                        setDetailModalOpen({
-                          transaction_id: e,
-                          ...printingBelts[e]
-                        })
-                      }
+                      rejectModalOpen={() => setRejectModalOpen({
+                        ...printingBelts[e],
+                        printing_belt_id: e,
+                      })}
+                      setDetailModalOpen={() => setDetailModalOpen({
+                        transaction_id: e,
+                        ...printingBelts[e],
+                      })}
                       handleBeltReset={handleBeltReset}
                       printingCard
                       status={0}
@@ -86,11 +82,11 @@ const PrintingAnalysis = ({ printingBelts, handleBeltReset }) => {
       ) : null}
     </>
   );
-};
+}
 
 PrintingAnalysis.propTypes = {
   printingBelts: PropTypes.any,
-  handleBeltReset: PropTypes.func
+  handleBeltReset: PropTypes.func,
 };
 
 export default PrintingAnalysis;

@@ -7,7 +7,7 @@ import DefectiveBags from 'components/DefectiveBags';
 import InfoModal from 'components/InfoModal';
 import { get } from 'utils/api';
 
-const PackerAnalysis = ({ handleBagIncrement, handleStop }) => {
+function PackerAnalysis({ handleBagIncrement, handleStop }) {
   const [detailModalOpen, setDetailModalOpen] = useState(null);
   const [rejectModalOpen, setRejectModalOpen] = useState(null);
   const [bagModifyModalOpen, setBagModifyModalOpen] = useState(null);
@@ -18,10 +18,10 @@ const PackerAnalysis = ({ handleBagIncrement, handleStop }) => {
     const fetchPackerList = async () => {
       const data = await get('/api/transaction/packers');
       const packerObj = {};
-      data?.data?.data?.forEach(e => {
+      data?.data?.data?.forEach((e) => {
         packerObj[e.id] = {
           count: 0,
-          machine_id: e?.machine_id
+          machine_id: e?.machine_id,
         };
       });
       setPackerList(packerObj);
@@ -35,11 +35,11 @@ const PackerAnalysis = ({ handleBagIncrement, handleStop }) => {
     const fetchPackerSummary = async () => {
       const data = await get('/api/transaction/packer-analytics');
       const analytics = packerList;
-      data?.data?.data?.forEach(e => {
+      data?.data?.data?.forEach((e) => {
         analytics[e?.packer_id] = {
           ...analytics[e?.packer_id],
           count: e?.count,
-          machine_id: e?.machine_id
+          machine_id: e?.machine_id,
         };
       });
       setPackerData(analytics);
@@ -58,13 +58,13 @@ const PackerAnalysis = ({ handleBagIncrement, handleStop }) => {
         </div>
         <div className="analytics">
           <Grid container>
-            {packerData &&
-              Object.values(packerData).map((e, index) => (
+            {packerData
+              && Object.values(packerData).map((e, index) => (
                 <Grid item xs={3} key={index}>
                   <AnalyticsCard
                     data={{
                       id: e?.machine_id,
-                      count: e?.count
+                      count: e?.count,
                     }}
                     packerCard
                   />
@@ -78,11 +78,11 @@ const PackerAnalysis = ({ handleBagIncrement, handleStop }) => {
           open={detailModalOpen}
           close={() => setDetailModalOpen(null)}
           heading="Transaction details"
-          handleSubmit={e => {
+          handleSubmit={(e) => {
             handleBagIncrement(e);
             setDetailModalOpen(null);
           }}
-          handleStop={e => {
+          handleStop={(e) => {
             handleStop(e);
             setDetailModalOpen(null);
           }}
@@ -104,7 +104,7 @@ const PackerAnalysis = ({ handleBagIncrement, handleStop }) => {
           open={bagModifyModalOpen}
           close={() => setBagModifyModalOpen(null)}
           onlyBags
-          handleSubmit={e => {
+          handleSubmit={(e) => {
             handleBagIncrement(e);
             setBagModifyModalOpen(null);
           }}
@@ -112,11 +112,11 @@ const PackerAnalysis = ({ handleBagIncrement, handleStop }) => {
       ) : null}
     </>
   );
-};
+}
 
 PackerAnalysis.propTypes = {
   handleBagIncrement: PropTypes.func,
-  handleStop: PropTypes.any
+  handleStop: PropTypes.any,
 };
 
 export default PackerAnalysis;

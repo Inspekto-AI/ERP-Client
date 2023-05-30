@@ -4,7 +4,7 @@ import { GlobalContext } from 'context/GlobalContext';
 import Loader from 'components/Loader';
 import PropTypes from 'prop-types';
 
-const CheckAuth = ({ children }) => {
+function CheckAuth({ children }) {
   const { userData, setUserData } = useContext(GlobalContext);
   const { data, isSuccess, isError } = CheckAuthMutation();
 
@@ -21,10 +21,10 @@ const CheckAuth = ({ children }) => {
   if (!userData) return <Loader />;
 
   return children;
-};
+}
 
 CheckAuth.propTypes = {
-  children: PropTypes.object
+  children: PropTypes.object,
 };
 
 export default CheckAuth;

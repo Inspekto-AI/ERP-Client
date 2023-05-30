@@ -11,9 +11,9 @@ const Container = styled.div`
   .form-container {
     background: white;
     ${
-      '' /* max-width: 1080px;
+  '' /* max-width: 1080px;
     min-width: 1080px; */
-    }
+}
     width: 80%;
     @media all and (max-width: 700px) {
       width: 100%;
@@ -89,9 +89,9 @@ const Container = styled.div`
       }
 
       ${
-        '' /* align-items: center;
+  '' /* align-items: center;
       justify-content: space-between; */
-      }
+}
       ${'' /* max-width: 700px; */}
       
 

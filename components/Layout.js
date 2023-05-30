@@ -4,7 +4,7 @@ import Header from 'components/Header';
 import Footer from 'components/Footer';
 import SettingHeader from 'components/SettingHeader';
 
-const Layout = ({
+function Layout({
   children,
   alternateHeader,
   title,
@@ -20,8 +20,8 @@ const Layout = ({
   summaryHeader,
   disableMinimumHeight,
   viewAllFunc,
-  style
-}) => {
+  style,
+}) {
   return (
     <>
       {hideHeader ? null : (
@@ -48,7 +48,7 @@ const Layout = ({
         style={{
           background: `${changeBackground ? 'white' : '#E5E5E5'}`,
           minHeight: `${disableMinimumHeight ? 'auto' : '70vh'}`,
-          ...style
+          ...style,
         }}
       >
         {children}
@@ -56,7 +56,7 @@ const Layout = ({
       {hideFooter ? null : <Footer />}
     </>
   );
-};
+}
 
 Layout.propTypes = {
   children: PropTypes.any,
@@ -74,7 +74,7 @@ Layout.propTypes = {
   summaryHeader: PropTypes.bool,
   disableMinimumHeight: PropTypes.bool,
   viewAllFunc: PropTypes.func,
-  style: PropTypes.object
+  style: PropTypes.object,
 };
 
 export default Layout;

@@ -1,12 +1,11 @@
 import FrinksButton from 'components/FrinksButton';
 import PropTypes from 'prop-types';
-import Container from './MaintenanceTicket.styles';
 import moment from 'moment';
 import { put } from 'utils/api';
+import Container from './MaintenanceTicket.styles';
 
-const MaintenanceTicket = ({ data, isActive, removeMaintenanceTicket }) => {
-
-  const handleTicketResolved = async data => {
+function MaintenanceTicket({ data, isActive, removeMaintenanceTicket }) {
+  const handleTicketResolved = async (data) => {
     try {
       await put('/api/maintenance', { id: data?.id });
       // maintenance done remove the ticket
@@ -19,7 +18,10 @@ const MaintenanceTicket = ({ data, isActive, removeMaintenanceTicket }) => {
   return (
     <Container isActive={isActive}>
       <div className="left">
-        <div className="title">Ticket # {data.id} </div>
+        <div className="title">
+          Ticket #
+          {data.id}
+        </div>
         <div className="sub-title">{data.printing_belt_id ? `Printing belt - ${data.printing_belt_id} under maintenance | Reason - ${data.reason}` : `Loading belt - ${data.loading_belt_id} under maintenance | Reason - ${data.reason}`}</div>
         <div className="time">
           {moment(new Date(data.duration)).format('DD-MM-YYYY HH:mm:ss')}
@@ -34,10 +36,10 @@ const MaintenanceTicket = ({ data, isActive, removeMaintenanceTicket }) => {
       </div>
     </Container>
   );
-};
+}
 
 MaintenanceTicket.propTypes = {
-  isActive: PropTypes.bool
+  isActive: PropTypes.bool,
 };
 
 export default MaintenanceTicket;
