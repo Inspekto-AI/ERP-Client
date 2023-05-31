@@ -331,6 +331,6 @@ InfoModal.propTypes = {
   onlyBags: PropTypes.bool,
   currentCount: PropTypes.any,
   handleBagDone: PropTypes.func,
-  dataToDisplay: PropTypes.object,
+  dataToDisplay: PropTypes.PropTypes.objectOf(PropTypes.object),
 };
 export default InfoModal;
