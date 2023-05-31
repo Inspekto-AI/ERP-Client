@@ -5,10 +5,8 @@ import {
 import PropTypes from 'prop-types';
 import Image from 'next/image';
 import theme from 'styles/theme';
-import { AlertTitle, Alert as MuiAlert } from '@material-ui/lab';
 
 import ImageKitLoader from 'utils/ImageLoader';
-import { fontWeight } from '@mui/system';
 
 const useStyles = makeStyles(() => ({
   modal: {
@@ -153,7 +151,7 @@ function AlertModal({ open, close, alertsnooze }) {
 }
 
 AlertModal.propTypes = {
-  open: PropTypes.any.isRequired,
+  open: PropTypes.bool.isRequired,
   close: PropTypes.func.isRequired,
 };
 export default AlertModal;

@@ -4,7 +4,7 @@ import FrinksButton from './FrinksButton';
 function UpdateDatabase() {
   const updateFunc = async () => {
     await put('/api/configuration/update-database');
-    location.replace('/');
+    window.location.replace('/');
   };
 
   return (

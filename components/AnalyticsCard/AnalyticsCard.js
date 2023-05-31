@@ -5,12 +5,14 @@ import { IoMdAdd } from 'react-icons/io';
 import { Avatar, Button, LinearProgress } from '@material-ui/core';
 import { BiRightArrowAlt } from 'react-icons/bi';
 import { msToTime } from 'utils/globalFunctions';
-import { PACKER_LIMIT } from 'utils/constants';
+// import { PACKER_LIMIT } from 'utils/constants';
 import FrinksButton from 'components/FrinksButton';
 import Image from 'next/image';
 import ImageKitLoader from 'utils/ImageLoader';
 import { GlobalContext } from 'context/GlobalContext';
 import Container from './AnalyticsCard.styles';
+
+const PACKER_LIMIT = 10;
 
 export const getStatus = (progressPercentage) => {
   if (progressPercentage <= 20) {
@@ -281,7 +283,7 @@ function AnalyticsCard({
                     className="view-button"
                     onClick={setDetailModalOpen}
                   >
-                    {status == 0
+                    {status === 0
                       ? ((
                         DEACTIVATE_LOADER_SOLUTION
                           ? data?.bag_limit <= data?.tag_count
@@ -293,11 +295,11 @@ function AnalyticsCard({
                     {((DEACTIVATE_LOADER_SOLUTION
                       ? data?.bag_limit <= data?.tag_count
                       : data?.bag_limit <= data?.bag_count)
-                      || status == 1 || data?.is_belt_running === false) ? null : (
+                      || status === 1 || data?.is_belt_running === false) ? null : (
                         <BiRightArrowAlt />
                       )}
                   </Button>
-                  {status == 1 && (
+                  {status === 1 && (
                     <Button
                       className="view-button"
                       variant="outlined"

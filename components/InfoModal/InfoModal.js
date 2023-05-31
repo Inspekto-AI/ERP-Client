@@ -1,4 +1,4 @@
-import { useState, useEffect } from 'react';
+import { useState } from 'react';
 import { makeStyles } from '@material-ui/core/styles';
 import {
   Modal, Backdrop, Fade, Button, TextField,
@@ -319,17 +319,17 @@ function InfoModal({
 }
 
 InfoModal.propTypes = {
-  open: PropTypes.any,
-  close: PropTypes.any,
+  open: PropTypes.bool,
+  close: PropTypes.func,
   title: PropTypes.string,
-  children: PropTypes.any,
+  children: PropTypes.objectOf(PropTypes.object()),
   hideConfirm: PropTypes.bool,
   handleSubmit: PropTypes.func,
   buttonText: PropTypes.string,
   bagCount: PropTypes.number,
   showDivision: PropTypes.bool,
   onlyBags: PropTypes.bool,
-  currentCount: PropTypes.any,
+  currentCount: PropTypes.number,
   handleBagDone: PropTypes.func,
   dataToDisplay: PropTypes.object,
   hideConfirm: PropTypes.bool,
