@@ -180,8 +180,8 @@ function BypassSystem({
                         endAdornment={(
                           <InputAdornment position="end">
                             <IconButton
-                              onClick={() => 
-                                setValues({ ...values, showPassword: !values.showPassword })}
+                              onClick={
+                                () => setValues({ ...values, showPassword: !values.showPassword })}
                               onMouseDown={() => 
                                 setValues({ ...values, showPassword: !values.showPassword })}
                             >

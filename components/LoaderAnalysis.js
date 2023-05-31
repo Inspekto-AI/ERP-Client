@@ -100,29 +100,30 @@ function LoaderAnalysis({
               >
                 {' '}
                 {ongoingTransactions
-                && Object.keys(ongoingTransactions)?.filter((e) => ongoingTransactions[e].vehicle_type === vehicleType)?.map((e, index) => (
-                  <Grid
-                    item
-                    xs={12}
-                    sm={6}
-                    md={4}
-                    lg={3}
-                    key={index}
-                    style={{ marginBottom: '20px' }}
-                  >
-                    <AnalyticsCard
-                      data={{
-                        ...ongoingTransactions[e],
-                      }}
-                      rejectModalOpen={() => setRejectModalOpen(ongoingTransactions[e])}
-                      setDetailModalOpen={() => setDetailModalOpen(ongoingTransactions[e])}
-                      bagModifyModalOpen={() => setBagModifyModalOpen(ongoingTransactions[e])}
-                      handleBagDone={handleBagDone}
-                      loaderCard
-                      status={0}
-                      handleBeltReset={handleBeltReset}
-                    />
-                  </Grid>
+                && Object.keys(ongoingTransactions)?.filter((e) =>
+                  ongoingTransactions[e].vehicle_type === vehicleType)?.map((e, index) => (
+                    <Grid
+                      item
+                      xs={12}
+                      sm={6}
+                      md={4}
+                      lg={3}
+                      key={index}
+                      style={{ marginBottom: '20px' }}
+                    >
+                      <AnalyticsCard
+                        data={{
+                          ...ongoingTransactions[e],
+                        }}
+                        rejectModalOpen={() => setRejectModalOpen(ongoingTransactions[e])}
+                        setDetailModalOpen={() => setDetailModalOpen(ongoingTransactions[e])}
+                        bagModifyModalOpen={() => setBagModifyModalOpen(ongoingTransactions[e])}
+                        handleBagDone={handleBagDone}
+                        loaderCard
+                        status={0}
+                        handleBeltReset={handleBeltReset}
+                      />
+                    </Grid>
                 ))}
               </Grid>
             )}
