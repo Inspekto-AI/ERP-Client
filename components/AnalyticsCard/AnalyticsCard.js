@@ -131,11 +131,11 @@ function AnalyticsCard({
                     </div>
                   </div>
                 )}
-                {status < 2 && loaderCard ? (
-                  <p className="tag-id">{data?.printing_id}</p>
-                ) : printingCard ? (
-                  <p className="tag-id">{data?.printing_id}</p>
-                ) : null}
+                {status < 2 && loaderCard
+                  ? <p className="tag-id">{data?.printing_id}</p>
+                  : printingCard
+                    ? <p className="tag-id">{data?.printing_id}</p>
+                    : null}
               </>
             )}
           </div>
@@ -146,7 +146,7 @@ function AnalyticsCard({
             <>
 
               {data?.count_finished_at
-                ? msToTime(data?.count_finished_at - data?.created_at)
+                ? data?.count_finished_at - data?.created_at
                 : timeDifference}
             </>
           )}
@@ -400,7 +400,7 @@ AnalyticsCard.propTypes = {
   // isError: PropTypes.bool,
   printingCard: PropTypes.bool,
   packerCard: PropTypes.bool,
-  data: PropTypes.any,
+  data: PropTypes.objectOf(PropTypes.object()),
   rejectModalOpen: PropTypes.func,
   bagModifyModalOpen: PropTypes.func,
   setDetailModalOpen: PropTypes.func,

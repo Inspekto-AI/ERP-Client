@@ -229,9 +229,9 @@ function MaintenanceForm({ close }) {
           hideComment
           handleSubmit={() => handleSubmit()}
         >
-          <>
-            <p>Do you want to go ahead and save the changes you made?</p>
-          </>
+
+          <p>Do you want to go ahead and save the changes you made?</p>
+
         </InfoModal>
       ) : null}
     </Container>

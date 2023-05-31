@@ -34,5 +34,5 @@ export function GlobalProvider({ children }) {
 }
 
 GlobalProvider.propTypes = {
-  children: PropTypes.object.isRequired,
+  children: PropTypes.objectOf(PropTypes.object()),
 };

@@ -153,7 +153,9 @@ function BypassSystem({
               <>
                 {trippingStatus ? (
                   <div className={classes.form}>
-                    <div className={classes.label}>Deactivate bypass? System will start controlling the belts.</div>
+                    <div className={classes.label}>
+                      Deactivate bypass? System will start controlling the belts.
+                    </div>
                     <div className={classes.submitContainer}>
                       <p className={classes.formInfo}>{' '}</p>
                       <FrinksButton

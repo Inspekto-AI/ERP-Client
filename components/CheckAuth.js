@@ -24,7 +24,7 @@ function CheckAuth({ children }) {
 }
 
 CheckAuth.propTypes = {
-  children: PropTypes.object,
+  children: PropTypes.objectOf(PropTypes.object()),
 };
 
 export default CheckAuth;

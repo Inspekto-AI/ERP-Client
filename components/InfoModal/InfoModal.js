@@ -267,7 +267,7 @@ function InfoModal({
                     value={newBagCount}
                     onChange={(e) => {
                       if (e.target.value === '') setNewBagCount(1);
-                      else if (!isNaN(e.target.value)) {
+                      else if (!Number.isNaN(e.target.value)) {
                         setNewBagCount(
                           Math.max(
                             1,
@@ -331,7 +331,6 @@ InfoModal.propTypes = {
   onlyBags: PropTypes.bool,
   currentCount: PropTypes.number,
   handleBagDone: PropTypes.func,
-  dataToDisplay: PropTypes.object,
-  hideConfirm: PropTypes.bool,
+  dataToDisplay: PropTypes.objectOf(PropTypes.object()),
 };
 export default InfoModal;

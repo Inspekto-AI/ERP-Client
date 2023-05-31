@@ -67,4 +67,7 @@ export const post = (url, body) => axiosInstance.post(url, body, { withCredentia
 
 export const put = (url, body) => axiosInstance.put(url, body, { withCredentials: true });
 
-export const deleteApi = (url, body) => axiosInstance.delete(url, { withCredentials: true, params: body });
+export const deleteApi = (url, body) => axiosInstance.delete(
+  url,
+  { withCredentials: true, params: body },
+);

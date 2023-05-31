@@ -7,7 +7,9 @@ import { get } from 'utils/api';
 
 function InitCheck({ children }) {
   const {
-    trippingStatus, setTrippingStatus, bagTypes, setBagTypes, setDeactivateLoaderSolution, setDeactivatePrintingSolution,
+    trippingStatus,
+    setTrippingStatus, bagTypes, setBagTypes,
+    setDeactivateLoaderSolution, setDeactivatePrintingSolution,
   } = useContext(GlobalContext);
 
   useEffect(() => {

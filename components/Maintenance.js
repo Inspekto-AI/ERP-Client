@@ -22,7 +22,7 @@ function Maintenance({ close }) {
 
   const removeMaintenanceTicket = (id) => {
     setActiveMaintenance(activemaintenance.filter((e) => {
-      if (e?.id != id) return e;
+      if (e?.id !== id) return e;
     }));
   };
 
@@ -37,7 +37,13 @@ function Maintenance({ close }) {
         <div className="heading">Active Tickets</div>
         {activemaintenance && activemaintenance.length > 0
           ? activemaintenance.map((e, index) => (
-            <MaintenanceTicket data={e} isActive index={index} removeMaintenanceTicket={(id) => removeMaintenanceTicket(id)} key={index} />
+            <MaintenanceTicket
+              data={e}
+              isActive
+              index={index}
+              removeMaintenanceTicket={(id) => removeMaintenanceTicket(id)}
+              key={index}
+            />
           ))
           : (
             <div className="no-tickets">
