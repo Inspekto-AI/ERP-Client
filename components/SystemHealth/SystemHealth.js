@@ -55,7 +55,15 @@ function SystemHealth() {
           </div>
           <div className="card-container">
             {defected.map((e, index) => (
-              <Card active={!(e.started_at && !e.ended_at)} type={e.entity_type} name={e.entity_name} ip={e.ip_address} key={index} index={index} started_at={e.started_at} />
+              <Card
+                active={!(e.started_at && !e.ended_at)}
+                type={e.entity_type}
+                name={e.entity_name}
+                ip={e.ip_address}
+                key={index}
+                index={index}
+                started_at={e.started_at}
+              />
             ))}
           </div>
         </div>

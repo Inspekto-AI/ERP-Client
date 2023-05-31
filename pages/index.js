@@ -128,14 +128,14 @@ function Index() {
     }
   };
 
-  const handleBagDone = async (
+  const handleBagDone = async ({
     transaction_id,
     vehicle_id,
     printing_belt_id,
     machine_id,
     vehicle_type,
     comment,
-  ) => {
+  }) => {
     setIsLoading(true);
     await put('/api/shipment/done', {
       transaction_id,

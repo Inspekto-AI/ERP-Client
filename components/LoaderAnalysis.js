@@ -65,7 +65,8 @@ function LoaderAnalysis({
               }}
             />
             <span className="category-name">
-              Active{' '}
+              Active
+              {' '}
               {vehicleType ? 'Wagon' : 'Truck'}
               {' '}
               Loaders
@@ -137,7 +138,8 @@ function LoaderAnalysis({
               }}
             />
             <span className="category-name">
-              Inactive{' '}
+              Inactive
+              {' '}
               {vehicleType ? 'Wagon' : 'Truck'}
               {' '}
               Loaders
