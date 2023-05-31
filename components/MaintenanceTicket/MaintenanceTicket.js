@@ -40,7 +40,7 @@ function MaintenanceTicket({ data, isActive, removeMaintenanceTicket }) {
 
 MaintenanceTicket.propTypes = {
   isActive: PropTypes.bool,
-  data: PropTypes.object
+  data: PropTypes.object,
 };
 
 export default MaintenanceTicket;
