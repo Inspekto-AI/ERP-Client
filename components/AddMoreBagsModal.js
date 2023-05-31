@@ -93,12 +93,12 @@ function AddMoreBagsModal({
 }
 
 AddMoreBagsModal.propTypes = {
-  open: PropTypes.any,
+  open: PropTypes.bool,
   close: PropTypes.func,
   onlyBags: PropTypes.bool,
   heading: PropTypes.string,
   handleSubmit: PropTypes.func,
-  handleStop: PropTypes.any,
+  handleStop: PropTypes.func,
   printingCard: PropTypes.bool,
   hideModify: PropTypes.bool,
   handleBagDone: PropTypes.func,
