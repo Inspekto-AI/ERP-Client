@@ -36,7 +36,7 @@ function InitCheck({ children }) {
 }
 
 InitCheck.propTypes = {
-  children: PropTypes.object,
+  children: PropTypes.objectOf(PropTypes.object()),
 };
 
 export default InitCheck;

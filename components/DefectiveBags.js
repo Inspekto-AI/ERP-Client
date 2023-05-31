@@ -83,7 +83,13 @@ function DefectiveBags({
                   <div className="sub-heading">Bag tag missing</div>
                   {e?.is_false_positive === 1 ? null : (
                     <Button
-                      onClick={() => removeFromMissprint(e?.misprint_id, e?.local_image_path, index)}
+                      onClick={
+                        () => removeFromMissprint(
+                          e?.misprint_id,
+                          e?.local_image_path,
+                          index,
+                        )
+                      }
                       variant="outlined"
                       color="secondary"
                       style={{ fontSize: '10px', fontWeight: '600' }}
@@ -104,7 +110,7 @@ function DefectiveBags({
 }
 
 DefectiveBags.propTypes = {
-  transaction_id: PropTypes.any,
+  transaction_id: PropTypes.number,
   belt_id: PropTypes.string,
 };
 

@@ -90,9 +90,8 @@ function FilterButton({
 FilterButton.propTypes = {
   isInactive: PropTypes.bool,
   type: PropTypes.string,
-  onClick: PropTypes.func,
   variant: PropTypes.string,
-  style: PropTypes.any,
+  style: PropTypes.objectOf(PropTypes.object()),
   index: PropTypes.number,
   filtervalue: PropTypes.number,
 };
