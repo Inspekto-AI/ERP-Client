@@ -131,22 +131,22 @@ function Index() {
     }
   };
 
-  const handleBagDone = async ({
-    transaction_id: transactionId,
-    vehicle_id: vehicleId,
-    printing_belt_id: printingBeltId,
-    machine_id: machineId,
-    vehicle_type: vehicleType,
+  const handleBagDone = async (
+    transactionId,
+    vehicleId,
+    printingBeltId,
+    machineId,
+    vehicleType,
     comment,
-  }) => {
+  ) => {
     setIsLoading(true);
     await put('/api/shipment/done', {
-      transactionId,
+      transaction_id: transactionId,
       comment,
-      vehicleId,
-      printingBeltId,
-      machineId,
-      vehicleType,
+      vehicle_id: vehicleId,
+      printing_belt_id: printingBeltId,
+      machine_id: machineId,
+      vehicle_type: vehicleType,
     });
   };
 
@@ -292,6 +292,7 @@ function Index() {
           if (e.id !== data.bagCountingBeltId) {
             return e;
           }
+          return null;
         });
         return newBelts;
       });
@@ -353,7 +354,7 @@ function Index() {
             // modify this entity
             return {
               ...prevState[e],
-              bag_limit: parseInt(data?.new_bag_limit),
+              bag_limit: parseInt(data?.new_bag_limit, 10),
             };
           }
           return prevState[e];
@@ -524,8 +525,8 @@ DashboardComponent.propTypes = {
   printingBelts: PropTypes.string,
   vehicleBelts: PropTypes.string,
   setReverseShipmentFormOpen: PropTypes.func,
-  ongoingTransactions: PropTypes.objectOf(PropTypes.object()),
-  queuedTransactions: PropTypes.objectOf(PropTypes.object()),
+  ongoingTransactions: PropTypes.objectOf(PropTypes.object),
+  queuedTransactions: PropTypes.objectOf(PropTypes.object),
   handleBagDone: PropTypes.func,
   handleBeltReset: PropTypes.func,
 };

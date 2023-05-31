@@ -322,7 +322,7 @@ InfoModal.propTypes = {
   open: PropTypes.bool,
   close: PropTypes.func,
   title: PropTypes.string,
-  children: PropTypes.objectOf(PropTypes.object()),
+  children: PropTypes.objectOf(PropTypes.object),
   hideConfirm: PropTypes.bool,
   handleSubmit: PropTypes.func,
   buttonText: PropTypes.string,
@@ -331,6 +331,6 @@ InfoModal.propTypes = {
   onlyBags: PropTypes.bool,
   currentCount: PropTypes.number,
   handleBagDone: PropTypes.func,
-  dataToDisplay: PropTypes.objectOf(PropTypes.object()),
+  dataToDisplay: PropTypes.objectOf(PropTypes.object),
 };
 export default InfoModal;

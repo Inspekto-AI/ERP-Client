@@ -400,7 +400,7 @@ AnalyticsCard.propTypes = {
   // isError: PropTypes.bool,
   printingCard: PropTypes.bool,
   packerCard: PropTypes.bool,
-  data: PropTypes.objectOf(PropTypes.object()),
+  data: PropTypes.objectOf(PropTypes.object),
   rejectModalOpen: PropTypes.func,
   bagModifyModalOpen: PropTypes.func,
   setDetailModalOpen: PropTypes.func,

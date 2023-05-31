@@ -294,7 +294,7 @@ function Config({
                   value={bagCount}
                   onChange={(e) => {
                     if (e.target.value === '') setBagCount(1);
-                    else if (!Math.isNaN(e.target.value)) {
+                    else if (!Number.isNaN(e.target.value)) {
                       setBagCount(
                         Math.max(
                           1,

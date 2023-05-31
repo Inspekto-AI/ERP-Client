@@ -13,7 +13,7 @@ function UpdateTmate() {
       name,
     });
     if (res.data.success) {
-      alert('Tmate updated please restart');
+      alert('Tmate updated please restart'); // eslint-disable-line no-alert
       setKey('');
       setName('');
     }

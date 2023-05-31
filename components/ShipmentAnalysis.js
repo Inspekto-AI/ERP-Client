@@ -104,7 +104,7 @@ function ShipmentTracking({
 }
 
 ShipmentTracking.propTypes = {
-  activeTransactions: PropTypes.objectOf(PropTypes.object()),
+  activeTransactions: PropTypes.objectOf(PropTypes.object),
   handleBagIncrement: PropTypes.func,
   handleStop: PropTypes.func,
 };

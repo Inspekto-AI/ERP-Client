@@ -22,7 +22,8 @@ function Maintenance({ close }) {
 
   const removeMaintenanceTicket = (id) => {
     setActiveMaintenance(activemaintenance.filter((e) => {
-      if (e?.id !== id) return e;
+      if (e?.id !== id) return true;
+      return false;
     }));
   };
 

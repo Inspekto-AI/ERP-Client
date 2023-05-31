@@ -109,7 +109,9 @@ function Report() {
   useEffect(() => {
     if (loaderReport) {
       if (loaderFilter === 2) setLoaderFilterReport(loaderReport);
-      else if (loaderFilter === 1) { setLoaderFilterReport(loaderReport.filter((e) => e.vehicle_type === 1)); } else setLoaderFilterReport(loaderReport.filter((e) => e.vehicle_type === 0));
+      else if (loaderFilter === 1) {
+        setLoaderFilterReport(loaderReport.filter((e) => e.vehicle_type === 1));
+      } else setLoaderFilterReport(loaderReport.filter((e) => e.vehicle_type === 0));
     }
   }, [loaderFilter, loaderReport]);
 

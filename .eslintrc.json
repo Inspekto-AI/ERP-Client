@@ -50,6 +50,8 @@
         "no-unsafe-optional-chaining": "off",
         "react/jsx-no-useless-fragment": "off",
         "consistent-return": "off",
-        "react/jsx-no-constructed-context-values": "off"
+        "react/jsx-no-constructed-context-values": "off",
+        "react/forbid-prop-types": "off",
+        "react/no-unstable-nested-components": "off"
     }
 }
