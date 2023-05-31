@@ -14,7 +14,7 @@ import {
 } from '@material-ui/core';
 import Image from 'next/image';
 // import { MdAddBox } from 'react-icons/md';
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useContext } from 'react';
 import PropTypes from 'prop-types';
 import Layout from 'components/Layout';
 import Container from 'styles/config.styles';
@@ -25,7 +25,6 @@ import Loader from 'components/Loader';
 import InfoModal from 'components/InfoModal';
 import { GlobalContext } from 'context/GlobalContext';
 import { get } from 'utils/api';
-import { useContext } from 'react';
 
 const useStyles = makeStyles((theme) => ({
   root: {
@@ -192,6 +191,7 @@ function Config({
     }
   }, [activeStep, bagCount, bagType]);
 
+  /* react/no-unstable-nested-components */
   function StepOption(op) {
     switch (op) {
       case 1:
@@ -294,7 +294,7 @@ function Config({
                   value={bagCount}
                   onChange={(e) => {
                     if (e.target.value === '') setBagCount(1);
-                    else if (!isNaN(e.target.value)) {
+                    else if (!Math.isNaN(e.target.value)) {
                       setBagCount(
                         Math.max(
                           1,

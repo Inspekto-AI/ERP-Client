@@ -4,7 +4,7 @@ import ImageKitLoader from 'utils/ImageLoader';
 import { msToTime } from 'utils/globalFunctions';
 import { CardContainer } from './SystemHealth.styles';
 
-export default function ({
+function Card({
   active, type, name, ip, index, started_at: startedAt,
 }) {
   const [timeDifference, setTimeDifference] = useState(0);
@@ -61,3 +61,5 @@ export default function ({
     </CardContainer>
   );
 }
+
+export default Card;

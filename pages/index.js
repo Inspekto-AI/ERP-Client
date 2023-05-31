@@ -524,10 +524,9 @@ DashboardComponent.propTypes = {
   printingBelts: PropTypes.string,
   vehicleBelts: PropTypes.string,
   setReverseShipmentFormOpen: PropTypes.func,
-  ongoingTransactions: PropTypes.any,
-  queuedTransactions: PropTypes.any,
+  ongoingTransactions: PropTypes.objectOf(PropTypes.object()),
+  queuedTransactions: PropTypes.objectOf(PropTypes.object()),
   handleBagDone: PropTypes.func,
-  alertsnooze: PropTypes.func,
   handleBeltReset: PropTypes.func,
 };
 
