@@ -1,8 +1,7 @@
 module.exports = {
   reactStrictMode: true,
   images: {
-    loader: 'custom',
-    path: '',
+    loader: 'custom'
   },
   trailingSlash: true,
 };

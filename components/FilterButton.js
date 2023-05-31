@@ -91,7 +91,7 @@ FilterButton.propTypes = {
   isInactive: PropTypes.bool,
   type: PropTypes.string,
   variant: PropTypes.string,
-  style: PropTypes.objectOf(PropTypes.object),
+  style: PropTypes.object,
   index: PropTypes.number,
   filtervalue: PropTypes.number,
 };

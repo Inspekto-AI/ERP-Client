@@ -269,7 +269,7 @@ function LoaderAnalysis({
 LoaderAnalysis.propTypes = {
   vehicleBelts: PropTypes.arrayOf(PropTypes.array),
   setReverseShipmentFormOpen: PropTypes.func,
-  ongoingTransactions: PropTypes.objectOf(PropTypes.object),
+  ongoingTransactions: PropTypes.object,
   handleBagDone: PropTypes.func,
   handleBeltReset: PropTypes.func,
 };

@@ -90,7 +90,7 @@ FrinksButton.propTypes = {
   type: PropTypes.string,
   onClick: PropTypes.func,
   variant: PropTypes.string,
-  style: PropTypes.objectOf(PropTypes.object),
+  style: PropTypes.object,
 };
 
 export default FrinksButton;

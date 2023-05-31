@@ -59,7 +59,7 @@ function Layout({
 }
 
 Layout.propTypes = {
-  children: PropTypes.objectOf(PropTypes.object),
+  children: PropTypes.object,
   alternateHeader: PropTypes.bool,
   title: PropTypes.string,
   counter: PropTypes.number,
@@ -74,7 +74,7 @@ Layout.propTypes = {
   summaryHeader: PropTypes.bool,
   disableMinimumHeight: PropTypes.bool,
   viewAllFunc: PropTypes.func,
-  style: PropTypes.objectOf(PropTypes.object),
+  style: PropTypes.object,
 };
 
 export default Layout;
