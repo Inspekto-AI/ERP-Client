@@ -85,7 +85,7 @@ function PrintingAnalysis({ printingBelts, handleBeltReset }) {
 }
 
 PrintingAnalysis.propTypes = {
-  printingBelts: PropTypes.any,
+  printingBelts: PropTypes.objectOf(PropTypes.object()),
   handleBeltReset: PropTypes.func,
 };
 

@@ -5,12 +5,14 @@ import { IoMdAdd } from 'react-icons/io';
 import { Avatar, Button, LinearProgress } from '@material-ui/core';
 import { BiRightArrowAlt } from 'react-icons/bi';
 import { msToTime } from 'utils/globalFunctions';
-import { PACKER_LIMIT } from 'utils/constants';
+// import { PACKER_LIMIT } from 'utils/constants';
 import FrinksButton from 'components/FrinksButton';
 import Image from 'next/image';
 import ImageKitLoader from 'utils/ImageLoader';
 import { GlobalContext } from 'context/GlobalContext';
 import Container from './AnalyticsCard.styles';
+
+const PACKER_LIMIT = 10;
 
 export const getStatus = (progressPercentage) => {
   if (progressPercentage <= 20) {
@@ -144,7 +146,7 @@ function AnalyticsCard({
             <>
 
               {data?.count_finished_at
-                ? msToTimedata?.count_finished_at - data?.created_at
+                ? data?.count_finished_at - data?.created_at
                 : timeDifference}
             </>
           )}
@@ -398,7 +400,7 @@ AnalyticsCard.propTypes = {
   // isError: PropTypes.bool,
   printingCard: PropTypes.bool,
   packerCard: PropTypes.bool,
-  data: PropTypes.any,
+  data: PropTypes.objectOf(PropTypes.object()),
   rejectModalOpen: PropTypes.func,
   bagModifyModalOpen: PropTypes.func,
   setDetailModalOpen: PropTypes.func,

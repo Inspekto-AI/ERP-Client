@@ -2,13 +2,13 @@ import styled from '@emotion/styled';
 import theme from 'styles/theme';
 
 const Container = styled.div`
-  background: ${(props) => (props.isRunning === false || props.status > 0
+  background: ${(props) => props.isRunning === false || props.status > 0
     ? props.status === 1
       ? '#CB952B'
       : props.active === 1 && props.isRunning !== false
         ? 'white'
         : theme.palette.error.main
-    : '#26A84A')};
+    : '#26A84A'};
   border-radius: 10px;
   padding: ${(props) => (props.packerCard ? '35px 5px' : '35px 20px')};
   padding-top: ${(props) => (props.isRunning === false ? '40px' : '20px')};

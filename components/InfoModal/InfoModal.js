@@ -319,18 +319,18 @@ function InfoModal({
 }
 
 InfoModal.propTypes = {
-  open: PropTypes.any,
-  close: PropTypes.any,
+  open: PropTypes.bool,
+  close: PropTypes.func,
   title: PropTypes.string,
-  children: PropTypes.any,
+  children: PropTypes.objectOf(PropTypes.object()),
   hideConfirm: PropTypes.bool,
   handleSubmit: PropTypes.func,
   buttonText: PropTypes.string,
   bagCount: PropTypes.number,
   showDivision: PropTypes.bool,
   onlyBags: PropTypes.bool,
-  currentCount: PropTypes.any,
+  currentCount: PropTypes.number,
   handleBagDone: PropTypes.func,
-  dataToDisplay: PropTypes.PropTypes.objectOf(PropTypes.object),
+  dataToDisplay: PropTypes.objectOf(PropTypes.object()),
 };
 export default InfoModal;

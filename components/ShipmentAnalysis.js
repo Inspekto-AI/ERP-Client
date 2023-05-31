@@ -104,9 +104,9 @@ function ShipmentTracking({
 }
 
 ShipmentTracking.propTypes = {
-  activeTransactions: PropTypes.any,
+  activeTransactions: PropTypes.objectOf(PropTypes.object()),
   handleBagIncrement: PropTypes.func,
-  handleStop: PropTypes.any,
+  handleStop: PropTypes.func,
 };
 
 export default ShipmentTracking;

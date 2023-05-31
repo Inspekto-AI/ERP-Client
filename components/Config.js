@@ -552,7 +552,7 @@ function Config({
 Config.propTypes = {
   close: PropTypes.func,
   handleSubmit: PropTypes.func,
-  reverseShipmentFormOpen: PropTypes.any,
+  reverseShipmentFormOpen: PropTypes.func,
   setReverseShipmentFormOpen: PropTypes.func,
 };
 

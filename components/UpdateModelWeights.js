@@ -4,7 +4,7 @@ import FrinksButton from './FrinksButton';
 function UpdateAll() {
   const updateFunc = async () => {
     await put('/api/configuration/update-weights');
-    location.replace('/');
+    window.location.replace('/');
   };
 
   return (

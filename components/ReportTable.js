@@ -342,11 +342,11 @@ function RenderTableHeader({
 }
 
 RenderTableHeader.propTypes = {
-  layoutType: PropTypes.any,
-  order: PropTypes.any,
-  orderBy: PropTypes.any,
-  classes: PropTypes.any,
-  createSortHandler: PropTypes.any,
+  layoutType: PropTypes.number,
+  order: PropTypes.oneOf(['asc', 'desc']).isRequired,
+  orderBy: PropTypes.string.isRequired,
+  classes: PropTypes.objectOf(PropTypes.object()),
+  createSortHandler: PropTypes.func,
 };
 
 function EnhancedTableHead(props) {
@@ -372,7 +372,7 @@ function EnhancedTableHead(props) {
 }
 
 EnhancedTableHead.propTypes = {
-  classes: PropTypes.PropTypes.objectOf(PropTypes.object).isRequired,
+  classes: PropTypes.object.isRequired,
   onRequestSort: PropTypes.func.isRequired,
   order: PropTypes.oneOf(['asc', 'desc']).isRequired,
   orderBy: PropTypes.string.isRequired,
@@ -756,9 +756,9 @@ function RenderTable({ layoutType, data, setRejectIndex }) {
 }
 
 RenderTable.propTypes = {
-  data: PropTypes.any,
+  data: PropTypes.objectOf(PropTypes.object()),
   layoutType: PropTypes.number,
-  setRejectIndex: PropTypes.any,
+  setRejectIndex: PropTypes.func,
 };
 
 function ReportTable({
@@ -947,7 +947,7 @@ function ReportTable({
 ReportTable.propTypes = {
   title: PropTypes.string.isRequired,
   layoutType: PropTypes.number.isRequired,
-  data: PropTypes.any,
+  data: PropTypes.objectOf(PropTypes.object()),
   startCount: PropTypes.number,
   endCount: PropTypes.number,
   setStartCount: PropTypes.func,

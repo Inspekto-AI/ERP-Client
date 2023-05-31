@@ -67,11 +67,6 @@ function HomepageDrawer({
   const classes = useStyles();
   const router = useRouter();
 
-  const handleButtonClick = (nav) => {
-    router.push(nav);
-    close();
-  };
-
   return (
     <Drawer
       anchor="top"

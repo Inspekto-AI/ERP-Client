@@ -151,7 +151,7 @@ function AlertModal({ open, close, alertsnooze }) {
 }
 
 AlertModal.propTypes = {
-  open: PropTypes.any.isRequired,
+  open: PropTypes.bool.isRequired,
   close: PropTypes.func.isRequired,
 };
 export default AlertModal;

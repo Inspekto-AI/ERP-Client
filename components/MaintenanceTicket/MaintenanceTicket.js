@@ -5,11 +5,11 @@ import { put } from 'utils/api';
 import Container from './MaintenanceTicket.styles';
 
 function MaintenanceTicket({ data, isActive, removeMaintenanceTicket }) {
-  const handleTicketResolved = async (data) => {
+  const handleTicketResolved = async (apiData) => {
     try {
-      await put('/api/maintenance', { id: data?.id });
+      await put('/api/maintenance', { id: apiData?.id });
       // maintenance done remove the ticket
-      removeMaintenanceTicket(data?.id);
+      removeMaintenanceTicket(apiData?.id);
     } catch (err) {
       console.log(err);
     }
@@ -40,7 +40,7 @@ function MaintenanceTicket({ data, isActive, removeMaintenanceTicket }) {
 
 MaintenanceTicket.propTypes = {
   isActive: PropTypes.bool,
-  data: PropTypes.object,
+  data: PropTypes.objectOf(PropTypes.object()),
 };
 
 export default MaintenanceTicket;
