@@ -41,7 +41,7 @@ function Notification({ close }) {
     >
       <Container>
         {missingData && Object.keys(missingData).map((e, index) => {
-          if (missingData[e].length != 0) {
+          if (missingData[e].length !== 0) {
             return (
               <div className="defect active" key={index}>
                 <div className="title">{e}</div>

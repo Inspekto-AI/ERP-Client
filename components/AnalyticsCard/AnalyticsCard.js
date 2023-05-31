@@ -129,11 +129,11 @@ function AnalyticsCard({
                     </div>
                   </div>
                 )}
-                {status < 2 && loaderCard ? (
-                  <p className="tag-id">{data?.printing_id}</p>
-                ) : printingCard ? (
-                  <p className="tag-id">{data?.printing_id}</p>
-                ) : null}
+                {status < 2 && loaderCard
+                  ? <p className="tag-id">{data?.printing_id}</p>
+                  : printingCard
+                    ? <p className="tag-id">{data?.printing_id}</p>
+                    : null}
               </>
             )}
           </div>
@@ -144,7 +144,7 @@ function AnalyticsCard({
             <>
 
               {data?.count_finished_at
-                ? msToTime(data?.count_finished_at - data?.created_at)
+                ? msToTimedata?.count_finished_at - data?.created_at
                 : timeDifference}
             </>
           )}
@@ -281,7 +281,7 @@ function AnalyticsCard({
                     className="view-button"
                     onClick={setDetailModalOpen}
                   >
-                    {status == 0
+                    {status === 0
                       ? ((
                         DEACTIVATE_LOADER_SOLUTION
                           ? data?.bag_limit <= data?.tag_count
@@ -293,11 +293,11 @@ function AnalyticsCard({
                     {((DEACTIVATE_LOADER_SOLUTION
                       ? data?.bag_limit <= data?.tag_count
                       : data?.bag_limit <= data?.bag_count)
-                      || status == 1 || data?.is_belt_running === false) ? null : (
+                      || status === 1 || data?.is_belt_running === false) ? null : (
                         <BiRightArrowAlt />
                       )}
                   </Button>
-                  {status == 1 && (
+                  {status === 1 && (
                     <Button
                       className="view-button"
                       variant="outlined"

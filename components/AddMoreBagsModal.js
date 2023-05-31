@@ -99,7 +99,6 @@ AddMoreBagsModal.propTypes = {
   heading: PropTypes.string,
   handleSubmit: PropTypes.func,
   handleStop: PropTypes.func,
-  printingCard: PropTypes.bool,
   hideModify: PropTypes.bool,
   handleBagDone: PropTypes.func,
 };

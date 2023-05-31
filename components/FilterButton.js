@@ -26,8 +26,8 @@ const useStyles = makeStyles((theme) => ({
   },
 }));
 
-const buttonStyle = (is_active) => {
-  if (is_active) return { background: '#b5179e', color: 'white' };
+const buttonStyle = (isActive) => {
+  if (isActive) return { background: '#b5179e', color: 'white' };
 
   return { background: 'white', color: 'black', border: '2px solid #b5179e' };
 };

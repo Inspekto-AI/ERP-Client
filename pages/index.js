@@ -78,7 +78,7 @@ function DashboardComponent({
   if (activeSection === 4) {
     return <Summary />;
   }
-  if (activeSection == 5) {
+  if (activeSection === 5) {
     return <Report />;
   }
   return <SystemHealth />;
@@ -101,24 +101,27 @@ function Index() {
   const [ongoingTransactions, setOngoingTransactions] = useState(null);
   const [queuedTransactions, setQueuedTransactions] = useState(null);
   const [alertCounter, setAlertCounter] = useState(0);
-  const { setBeltTrippingEnabled, deactivatePrintingSolution: DEACTIVATE_PRINTING_SOLUTION } = useContext(GlobalContext);
+  const {
+    setBeltTrippingEnabled,
+    deactivatePrintingSolution: DEACTIVATE_PRINTING_SOLUTION,
+  } = useContext(GlobalContext);
 
   const handleBeltReset = async (
     id,
-    bag_counting_belt_id,
-    printing_belt_id,
+    bagCountingBeltId,
+    printingBeltId,
   ) => {
     try {
       await put('/api/shipment/reset-belt', {
-        belt_id: printing_belt_id || id,
+        belt_id: printingBeltId || id,
       });
       // on success reset belt
       setPrintingBelts((prevState) => {
         if (!prevState) return null;
         return {
           ...prevState,
-          [printing_belt_id || id]: {
-            ...prevState[printing_belt_id || id],
+          [printingBeltId || id]: {
+            ...prevState[printingBeltId || id],
             is_belt_running: true,
           },
         };
@@ -129,21 +132,21 @@ function Index() {
   };
 
   const handleBagDone = async ({
-    transaction_id,
-    vehicle_id,
-    printing_belt_id,
-    machine_id,
-    vehicle_type,
+    transaction_id: transactionId,
+    vehicle_id: vehicleId,
+    printing_belt_id: printingBeltId,
+    machine_id: machineId,
+    vehicle_type: vehicleType,
     comment,
   }) => {
     setIsLoading(true);
     await put('/api/shipment/done', {
-      transaction_id,
+      transactionId,
       comment,
-      vehicle_id,
-      printing_belt_id,
-      machine_id,
-      vehicle_type,
+      vehicleId,
+      printingBeltId,
+      machineId,
+      vehicleType,
     });
   };
 
@@ -189,15 +192,15 @@ function Index() {
 
   useEffect(() => {
     socket.on('bag-entry', (data) => {
-      const transaction_id = parseInt(data?.transaction_id, 10);
+      const transactionId = parseInt(data?.transactionId, 10);
       setOngoingTransactions((prevState) => {
         if (!prevState) return null;
         if (prevState && Object.keys(prevState).length === 0) return {};
-        if (!(transaction_id in prevState)) return prevState;
+        if (!(transactionId in prevState)) return prevState;
         return {
           ...prevState,
-          [transaction_id]: {
-            ...prevState[transaction_id],
+          [transactionId]: {
+            ...prevState[transactionId],
             bag_count: data?.count,
           },
         };
@@ -218,17 +221,17 @@ function Index() {
       }
     });
     socket.on('tag-entry', (data) => {
-      const transaction_id = parseInt(data?.transaction_id, 10);
-      let machine_id = null;
+      const transactionId = parseInt(data?.transactionId, 10);
+      let machineId = null;
       setOngoingTransactions((prevState) => {
         if (!prevState) return null;
         if (prevState && Object.keys(prevState).length === 0) return {};
-        if (!(transaction_id in prevState)) return prevState;
-        machine_id = prevState[transaction_id]?.printing_id;
+        if (!(transactionId in prevState)) return prevState;
+        machineId = prevState[transactionId]?.printing_id;
         return {
           ...prevState,
-          [transaction_id]: {
-            ...prevState[transaction_id],
+          [transactionId]: {
+            ...prevState[transactionId],
             missed_label_count: data?.transactionMissed,
             tag_count: data.tag_count,
           },
@@ -240,9 +243,9 @@ function Index() {
 
         setmissPrintTransactionId((prevState) => ({
           ...prevState,
-          [transaction_id]: {
+          [transactionId]: {
             belt_id: data?.belt_id,
-            machine_id,
+            machineId,
             missed_count: data?.transactionMissed,
           },
         }));
@@ -275,18 +278,18 @@ function Index() {
       });
     });
     socket.on('service', (data) => {
-      const tra_id = parseInt(data?.id, 10);
+      const traId = parseInt(data?.id, 10);
       setOngoingTransactions((prevState) => {
         if (!prevState) return null;
         return {
           ...prevState,
-          [tra_id]: data,
+          [traId]: data,
         };
       });
       setVehicleBelts((prevState) => {
         if (!prevState) return null;
         const newBelts = prevState.filter((e) => {
-          if (e.id !== data.bag_counting_belt_id) {
+          if (e.id !== data.bagCountingBeltId) {
             return e;
           }
         });
@@ -321,20 +324,20 @@ function Index() {
 
     socket.on('bag-done', (data) => {
       const {
-        transaction_id, vehicle_id, machine_id, vehicle_type,
+        transactionId, vehicleId, machineId, vehicleType,
       } = data;
       setOngoingTransactions((prevState) => {
         const currData = { ...prevState };
-        delete currData[transaction_id];
+        delete currData[transactionId];
         return currData;
       });
       setVehicleBelts((prevState) => {
         const currData = [...prevState];
-        if (currData.filter((e) => e.id === vehicle_id).length === 0) {
+        if (currData.filter((e) => e.id === vehicleId).length === 0) {
           currData.push({
-            id: vehicle_id,
-            vehicle_id: machine_id,
-            vehicle_type,
+            id: vehicleId,
+            vehicleId: machineId,
+            vehicleType,
             is_active: 1,
           });
         }
@@ -346,7 +349,7 @@ function Index() {
     socket.on('bag-update', (data) => {
       setOngoingTransactions((prevState) => {
         const updatedTransactions = Object.keys(prevState).map((e) => {
-          if (prevState[e].id === data.transaction_id) {
+          if (prevState[e].id === data.transactionId) {
             // modify this entity
             return {
               ...prevState[e],
@@ -475,7 +478,7 @@ function Index() {
           handleBagDone={handleBagDone}
           handleBeltReset={handleBeltReset}
         />
-        {alertCounter != 0 ? (
+        {alertCounter !== 0 ? (
           <div className="alert">
             {Object.keys(missPrintTransactionId).map((e, index) => (
               <Alert
@@ -493,7 +496,7 @@ function Index() {
                   )}
                 key={index}
               >
-                {`${missPrintTransactionId[e].missed_count} misprint bags passed from - ${missPrintTransactionId[e].machine_id}`}
+                {`${missPrintTransactionId[e].missed_count} misprint bags passed from - ${missPrintTransactionId[e].machineId}`}
               </Alert>
             ))}
           </div>
@@ -518,8 +521,8 @@ DashboardComponent.propTypes = {
   activeSection: PropTypes.number,
   // activeTransactions: PropTypes.any,
   handleBagIncrement: PropTypes.func,
-  printingBelts: PropTypes.any,
-  vehicleBelts: PropTypes.any,
+  printingBelts: PropTypes.string,
+  vehicleBelts: PropTypes.string,
   setReverseShipmentFormOpen: PropTypes.func,
   ongoingTransactions: PropTypes.any,
   queuedTransactions: PropTypes.any,

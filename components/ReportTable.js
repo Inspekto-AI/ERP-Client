@@ -804,7 +804,7 @@ function ReportTable({
       <div className="header">
         <div className="title">{title}</div>
         <div className="controls">
-          {layoutType == 1 ? (
+          {layoutType === 1 ? (
             <div className="view">
               <p>View</p>
               <Button className="view-toggle-buttons">

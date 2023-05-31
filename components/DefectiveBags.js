@@ -8,31 +8,34 @@ import { getStartAndEndDate } from 'utils/globalFunctions';
 import { Button } from '@material-ui/core';
 
 function DefectiveBags({
-  transaction_id, belt_id, date, dateUnAltered,
+  transaction_id: transactionId,
+  belt_id: beltId,
+  date,
+  dateUnAltered,
 }) {
   const [rejectBags, setRejectBags] = useState(null);
 
   useEffect(() => {
     const fetchRejectBags = async () => {
       const res = await get('/api/shipment/reject-bags', {
-        shipment_id: transaction_id,
+        shipment_id: transactionId,
       });
       setRejectBags(res?.data?.data);
     };
     const fetchRejectBagsByBelt = async () => {
       const res = await get('/api/shipment/reject-belt-bags', {
-        machine_id: belt_id,
+        machine_id: beltId,
         dateRange: getStartAndEndDate(date, dateUnAltered),
       });
       setRejectBags(res?.data?.data);
     };
-    if (!belt_id) fetchRejectBags();
+    if (!beltId) fetchRejectBags();
     else fetchRejectBagsByBelt();
-  }, [belt_id, transaction_id]);
+  }, [beltId, transactionId]);
 
-  const removeFromMissprint = async (id, image_location, index) => {
+  const removeFromMissprint = async (id, imageLocation, index) => {
     const response = await put(
-      `/api/shipment/mark-false-positive?id=${id}&image_location=${image_location}`,
+      `/api/shipment/mark-false-positive?id=${id}&image_location=${imageLocation}`,
     );
 
     if (response?.data?.success) {
@@ -47,7 +50,7 @@ function DefectiveBags({
       {rejectBags && rejectBags.length > 0 ? (
         <>
           {rejectBags.map((e, index) => (
-            <div className="defect" key={index}>
+            <div className="defect" key={index + 1}>
               <div className={`title ${index === 0 ? 'active' : ''}`}>
                 {new Date(e?.created_at).toLocaleTimeString()}
               </div>
@@ -62,7 +65,7 @@ function DefectiveBags({
                   <Image
                     src={e.local_image_path}
                       // src={
-                      //   transaction_id || printingBeltId
+                      //   transactionId || printingBeltId
                       //     ? e.local_image_location || e.local_image_path
                       //     : e.s3_image_url
                       // }

@@ -1,4 +1,4 @@
-import { useState, useEffect } from 'react';
+import { useState } from 'react';
 import { makeStyles } from '@material-ui/core/styles';
 import {
   Modal, Backdrop, Fade, Button, TextField,
@@ -267,7 +267,7 @@ function InfoModal({
                     value={newBagCount}
                     onChange={(e) => {
                       if (e.target.value === '') setNewBagCount(1);
-                      else if (!isNaN(e.target.value)) {
+                      else if (!Number.isNaN(e.target.value)) {
                         setNewBagCount(
                           Math.max(
                             1,
@@ -332,6 +332,5 @@ InfoModal.propTypes = {
   currentCount: PropTypes.any,
   handleBagDone: PropTypes.func,
   dataToDisplay: PropTypes.object,
-  hideConfirm: PropTypes.bool,
 };
 export default InfoModal;
