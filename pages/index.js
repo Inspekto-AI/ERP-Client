@@ -18,7 +18,6 @@ import LoaderAnalysis from 'components/LoaderAnalysis';
 import InfoModal from 'components/InfoModal/InfoModal';
 import { useState, useContext, useEffect } from 'react';
 import { GlobalContext } from 'context/GlobalContext';
-import ShipmentOverFlowModal from 'components/ShipmentOverFlowModal';
 
 import Alert from '@material-ui/lab/Alert';
 import { Button } from '@material-ui/core';
@@ -79,7 +78,7 @@ function DashboardComponent({
   if (activeSection === 4) {
     return <Summary />;
   }
-  if (activeSection === 5) {
+  if (activeSection == 5) {
     return <Report />;
   }
   return <SystemHealth />;
@@ -102,30 +101,24 @@ function Index() {
   const [ongoingTransactions, setOngoingTransactions] = useState(null);
   const [queuedTransactions, setQueuedTransactions] = useState(null);
   const [alertCounter, setAlertCounter] = useState(0);
-  const [error, setError] = useState(null);
-  const {
-    setBeltTrippingEnabled,
-    deactivatePrintingSolution: DEACTIVATE_PRINTING_SOLUTION,
-    setShipmentOverflow,
-    shipmentOverflow
-  } = useContext(GlobalContext);
+  const { setBeltTrippingEnabled, deactivatePrintingSolution: DEACTIVATE_PRINTING_SOLUTION } = useContext(GlobalContext);
 
   const handleBeltReset = async (
     id,
-    bagCountingBeltId,
-    printingBeltId,
+    bag_counting_belt_id,
+    printing_belt_id,
   ) => {
     try {
       await put('/api/shipment/reset-belt', {
-        belt_id: printingBeltId || id,
+        belt_id: printing_belt_id || id,
       });
       // on success reset belt
       setPrintingBelts((prevState) => {
         if (!prevState) return null;
         return {
           ...prevState,
-          [printingBeltId || id]: {
-            ...prevState[printingBeltId || id],
+          [printing_belt_id || id]: {
+            ...prevState[printing_belt_id || id],
             is_belt_running: true,
           },
         };
@@ -136,21 +129,21 @@ function Index() {
   };
 
   const handleBagDone = async (
-    transactionId,
-    vehicleId,
-    printingBeltId,
-    machineId,
-    vehicleType,
+    transaction_id,
+    vehicle_id,
+    printing_belt_id,
+    machine_id,
+    vehicle_type,
     comment,
   ) => {
     setIsLoading(true);
     await put('/api/shipment/done', {
-      transaction_id: transactionId,
+      transaction_id,
       comment,
-      vehicle_id: vehicleId,
-      printing_belt_id: printingBeltId,
-      machine_id: machineId,
-      vehicle_type: vehicleType,
+      vehicle_id,
+      printing_belt_id,
+      machine_id,
+      vehicle_type,
     });
   };
 
@@ -170,14 +163,6 @@ function Index() {
       serviceMutation.reset();
       setShipmentFormOpen(false);
       setReverseShipmentFormOpen(null);
-    }
-    else if(serviceMutation.isError){
-      serviceMutation.reset();
-      setShipmentOverflow(true);
-      setError(serviceMutation?.error?.response?.data?.message);
-      setShipmentFormOpen(false);
-      setReverseShipmentFormOpen(null);
-      // setError(serviceMutation?.error?.message);
     }
   }, [serviceMutation]);
 
@@ -204,15 +189,15 @@ function Index() {
 
   useEffect(() => {
     socket.on('bag-entry', (data) => {
-      const transactionId = parseInt(data?.transactionId, 10);
+      const transaction_id = parseInt(data?.transaction_id, 10);
       setOngoingTransactions((prevState) => {
         if (!prevState) return null;
         if (prevState && Object.keys(prevState).length === 0) return {};
-        if (!(transactionId in prevState)) return prevState;
+        if (!(transaction_id in prevState)) return prevState;
         return {
           ...prevState,
-          [transactionId]: {
-            ...prevState[transactionId],
+          [transaction_id]: {
+            ...prevState[transaction_id],
             bag_count: data?.count,
           },
         };
@@ -233,17 +218,17 @@ function Index() {
       }
     });
     socket.on('tag-entry', (data) => {
-      const transactionId = parseInt(data?.transactionId, 10);
-      let machineId = null;
+      const transaction_id = parseInt(data?.transaction_id, 10);
+      let machine_id = null;
       setOngoingTransactions((prevState) => {
         if (!prevState) return null;
         if (prevState && Object.keys(prevState).length === 0) return {};
-        if (!(transactionId in prevState)) return prevState;
-        machineId = prevState[transactionId]?.printing_id;
+        if (!(transaction_id in prevState)) return prevState;
+        machine_id = prevState[transaction_id]?.printing_id;
         return {
           ...prevState,
-          [transactionId]: {
-            ...prevState[transactionId],
+          [transaction_id]: {
+            ...prevState[transaction_id],
             missed_label_count: data?.transactionMissed,
             tag_count: data.tag_count,
           },
@@ -255,9 +240,9 @@ function Index() {
 
         setmissPrintTransactionId((prevState) => ({
           ...prevState,
-          [transactionId]: {
+          [transaction_id]: {
             belt_id: data?.belt_id,
-            machineId,
+            machine_id,
             missed_count: data?.transactionMissed,
           },
         }));
@@ -290,21 +275,20 @@ function Index() {
       });
     });
     socket.on('service', (data) => {
-      const traId = parseInt(data?.id, 10);
+      const tra_id = parseInt(data?.id, 10);
       setOngoingTransactions((prevState) => {
         if (!prevState) return null;
         return {
           ...prevState,
-          [traId]: data,
+          [tra_id]: data,
         };
       });
       setVehicleBelts((prevState) => {
         if (!prevState) return null;
         const newBelts = prevState.filter((e) => {
-          if (e.id !== data.bagCountingBeltId) {
+          if (e.id !== data.bag_counting_belt_id) {
             return e;
           }
-          return null;
         });
         return newBelts;
       });
@@ -337,20 +321,20 @@ function Index() {
 
     socket.on('bag-done', (data) => {
       const {
-        transactionId, vehicleId, machineId, vehicleType,
+        transaction_id, vehicle_id, machine_id, vehicle_type,
       } = data;
       setOngoingTransactions((prevState) => {
         const currData = { ...prevState };
-        delete currData[transactionId];
+        delete currData[transaction_id];
         return currData;
       });
       setVehicleBelts((prevState) => {
         const currData = [...prevState];
-        if (currData.filter((e) => e.id === vehicleId).length === 0) {
+        if (currData.filter((e) => e.id === vehicle_id).length === 0) {
           currData.push({
-            id: vehicleId,
-            vehicleId: machineId,
-            vehicleType,
+            id: vehicle_id,
+            vehicle_id: machine_id,
+            vehicle_type,
             is_active: 1,
           });
         }
@@ -362,11 +346,11 @@ function Index() {
     socket.on('bag-update', (data) => {
       setOngoingTransactions((prevState) => {
         const updatedTransactions = Object.keys(prevState).map((e) => {
-          if (prevState[e].id === data.transactionId) {
+          if (prevState[e].id === data.transaction_id) {
             // modify this entity
             return {
               ...prevState[e],
-              bag_limit: parseInt(data?.new_bag_limit, 10),
+              bag_limit: parseInt(data?.new_bag_limit),
             };
           }
           return prevState[e];
@@ -413,16 +397,6 @@ function Index() {
     return <MaintenanceForm close={() => setMaintenanceForm(false)} />;
   }
   return (
-    <>
-
-    {shipmentOverflow &&
-     <ShipmentOverFlowModal 
-      open={shipmentOverflow}
-      close={() => {setShipmentOverflow(false)}}
-      error={error}
-    /> 
-    }
-    { 
     <Layout
       openShipmentForm={() => setShipmentFormOpen(true)}
       openMaintenanceForm={() => setMaintenanceFormOpen(true)}
@@ -501,7 +475,7 @@ function Index() {
           handleBagDone={handleBagDone}
           handleBeltReset={handleBeltReset}
         />
-        {alertCounter !== 0 ? (
+        {alertCounter != 0 ? (
           <div className="alert">
             {Object.keys(missPrintTransactionId).map((e, index) => (
               <Alert
@@ -519,7 +493,7 @@ function Index() {
                   )}
                 key={index}
               >
-                {`${missPrintTransactionId[e].missed_count} misprint bags passed from - ${missPrintTransactionId[e].machineId}`}
+                {`${missPrintTransactionId[e].missed_count} misprint bags passed from - ${missPrintTransactionId[e].machine_id}`}
               </Alert>
             ))}
           </div>
@@ -537,8 +511,6 @@ function Index() {
         ) : null}
       </Container>
     </Layout>
-        }
-        </>
   );
 }
 
@@ -546,12 +518,13 @@ DashboardComponent.propTypes = {
   activeSection: PropTypes.number,
   // activeTransactions: PropTypes.any,
   handleBagIncrement: PropTypes.func,
-  printingBelts: PropTypes.string,
-  vehicleBelts: PropTypes.string,
+  printingBelts: PropTypes.any,
+  vehicleBelts: PropTypes.any,
   setReverseShipmentFormOpen: PropTypes.func,
-  ongoingTransactions: PropTypes.object,
-  queuedTransactions: PropTypes.object,
+  ongoingTransactions: PropTypes.any,
+  queuedTransactions: PropTypes.any,
   handleBagDone: PropTypes.func,
+  alertsnooze: PropTypes.func,
   handleBeltReset: PropTypes.func,
 };
 

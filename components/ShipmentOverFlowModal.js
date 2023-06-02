@@ -29,7 +29,7 @@ const useStyles = makeStyles(() => ({
     // marginTop: '3.75em',
     // marginLeft: '60%',
     margin: 'auto',
-    padding: '30px'
+    padding: '30px',
 
   },
   close: {
@@ -61,7 +61,7 @@ const useStyles = makeStyles(() => ({
   heading: {
     color: 'white',
     marginLeft: '2.5em',
-    padding: '20px'
+    padding: '20px',
   },
   bold: {
     fontWeight: '900',
@@ -101,31 +101,30 @@ function ShipmentOverFlowModal({ open, close, error }) {
     //   onClose={() => close()}
       closeAfterTransition
       className={classes.modal}
-      keepMounted={true}
+      keepMounted
     //   onBackdropClick={()=>{}}
       BackdropComponent={Backdrop}
       BackdropProps={{
         timeout: 500,
       }}
     >
-       
-       <Fade in={open}>
+
+      <Fade in={open}>
         <div className={classes.paper}>
           <div className={classes.title}>
-            
-           
+
             <div className={classes.heading}>
               <h4 className={classes.h4}>
                 {/* Error message */}
-                
+
                 <span className={classes.bold}>{error}</span>
               </h4>
-              
+
             </div>
           </div>
           <div>
-           
-             {/* <Button variant="contained" className={classes.actionButton}>
+
+            {/* <Button variant="contained" className={classes.actionButton}>
               Mark Solved
             </Button> */}
             <Button variant="contained" className={classes.actionButton} onClick={() => close()}>
@@ -133,7 +132,7 @@ function ShipmentOverFlowModal({ open, close, error }) {
             </Button>
           </div>
         </div>
-      </Fade> 
+      </Fade>
     </Modal>
 
   // <MuiAlert
