@@ -135,7 +135,6 @@ function Config({
       const res = await get('/api/shipment/vehicle', {
         id,
       });
-      console.log(res);
       if (vehicleId) {
         setLoaderId(vehicleId);
         setLoaderType(
@@ -148,7 +147,7 @@ function Config({
       // fetch beltIds
       fetchVehicle(printingId, reverseShipmentFormOpen);
     } else if (
-      // printingId !== '' && 
+      // printingId !== '' &&
       !vehicleIds) {
       // fetch beltIds
       fetchVehicle(printingId);
@@ -170,8 +169,8 @@ function Config({
 
   useEffect(() => {
     if (
-      // printingId !== '' && 
-    loaderId !== '') {
+      // printingId !== '' &&
+      loaderId !== '') {
       setActiveStep(Math.max(1, activeStep));
     }
   }, [activeStep, loaderId, printingId]);
@@ -457,7 +456,7 @@ function Config({
   const handleFormSubmit = async () => {
     setInfoModalOpen(false);
     await handleSubmit({
-      printingId,
+      printingId: printingId.length === 0 ? null : printingId,
       loaderId,
       licenceNumber,
       bagType,

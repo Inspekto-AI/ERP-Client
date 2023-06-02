@@ -74,7 +74,7 @@ function LoaderAnalysis({
             <hr />
           </div>
           {ongoingTransactions
-            && Object.keys(ongoingTransactions)?.length === 0 ? (
+            && Object.keys(ongoingTransactions)?.filter((e) => ongoingTransactions[e].vehicle_type === vehicleType).length === 0 ? (
               <p
                 style={{
                   fontSize: '20px',
