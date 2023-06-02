@@ -452,7 +452,7 @@ function Config({
   const handleFormSubmit = async () => {
     setInfoModalOpen(false);
     await handleSubmit({
-      printingId,
+      printingId: printingId.length===0?null:printingId,
       loaderId,
       licenceNumber,
       bagType,
