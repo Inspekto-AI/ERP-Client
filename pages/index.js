@@ -18,6 +18,7 @@ import LoaderAnalysis from 'components/LoaderAnalysis';
 import InfoModal from 'components/InfoModal/InfoModal';
 import { useState, useContext, useEffect } from 'react';
 import { GlobalContext } from 'context/GlobalContext';
+import ShipmentOverFlowModal from 'components/ShipmentOverFlowModal';
 
 import Alert from '@material-ui/lab/Alert';
 import { Button } from '@material-ui/core';
@@ -101,9 +102,12 @@ function Index() {
   const [ongoingTransactions, setOngoingTransactions] = useState(null);
   const [queuedTransactions, setQueuedTransactions] = useState(null);
   const [alertCounter, setAlertCounter] = useState(0);
+  const [shipmentError, setShipmentError] = useState(null);
   const {
     setBeltTrippingEnabled,
     deactivatePrintingSolution: DEACTIVATE_PRINTING_SOLUTION,
+    setShipmentOverflow,
+    shipmentOverflow,
   } = useContext(GlobalContext);
 
   const handleBeltReset = async (
@@ -166,6 +170,13 @@ function Index() {
       serviceMutation.reset();
       setShipmentFormOpen(false);
       setReverseShipmentFormOpen(null);
+    } else if (serviceMutation.isError) {
+      serviceMutation.reset();
+      setShipmentOverflow(true);
+      setShipmentError(serviceMutation?.error?.response?.data?.message);
+      setShipmentFormOpen(false);
+      setReverseShipmentFormOpen(null);
+      // setError(serviceMutation?.error?.message);
     }
   }, [serviceMutation]);
 
@@ -400,120 +411,132 @@ function Index() {
     return <MaintenanceForm close={() => setMaintenanceForm(false)} />;
   }
   return (
-    <Layout
-      openShipmentForm={() => setShipmentFormOpen(true)}
-      openMaintenanceForm={() => setMaintenanceFormOpen(true)}
-      openNotificationForm={() => setNotificationsFormOpen(true)}
-      maintenanceForm={() => setMaintenanceForm(true)}
-    >
-      <Container>
-        {isLoading ? <Loader /> : null}
-        <div className="trackbar">
-          <div
-            className={`option ${activeSection === 0 ? 'active' : ''}`}
-            onClick={() => setActiveSection(0)}
-            onKeyPress={() => setActiveSection(0)}
-            role="button"
-            tabIndex={0}
-          >
-            <h6 style={{ textAlign: 'center' }}>Truck belts</h6>
-          </div>
-          <div
-            className={`option ${activeSection === 1 ? 'active' : ''}`}
-            onClick={() => setActiveSection(1)}
-            onKeyPress={() => setActiveSection(1)}
-            role="button"
-            tabIndex={0}
-          >
-            <h6 style={{ textAlign: 'center' }}>Wagon belts</h6>
-          </div>
-          {DEACTIVATE_PRINTING_SOLUTION ? (null) : (
-            <div
-              className={`option ${activeSection === 2 ? 'active' : ''}`}
-              onClick={() => setActiveSection(2)}
-              onKeyPress={() => setActiveSection(2)}
-              role="button"
-              tabIndex={0}
-            >
-              <h6 style={{ textAlign: 'center' }}>Printing belt</h6>
-            </div>
-          )}
-          <div
-            className={`option ${activeSection === 4 ? 'active' : ''}`}
-            onClick={() => setActiveSection(4)}
-            onKeyPress={() => setActiveSection(4)}
-            role="button"
-            tabIndex={0}
-          >
-            <h6 style={{ textAlign: 'center' }}>Summary</h6>
-          </div>
-          <div
-            className={`option ${activeSection === 5 ? 'active' : ''}`}
-            onClick={() => setActiveSection(5)}
-            onKeyPress={() => setActiveSection(5)}
-            role="button"
-            tabIndex={0}
-          >
-            <h6 style={{ textAlign: 'center' }}>Reports</h6>
-          </div>
-          <div
-            className={`option ${activeSection === 6 ? 'active' : ''}`}
-            onClick={() => setActiveSection(6)}
-            onKeyPress={() => setActiveSection(6)}
-            role="button"
-            tabIndex={0}
-          >
-            <h6 style={{ textAlign: 'center' }}>System Health</h6>
-          </div>
-        </div>
-        <DashboardComponent
-          activeSection={activeSection}
-          // activeTransactions={activeTransactions}
-          handleBagIncrement={handleBagIncrement}
-          printingBelts={printingBelts}
-          vehicleBelts={vehicleBelts}
-          setReverseShipmentFormOpen={(e) => setReverseShipmentFormOpen(e)}
-          ongoingTransactions={ongoingTransactions}
-          queuedTransactions={queuedTransactions}
-          handleBagDone={handleBagDone}
-          handleBeltReset={handleBeltReset}
-        />
-        {alertCounter !== 0 ? (
-          <div className="alert">
-            {Object.keys(missPrintTransactionId).map((e, index) => (
-              <Alert
-                severity="warning"
-                style={{ backgroundColor: 'red', marginBottom: '0.938em', width: '500px' }}
-                action={(
-                  <Button
-                    color="inherit"
-                    size="small"
-                    onClick={() => alertsnooze(e)}
-                    style={{ backgroundColor: 'white' }}
-                  >
-                    Snooze
-                  </Button>
-                  )}
-                key={index}
+    <>
+      {shipmentOverflow
+     && (
+     <ShipmentOverFlowModal
+       open={shipmentOverflow}
+       close={() => { setShipmentOverflow(false); }}
+       error={shipmentError}
+     />
+     )}
+      {
+        <Layout
+          openShipmentForm={() => setShipmentFormOpen(true)}
+          openMaintenanceForm={() => setMaintenanceFormOpen(true)}
+          openNotificationForm={() => setNotificationsFormOpen(true)}
+          maintenanceForm={() => setMaintenanceForm(true)}
+        >
+          <Container>
+            {isLoading ? <Loader /> : null}
+            <div className="trackbar">
+              <div
+                className={`option ${activeSection === 0 ? 'active' : ''}`}
+                onClick={() => setActiveSection(0)}
+                onKeyPress={() => setActiveSection(0)}
+                role="button"
+                tabIndex={0}
               >
-                {`${missPrintTransactionId[e].missed_count} misprint bags passed from - ${missPrintTransactionId[e].machine_id}`}
-              </Alert>
-            ))}
-          </div>
-        ) : null}
-        {infoModalOpen ? (
-          <InfoModal
-            open={infoModalOpen}
-            close={() => setInfoModalOpen(false)}
-            title="Confirm changes"
-          >
-            <>
-              <p>Do you want to go ahead and save the changes you made?</p>
-            </>
-          </InfoModal>
-        ) : null}
-      </Container>
-    </Layout>
+                <h6 style={{ textAlign: 'center' }}>Truck belts</h6>
+              </div>
+              <div
+                className={`option ${activeSection === 1 ? 'active' : ''}`}
+                onClick={() => setActiveSection(1)}
+                onKeyPress={() => setActiveSection(1)}
+                role="button"
+                tabIndex={0}
+              >
+                <h6 style={{ textAlign: 'center' }}>Wagon belts</h6>
+              </div>
+              {DEACTIVATE_PRINTING_SOLUTION ? (null) : (
+                <div
+                  className={`option ${activeSection === 2 ? 'active' : ''}`}
+                  onClick={() => setActiveSection(2)}
+                  onKeyPress={() => setActiveSection(2)}
+                  role="button"
+                  tabIndex={0}
+                >
+                  <h6 style={{ textAlign: 'center' }}>Printing belt</h6>
+                </div>
+              )}
+              <div
+                className={`option ${activeSection === 4 ? 'active' : ''}`}
+                onClick={() => setActiveSection(4)}
+                onKeyPress={() => setActiveSection(4)}
+                role="button"
+                tabIndex={0}
+              >
+                <h6 style={{ textAlign: 'center' }}>Summary</h6>
+              </div>
+              <div
+                className={`option ${activeSection === 5 ? 'active' : ''}`}
+                onClick={() => setActiveSection(5)}
+                onKeyPress={() => setActiveSection(5)}
+                role="button"
+                tabIndex={0}
+              >
+                <h6 style={{ textAlign: 'center' }}>Reports</h6>
+              </div>
+              <div
+                className={`option ${activeSection === 6 ? 'active' : ''}`}
+                onClick={() => setActiveSection(6)}
+                onKeyPress={() => setActiveSection(6)}
+                role="button"
+                tabIndex={0}
+              >
+                <h6 style={{ textAlign: 'center' }}>System Health</h6>
+              </div>
+            </div>
+            <DashboardComponent
+              activeSection={activeSection}
+          // activeTransactions={activeTransactions}
+              handleBagIncrement={handleBagIncrement}
+              printingBelts={printingBelts}
+              vehicleBelts={vehicleBelts}
+              setReverseShipmentFormOpen={(e) => setReverseShipmentFormOpen(e)}
+              ongoingTransactions={ongoingTransactions}
+              queuedTransactions={queuedTransactions}
+              handleBagDone={handleBagDone}
+              handleBeltReset={handleBeltReset}
+            />
+            {alertCounter !== 0 ? (
+              <div className="alert">
+                {Object.keys(missPrintTransactionId).map((e, index) => (
+                  <Alert
+                    severity="warning"
+                    style={{ backgroundColor: 'red', marginBottom: '0.938em', width: '500px' }}
+                    action={(
+                      <Button
+                        color="inherit"
+                        size="small"
+                        onClick={() => alertsnooze(e)}
+                        style={{ backgroundColor: 'white' }}
+                      >
+                        Snooze
+                      </Button>
+                  )}
+                    key={index}
+                  >
+                    {`${missPrintTransactionId[e].missed_count} misprint bags passed from - ${missPrintTransactionId[e].machine_id}`}
+                  </Alert>
+                ))}
+              </div>
+            ) : null}
+            {infoModalOpen ? (
+              <InfoModal
+                open={infoModalOpen}
+                close={() => setInfoModalOpen(false)}
+                title="Confirm changes"
+              >
+                <>
+                  <p>Do you want to go ahead and save the changes you made?</p>
+                </>
+              </InfoModal>
+            ) : null}
+          </Container>
+        </Layout>
+       }
+    </>
   );
 }
 

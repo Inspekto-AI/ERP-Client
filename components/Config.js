@@ -409,7 +409,7 @@ function Config({
                         .vehicle_type,
                     );
                   }}
-                  // disabled={!vehicleIds || reverseShipmentFormOpen}
+                  disabled={!vehicleIds || reverseShipmentFormOpen}
                 >
                   {vehicleIds
                     && vehicleIds.map((e, index) => {

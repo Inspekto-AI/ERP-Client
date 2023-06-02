@@ -74,7 +74,7 @@ const Container = styled.div`
     ? '10px'
     : props.isRunning === false
       ? '34px'
-      : '54px')};
+      : '74px')};
     padding: ${(props) => (props.packerCard ? '0 15px' : '0 0')};
 
     h2 {
