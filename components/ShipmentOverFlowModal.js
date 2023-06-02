@@ -3,10 +3,7 @@ import {
   Modal, Backdrop, Fade, Button,
 } from '@material-ui/core';
 import PropTypes from 'prop-types';
-import Image from 'next/image';
 import theme from 'styles/theme';
-
-import ImageKitLoader from 'utils/ImageLoader';
 
 const useStyles = makeStyles(() => ({
   modal: {

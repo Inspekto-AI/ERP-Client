@@ -112,12 +112,10 @@ function Config({
 }) {
   const classes = useStyles();
   const [activeStep, setActiveStep] = useState(0);
-  const [printingId, setPrintingId] = useState('');
   const [loaderId, setLoaderId] = useState('');
   const [licenceNumber, setLicenceNumber] = useState('');
   const [bagType, setBagType] = useState('');
   const [bagCount, setBagCount] = useState('0');
-  const [beltIds, setBeltIds] = useState(null);
   const [vehicleIds, setVehicleIds] = useState(null);
   const serviceMutation = ServiceQuery();
   const [infoModalOpen, setInfoModalOpen] = useState(false);
@@ -131,9 +129,9 @@ function Config({
   const { bagTypes: BAG_TYPES } = useContext(GlobalContext);
 
   useEffect(() => {
-    const fetchVehicle = async (id, vehicleId) => {
+    const fetchVehicle = async (vehicleId) => {
       const res = await get('/api/shipment/vehicle', {
-        id,
+        id: null,
       });
       if (vehicleId) {
         setLoaderId(vehicleId);
@@ -145,27 +143,27 @@ function Config({
     };
     if (reverseShipmentFormOpen && !vehicleIds) {
       // fetch beltIds
-      fetchVehicle(printingId, reverseShipmentFormOpen);
+      fetchVehicle(reverseShipmentFormOpen);
     } else if (
       // printingId !== '' &&
       !vehicleIds) {
       // fetch beltIds
-      fetchVehicle(printingId);
+      fetchVehicle();
     }
-  }, [printingId, vehicleIds, reverseShipmentFormOpen]);
+  }, [vehicleIds, reverseShipmentFormOpen]);
 
-  useEffect(() => {
-    const fetchPrintingBeltsIds = async () => {
-      const res = await get('/api/shipment/printing-belt', {
-        vehicle_id: reverseShipmentFormOpen,
-      });
-      setBeltIds(res?.data?.data);
-    };
-    fetchPrintingBeltsIds();
-    return () => {
-      setBeltIds(null);
-    };
-  }, [reverseShipmentFormOpen]);
+  // useEffect(() => {
+  //   const fetchPrintingBeltsIds = async () => {
+  //     const res = await get('/api/shipment/printing-belt', {
+  //       vehicle_id: reverseShipmentFormOpen,
+  //     });
+  //     setBeltIds(res?.data?.data);
+  //   };
+  //   fetchPrintingBeltsIds();
+  //   return () => {
+  //     setBeltIds(null);
+  //   };
+  // }, [reverseShipmentFormOpen]);
 
   useEffect(() => {
     if (
@@ -173,7 +171,7 @@ function Config({
       loaderId !== '') {
       setActiveStep(Math.max(1, activeStep));
     }
-  }, [activeStep, loaderId, printingId]);
+  }, [activeStep, loaderId]);
 
   useEffect(() => {
     if (
@@ -456,7 +454,7 @@ function Config({
   const handleFormSubmit = async () => {
     setInfoModalOpen(false);
     await handleSubmit({
-      printingId: printingId.length === 0 ? null : printingId,
+      printingId: null,
       loaderId,
       licenceNumber,
       bagType,
@@ -536,7 +534,6 @@ function Config({
             close={() => setInfoModalOpen(false)}
             handleSubmit={() => handleFormSubmit()}
             dataToDisplay={{
-              printingId: beltIds?.find((e) => e.id === printingId)?.machine_id,
               loaderId: vehicleIds?.find((e) => e.id === loaderId)?.machine_id,
               licenceNumber,
               wagonNo: wagonno,

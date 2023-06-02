@@ -78,7 +78,7 @@ function DashboardComponent({
   if (activeSection === 4) {
     return <Summary />;
   }
-  if (activeSection == 5) {
+  if (activeSection === 5) {
     return <Report />;
   }
   return <SystemHealth />;
@@ -101,7 +101,10 @@ function Index() {
   const [ongoingTransactions, setOngoingTransactions] = useState(null);
   const [queuedTransactions, setQueuedTransactions] = useState(null);
   const [alertCounter, setAlertCounter] = useState(0);
-  const { setBeltTrippingEnabled, deactivatePrintingSolution: DEACTIVATE_PRINTING_SOLUTION } = useContext(GlobalContext);
+  const {
+    setBeltTrippingEnabled,
+    deactivatePrintingSolution: DEACTIVATE_PRINTING_SOLUTION,
+  } = useContext(GlobalContext);
 
   const handleBeltReset = async (
     id,
@@ -285,7 +288,7 @@ function Index() {
       });
       setVehicleBelts((prevState) => {
         if (!prevState) return null;
-        const newBelts = prevState.filter((e) => {
+        const newBelts = prevState.filter((e) => { // eslint-disable-line
           if (e.id !== data.bag_counting_belt_id) {
             return e;
           }
@@ -350,7 +353,7 @@ function Index() {
             // modify this entity
             return {
               ...prevState[e],
-              bag_limit: parseInt(data?.new_bag_limit),
+              bag_limit: parseInt(data?.new_bag_limit, 10),
             };
           }
           return prevState[e];
@@ -475,7 +478,7 @@ function Index() {
           handleBagDone={handleBagDone}
           handleBeltReset={handleBeltReset}
         />
-        {alertCounter != 0 ? (
+        {alertCounter !== 0 ? (
           <div className="alert">
             {Object.keys(missPrintTransactionId).map((e, index) => (
               <Alert
@@ -524,7 +527,6 @@ DashboardComponent.propTypes = {
   ongoingTransactions: PropTypes.any,
   queuedTransactions: PropTypes.any,
   handleBagDone: PropTypes.func,
-  alertsnooze: PropTypes.func,
   handleBeltReset: PropTypes.func,
 };
 

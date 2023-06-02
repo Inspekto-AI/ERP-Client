@@ -97,7 +97,6 @@ const useStyles = makeStyles(() => ({
 
 function ConfirmationPreview({ data }) {
   const {
-    printingId,
     loaderId,
     licenceNumber,
     wagonNo,
@@ -115,10 +114,10 @@ function ConfirmationPreview({ data }) {
             <div className="key">Loader ID</div>
             <div className="value">{loaderId}</div>
           </div>
-          <div className="hints">
+          {/* <div className="hints">
             <div className="key">Printing Belt ID</div>
             <div className="value">{printingId}</div>
-          </div>
+          </div> */}
         </div>
         <div className="hint-container">
           <div className="hints" style={{ marginRight: '10px' }}>
