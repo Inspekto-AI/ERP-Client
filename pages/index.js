@@ -18,6 +18,7 @@ import LoaderAnalysis from 'components/LoaderAnalysis';
 import InfoModal from 'components/InfoModal/InfoModal';
 import { useState, useContext, useEffect } from 'react';
 import { GlobalContext } from 'context/GlobalContext';
+import ShipmentOverFlowModal from 'components/ShipmentOverFlowModal';
 
 import Alert from '@material-ui/lab/Alert';
 import { Button } from '@material-ui/core';
@@ -101,9 +102,12 @@ function Index() {
   const [ongoingTransactions, setOngoingTransactions] = useState(null);
   const [queuedTransactions, setQueuedTransactions] = useState(null);
   const [alertCounter, setAlertCounter] = useState(0);
+  const [error, setError] = useState(null);
   const {
     setBeltTrippingEnabled,
     deactivatePrintingSolution: DEACTIVATE_PRINTING_SOLUTION,
+    setShipmentOverflow,
+    shipmentOverflow
   } = useContext(GlobalContext);
 
   const handleBeltReset = async (
@@ -166,6 +170,14 @@ function Index() {
       serviceMutation.reset();
       setShipmentFormOpen(false);
       setReverseShipmentFormOpen(null);
+    }
+    else if(serviceMutation.isError){
+      serviceMutation.reset();
+      setShipmentOverflow(true);
+      setError(serviceMutation?.error?.response?.data?.message);
+      setShipmentFormOpen(false);
+      setReverseShipmentFormOpen(null);
+      // setError(serviceMutation?.error?.message);
     }
   }, [serviceMutation]);
 
@@ -401,6 +413,16 @@ function Index() {
     return <MaintenanceForm close={() => setMaintenanceForm(false)} />;
   }
   return (
+    <>
+
+    {shipmentOverflow &&
+     <ShipmentOverFlowModal 
+      open={shipmentOverflow}
+      close={() => {setShipmentOverflow(false)}}
+      error={error}
+    /> 
+    }
+    { 
     <Layout
       openShipmentForm={() => setShipmentFormOpen(true)}
       openMaintenanceForm={() => setMaintenanceFormOpen(true)}
@@ -515,6 +537,8 @@ function Index() {
         ) : null}
       </Container>
     </Layout>
+        }
+        </>
   );
 }
 

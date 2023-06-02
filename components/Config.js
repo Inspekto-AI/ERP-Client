@@ -135,6 +135,7 @@ function Config({
       const res = await get('/api/shipment/vehicle', {
         id,
       });
+      console.log(res);
       if (vehicleId) {
         setLoaderId(vehicleId);
         setLoaderType(
@@ -146,7 +147,9 @@ function Config({
     if (reverseShipmentFormOpen && !vehicleIds) {
       // fetch beltIds
       fetchVehicle(printingId, reverseShipmentFormOpen);
-    } else if (printingId !== '' && !vehicleIds) {
+    } else if (
+      // printingId !== '' && 
+      !vehicleIds) {
       // fetch beltIds
       fetchVehicle(printingId);
     }
@@ -166,7 +169,9 @@ function Config({
   }, [reverseShipmentFormOpen]);
 
   useEffect(() => {
-    if (printingId !== '' && loaderId !== '') {
+    if (
+      // printingId !== '' && 
+    loaderId !== '') {
       setActiveStep(Math.max(1, activeStep));
     }
   }, [activeStep, loaderId, printingId]);
@@ -340,7 +345,7 @@ function Config({
       default:
         return (
           <div className="form-part">
-            <div className="input-container">
+            {/* <div className="input-container">
               <div className="label">Printing belt</div>
               <FormControl>
                 {printingId === '' ? (
@@ -386,7 +391,7 @@ function Config({
                     })}
                 </Select>
               </FormControl>
-            </div>
+            </div> */}
             <div className="input-container">
               <div className="label">Loader belt</div>
               <FormControl>
@@ -407,7 +412,7 @@ function Config({
                         .vehicle_type,
                     );
                   }}
-                  disabled={!vehicleIds || reverseShipmentFormOpen}
+                  // disabled={!vehicleIds || reverseShipmentFormOpen}
                 >
                   {vehicleIds
                     && vehicleIds.map((e, index) => {

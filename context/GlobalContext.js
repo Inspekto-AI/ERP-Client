@@ -10,6 +10,7 @@ export function GlobalProvider({ children }) {
   const [bagTypes, setBagTypes] = useState(null);
   const [deactivateLoaderSolution, setDeactivateLoaderSolution] = useState(0);
   const [deactivatePrintingSolution, setDeactivatePrintingSolution] = useState(0);
+  const [shipmentOverflow, setShipmentOverflow] = useState(false);
 
   return (
     <GlobalContext.Provider
@@ -26,6 +27,8 @@ export function GlobalProvider({ children }) {
         setDeactivateLoaderSolution,
         deactivatePrintingSolution,
         setDeactivatePrintingSolution,
+        shipmentOverflow,
+        setShipmentOverflow
       }}
     >
       {children}
