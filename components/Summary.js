@@ -2,7 +2,7 @@ import { useEffect, useState } from 'react';
 import Image from 'next/image';
 import theme from 'styles/theme';
 import Container from 'styles/summary.styles';
-import { Grid } from '@material-ui/core';
+import { Grid, Select, ButtonGroup, Button, MenuItem } from '@material-ui/core';
 import NotificationContainer from 'styles/summaryNotification.styles';
 import MaintenanceContainer from 'styles/maintenanceNotification.styles';
 import ImageKitLoader from 'utils/ImageLoader';
@@ -15,8 +15,18 @@ import Maintenance from 'components/Maintenance';
 import Notification from 'components/Notification';
 import Loader from 'components/Loader';
 import { getStartAndEndDate } from 'utils/globalFunctions';
+import { LocalizationProvider } from '@mui/x-date-pickers';
+import { AdapterDayjs } from '@mui/x-date-pickers/AdapterDayjs';
+import { DateCalendar } from '@mui/x-date-pickers';
 
 function Summary() {
+  const curDate = new Date();
+  const [dateCalendarOpen, setDateCalendarOpen] = useState(false);
+  const [bagType, setBagType] = useState(0);
+  const [filter, setFilter] = useState(0);
+  const [shiftType, setShiftType] = useState(0);
+  const [time, setTime] = useState(Math.floor(curDate.getTime() / 1000));
+
   const [summaryData, setSummaryData] = useState(null);
   const [shiftDate, setShiftDate] = useState(null);
   const [printingBelts, setPrintingBelts] = useState(null);
@@ -25,11 +35,38 @@ function Summary() {
   const [maintenanceFormOpen, setMaintenanceFormOpen] = useState(false);
   const [notificationsFormOpen, setNotificationsFormOpen] = useState(false);
   const [isLoading, setIsLoading] = useState(true);
+  const getCurrentFormattedDate = () => {
+    const currentDate = new Date();
+    const day = String(currentDate.getDate()).padStart(2, '0');
+    const monthIndex = currentDate.getMonth();
+    const year = currentDate.getFullYear();
+
+    const months = [
+      'Jan',
+      'Feb',
+      'Mar',
+      'Apr',
+      'May',
+      'Jun',
+      'Jul',
+      'Aug',
+      'Sep',
+      'Oct',
+      'Nov',
+      'Dec'
+    ];
+
+    const month = months[monthIndex];
+
+    return `${day} ${month} ${year}`;
+  };
+
+  const currentFormattedDate = getCurrentFormattedDate();
 
   useEffect(() => {
     const fetchSummary = async () => {
       const data = await get('/api/stats/summarized-stats', {
-        dateRange: getStartAndEndDate(),
+        dateRange: getStartAndEndDate()
       });
       setSummaryData(data?.data?.data?.analysis);
       setShiftCount(data?.data?.data?.shift);
@@ -43,13 +80,15 @@ function Summary() {
     }
   }, [summaryData]);
 
-  const markMaintenanceComplete = async (id) => {
+  const markMaintenanceComplete = async id => {
     try {
       await put('/api/maintenance', { id });
-      setMaintenanceTickets((prevData) => prevData.map((e) => {
-        if (e.id === id) return { ...e, marked_complete: 1 };
-        return e;
-      }));
+      setMaintenanceTickets(prevData =>
+        prevData.map(e => {
+          if (e.id === id) return { ...e, marked_complete: 1 };
+          return e;
+        })
+      );
     } catch (err) {
       console.log(err);
     }
@@ -65,22 +104,112 @@ function Summary() {
 
   return (
     <Container>
-      {isLoading && <Loader />}
       <div className="analysis-container">
-        <div className="head">
-          <h2>Shift Summary</h2>
-          <div className="date-container">
-            <div className="date-display">
-              Shift
-              {' '}
-              {shiftCount}
-              {' '}
-              -
-              {' '}
-              {shiftDate}
+        <div
+          style={{
+            display: 'flex',
+            justifyContent: 'space-around',
+            padding: '20px'
+          }}
+        >
+          <LocalizationProvider dateAdapter={AdapterDayjs}>
+            <div className="view">
+              <Select
+                value={filter}
+                onChange={e => setFilter(e.target.value)}
+                style={{
+                  fontSize: '14px',
+                  background: 'white',
+                  width: '160px',
+                  outline: 'none',
+                  outlineColor: 'blue'
+                }}
+                variant="outlined"
+              >
+                <MenuItem value={0}>Packer Summary</MenuItem>
+                <MenuItem value={1}>Loader Summary</MenuItem>
+              </Select>
             </div>
-          </div>
+
+            <ButtonGroup
+              variant="contained"
+              aria-label="outlined primary button group"
+            >
+              <Button
+                style={{
+                  backgroundColor: bagType === 0 ? '#B5179E' : '#F5F5F5',
+                  color: bagType === 1 ? '#B5179E' : '#F5F5F5'
+                }}
+                onClick={() => {
+                  setBagType(0);
+                }}
+              >
+                BAGS
+              </Button>
+              <Button
+                style={{
+                  backgroundColor: bagType === 1 ? '#B5179E' : '#F5F5F5',
+                  color: bagType === 0 ? '#B5179E' : '#F5F5F5'
+                }}
+                onClick={() => {
+                  setBagType(1);
+                }}
+              >
+                TONNAGE
+              </Button>
+            </ButtonGroup>
+
+            <div className="view">
+              <Select
+                value={0}
+                onChange={e => {
+                  console.log(e.target.value);
+                  setTime(e.target.value);
+                }}
+                style={{
+                  fontSize: '14px',
+                  background: 'white',
+                  width: '160px',
+                  outline: 'none',
+                  outlineColor: 'blue'
+                }}
+                variant="outlined"
+              >
+                <MenuItem value={0}>{currentFormattedDate}</MenuItem>
+                <DateCalendar
+                  // val={0}
+                  // editableDateInputs
+                  onChange={item => {
+                    setTime([item.selection]);
+                    // setDateUnAltered(false);
+                  }}
+                  // moveRangeOnFirstSelection={false}
+                  // ranges={date}
+                  // rangeColors={['#051c3f']}
+                />
+              </Select>
+            </div>
+
+            <div className="view">
+              <Select
+                value={shiftType}
+                onChange={e => setShiftType(e.target.value)}
+                style={{
+                  fontSize: '14px',
+                  background: 'white',
+                  width: '160px'
+                }}
+                variant="outlined"
+              >
+                <MenuItem value={0}>Shift A</MenuItem>
+                <MenuItem value={1}>Shift B</MenuItem>
+                <MenuItem value={2}>Shift C</MenuItem>
+                <MenuItem value={3}>All Shifts</MenuItem>
+              </Select>
+            </div>
+          </LocalizationProvider>
         </div>
+
         <div className="summary-container">
           <div className="left-portion">
             <div className="count-container">
@@ -90,17 +219,14 @@ function Summary() {
                     className="count-block"
                     style={{ background: theme.palette.summary.green }}
                   >
-                    <Image
-                      src="Package.svg"
-                      loader={ImageKitLoader}
-                      layout="fill"
-                    />
                     <p className="count">
                       {summaryData
                         ? `${summaryData?.total_bags_packed} Bags`
                         : 'NA'}
                     </p>
-                    <p className="description">Bags printed so far</p>
+                    <p className="description">
+                      {filter === 0 ? 'Total Production' : 'Total Dispatch'}
+                    </p>
                   </div>
                 </Grid>
                 <Grid item xs={6}>
@@ -108,61 +234,26 @@ function Summary() {
                     className="count-block"
                     style={{ background: theme.palette.summary.red }}
                   >
-                    <Image
-                      src="Tag.svg"
-                      loader={ImageKitLoader}
-                      layout="fill"
-                    />
                     <p className="count">
                       {summaryData
                         ? `${summaryData?.total_missed_labels} Bags`
                         : 'NA'}
                     </p>
-                    <p className="description">Bags printed without label</p>
+                    <p className="description">
+                      {filter === 0 ? 'Misprint Cases' : 'Burstage'}
+                    </p>
                   </div>
                 </Grid>
-                <Grid item xs={6}>
-                  <div
-                    className="count-block"
-                    style={{ background: theme.palette.summary['light-blue'] }}
-                  >
-                    <Image
-                      src="PaintBrushBroad.svg"
-                      loader={ImageKitLoader}
-                      layout="fill"
-                    />
-                    <p className="count">
-                      {summaryData
-                        ? `${summaryData?.total_bags_dispatched} Bags`
-                        : 'NA'}
-                    </p>
-                    <p className="description">Bags dispatched</p>
-                  </div>
-                </Grid>
-                {/* <Grid item xs={6}>
-                  <div
-                    className="count-block"
-                    style={{ background: theme.palette.summary['dark-blue'] }}
-                  >
-                    <Image
-                      src="PaintBrushBroad_dark.svg"
-                      loader={ImageKitLoader}
-                      layout="fill"
-                    />
-                    <p className="count">
-                      {summaryData
-                        ? `${summaryData?.packing_efficiency}`
-                        : 'NA'}
-                    </p>
-                    <p className="description">Packing efficiency</p>
-                  </div>
-                </Grid> */}
               </Grid>
             </div>
             <div className="maintenance-container">
               <Layout
                 alternateHeader
-                title="Assigned Tickets"
+                title={
+                  filter === 0
+                    ? 'Hourly Packer Data'
+                    : 'Hourly Loading Analytics'
+                }
                 hideFooter
                 counter={0}
                 summaryHeader
@@ -183,12 +274,11 @@ function Summary() {
                             <div className="vr" />
                           </div>
                           <div className="notification">
-                            <div className="ticket-title">
-                              Ticket #
-                              {e.id}
-                            </div>
+                            <div className="ticket-title">Ticket #{e.id}</div>
                             <div className="description">
-                              {e.printing_belt ? `Printing belt - ${e.printing_belt_id} under maintenance | Reason - ${e.reason}` : `Loading belt - ${e.loading_belt_id} under maintenance | Reason - ${e.reason}`}
+                              {e.printing_belt
+                                ? `Printing belt - ${e.printing_belt_id} under maintenance | Reason - ${e.reason}`
+                                : `Loading belt - ${e.loading_belt_id} under maintenance | Reason - ${e.reason}`}
                             </div>
                             <div className="button-container">
                               {/* <FrinksButton
@@ -218,7 +308,7 @@ function Summary() {
                     <p
                       style={{
                         padding: '20px',
-                        textAlign: 'center',
+                        textAlign: 'center'
                       }}
                     >
                       No maintenance ticket found
@@ -232,7 +322,7 @@ function Summary() {
             <div className="notification-container">
               <Layout
                 alternateHeader
-                title="Latest Activity"
+                title={filter === 0 ? 'Packer Analysis' : 'Loader Analysis'}
                 hideFooter
                 counter={summaryData?.total_missed_labels || 0}
                 summaryHeader
@@ -267,9 +357,7 @@ function Summary() {
                                   <div className="info">
                                     <div className="title">Incorrect bags</div>
                                     <div className="sub-title">
-                                      {e.length}
-                                      {' '}
-                                      bags passed unmarked.
+                                      {e.length} bags passed unmarked.
                                     </div>
                                   </div>
                                   <div className="count">
@@ -284,9 +372,12 @@ function Summary() {
                                           <div className="image-container">
                                             <Image
                                               src={element.local_image_path}
-                                              loader={() => `${BASE_URL}/api/shipment/images?image_location=${element.local_image_path
-                                                || element.local_image_location
-                                              }`}
+                                              loader={() =>
+                                                `${BASE_URL}/api/shipment/images?image_location=${
+                                                  element.local_image_path ||
+                                                  element.local_image_location
+                                                }`
+                                              }
                                               layout="fill"
                                               objectFit="contain"
                                               objectPosition="top"
@@ -294,7 +385,7 @@ function Summary() {
                                           </div>
                                           <div className="time">
                                             {moment(
-                                              new Date(element.created_at),
+                                              new Date(element.created_at)
                                             ).format('h:mm A')}
                                           </div>
                                         </div>
@@ -310,14 +401,14 @@ function Summary() {
                               </div>
                             </div>
                           );
-                        },
+                        }
                       )}
                     </>
                   ) : (
                     <p
                       style={{
                         padding: '20px',
-                        textAlign: 'center',
+                        textAlign: 'center'
                       }}
                     >
                       No new activities found
