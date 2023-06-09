@@ -7,9 +7,9 @@ const Container = styled.div`
     background: ${theme.palette.royalBlue.main};
     color: ${theme.palette.smokyWhite.main};
     display: flex;
-    align-items: flex-start;
+    // align-items: flex-start;
     justify-content: space-between;
-    padding: 40px 60px;
+    // padding: 40px 60px;
 
     @media all and (max-width: 960px) {
       padding: 40px 20px;
@@ -39,8 +39,8 @@ const Container = styled.div`
   }
 
   .copyright {
-    text-align: right;
-    margin-top: 20px;
+    // text-align: right;
+    // margin-top: 20px;
   }
 `;
 

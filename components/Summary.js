@@ -1,23 +1,27 @@
 import { useEffect, useState } from 'react';
-import Image from 'next/image';
 import theme from 'styles/theme';
 import Container from 'styles/summary.styles';
-import { Grid, Select, ButtonGroup, Button, MenuItem } from '@material-ui/core';
-import NotificationContainer from 'styles/summaryNotification.styles';
-import MaintenanceContainer from 'styles/maintenanceNotification.styles';
-import ImageKitLoader from 'utils/ImageLoader';
+import {
+  Grid,
+  Select,
+  ButtonGroup,
+  Button,
+  MenuItem,
+  FormControl,
+  InputLabel
+} from '@material-ui/core';
 import { BASE_URL } from 'utils/constants';
 import { get, put } from 'utils/api';
 import Layout from 'components/Layout';
-import moment from 'moment';
-import FrinksButton from 'components/FrinksButton';
 import Maintenance from 'components/Maintenance';
 import Notification from 'components/Notification';
-import Loader from 'components/Loader';
 import { getStartAndEndDate } from 'utils/globalFunctions';
 import { LocalizationProvider } from '@mui/x-date-pickers';
 import { AdapterDayjs } from '@mui/x-date-pickers/AdapterDayjs';
 import { DateCalendar } from '@mui/x-date-pickers';
+import SummaryChart from './SummaryChart';
+import SummaryAnalysis from './SummaryAnalysis';
+import SummaryLoaderAnalysis from './SummaryLoaderAnalysis';
 
 function Summary() {
   const curDate = new Date();
@@ -25,7 +29,6 @@ function Summary() {
   const [bagType, setBagType] = useState(0);
   const [filter, setFilter] = useState(0);
   const [shiftType, setShiftType] = useState(0);
-  const [time, setTime] = useState(Math.floor(curDate.getTime() / 1000));
 
   const [summaryData, setSummaryData] = useState(null);
   const [shiftDate, setShiftDate] = useState(null);
@@ -35,6 +38,8 @@ function Summary() {
   const [maintenanceFormOpen, setMaintenanceFormOpen] = useState(false);
   const [notificationsFormOpen, setNotificationsFormOpen] = useState(false);
   const [isLoading, setIsLoading] = useState(true);
+  const [meterDegree, setMeterDegree] = useState(20);
+
   const getCurrentFormattedDate = () => {
     const currentDate = new Date();
     const day = String(currentDate.getDate()).padStart(2, '0');
@@ -62,6 +67,7 @@ function Summary() {
   };
 
   const currentFormattedDate = getCurrentFormattedDate();
+  const [time, setTime] = useState(currentFormattedDate);
 
   useEffect(() => {
     const fetchSummary = async () => {
@@ -109,20 +115,26 @@ function Summary() {
           style={{
             display: 'flex',
             justifyContent: 'space-around',
-            padding: '20px'
+            // height: '40px',
+            marginTop: '10px',
+            alignItems: 'center'
           }}
         >
           <LocalizationProvider dateAdapter={AdapterDayjs}>
-            <div className="view">
+            <div className="view" style={{ width: '40%' }}>
               <Select
                 value={filter}
                 onChange={e => setFilter(e.target.value)}
                 style={{
-                  fontSize: '14px',
+                  fontSize: '28px',
+                  fontWeight: '600',
+                  color: '#3A0CA3',
                   background: 'white',
-                  width: '160px',
-                  outline: 'none',
-                  outlineColor: 'blue'
+                  outlineColor: '#3A0CA3',
+                  border: '1px solid #3A0CA3',
+                  width: '450px',
+                  padding: '0px',
+                  marginLeft: '-40px'
                 }}
                 variant="outlined"
               >
@@ -138,7 +150,9 @@ function Summary() {
               <Button
                 style={{
                   backgroundColor: bagType === 0 ? '#B5179E' : '#F5F5F5',
-                  color: bagType === 1 ? '#B5179E' : '#F5F5F5'
+                  color: bagType === 1 ? '#B5179E' : '#F5F5F5',
+                  width: '120px',
+                  height: '50px'
                 }}
                 onClick={() => {
                   setBagType(0);
@@ -149,7 +163,9 @@ function Summary() {
               <Button
                 style={{
                   backgroundColor: bagType === 1 ? '#B5179E' : '#F5F5F5',
-                  color: bagType === 0 ? '#B5179E' : '#F5F5F5'
+                  color: bagType === 0 ? '#B5179E' : '#F5F5F5',
+                  width: '120px',
+                  height: '50px'
                 }}
                 onClick={() => {
                   setBagType(1);
@@ -169,8 +185,8 @@ function Summary() {
                 style={{
                   fontSize: '14px',
                   background: 'white',
-                  width: '160px',
-                  outline: 'none',
+                  width: '240px',
+                  // outline: 'none',
                   outlineColor: 'blue'
                 }}
                 variant="outlined"
@@ -179,8 +195,11 @@ function Summary() {
                 <DateCalendar
                   // val={0}
                   // editableDateInputs
+
                   onChange={item => {
-                    setTime([item.selection]);
+                    console.log(item);
+                    console.log(item?.$d.toDateString());
+                    setTime(item?.$d.toDateString());
                     // setDateUnAltered(false);
                   }}
                   // moveRangeOnFirstSelection={false}
@@ -197,7 +216,8 @@ function Summary() {
                 style={{
                   fontSize: '14px',
                   background: 'white',
-                  width: '160px'
+                  width: '240px',
+                  marginRight: '-20px'
                 }}
                 variant="outlined"
               >
@@ -210,19 +230,26 @@ function Summary() {
           </LocalizationProvider>
         </div>
 
-        <div className="summary-container">
+        <div className="summary-container" style={{ marginTop: '50px' }}>
           <div className="left-portion">
-            <div className="count-container">
-              <Grid container spacing={3}>
+            <div
+              className="count-container"
+              style={{
+                // marginLeft: '40px',
+                marginTop: '20px'
+                // marginRight: '40px'
+              }}
+            >
+              <Grid container spacing={5}>
                 <Grid item xs={6}>
                   <div
                     className="count-block"
-                    style={{ background: theme.palette.summary.green }}
+                    style={{ background: '#3A71A5' }}
                   >
                     <p className="count">
                       {summaryData
                         ? `${summaryData?.total_bags_packed} Bags`
-                        : 'NA'}
+                        : '24,000 Bags'}
                     </p>
                     <p className="description">
                       {filter === 0 ? 'Total Production' : 'Total Dispatch'}
@@ -232,12 +259,12 @@ function Summary() {
                 <Grid item xs={6}>
                   <div
                     className="count-block"
-                    style={{ background: theme.palette.summary.red }}
+                    style={{ background: '#FF5742' }}
                   >
                     <p className="count">
                       {summaryData
                         ? `${summaryData?.total_missed_labels} Bags`
-                        : 'NA'}
+                        : '23,000 Bags'}
                     </p>
                     <p className="description">
                       {filter === 0 ? 'Misprint Cases' : 'Burstage'}
@@ -246,7 +273,10 @@ function Summary() {
                 </Grid>
               </Grid>
             </div>
-            <div className="maintenance-container">
+            <div
+              className="maintenance-container"
+              style={{ marginTop: '50px' }}
+            >
               <Layout
                 alternateHeader
                 title={
@@ -259,67 +289,18 @@ function Summary() {
                 summaryHeader
                 disableMinimumHeight
                 viewAllFunc={() => setMaintenanceFormOpen(true)}
-                style={{ maxHeight: '60vh', overflowY: 'auto' }}
+                // style={{ maxHeight: '60vh', overflowY: 'auto' }}
+                style={{ background: 'white' }}
               >
-                <MaintenanceContainer>
-                  {maintenanceTickets && maintenanceTickets.length > 0 ? (
-                    <>
-                      {maintenanceTickets.map((e, index) => (
-                        <div className="defect active" key={index}>
-                          <div className="title">
-                            {new Date(e.created_at).toLocaleString()}
-                          </div>
-                          <div className="stepper">
-                            <div className="blank-thumb" />
-                            <div className="vr" />
-                          </div>
-                          <div className="notification">
-                            <div className="ticket-title">Ticket #{e.id}</div>
-                            <div className="description">
-                              {e.printing_belt
-                                ? `Printing belt - ${e.printing_belt_id} under maintenance | Reason - ${e.reason}`
-                                : `Loading belt - ${e.loading_belt_id} under maintenance | Reason - ${e.reason}`}
-                            </div>
-                            <div className="button-container">
-                              {/* <FrinksButton
-                                  variant="outlined"
-                                  color="inherit"
-                                  text="Edit Ticket"
-                                  style={{
-                                    fontSize: '12px',
-                                    height: '40px',
-                                    marginRight: '14px'
-                                  }}
-                                /> */}
-                              {e.marked_complete ? null : (
-                                <FrinksButton
-                                  color="inherit"
-                                  text="Mark Complete"
-                                  style={{ fontSize: '12px', height: '40px' }}
-                                  onClick={() => markMaintenanceComplete(e.id)}
-                                />
-                              )}
-                            </div>
-                          </div>
-                        </div>
-                      ))}
-                    </>
-                  ) : (
-                    <p
-                      style={{
-                        padding: '20px',
-                        textAlign: 'center'
-                      }}
-                    >
-                      No maintenance ticket found
-                    </p>
-                  )}
-                </MaintenanceContainer>
+                <SummaryChart />
               </Layout>
             </div>
           </div>
-          <div className="right-portion">
-            <div className="notification-container">
+          <div className="right-portion" style={{ marginTop: '20px' }}>
+            <div
+              className="notification-container"
+              style={{ marginBottom: '10px' }}
+            >
               <Layout
                 alternateHeader
                 title={filter === 0 ? 'Packer Analysis' : 'Loader Analysis'}
@@ -328,93 +309,32 @@ function Summary() {
                 summaryHeader
                 disableMinimumHeight
                 viewAllFunc={() => setNotificationsFormOpen(true)}
-                style={{ maxHeight: '60vh', overflowY: 'auto' }}
+                style={{
+                  // maxHeight: '60vh',
+                  background: 'white'
+                  // marginBottom: '20px'
+                  // padding: '0 50px'
+                  // overflow: 'auto'
+                }}
               >
-                <NotificationContainer applyHeightLimit>
-                  {summaryData && printingBelts ? (
-                    <>
-                      {Object.values(summaryData?.missed_paths)?.map(
-                        (e, index) => {
-                          if (e.length <= 0) return null;
-                          return (
-                            <div className="defect active" key={index}>
-                              <div className="title">Just Now</div>
-                              <div className="stepper">
-                                <div className="thumb">
-                                  <div className="vr invert-vr" />
-                                  <Image
-                                    src="Package_5rbWbqc1A.svg"
-                                    loader={ImageKitLoader}
-                                    layout="fixed"
-                                    height={40}
-                                    width={40}
-                                  />
-                                </div>
-                                <div className="vr" />
-                              </div>
-                              <div className="notification">
-                                <div className="info-container">
-                                  <div className="info">
-                                    <div className="title">Incorrect bags</div>
-                                    <div className="sub-title">
-                                      {e.length} bags passed unmarked.
-                                    </div>
-                                  </div>
-                                  <div className="count">
-                                    {printingBelts[index - 1]}
-                                  </div>
-                                </div>
-                                <div className="image-container">
-                                  <Grid container>
-                                    {e.map((element, idx) => (
-                                      <Grid item xs={4}>
-                                        <div className="image" key={idx}>
-                                          <div className="image-container">
-                                            <Image
-                                              src={element.local_image_path}
-                                              loader={() =>
-                                                `${BASE_URL}/api/shipment/images?image_location=${
-                                                  element.local_image_path ||
-                                                  element.local_image_location
-                                                }`
-                                              }
-                                              layout="fill"
-                                              objectFit="contain"
-                                              objectPosition="top"
-                                            />
-                                          </div>
-                                          <div className="time">
-                                            {moment(
-                                              new Date(element.created_at)
-                                            ).format('h:mm A')}
-                                          </div>
-                                        </div>
-                                      </Grid>
-                                    ))}
-                                  </Grid>
-                                </div>
-                                {/* <div className="incorrect-container">
-                                  <Button variant="outlined" color="inherit">
-                                    Incorrect Alert?
-                                  </Button>
-                                </div> */}
-                              </div>
-                            </div>
-                          );
-                        }
-                      )}
-                    </>
-                  ) : (
-                    <p
-                      style={{
-                        padding: '20px',
-                        textAlign: 'center'
-                      }}
-                    >
-                      No new activities found
-                    </p>
-                  )}
-                </NotificationContainer>
+                {/* <SummaryPackerCard /> */}
+                <div className="count-container">
+                  {!filter && <SummaryAnalysis filter={filter} />}
+                  {!filter && <SummaryAnalysis filter={filter} />}
+                  {!filter && <SummaryAnalysis filter={filter} />}
+                  {!filter && <SummaryAnalysis filter={filter} />}
+                  {!filter && <SummaryAnalysis filter={filter} />}
+                  {filter && <SummaryLoaderAnalysis />}
+                  {filter && <SummaryLoaderAnalysis />}
+                  {filter && <SummaryLoaderAnalysis />}
+                  {filter && <SummaryLoaderAnalysis />}
+                  {filter && <SummaryLoaderAnalysis />}
+                  {/* {filter && <SummaryLoaderAnalysis />}
+                  {filter && <SummaryLoaderAnalysis />}
+                  {filter && <SummaryLoaderAnalysis />}
+                  {filter && <SummaryLoaderAnalysis />}
+                  {filter && <SummaryLoaderAnalysis />} */}
+                </div>
               </Layout>
             </div>
           </div>
