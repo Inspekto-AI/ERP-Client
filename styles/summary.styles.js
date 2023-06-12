@@ -27,6 +27,11 @@ const Container = styled.div`
       margin-top: 30px;
     }
     margin-right: 30px;
+
+    @media(max-width: 1405px){
+      margin-left: 0px;
+      margin-right: 0px
+    }
   }
 
   .right-portion {
@@ -39,8 +44,14 @@ const Container = styled.div`
 
     margin-left: 30px;
 
+    
+
     @media all and (max-width: 850px) {
       margin-top: 20px;
+    }
+    @media(max-width: 1405px){
+      margin-left: 0px;
+      margin-right: 0px
     }
   }
 
@@ -117,6 +128,17 @@ const Container = styled.div`
       z-index: 2;
       margin-top: -25px;
     }
+    @media(max-width: 1600px) and (min-width: 1340px){
+      .count_summary {
+        font-size: 28px
+      }
+      .description_summary {
+        font-size: 13px;
+      }
+      .description_summary_ {
+        font-size: 13px;
+      }
+    }
   }
 
   .report-container {
@@ -184,6 +206,10 @@ const Container = styled.div`
     padding: 5px;
     margin-top: 3px;
   }
+
+
+ 
+
 `;
 
 export default Container;

@@ -8,6 +8,11 @@ const Container = styled.div`
     align-items: center;
     padding: 5px 60px;
     color: #485057;
+    position: fixed;
+    top: 70px;
+    left: 0;
+    right: 0;
+    z-index: 100;
 
     @media all and (max-width: 960px) {
       padding: 10px;
@@ -42,6 +47,7 @@ const Container = styled.div`
   .analysis-container {
     padding: 30px 60px 20px 60px;
     background: #e5e5e5;
+    margin-top: 128.875px;
 
     @media all and (max-width: 960px) {
       padding: 20px;

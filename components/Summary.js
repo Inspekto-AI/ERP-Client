@@ -22,8 +22,41 @@ import { DateCalendar } from '@mui/x-date-pickers';
 import SummaryChart from './SummaryChart';
 import SummaryAnalysis from './SummaryAnalysis';
 import SummaryLoaderAnalysis from './SummaryLoaderAnalysis';
+import { makeStyles } from '@material-ui/core/styles';
+import KeyboardArrowDownSharpIcon from '@mui/icons-material/KeyboardArrowDownSharp';
+
+const useStyles = makeStyles(theme => ({
+  select: {
+    width: '300px',
+    [theme.breakpoints.up(1550)]: {
+      width: '450px',
+      marginRight: '150px',
+      marginLeft: '-60px'
+    },
+    [theme.breakpoints.down(1550)]: {
+      // width: '450px',
+      marginRight: 'auto'
+    },
+  },
+  select_1: {
+    width: '200px',
+    [theme.breakpoints.up(1550)]: {
+      width: '250px',
+      marginRight: '-30px'
+    },
+  },
+  select_2: {
+    width: '100px',
+    [theme.breakpoints.up(1550)]: {
+      width: '125px',
+    },
+  },
+
+}));
 
 function Summary() {
+
+  const classes = useStyles();
   const curDate = new Date();
   const [dateCalendarOpen, setDateCalendarOpen] = useState(false);
   const [bagType, setBagType] = useState(0);
@@ -39,7 +72,7 @@ function Summary() {
   const [notificationsFormOpen, setNotificationsFormOpen] = useState(false);
   const [isLoading, setIsLoading] = useState(true);
   const [meterDegree, setMeterDegree] = useState(20);
-
+  var options = { day: 'numeric', month: 'short', year: 'numeric' };
   const getCurrentFormattedDate = () => {
     const currentDate = new Date();
     const day = String(currentDate.getDate()).padStart(2, '0');
@@ -112,6 +145,7 @@ function Summary() {
     <Container>
       <div className="analysis-container">
         <div
+
           style={{
             display: 'flex',
             justifyContent: 'space-around',
@@ -121,9 +155,10 @@ function Summary() {
           }}
         >
           <LocalizationProvider dateAdapter={AdapterDayjs}>
-            <div className="view" style={{ width: '40%' }}>
+            <div className="view">
               <Select
                 value={filter}
+                className={classes.select}
                 onChange={e => setFilter(e.target.value)}
                 style={{
                   fontSize: '28px',
@@ -132,11 +167,13 @@ function Summary() {
                   background: 'white',
                   outlineColor: '#3A0CA3',
                   border: '1px solid #3A0CA3',
-                  width: '450px',
+                  // width: '450px',
                   padding: '0px',
-                  marginLeft: '-40px'
+                  // marginLeft: '-40px'
                 }}
                 variant="outlined"
+                IconComponent={KeyboardArrowDownSharpIcon}
+                
               >
                 <MenuItem value={0}>Packer Summary</MenuItem>
                 <MenuItem value={1}>Loader Summary</MenuItem>
@@ -144,14 +181,16 @@ function Summary() {
             </div>
 
             <ButtonGroup
+              // className={classes.select_1}
               variant="contained"
               aria-label="outlined primary button group"
             >
               <Button
+                className={classes.select_2}
                 style={{
                   backgroundColor: bagType === 0 ? '#B5179E' : '#F5F5F5',
                   color: bagType === 1 ? '#B5179E' : '#F5F5F5',
-                  width: '120px',
+                  // width: '120px',
                   height: '50px'
                 }}
                 onClick={() => {
@@ -161,10 +200,11 @@ function Summary() {
                 BAGS
               </Button>
               <Button
+                className={classes.select_2}
                 style={{
                   backgroundColor: bagType === 1 ? '#B5179E' : '#F5F5F5',
                   color: bagType === 0 ? '#B5179E' : '#F5F5F5',
-                  width: '120px',
+                  // width: '120px',
                   height: '50px'
                 }}
                 onClick={() => {
@@ -177,49 +217,53 @@ function Summary() {
 
             <div className="view">
               <Select
+                className={classes.select_1}
                 value={0}
-                onChange={e => {
-                  console.log(e.target.value);
-                  setTime(e.target.value);
-                }}
+                // onChange={e => {
+                //   console.log(e.target.value);
+                //   setTime(e.target.value);
+                // }}
                 style={{
                   fontSize: '14px',
                   background: 'white',
-                  width: '240px',
+                  // width: '240px',
                   // outline: 'none',
                   outlineColor: 'blue'
                 }}
+                IconComponent={KeyboardArrowDownSharpIcon}
                 variant="outlined"
               >
-                <MenuItem value={0}>{currentFormattedDate}</MenuItem>
+                <MenuItem value={0}>{time}</MenuItem>
                 <DateCalendar
                   // val={0}
                   // editableDateInputs
 
                   onChange={item => {
-                    console.log(item);
-                    console.log(item?.$d.toDateString());
-                    setTime(item?.$d.toDateString());
+                    // console.log(item);
+                    // console.log(item?.$d.toDateString());
+                    setTime(item?.$d.toLocaleDateString('en-US', options));
                     // setDateUnAltered(false);
                   }}
-                  // moveRangeOnFirstSelection={false}
-                  // ranges={date}
-                  // rangeColors={['#051c3f']}
+                // moveRangeOnFirstSelection={false}
+                // ranges={date}
+                // rangeColors={['#051c3f']}
                 />
               </Select>
             </div>
 
             <div className="view">
               <Select
+                className={classes.select_1}
                 value={shiftType}
                 onChange={e => setShiftType(e.target.value)}
                 style={{
                   fontSize: '14px',
                   background: 'white',
-                  width: '240px',
-                  marginRight: '-20px'
+                  // width: '240px',
+                  // marginRight: '-20px'
                 }}
                 variant="outlined"
+                IconComponent={KeyboardArrowDownSharpIcon}
               >
                 <MenuItem value={0}>Shift A</MenuItem>
                 <MenuItem value={1}>Shift B</MenuItem>
@@ -290,7 +334,7 @@ function Summary() {
                 disableMinimumHeight
                 viewAllFunc={() => setMaintenanceFormOpen(true)}
                 // style={{ maxHeight: '60vh', overflowY: 'auto' }}
-                style={{ background: 'white' }}
+                style={{ background: 'white', alignItems: 'center', justifyContent: 'center' }}
               >
                 <SummaryChart />
               </Layout>
@@ -310,11 +354,12 @@ function Summary() {
                 disableMinimumHeight
                 viewAllFunc={() => setNotificationsFormOpen(true)}
                 style={{
-                  // maxHeight: '60vh',
-                  background: 'white'
+                  maxHeight: '60vh',
+                  background: 'white',
                   // marginBottom: '20px'
                   // padding: '0 50px'
-                  // overflow: 'auto'
+                  overflowY: 'auto',
+                  overflowX: 'hidden'
                 }}
               >
                 {/* <SummaryPackerCard /> */}
