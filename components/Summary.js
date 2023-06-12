@@ -150,7 +150,7 @@ function Summary() {
             display: 'flex',
             justifyContent: 'space-around',
             // height: '40px',
-            marginTop: '10px',
+            marginTop: '5px',
             alignItems: 'center'
           }}
         >
@@ -274,7 +274,7 @@ function Summary() {
           </LocalizationProvider>
         </div>
 
-        <div className="summary-container" style={{ marginTop: '50px' }}>
+        <div className="summary-container" style={{ marginTop: '20px' }}>
           <div className="left-portion">
             <div
               className="count-container"
@@ -354,7 +354,7 @@ function Summary() {
                 disableMinimumHeight
                 viewAllFunc={() => setNotificationsFormOpen(true)}
                 style={{
-                  maxHeight: '60vh',
+                  maxHeight: '58vh',
                   background: 'white',
                   // marginBottom: '20px'
                   // padding: '0 50px'

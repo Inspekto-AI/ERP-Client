@@ -57,10 +57,10 @@ const SummaryChart = () => {
   return (
     <BarChart
       width={800}
-      height={370}
+      height={350}
       data={data}
       margin={{
-        top: 50,
+        top: 40,
         left: 20,
         Efficiency: 30,
         Dispatch: 20,
