@@ -103,6 +103,7 @@ function Index() {
   const [queuedTransactions, setQueuedTransactions] = useState(null);
   const [alertCounter, setAlertCounter] = useState(0);
   const [shipmentError, setShipmentError] = useState(null);
+  const [jammingModalOpen, setJammingModalOpen] = useState('664BC3');
   const {
     setBeltTrippingEnabled,
     deactivatePrintingSolution: DEACTIVATE_PRINTING_SOLUTION,
@@ -386,6 +387,10 @@ function Index() {
         };
       });
     });
+
+    socket.on('bag-congestion-frontend', ({ belt_id }) => {
+      setJammingModalOpen(belt_id);
+    });
   }, [socket]);
 
   if (shipmentFormOpen || reverseShipmentFormOpen) {
@@ -530,6 +535,21 @@ function Index() {
               >
                 <>
                   <p>Do you want to go ahead and save the changes you made?</p>
+                </>
+              </InfoModal>
+            ) : null}
+            {jammingModalOpen ? (
+              <InfoModal
+                open={!!jammingModalOpen}
+                close={() => setJammingModalOpen(false)}
+                title="Belt Jammed"
+                hideComment
+                onlyBags
+                buttonText='Close'
+                hideModify
+              >
+                <>
+                  <p>Belt jamming detected on belt id - <b>{jammingModalOpen}</b></p>
                 </>
               </InfoModal>
             ) : null}
