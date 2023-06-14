@@ -104,8 +104,16 @@ function Summary() {
 
   useEffect(() => {
     const fetchSummary = async () => {
+      // console.log(time)
+      const dateObj = new Date(time);
+      // console.log(dateObj)
+      const newDateRange = [dateObj.setUTCHours(18, 30, 0, 999), dateObj.setUTCHours(41, 89, 59, 999)]
+      // console.log(newDateRange);
+      // console.log(new Date(parseInt(newDateRange[0], 10)).toLocaleDateString())
       const data = await get('/api/stats/summarized-stats', {
-        dateRange: getStartAndEndDate()
+        // dateRange: getStartAndEndDate()
+        dateRange: newDateRange,
+        shift: shiftType
       });
       setSummaryData(data?.data?.data?.analysis);
       setShiftCount(data?.data?.data?.shift);
@@ -113,11 +121,13 @@ function Summary() {
       setPrintingBelts(data?.data?.data?.belt_info);
       setMaintenanceTickets(data?.data?.data?.maintenance_tickets);
       setIsLoading(false);
+      console.log(data);
+      // console.log(data?.data?.data?.analysis?.HourlyPackerBags)
     };
-    if (!summaryData) {
-      fetchSummary();
-    }
-  }, [summaryData]);
+    // if (!summaryData) {
+    fetchSummary();
+    // }
+  }, [time, shiftType]);
 
   const markMaintenanceComplete = async id => {
     try {
@@ -173,7 +183,7 @@ function Summary() {
                 }}
                 variant="outlined"
                 IconComponent={KeyboardArrowDownSharpIcon}
-                
+
               >
                 <MenuItem value={0}>Packer Summary</MenuItem>
                 <MenuItem value={1}>Loader Summary</MenuItem>
@@ -240,7 +250,9 @@ function Summary() {
 
                   onChange={item => {
                     // console.log(item);
+                    console.log('time')
                     // console.log(item?.$d.toDateString());
+                    console.log(item?.$d.toLocaleDateString('en-US', options))
                     setTime(item?.$d.toLocaleDateString('en-US', options));
                     // setDateUnAltered(false);
                   }}
@@ -292,8 +304,10 @@ function Summary() {
                   >
                     <p className="count">
                       {summaryData
-                        ? `${summaryData?.total_bags_packed} Bags`
-                        : '24,000 Bags'}
+                        ? filter === 0 ? bagType === 0 ? `${summaryData?.total_bags_packed} Bags` : `${summaryData?.total_bags_packed / 20} Tones` :
+                          bagType === 0 ? `${summaryData?.total_bags_dispatched} Bags` : `${summaryData?.total_bags_dispatched / 20} Tones`
+
+                        : 'NA'}
                     </p>
                     <p className="description">
                       {filter === 0 ? 'Total Production' : 'Total Dispatch'}
@@ -307,8 +321,8 @@ function Summary() {
                   >
                     <p className="count">
                       {summaryData
-                        ? `${summaryData?.total_missed_labels} Bags`
-                        : '23,000 Bags'}
+                        ? bagType === 0 ? `${summaryData?.total_missed_labels} Bags` : `${summaryData?.total_missed_labels / 20} Tones`
+                        : 'NA'}
                     </p>
                     <p className="description">
                       {filter === 0 ? 'Misprint Cases' : 'Burstage'}
@@ -336,7 +350,7 @@ function Summary() {
                 // style={{ maxHeight: '60vh', overflowY: 'auto' }}
                 style={{ background: 'white', alignItems: 'center', justifyContent: 'center' }}
               >
-                <SummaryChart />
+                <SummaryChart hourlyPackerData={summaryData?.HourlyPackerBags} hourlyLoaderData={summaryData?.HourlyLoaderBags} filter={filter} />
               </Layout>
             </div>
           </div>
@@ -364,16 +378,30 @@ function Summary() {
               >
                 {/* <SummaryPackerCard /> */}
                 <div className="count-container">
-                  {!filter && <SummaryAnalysis filter={filter} />}
-                  {!filter && <SummaryAnalysis filter={filter} />}
-                  {!filter && <SummaryAnalysis filter={filter} />}
-                  {!filter && <SummaryAnalysis filter={filter} />}
-                  {!filter && <SummaryAnalysis filter={filter} />}
+                  {!filter && summaryData?.packerBags && Object.keys(summaryData?.packerBags)?.map((key) => {
+
+                    const value = summaryData?.packerBags[key];
+
+                    return <SummaryAnalysis filter={filter} key1={key} value={value} bagType={bagType} />;
+                  })}
+
+                  {/* SummaryLoaderCard */}
+                  {filter && <Grid container spacing={3}>
+                    
+                  {summaryData?.loaderBags && Object.keys(summaryData?.loaderBags)?.map((key) => {
+                    const value = summaryData?.loaderBags[key];
+                    // console.log(key, value)
+                    
+                    return <SummaryLoaderAnalysis filter={filter} key1 ={key} value={value} bagType={bagType} />;
+                  })
+                }
+                    
+                    </Grid>} 
+                  {/* {filter && <SummaryLoaderAnalysis loaderBags={summaryData.loaderBags} />} */}
+                  {/* {filter && <SummaryLoaderAnalysis />}
                   {filter && <SummaryLoaderAnalysis />}
                   {filter && <SummaryLoaderAnalysis />}
-                  {filter && <SummaryLoaderAnalysis />}
-                  {filter && <SummaryLoaderAnalysis />}
-                  {filter && <SummaryLoaderAnalysis />}
+                  {filter && <SummaryLoaderAnalysis />} */}
                   {/* {filter && <SummaryLoaderAnalysis />}
                   {filter && <SummaryLoaderAnalysis />}
                   {filter && <SummaryLoaderAnalysis />}
