@@ -16,7 +16,7 @@ const SummaryChart = ({hourlyPackerData, hourlyLoaderData, shift, filter}) => {
     // const key1 = key;
     const value = hourlyPackerData[key];
     const a = {
-      name: `${key} AM`,
+      name: key >=12 ? key == 12 ? '12 PM': `${key-12} PM`: `${key} AM`,
       Dispatch: value,
       Efficiency: 0
     }
@@ -29,7 +29,8 @@ const SummaryChart = ({hourlyPackerData, hourlyLoaderData, shift, filter}) => {
     // const key1 = key;
     const value = hourlyLoaderData[key];
     const a = {
-      name: `${key} AM`,
+      name: key >=12 ? key == 12 ? '12 PM': `${key-12} PM`: `${key} AM`,
+      
       Dispatch: value,
       Efficiency: 0
     }
