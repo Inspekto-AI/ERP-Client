@@ -10,46 +10,48 @@ import {
 } from 'recharts';
 
 const SummaryChart = ({hourlyPackerData, hourlyLoaderData, shift, filter}) => {
-  const dataPackerChart =[];
-  const updatedHourlyPackerData = [];
+  // const dataPackerChart =[];
+  // const updatedHourlyPackerData = [];
 
-  // for(let i = 0; i < hourlyPackerData.length; i++){
-  //   if(hourlyPackerData[i] )
-  //   updatedHourlyPackerData[i] =
-  // }
+  // // for(let i = 0; i < hourlyPackerData.length; i++){
+  // //   if(hourlyPackerData[i] )
+  // //   updatedHourlyPackerData[i] =
+  // // }
  
-  {!filter && hourlyPackerData && Object.keys(hourlyPackerData)?.map((key) => {
-    // const key1 = key;
-    const value = hourlyPackerData[key];
-    const a = {
-      name: key >=12 ? key == 12 ? '12 PM': `${key-12} PM`: key == 0 ? '12 AM' : `${key} AM`,
-      Dispatch: value,
-      Efficiency: 0
-    }
+  // {!filter && hourlyPackerData && Object.keys(hourlyPackerData)?.map((key) => {
+  //   // const key1 = key;
+  //   const value = hourlyPackerData[key];
+  //   const a = {
+  //     name: key >=12 ? key == 12 ? '12 PM': `${key-12} PM`: key == 0 ? '12 AM' : `${key} AM`,
+  //     Dispatch: value,
+  //     Efficiency: 0
+  //   }
     
-    dataPackerChart.push(a)
-  })}
-  const dataLoaderChart = []
-  // console.log(hourlyLoaderData)
-  {filter && hourlyLoaderData && Object.keys(hourlyLoaderData)?.map((key) => {
-    // const key1 = key;
-    const value = hourlyLoaderData[key];
-    const a = {
-      name: key >=12 ? key == 12 ? '12 PM': `${key-12} PM`: key == 0 ? '12 AM' : `${key} AM`,
+  //   dataPackerChart.push(a)
+  // })}
+  // const dataLoaderChart = []
+  // // console.log(hourlyLoaderData)
+  // {filter && hourlyLoaderData && Object.keys(hourlyLoaderData)?.map((key) => {
+  //   // const key1 = key;
+  //   const value = hourlyLoaderData[key];
+  //   const a = {
+  //     name: key >=12 ? key == 12 ? '12 PM': `${key-12} PM`: key == 0 ? '12 AM' : `${key} AM`,
       
-      Dispatch: value,
-      Efficiency: 0
-    }
+  //     Dispatch: value,
+  //     Efficiency: 0
+  //   }
     
-    dataLoaderChart.push(a)
-  })}
+  //   dataLoaderChart.push(a)
+  // })}
+
+  // console.log(hourlyPackerData)
 
   
   return (
     <BarChart
       width={800}
       height={350}
-      data={filter === 0 ? dataPackerChart: dataLoaderChart}
+      data={filter === 0 ? hourlyPackerData: hourlyLoaderData}
       margin={{
         top: 40,
         left: 20,
