@@ -108,12 +108,21 @@ function Summary() {
       const dateObj = new Date(time);
       // console.log(dateObj)
       const newDateRange = [dateObj.setUTCHours(18, 30, 0, 999), dateObj.setUTCHours(41, 89, 59, 999)]
+      const convertedDateRange = newDateRange.map(date => new Date(date));
+      // console.log(convertedDateRange)
+      const updatedDateRange = convertedDateRange.map(date => {
+        const newDate = new Date(date);
+        newDate.setHours(newDate.getHours() + 24);
+        return newDate;
+      });
+      console.log(updatedDateRange)
       // console.log(newDateRange);
       // console.log(new Date(parseInt(newDateRange[0], 10)).toLocaleDateString())
       const data = await get('/api/stats/summarized-stats', {
         // dateRange: getStartAndEndDate()
         dateRange: newDateRange,
-        shift: shiftType
+        shift: shiftType,
+        updatedDateRange: updatedDateRange
       });
       setSummaryData(data?.data?.data?.analysis);
       setShiftCount(data?.data?.data?.shift);
@@ -397,16 +406,7 @@ function Summary() {
                 }
                     
                     </Grid>} 
-                  {/* {filter && <SummaryLoaderAnalysis loaderBags={summaryData.loaderBags} />} */}
-                  {/* {filter && <SummaryLoaderAnalysis />}
-                  {filter && <SummaryLoaderAnalysis />}
-                  {filter && <SummaryLoaderAnalysis />}
-                  {filter && <SummaryLoaderAnalysis />} */}
-                  {/* {filter && <SummaryLoaderAnalysis />}
-                  {filter && <SummaryLoaderAnalysis />}
-                  {filter && <SummaryLoaderAnalysis />}
-                  {filter && <SummaryLoaderAnalysis />}
-                  {filter && <SummaryLoaderAnalysis />} */}
+                  
                 </div>
               </Layout>
             </div>

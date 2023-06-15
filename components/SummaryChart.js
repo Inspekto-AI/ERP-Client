@@ -11,12 +11,18 @@ import {
 
 const SummaryChart = ({hourlyPackerData, hourlyLoaderData, shift, filter}) => {
   const dataPackerChart =[];
+  const updatedHourlyPackerData = [];
+
+  // for(let i = 0; i < hourlyPackerData.length; i++){
+  //   if(hourlyPackerData[i] )
+  //   updatedHourlyPackerData[i] =
+  // }
  
   {!filter && hourlyPackerData && Object.keys(hourlyPackerData)?.map((key) => {
     // const key1 = key;
     const value = hourlyPackerData[key];
     const a = {
-      name: key >=12 ? key == 12 ? '12 PM': `${key-12} PM`: `${key} AM`,
+      name: key >=12 ? key == 12 ? '12 PM': `${key-12} PM`: key == 0 ? '12 AM' : `${key} AM`,
       Dispatch: value,
       Efficiency: 0
     }
@@ -29,7 +35,7 @@ const SummaryChart = ({hourlyPackerData, hourlyLoaderData, shift, filter}) => {
     // const key1 = key;
     const value = hourlyLoaderData[key];
     const a = {
-      name: key >=12 ? key == 12 ? '12 PM': `${key-12} PM`: `${key} AM`,
+      name: key >=12 ? key == 12 ? '12 PM': `${key-12} PM`: key == 0 ? '12 AM' : `${key} AM`,
       
       Dispatch: value,
       Efficiency: 0
