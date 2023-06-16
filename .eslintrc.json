@@ -52,6 +52,7 @@
         "consistent-return": "off",
         "react/jsx-no-constructed-context-values": "off",
         "react/forbid-prop-types": "off",
-        "react/no-unstable-nested-components": "off"
+        "react/no-unstable-nested-components": "off",
+        "no-unused-vars": "off"
     }
 }

@@ -6,65 +6,59 @@ import {
   YAxis,
   CartesianGrid,
   Tooltip,
-  Legend
+  Legend,
 } from 'recharts';
 
-const SummaryChart = () => {
-  const data = [
-    {
-      name: '1 AM',
-      Dispatch: 11,
-      Efficiency: 0.5
-    },
-    {
-      name: '2 AM',
-      Dispatch: 9,
-      Efficiency: 1.0
-    },
-    {
-      name: '3 AM',
-      Dispatch: 11,
-      Efficiency: 0.5
-    },
-    {
-      name: '4 AM',
-      Dispatch: 9,
-      Efficiency: 1.0
-    },
-    {
-      name: '5 AM',
-      Dispatch: 11,
-      Efficiency: 0.5
-    },
-    {
-      name: '6 AM',
-      Dispatch: 9,
-      Efficiency: 1.1
-    },
-    {
-      name: '7 AM',
-      Dispatch: 11,
-      Efficiency: 0.5
-    },
-    {
-      name: '8 AM',
-      Dispatch: 9,
-      Efficiency: 1.0
-    }
-    // ... and so on for the other months
-  ];
+function SummaryChart({
+  hourlyPackerData, hourlyLoaderData, shift, filter,
+}) {
+  // const dataPackerChart =[];
+  // const updatedHourlyPackerData = [];
+
+  // // for(let i = 0; i < hourlyPackerData.length; i++){
+  // //   if(hourlyPackerData[i] )
+  // //   updatedHourlyPackerData[i] =
+  // // }
+
+  // {!filter && hourlyPackerData && Object.keys(hourlyPackerData)?.map((key) => {
+  //   // const key1 = key;
+  //   const value = hourlyPackerData[key];
+  //   const a = {
+  //     name: key >=12 ? key == 12 ? '12 PM': `${key-12} PM`: key == 0 ? '12 AM' : `${key} AM`,
+  //     Dispatch: value,
+  //     Efficiency: 0
+  //   }
+
+  //   dataPackerChart.push(a)
+  // })}
+  // const dataLoaderChart = []
+  // // console.log(hourlyLoaderData)
+  // {filter && hourlyLoaderData && Object.keys(hourlyLoaderData)?.map((key) => {
+  //   // const key1 = key;
+  //   const value = hourlyLoaderData[key];
+  //   const a = {
+  //     name: key >=12 ? key == 12 ? '12 PM': `${key-12} PM`: key == 0 ? '12 AM' : `${key} AM`,
+
+  //     Dispatch: value,
+  //     Efficiency: 0
+  //   }
+
+  //   dataLoaderChart.push(a)
+  // })}
+
+  // console.log(hourlyPackerData)
 
   return (
     <BarChart
       width={800}
       height={350}
-      data={data}
+      data={filter === 0 ? hourlyPackerData : hourlyLoaderData}
       margin={{
         top: 40,
         left: 20,
         Efficiency: 30,
         Dispatch: 20,
-        bottom: 5
+        bottom: 5,
       }}
     >
       <CartesianGrid strokeDasharray="3 3" />
@@ -82,8 +76,8 @@ const SummaryChart = () => {
           style: {
             fontSize: '12px',
             color: '#3A71A5',
-            fontWeight: '300'
-          }
+            fontWeight: '300',
+          },
         }}
       />
       <YAxis
@@ -99,8 +93,8 @@ const SummaryChart = () => {
           style: {
             fontSize: '12px',
             color: '#B5179E',
-            fontWeight: '300'
-          }
+            fontWeight: '300',
+          },
         }}
       />
       <Tooltip />
@@ -115,6 +109,6 @@ const SummaryChart = () => {
       />
     </BarChart>
   );
-};
+}
 
 export default SummaryChart;

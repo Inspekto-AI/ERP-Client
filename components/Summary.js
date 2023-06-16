@@ -1,5 +1,4 @@
 import { useEffect, useState } from 'react';
-import theme from 'styles/theme';
 import Container from 'styles/summary.styles';
 import {
   Grid,
@@ -7,42 +6,37 @@ import {
   ButtonGroup,
   Button,
   MenuItem,
-  FormControl,
-  InputLabel
 } from '@material-ui/core';
-import { BASE_URL } from 'utils/constants';
 import { get, put } from 'utils/api';
 import Layout from 'components/Layout';
 import Maintenance from 'components/Maintenance';
 import Notification from 'components/Notification';
-import { getStartAndEndDate } from 'utils/globalFunctions';
-import { LocalizationProvider } from '@mui/x-date-pickers';
+import { LocalizationProvider, DateCalendar } from '@mui/x-date-pickers';
 import { AdapterDayjs } from '@mui/x-date-pickers/AdapterDayjs';
-import { DateCalendar } from '@mui/x-date-pickers';
+import { makeStyles } from '@material-ui/core/styles';
+import KeyboardArrowDownSharpIcon from '@mui/icons-material/KeyboardArrowDownSharp';
 import SummaryChart from './SummaryChart';
 import SummaryAnalysis from './SummaryAnalysis';
 import SummaryLoaderAnalysis from './SummaryLoaderAnalysis';
-import { makeStyles } from '@material-ui/core/styles';
-import KeyboardArrowDownSharpIcon from '@mui/icons-material/KeyboardArrowDownSharp';
 
-const useStyles = makeStyles(theme => ({
+const useStyles = makeStyles((theme) => ({
   select: {
     width: '300px',
     [theme.breakpoints.up(1550)]: {
       width: '450px',
       marginRight: '150px',
-      marginLeft: '-60px'
+      marginLeft: '-60px',
     },
     [theme.breakpoints.down(1550)]: {
       // width: '450px',
-      marginRight: 'auto'
+      marginRight: 'auto',
     },
   },
   select_1: {
     width: '200px',
     [theme.breakpoints.up(1550)]: {
       width: '250px',
-      marginRight: '-30px'
+      marginRight: '-30px',
     },
   },
   select_2: {
@@ -55,10 +49,7 @@ const useStyles = makeStyles(theme => ({
 }));
 
 function Summary() {
-
   const classes = useStyles();
-  const curDate = new Date();
-  const [dateCalendarOpen, setDateCalendarOpen] = useState(false);
   const [bagType, setBagType] = useState(0);
   const [filter, setFilter] = useState(0);
   const [shiftType, setShiftType] = useState(0);
@@ -72,7 +63,7 @@ function Summary() {
   const [notificationsFormOpen, setNotificationsFormOpen] = useState(false);
   const [isLoading, setIsLoading] = useState(true);
   const [meterDegree, setMeterDegree] = useState(20);
-  var options = { day: 'numeric', month: 'short', year: 'numeric' };
+  const options = { day: 'numeric', month: 'short', year: 'numeric' };
   const getCurrentFormattedDate = () => {
     const currentDate = new Date();
     const day = String(currentDate.getDate()).padStart(2, '0');
@@ -91,7 +82,7 @@ function Summary() {
       'Sep',
       'Oct',
       'Nov',
-      'Dec'
+      'Dec',
     ];
 
     const month = months[monthIndex];
@@ -104,8 +95,26 @@ function Summary() {
 
   useEffect(() => {
     const fetchSummary = async () => {
+      // console.log(time)
+      const dateObj = new Date(time);
+      // console.log(dateObj)
+      const newDateRange = [dateObj.setUTCHours(18, 30, 0, 999),
+        dateObj.setUTCHours(41, 89, 59, 999)];
+      const convertedDateRange = newDateRange.map((date) => new Date(date));
+      // console.log(convertedDateRange)
+      const updatedDateRange = convertedDateRange.map((date) => {
+        const newDate = new Date(date);
+        newDate.setHours(newDate.getHours() + 24);
+        return newDate;
+      });
+      console.log(updatedDateRange);
+      // console.log(newDateRange);
+      // console.log(new Date(parseInt(newDateRange[0], 10)).toLocaleDateString())
       const data = await get('/api/stats/summarized-stats', {
-        dateRange: getStartAndEndDate()
+        // dateRange: getStartAndEndDate()
+        dateRange: newDateRange,
+        shift: shiftType,
+        updatedDateRange,
       });
       setSummaryData(data?.data?.data?.analysis);
       setShiftCount(data?.data?.data?.shift);
@@ -113,21 +122,21 @@ function Summary() {
       setPrintingBelts(data?.data?.data?.belt_info);
       setMaintenanceTickets(data?.data?.data?.maintenance_tickets);
       setIsLoading(false);
+      console.log(data);
+      // console.log(data?.data?.data?.analysis?.HourlyPackerBags)
     };
-    if (!summaryData) {
-      fetchSummary();
-    }
-  }, [summaryData]);
+    // if (!summaryData) {
+    fetchSummary();
+    // }
+  }, [time, shiftType]);
 
-  const markMaintenanceComplete = async id => {
+  const markMaintenanceComplete = async (id) => {
     try {
       await put('/api/maintenance', { id });
-      setMaintenanceTickets(prevData =>
-        prevData.map(e => {
-          if (e.id === id) return { ...e, marked_complete: 1 };
-          return e;
-        })
-      );
+      setMaintenanceTickets((prevData) => prevData.map((e) => {
+        if (e.id === id) return { ...e, marked_complete: 1 };
+        return e;
+      }));
     } catch (err) {
       console.log(err);
     }
@@ -145,13 +154,12 @@ function Summary() {
     <Container>
       <div className="analysis-container">
         <div
-
           style={{
             display: 'flex',
             justifyContent: 'space-around',
             // height: '40px',
             marginTop: '5px',
-            alignItems: 'center'
+            alignItems: 'center',
           }}
         >
           <LocalizationProvider dateAdapter={AdapterDayjs}>
@@ -159,7 +167,7 @@ function Summary() {
               <Select
                 value={filter}
                 className={classes.select}
-                onChange={e => setFilter(e.target.value)}
+                onChange={(e) => setFilter(e.target.value)}
                 style={{
                   fontSize: '28px',
                   fontWeight: '600',
@@ -173,7 +181,7 @@ function Summary() {
                 }}
                 variant="outlined"
                 IconComponent={KeyboardArrowDownSharpIcon}
-                
+
               >
                 <MenuItem value={0}>Packer Summary</MenuItem>
                 <MenuItem value={1}>Loader Summary</MenuItem>
@@ -191,7 +199,7 @@ function Summary() {
                   backgroundColor: bagType === 0 ? '#B5179E' : '#F5F5F5',
                   color: bagType === 1 ? '#B5179E' : '#F5F5F5',
                   // width: '120px',
-                  height: '50px'
+                  height: '50px',
                 }}
                 onClick={() => {
                   setBagType(0);
@@ -205,7 +213,7 @@ function Summary() {
                   backgroundColor: bagType === 1 ? '#B5179E' : '#F5F5F5',
                   color: bagType === 0 ? '#B5179E' : '#F5F5F5',
                   // width: '120px',
-                  height: '50px'
+                  height: '50px',
                 }}
                 onClick={() => {
                   setBagType(1);
@@ -228,7 +236,7 @@ function Summary() {
                   background: 'white',
                   // width: '240px',
                   // outline: 'none',
-                  outlineColor: 'blue'
+                  outlineColor: 'blue',
                 }}
                 IconComponent={KeyboardArrowDownSharpIcon}
                 variant="outlined"
@@ -237,10 +245,11 @@ function Summary() {
                 <DateCalendar
                   // val={0}
                   // editableDateInputs
-
-                  onChange={item => {
+                  onChange={(item) => {
                     // console.log(item);
+                    console.log('time');
                     // console.log(item?.$d.toDateString());
+                    console.log(item?.$d.toLocaleDateString('en-US', options));
                     setTime(item?.$d.toLocaleDateString('en-US', options));
                     // setDateUnAltered(false);
                   }}
@@ -255,7 +264,7 @@ function Summary() {
               <Select
                 className={classes.select_1}
                 value={shiftType}
-                onChange={e => setShiftType(e.target.value)}
+                onChange={(e) => setShiftType(e.target.value)}
                 style={{
                   fontSize: '14px',
                   background: 'white',
@@ -280,7 +289,7 @@ function Summary() {
               className="count-container"
               style={{
                 // marginLeft: '40px',
-                marginTop: '20px'
+                marginTop: '20px',
                 // marginRight: '40px'
               }}
             >
@@ -292,8 +301,10 @@ function Summary() {
                   >
                     <p className="count">
                       {summaryData
-                        ? `${summaryData?.total_bags_packed} Bags`
-                        : '24,000 Bags'}
+                        ? filter === 0 ? bagType === 0 ? `${summaryData?.total_bags_packed} Bags` : `${summaryData?.total_bags_packed / 20} Tones`
+                          : bagType === 0 ? `${summaryData?.total_bags_dispatched} Bags` : `${summaryData?.total_bags_dispatched / 20} Tones`
+
+                        : 'NA'}
                     </p>
                     <p className="description">
                       {filter === 0 ? 'Total Production' : 'Total Dispatch'}
@@ -307,8 +318,8 @@ function Summary() {
                   >
                     <p className="count">
                       {summaryData
-                        ? `${summaryData?.total_missed_labels} Bags`
-                        : '23,000 Bags'}
+                        ? bagType === 0 ? `${summaryData?.total_missed_labels} Bags` : `${summaryData?.total_missed_labels / 20} Tones`
+                        : 'NA'}
                     </p>
                     <p className="description">
                       {filter === 0 ? 'Misprint Cases' : 'Burstage'}
@@ -336,7 +347,11 @@ function Summary() {
                 // style={{ maxHeight: '60vh', overflowY: 'auto' }}
                 style={{ background: 'white', alignItems: 'center', justifyContent: 'center' }}
               >
-                <SummaryChart />
+                <SummaryChart
+                  hourlyPackerData={summaryData?.HourlyPackerBags}
+                  hourlyLoaderData={summaryData?.HourlyLoaderBags}
+                  filter={filter}
+                />
               </Layout>
             </div>
           </div>
@@ -359,26 +374,46 @@ function Summary() {
                   // marginBottom: '20px'
                   // padding: '0 50px'
                   overflowY: 'auto',
-                  overflowX: 'hidden'
+                  overflowX: 'hidden',
                 }}
               >
                 {/* <SummaryPackerCard /> */}
                 <div className="count-container">
-                  {!filter && <SummaryAnalysis filter={filter} />}
-                  {!filter && <SummaryAnalysis filter={filter} />}
-                  {!filter && <SummaryAnalysis filter={filter} />}
-                  {!filter && <SummaryAnalysis filter={filter} />}
-                  {!filter && <SummaryAnalysis filter={filter} />}
-                  {filter && <SummaryLoaderAnalysis />}
-                  {filter && <SummaryLoaderAnalysis />}
-                  {filter && <SummaryLoaderAnalysis />}
-                  {filter && <SummaryLoaderAnalysis />}
-                  {filter && <SummaryLoaderAnalysis />}
-                  {/* {filter && <SummaryLoaderAnalysis />}
-                  {filter && <SummaryLoaderAnalysis />}
-                  {filter && <SummaryLoaderAnalysis />}
-                  {filter && <SummaryLoaderAnalysis />}
-                  {filter && <SummaryLoaderAnalysis />} */}
+                  {!filter && summaryData?.packerBags
+                  && Object.keys(summaryData?.packerBags)?.map((key) => {
+                    const value = summaryData?.packerBags[key];
+
+                    return (
+                      <SummaryAnalysis
+                        filter={filter}
+                        key1={key}
+                        value={value}
+                        bagType={bagType}
+                      />
+                    );
+                  })}
+
+                  {/* SummaryLoaderCard */}
+                  {filter && (
+                  <Grid container spacing={3}>
+
+                    {summaryData?.loaderBags && Object.keys(summaryData?.loaderBags)?.map((key) => {
+                      const value = summaryData?.loaderBags[key];
+                      // console.log(key, value)
+
+                      return (
+                        <SummaryLoaderAnalysis
+                          filter={filter}
+                          key1={key}
+                          value={value}
+                          bagType={bagType}
+                        />
+                      );
+                    })}
+
+                  </Grid>
+                  )}
+
                 </div>
               </Layout>
             </div>

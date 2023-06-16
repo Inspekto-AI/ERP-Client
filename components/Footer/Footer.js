@@ -1,7 +1,3 @@
-import Image from 'next/image';
-import { Grid } from '@material-ui/core';
-
-import ImageKitLoader from 'utils/ImageLoader';
 import Container from './Footer.styles';
 
 function Footer() {

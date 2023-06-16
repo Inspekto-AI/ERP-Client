@@ -545,11 +545,14 @@ function Index() {
                 title="Belt Jammed"
                 hideComment
                 onlyBags
-                buttonText='Close'
+                buttonText="Close"
                 hideModify
               >
                 <>
-                  <p>Belt jamming detected on belt id - <b>{jammingModalOpen}</b></p>
+                  <p>
+                    Belt jamming detected on belt id -
+                    <b>{jammingModalOpen}</b>
+                  </p>
                 </>
               </InfoModal>
             ) : null}
