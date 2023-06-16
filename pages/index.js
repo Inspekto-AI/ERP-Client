@@ -103,7 +103,7 @@ function Index() {
   const [queuedTransactions, setQueuedTransactions] = useState(null);
   const [alertCounter, setAlertCounter] = useState(0);
   const [shipmentError, setShipmentError] = useState(null);
-  const [jammingModalOpen, setJammingModalOpen] = useState('664BC3');
+  const [jammingModalOpen, setJammingModalOpen] = useState(false);
   const {
     setBeltTrippingEnabled,
     deactivatePrintingSolution: DEACTIVATE_PRINTING_SOLUTION,
