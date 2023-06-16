@@ -32,10 +32,9 @@
 
 // export default SummaryMeter;
 
+import { useState, useEffect } from 'react';
 
-import { useState, useEffect } from "react";
-
-const SummaryMeter = ({ progress }) => {
+function SummaryMeter({ progress }) {
   const [arrowRotation, setArrowRotation] = useState(0);
 
   useEffect(() => {
@@ -74,6 +73,6 @@ const SummaryMeter = ({ progress }) => {
       </defs>
     </svg>
   );
-};
+}
 
 export default SummaryMeter;

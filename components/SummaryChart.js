@@ -6,10 +6,12 @@ import {
   YAxis,
   CartesianGrid,
   Tooltip,
-  Legend
+  Legend,
 } from 'recharts';
 
-const SummaryChart = ({hourlyPackerData, hourlyLoaderData, shift, filter}) => {
+function SummaryChart({
+  hourlyPackerData, hourlyLoaderData, shift, filter,
+}) {
   // const dataPackerChart =[];
   // const updatedHourlyPackerData = [];
 
@@ -17,7 +19,7 @@ const SummaryChart = ({hourlyPackerData, hourlyLoaderData, shift, filter}) => {
   // //   if(hourlyPackerData[i] )
   // //   updatedHourlyPackerData[i] =
   // // }
- 
+
   // {!filter && hourlyPackerData && Object.keys(hourlyPackerData)?.map((key) => {
   //   // const key1 = key;
   //   const value = hourlyPackerData[key];
@@ -26,7 +28,7 @@ const SummaryChart = ({hourlyPackerData, hourlyLoaderData, shift, filter}) => {
   //     Dispatch: value,
   //     Efficiency: 0
   //   }
-    
+
   //   dataPackerChart.push(a)
   // })}
   // const dataLoaderChart = []
@@ -36,28 +38,27 @@ const SummaryChart = ({hourlyPackerData, hourlyLoaderData, shift, filter}) => {
   //   const value = hourlyLoaderData[key];
   //   const a = {
   //     name: key >=12 ? key == 12 ? '12 PM': `${key-12} PM`: key == 0 ? '12 AM' : `${key} AM`,
-      
+
   //     Dispatch: value,
   //     Efficiency: 0
   //   }
-    
+
   //   dataLoaderChart.push(a)
   // })}
 
   // console.log(hourlyPackerData)
 
-  
   return (
     <BarChart
       width={800}
       height={350}
-      data={filter === 0 ? hourlyPackerData: hourlyLoaderData}
+      data={filter === 0 ? hourlyPackerData : hourlyLoaderData}
       margin={{
         top: 40,
         left: 20,
         Efficiency: 30,
         Dispatch: 20,
-        bottom: 5
+        bottom: 5,
       }}
     >
       <CartesianGrid strokeDasharray="3 3" />
@@ -75,8 +76,8 @@ const SummaryChart = ({hourlyPackerData, hourlyLoaderData, shift, filter}) => {
           style: {
             fontSize: '12px',
             color: '#3A71A5',
-            fontWeight: '300'
-          }
+            fontWeight: '300',
+          },
         }}
       />
       <YAxis
@@ -92,8 +93,8 @@ const SummaryChart = ({hourlyPackerData, hourlyLoaderData, shift, filter}) => {
           style: {
             fontSize: '12px',
             color: '#B5179E',
-            fontWeight: '300'
-          }
+            fontWeight: '300',
+          },
         }}
       />
       <Tooltip />
@@ -108,6 +109,6 @@ const SummaryChart = ({hourlyPackerData, hourlyLoaderData, shift, filter}) => {
       />
     </BarChart>
   );
-};
+}
 
 export default SummaryChart;

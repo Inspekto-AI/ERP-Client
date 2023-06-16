@@ -36,7 +36,6 @@ function Header({
 
   return (
     <Container>
-     
       <nav>
         <div
           className="logo"
@@ -188,7 +187,6 @@ function Header({
           setTrippingStatus={(e) => setTrippingStatus(e)}
         />
       ) : null}
-     
     </Container>
   );
 }
