@@ -47,7 +47,6 @@ const getSteps = (loaderType) => [
   `${loaderType === null ? 'Loader' : loaderType === 0 ? 'Truck' : 'Wagon'
   } configuration`,
   'No. of bags needed to filled',
-  'Label for print data',
 ];
 
 const QontoConnector = withStyles({
@@ -121,10 +120,8 @@ function Config({
   const [infoModalOpen, setInfoModalOpen] = useState(false);
   const [loaderType, setLoaderType] = useState(null);
   const steps = getSteps(loaderType);
-  const [rackno, setRackno] = useState('');
   const [wagonno, setWagonno] = useState('');
   const [gateno, setGateno] = useState('');
-  const [labelExample, setLabelExample] = useState('');
   const [isUsedBeltSelected, setIsUsedBeltSelected] = useState(false);
   const { bagTypes: BAG_TYPES } = useContext(GlobalContext);
 
@@ -176,11 +173,11 @@ function Config({
   useEffect(() => {
     if (
       licenceNumber !== ''
-      || (wagonno !== '' && rackno !== '' && gateno !== '')
+      || (wagonno !== '' && gateno !== '')
     ) {
       setActiveStep(Math.max(2, activeStep));
     }
-  }, [activeStep, licenceNumber, gateno, rackno, wagonno]);
+  }, [activeStep, licenceNumber, gateno, wagonno]);
 
   useEffect(() => {
     if (
@@ -212,7 +209,7 @@ function Config({
               </div>
             ) : (
               <>
-                <div className="input-container">
+                {/* <div className="input-container">
                   <div className="label">Rake no.</div>
                   <TextField
                     variant="outlined"
@@ -223,7 +220,7 @@ function Config({
                       inputProps: { min: 0 },
                     }}
                   />
-                </div>
+                </div> */}
                 <div className="input-container">
                   <div className="label">Wagon no.</div>
                   <TextField
@@ -324,21 +321,21 @@ function Config({
             </div>
           </div>
         );
-      case 3:
-        return (
-          <div className="form-part">
-            <div className="input-container">
-              <div className="label">Label example</div>
-              <TextField
-                type="text"
-                variant="outlined"
-                placeholder="Label example"
-                value={labelExample}
-                onChange={(e) => setLabelExample(e.target.value)}
-              />
-            </div>
-          </div>
-        );
+      // case 3:
+      //   return (
+      //     <div className="form-part">
+      //       <div className="input-container">
+      //         <div className="label">Label example</div>
+      //         <TextField
+      //           type="text"
+      //           variant="outlined"
+      //           placeholder="Label example"
+      //           value={labelExample}
+      //           onChange={(e) => setLabelExample(e.target.value)}
+      //         />
+      //       </div>
+      //     </div>
+      //   );
       default:
         return (
           <div className="form-part">
@@ -460,9 +457,8 @@ function Config({
       bagType,
       bagCount,
       wagonno,
-      rackno,
       gateno,
-      labelExample,
+      labelExample: '',
     });
   };
 
@@ -522,7 +518,6 @@ function Config({
               <FrinksButton
                 text={isUsedBeltSelected ? 'Add to Queue' : 'SAVE'}
                 onClick={() => setInfoModalOpen(true)}
-                isInactive={labelExample === ''}
               />
             </div>
           </form>
@@ -537,11 +532,11 @@ function Config({
               loaderId: vehicleIds?.find((e) => e.id === loaderId)?.machine_id,
               licenceNumber,
               wagonNo: wagonno,
-              rackNo: rackno,
+              rackNo: '',
               gateNo: gateno,
               bagType,
               bagCount,
-              labelExample,
+              labelExample: '',
             }}
           />
         ) : null}
