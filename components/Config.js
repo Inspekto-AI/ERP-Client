@@ -528,6 +528,7 @@ function Config({
             title="Confirm changes"
             close={() => setInfoModalOpen(false)}
             handleSubmit={() => handleFormSubmit()}
+            onlyBags
             dataToDisplay={{
               loaderId: vehicleIds?.find((e) => e.id === loaderId)?.machine_id,
               licenceNumber,
