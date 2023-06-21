@@ -1,5 +1,6 @@
 import { useState, createContext } from 'react';
 import PropTypes from 'prop-types';
+import { getLocalStorage, setLocalStorage } from 'utils/storage';
 
 export const GlobalContext = createContext();
 
@@ -9,7 +10,8 @@ export function GlobalProvider({ children }) {
   const [userData, setUserData] = useState(null);
   const [bagTypes, setBagTypes] = useState(null);
   const [deactivateLoaderSolution, setDeactivateLoaderSolution] = useState(0);
-  const [deactivatePrintingSolution, setDeactivatePrintingSolution] = useState(0);
+  const [deactivatePrintingSolution, setDeactivatePrintingSolution] =
+    useState(0);
   const [shipmentOverflow, setShipmentOverflow] = useState(false);
 
   return (
@@ -29,6 +31,8 @@ export function GlobalProvider({ children }) {
         setDeactivatePrintingSolution,
         shipmentOverflow,
         setShipmentOverflow,
+        getLocalStorage,
+        setLocalStorage
       }}
     >
       {children}
@@ -37,5 +41,5 @@ export function GlobalProvider({ children }) {
 }
 
 GlobalProvider.propTypes = {
-  children: PropTypes.object,
+  children: PropTypes.object
 };

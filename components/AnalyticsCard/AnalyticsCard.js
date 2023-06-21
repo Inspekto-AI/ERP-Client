@@ -14,7 +14,7 @@ import Container from './AnalyticsCard.styles';
 
 const PACKER_LIMIT = 10;
 
-export const getStatus = (progressPercentage) => {
+export const getStatus = progressPercentage => {
   if (progressPercentage <= 20) {
     return { colorCode: '#FF3945', status: 'Poor' };
   }
@@ -42,19 +42,21 @@ function AnalyticsCard({
   setDetailModalOpen,
   setReverseShipmentFormOpen,
   handleBagDone,
-  handleBeltReset,
+  handleBeltReset
 }) {
   const [timeDifference, setTimeDifference] = useState(0);
-  const { deactivateLoaderSolution: DEACTIVATE_LOADER_SOLUTION } = useContext(GlobalContext);
+  const { deactivateLoaderSolution: DEACTIVATE_LOADER_SOLUTION } =
+    useContext(GlobalContext);
 
   useEffect(() => {
     const interval = setInterval(
-      () => setTimeDifference(
-        data.created_at
-          ? msToTime(new Date().getTime() - data.created_at)
-          : '00:00:00',
-      ),
-      1000,
+      () =>
+        setTimeDifference(
+          data.created_at
+            ? msToTime(new Date().getTime() - data.created_at)
+            : '00:00:00'
+        ),
+      1000
     );
     return () => clearInterval(interval);
   }, [data?.created_at]);
@@ -75,7 +77,6 @@ function AnalyticsCard({
       printingCard={printingCard}
       isRunning={data?.is_belt_running}
     >
-
       <div className="error">
         <div className="title">
           <GrFlag />
@@ -89,12 +90,8 @@ function AnalyticsCard({
         <div className="id-container">
           <div className="status" />
           <div className="id">
-
             {packerCard ? (
-              <p>
-                {' '}
-                {data?.id}
-              </p>
+              <p> {data?.id}</p>
             ) : (
               <>
                 {printingCard || packerCard ? null : (
@@ -103,13 +100,12 @@ function AnalyticsCard({
                       style={{
                         display: 'flex',
                         marginLeft: '2px',
-                        alignItems: 'center',
+                        alignItems: 'center'
                       }}
                     >
-
                       <span>
                         {data?.vehicle_id}
-&nbsp;
+                        &nbsp;
                       </span>
                       {data?.vehicle_type === 1 ? (
                         <Image
@@ -131,20 +127,18 @@ function AnalyticsCard({
                     </div>
                   </div>
                 )}
-                {status < 2 && loaderCard
-                  ? <p className="tag-id">{data?.printing_id}</p>
-                  : printingCard
-                    ? <p className="tag-id">{data?.printing_id}</p>
-                    : null}
+                {status < 2 && loaderCard ? (
+                  <p className="tag-id">{data?.printing_id}</p>
+                ) : printingCard ? (
+                  <p className="tag-id">{data?.printing_id}</p>
+                ) : null}
               </>
             )}
           </div>
         </div>
         <div className="timer">
-
           {printingCard || status > 1 ? null : (
             <>
-
               {data?.count_finished_at
                 ? data?.count_finished_at - data?.created_at
                 : timeDifference}
@@ -157,12 +151,11 @@ function AnalyticsCard({
           className="rejected"
           style={{
             top: '75px',
-            justifyContent: 'center',
+            justifyContent: 'center'
           }}
         >
           <div className="count">
             <h6>
-
               {data?.vehicle_type === 1
                 ? `Wagon No.- ${data?.wagon_no}`
                 : `Truck No.- ${data?.licence_number}`}
@@ -174,13 +167,11 @@ function AnalyticsCard({
         <div className="count-container">
           {DEACTIVATE_LOADER_SOLUTION ? (
             <h2 className="count">
-
               {data?.tag_count || 0}
               {printingCard ? null : `/${data?.bag_limit || '0'}`}
             </h2>
           ) : (
             <h2 className="count">
-
               {printingCard ? data?.tag_count || 0 : data?.bag_count || 0}
               {printingCard ? null : `/${data?.bag_limit || '0'}`}
             </h2>
@@ -199,10 +190,7 @@ function AnalyticsCard({
               <div className="type">
                 {printingCard ? null : (
                   <>
-                    <span>
-                      Bag type:
-                      {' '}
-                    </span>
+                    <span>Bag type: </span>
                     {data.bag_type}
                   </>
                 )}
@@ -211,14 +199,15 @@ function AnalyticsCard({
                 <div
                   className="rejected"
                   style={{
-                    bottom: printingCard ? data?.is_belt_running === false ? '80px' : '30px' : '80px',
+                    bottom: printingCard
+                      ? data?.is_belt_running === false
+                        ? '80px'
+                        : '30px'
+                      : '80px'
                   }}
                 >
                   <div className="count">
-                    <Avatar>
-                      {' '}
-                      {data?.missed_label_count || 0}
-                    </Avatar>
+                    <Avatar> {data?.missed_label_count || 0}</Avatar>
                     <h6>Rejected bags</h6>
                   </div>
                   <Button
@@ -238,13 +227,15 @@ function AnalyticsCard({
                 <FrinksButton
                   variant="filled"
                   className="view-button"
-                  onClick={() => handleBeltReset(
-                    data?.id,
-                    data?.bag_counting_belt_id,
-                    data?.printing_belt_id,
-                    data?.vehicle_id,
-                    data?.vehicle_type,
-                  )}
+                  onClick={() =>
+                    handleBeltReset(
+                      data?.id,
+                      data?.bag_counting_belt_id,
+                      data?.printing_belt_id,
+                      data?.vehicle_id,
+                      data?.vehicle_type
+                    )
+                  }
                   text="Reset"
                   style={{
                     borderTopWidth: '3px',
@@ -254,7 +245,7 @@ function AnalyticsCard({
                     padding: '5px 15px',
                     width: '100%',
                     height: '45px',
-                    color: 'white',
+                    color: 'white'
                   }}
                 />
               ) : null}
@@ -270,7 +261,7 @@ function AnalyticsCard({
                     style={{
                       color: '#008847',
                       borderColor: '#008847',
-                      margin: '0px 30px',
+                      margin: '0px 30px'
                     }}
                   >
                     Create
@@ -284,20 +275,20 @@ function AnalyticsCard({
                     onClick={setDetailModalOpen}
                   >
                     {status === 0
-                      ? ((
-                        DEACTIVATE_LOADER_SOLUTION
+                      ? (DEACTIVATE_LOADER_SOLUTION
                           ? data?.bag_limit <= data?.tag_count
-                          : data?.bag_limit <= data?.bag_count
-                      ) || data?.is_belt_running === false)
+                          : data?.bag_limit <= data?.bag_count) ||
+                        data?.is_belt_running === false
                         ? 'View'
                         : 'View Details'
                       : 'Edit'}
-                    {((DEACTIVATE_LOADER_SOLUTION
+                    {(DEACTIVATE_LOADER_SOLUTION
                       ? data?.bag_limit <= data?.tag_count
-                      : data?.bag_limit <= data?.bag_count)
-                      || status === 1 || data?.is_belt_running === false) ? null : (
-                        <BiRightArrowAlt />
-                      )}
+                      : data?.bag_limit <= data?.bag_count) ||
+                    status === 1 ||
+                    data?.is_belt_running === false ? null : (
+                      <BiRightArrowAlt />
+                    )}
                   </Button>
                   {status === 1 && (
                     <Button
@@ -307,7 +298,7 @@ function AnalyticsCard({
                         color: 'white',
                         background: '#26A84A',
                         borderColor: '#008847',
-                        marginLeft: '10px',
+                        marginLeft: '10px'
                       }}
                     >
                       Start
@@ -318,56 +309,60 @@ function AnalyticsCard({
               {(DEACTIVATE_LOADER_SOLUTION
                 ? data?.bag_limit <= data?.tag_count
                 : data?.bag_limit <= data?.bag_count) && status === 0 ? (
-                  <FrinksButton
-                    variant="filled"
-                    className="view-button"
-                    onClick={() => handleBagDone(
+                <FrinksButton
+                  variant="filled"
+                  className="view-button"
+                  onClick={() =>
+                    handleBagDone(
                       data?.id,
                       data?.bag_counting_belt_id,
                       data?.printing_belt_id,
                       data?.vehicle_id,
-                      data?.vehicle_type,
-                    )}
-                    text="Done"
-                    style={{
-                      borderTopWidth: '3px',
-                      borderRightWidth: '3px',
-                      borderBottomWidth: '3px',
-                      borderLeftWidth: '3px',
-                      padding: '5px 15px',
-                      width: '48%',
-                      height: '45px',
-                      color: 'white',
-                    }}
-                  />
-                ) : (
-                  <>
-                    {data?.is_belt_running === false ? (
-                      <FrinksButton
-                        variant="filled"
-                        className="view-button"
-                        onClick={() => handleBeltReset(
+                      data?.vehicle_type
+                    )
+                  }
+                  text="Done"
+                  style={{
+                    borderTopWidth: '3px',
+                    borderRightWidth: '3px',
+                    borderBottomWidth: '3px',
+                    borderLeftWidth: '3px',
+                    padding: '5px 15px',
+                    width: '48%',
+                    height: '45px',
+                    color: 'white'
+                  }}
+                />
+              ) : (
+                <>
+                  {data?.is_belt_running === false ? (
+                    <FrinksButton
+                      variant="filled"
+                      className="view-button"
+                      onClick={() =>
+                        handleBeltReset(
                           data?.id,
                           data?.bag_counting_belt_id,
                           data?.printing_belt_id,
                           data?.vehicle_id,
-                          data?.vehicle_type,
-                        )}
-                        text="Reset"
-                        style={{
-                          borderTopWidth: '3px',
-                          borderRightWidth: '3px',
-                          borderBottomWidth: '3px',
-                          borderLeftWidth: '3px',
-                          padding: '5px 15px',
-                          width: '48%',
-                          height: '45px',
-                          color: 'white',
-                        }}
-                      />
-                    ) : null}
-                  </>
-                )}
+                          data?.vehicle_type
+                        )
+                      }
+                      text="Reset"
+                      style={{
+                        borderTopWidth: '3px',
+                        borderRightWidth: '3px',
+                        borderBottomWidth: '3px',
+                        borderLeftWidth: '3px',
+                        padding: '5px 15px',
+                        width: '48%',
+                        height: '45px',
+                        color: 'white'
+                      }}
+                    />
+                  ) : null}
+                </>
+              )}
             </div>
           )}
         </>
@@ -383,7 +378,6 @@ function AnalyticsCard({
           <div className="productivity">
             <span className="bold">Productivity:&nbsp;</span>
             <span>
-
               {
                 getStatus(Math.min((data.count * 100) / PACKER_LIMIT, 100))
                   .status
@@ -407,7 +401,7 @@ AnalyticsCard.propTypes = {
   loaderCard: PropTypes.bool,
   setReverseShipmentFormOpen: PropTypes.func,
   handleBagDone: PropTypes.func,
-  handleBeltReset: PropTypes.func,
+  handleBeltReset: PropTypes.func
 };
 
 export default AnalyticsCard;
