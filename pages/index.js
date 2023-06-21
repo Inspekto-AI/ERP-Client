@@ -490,7 +490,7 @@ function Index() {
                 <h6 style={{ textAlign: 'center' }}>Truck Loader</h6>
               </div>
 
-              <div
+              {/* <div
                 className={`option ${activeSection === 0 ? 'active' : ''}`}
                 onClick={() => setActiveSection(0)}
                 onKeyPress={() => setActiveSection(0)}
@@ -507,7 +507,7 @@ function Index() {
                 tabIndex={0}
               >
                 <h6 style={{ textAlign: 'center' }}>Wagon belts</h6>
-              </div>
+              </div> */}
               {DEACTIVATE_PRINTING_SOLUTION ? null : (
                 <div
                   className={`option ${activeSection === 2 ? 'active' : ''}`}

@@ -1,9 +1,7 @@
 import Image from 'next/image';
 import { useState, useContext } from 'react';
 import { useRouter } from 'next/router';
-import {
-  Hidden, Button, Popper, Fade,
-} from '@material-ui/core';
+import { Hidden, Button, Popper, Fade } from '@material-ui/core';
 import { BsFillTriangleFill } from 'react-icons/bs';
 import { IoIosMenu } from 'react-icons/io';
 
@@ -18,16 +16,17 @@ function Header({
   openShipmentForm,
   openMaintenanceForm,
   openNotificationForm,
-  maintenanceForm,
+  maintenanceForm
 }) {
   const router = useRouter();
   const [anchorEl, setAnchorEl] = useState(null);
   const [headerDropDownVisible, setHeaderDropDownVisible] = useState(false);
   const [bypassSystem, setBypassSystem] = useState(false);
 
-  const { trippingStatus, setTrippingStatus, beltTrippingEnabled } = useContext(GlobalContext);
+  const { trippingStatus, setTrippingStatus, beltTrippingEnabled } =
+    useContext(GlobalContext);
 
-  const handleClick = (event) => {
+  const handleClick = event => {
     setAnchorEl(anchorEl ? null : event.currentTarget);
   };
 
@@ -56,16 +55,16 @@ function Header({
         <Hidden smDown>
           <div className="links">
             {beltTrippingEnabled && (
-            <Button
-              variant="contained"
-              color="primary"
-              className={trippingStatus ? 'red-button' : 'purple-button'}
-              onClick={() => setBypassSystem(true)}
-            >
-              <p className="button-label">
-                {trippingStatus ? 'BYPASSED' : 'BYPASS SYSTEM'}
-              </p>
-            </Button>
+              <Button
+                variant="contained"
+                color="primary"
+                className={trippingStatus ? 'red-button' : 'purple-button'}
+                onClick={() => setBypassSystem(true)}
+              >
+                <p className="button-label">
+                  {trippingStatus ? 'BYPASSED' : 'BYPASS SYSTEM'}
+                </p>
+              </Button>
             )}
             <Button
               variant="contained"
@@ -74,14 +73,14 @@ function Header({
             >
               <p className="button-label">+ NEW SHIPMENT</p>
             </Button>
-            <Button
+            {/* <Button
               variant="contained"
               color="primary"
               className="purple-button"
               onClick={() => maintenanceForm()}
             >
               <p className="button-label">+ NEW MAINTENANCE TICKET</p>
-            </Button>
+            </Button> */}
             <div className="notification">
               <div
                 className="icon"
@@ -135,12 +134,12 @@ function Header({
               disablePortal
               modifiers={{
                 flip: {
-                  enabled: false,
+                  enabled: false
                 },
                 preventOverflow: {
                   enabled: true,
-                  boundariesElement: 'viewport',
-                },
+                  boundariesElement: 'viewport'
+                }
               }}
             >
               {({ TransitionProps }) => (
@@ -176,7 +175,7 @@ function Header({
           openMaintenanceForm={openMaintenanceForm}
           openNotificationForm={openNotificationForm}
           maintenanceForm={maintenanceForm}
-        // bypassSystem={bypassSystem}
+          // bypassSystem={bypassSystem}
         />
       </Hidden>
       {bypassSystem ? (
@@ -184,7 +183,7 @@ function Header({
           open={bypassSystem}
           close={() => setBypassSystem(false)}
           trippingStatus={trippingStatus}
-          setTrippingStatus={(e) => setTrippingStatus(e)}
+          setTrippingStatus={e => setTrippingStatus(e)}
         />
       ) : null}
     </Container>
@@ -197,7 +196,7 @@ Header.propTypes = {
   openNotificationForm: PropTypes.func,
   maintenanceForm: PropTypes.func,
   bypassSystem: PropTypes.bool,
-  Closebypass: PropTypes.func,
+  Closebypass: PropTypes.func
 };
 
 export default Header;
