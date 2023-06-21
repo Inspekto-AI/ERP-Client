@@ -393,6 +393,8 @@ function Index() {
     });
   }, [socket]);
 
+  console.log(ongoingTransactions);
+
   if (shipmentFormOpen || reverseShipmentFormOpen) {
     return (
       <Config

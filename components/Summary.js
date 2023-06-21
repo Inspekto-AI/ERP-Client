@@ -95,32 +95,11 @@ function Summary() {
 
   useEffect(() => {
     const fetchSummary = async () => {
-      console.log(time);
       const dateObj = new Date(time);
-      console.log(dateObj);
       const newDateRange = [dateObj.setUTCHours(18, 30, 0, 999),
         dateObj.setUTCHours(41, 89, 59, 999)];
 
       const newUpdatedDateRange = [newDateRange[0] + 86400000, newDateRange[1] + 86400000];
-      console.log(newDateRange);
-      console.log(newUpdatedDateRange);
-
-      // const convertedDateRange = newDateRange.map((date) => new Date(date));
-      // // console.log(convertedDateRange)
-      // const updatedDateRange = convertedDateRange.map((date) => {
-      //   const newDate = new Date(date);
-      //   newDate.setHours(newDate.getHours() + 24);
-      //   return newDate;
-      // });
-      // console.log(newDateRange)
-      // console.log(updatedDateRange);
-      // const newDateObj = new Date(updatedDateRange);
-      // const finalDateRange = [newDateObj.setUTCHours(18, 30, 0, 999),
-      //   newDateObj.setUTCHours(41, 89, 59, 999)];
-      //   console.log(newDateRange)
-      // console.log(finalDateRange);
-      // // console.log(newDateRange);
-      // console.log(new Date(parseInt(newDateRange[0], 10)).toLocaleDateString())
       const data = await get('/api/stats/summarized-stats', {
         // dateRange: getStartAndEndDate()
         dateRange: newDateRange,
@@ -133,12 +112,8 @@ function Summary() {
       setPrintingBelts(data?.data?.data?.belt_info);
       setMaintenanceTickets(data?.data?.data?.maintenance_tickets);
       setIsLoading(false);
-      console.log(data);
-      // console.log(data?.data?.data?.analysis?.HourlyPackerBags)
     };
-    // if (!summaryData) {
     fetchSummary();
-    // }
   }, [time, shiftType]);
 
   const markMaintenanceComplete = async (id) => {
