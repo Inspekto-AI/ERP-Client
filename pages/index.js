@@ -360,16 +360,13 @@ function Index() {
 
     socket.on('bag-update', (data) => {
       setOngoingTransactions((prevState) => {
-        const updatedTransactions = Object.keys(prevState).map((e) => {
-          if (prevState[e].id === data.transaction_id) {
-            // modify this entity
-            return {
-              ...prevState[e],
-              bag_limit: parseInt(data?.new_bag_limit, 10),
-            };
-          }
-          return prevState[e];
-        });
+        const updatedTransactions = prevState;
+        if (updatedTransactions[data.transaction_id]) {
+          updatedTransactions[data.transaction_id] = {
+            ...updatedTransactions[data.transaction_id],
+            bag_limit: parseInt(data?.new_bag_limit, 10),
+          };
+        }
         return updatedTransactions;
       });
       setIsLoading(false);
