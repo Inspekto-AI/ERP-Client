@@ -98,7 +98,7 @@ function Header({
                   width={20}
                 />
               </div>
-              <hr />
+              {/* <hr />
               <div
                 className="icon"
                 onClick={() => openMaintenanceForm()}
@@ -106,7 +106,7 @@ function Header({
                 role="button"
                 tabIndex={0}
               >
-                {/* <div className="counter blue-counter">20</div> */}
+                <div className="counter blue-counter">20</div>
                 <Image
                   src="warning_QhrmDxvk4.svg"
                   loader={ImageKitLoader}
@@ -114,7 +114,7 @@ function Header({
                   height={20}
                   width={20}
                 />
-              </div>
+              </div> */}
             </div>
             <Button className="menu-button" onClick={handleClick}>
               <Image
