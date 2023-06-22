@@ -150,28 +150,6 @@ function LoaderAnalysis({
             </span>
             <hr />
           </div>
-          {/* <div className="filter-bottom">
-            <FilterButton
-              text="All"
-              index={2}
-              filtervalue={filterButton}
-              setFilterValue={e => setFilterButton(e)}
-            />
-            <FilterButton
-              image1="freight-wagon(1).png"
-              image2="freight-wagon(2).png"
-              index={1}
-              filtervalue={filterButton}
-              setFilterValue={e => setFilterButton(e)}
-            />
-            <FilterButton
-              image1="van.png"
-              image2="van(1).png"
-              index={0}
-              filtervalue={filterButton}
-              setFilterValue={e => setFilterButton(e)}
-            />
-          </div> */}
           {filterVehicle && filterVehicle?.length === 0 ? (
             <p
               style={{
