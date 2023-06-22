@@ -103,7 +103,6 @@ function Index() {
   const [queuedTransactions, setQueuedTransactions] = useState(null);
   const [alertCounter, setAlertCounter] = useState(0);
   const [shipmentError, setShipmentError] = useState(null);
-  const [jammingModalOpen, setJammingModalOpen] = useState(false);
   const {
     setBeltTrippingEnabled,
     deactivatePrintingSolution: DEACTIVATE_PRINTING_SOLUTION,
@@ -115,22 +114,41 @@ function Index() {
     id,
     bag_counting_belt_id,
     printing_belt_id,
+    vehicle_id
   ) => {
     try {
-      await put('/api/shipment/reset-belt', {
-        belt_id: printing_belt_id || id,
-      });
-      // on success reset belt
-      setPrintingBelts((prevState) => {
-        if (!prevState) return null;
-        return {
-          ...prevState,
-          [printing_belt_id || id]: {
-            ...prevState[printing_belt_id || id],
-            is_belt_running: true,
-          },
-        };
-      });
+      if(vehicle_id){
+        await put('/api/shipment/reset-belt', {
+          belt_id: vehicle_id,
+          transaction_id: id
+        });
+        // on success reset belt
+        setOngoingTransactions((prevState) => {
+          if (!prevState) return null;
+          return {
+            ...prevState,
+            [id]: {
+              ...prevState[id],
+              is_belt_running: true,
+            },
+          };
+        });
+      }else{
+        await put('/api/shipment/reset-belt', {
+          belt_id: printing_belt_id || id,
+        });
+        // on success reset belt
+        setPrintingBelts((prevState) => {
+          if (!prevState) return null;
+          return {
+            ...prevState,
+            [printing_belt_id || id]: {
+              ...prevState[printing_belt_id || id],
+              is_belt_running: true,
+            },
+          };
+        });
+      }
     } catch (error) {
       console.log(error);
     }
@@ -385,12 +403,19 @@ function Index() {
       });
     });
 
-    socket.on('bag-congestion-frontend', ({ belt_id }) => {
-      setJammingModalOpen(belt_id);
+    socket.on('bag-congestion-frontend', ({ transaction_id }) => {
+      setOngoingTransactions((prevState) => {
+        if (!prevState) return null;
+        return {
+          ...prevState,
+          [transaction_id]: {
+            ...prevState[transaction_id],
+            is_belt_running: false,
+          },
+        };
+      });
     });
   }, [socket]);
-
-  console.log(ongoingTransactions);
 
   if (shipmentFormOpen || reverseShipmentFormOpen) {
     return (
@@ -534,24 +559,6 @@ function Index() {
               >
                 <>
                   <p>Do you want to go ahead and save the changes you made?</p>
-                </>
-              </InfoModal>
-            ) : null}
-            {jammingModalOpen ? (
-              <InfoModal
-                open={!!jammingModalOpen}
-                close={() => setJammingModalOpen(false)}
-                title="Belt Jammed"
-                hideComment
-                onlyBags
-                buttonText="Close"
-                hideModify
-              >
-                <>
-                  <p>
-                    Belt jamming detected on belt id -
-                    <b>{jammingModalOpen}</b>
-                  </p>
                 </>
               </InfoModal>
             ) : null}

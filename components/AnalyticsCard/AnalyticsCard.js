@@ -109,7 +109,7 @@ function AnalyticsCard({
 
                       <span>
                         {data?.vehicle_id}
-&nbsp;
+                        &nbsp;
                       </span>
                       {data?.vehicle_type === 1 ? (
                         <Image
@@ -296,8 +296,8 @@ function AnalyticsCard({
                       ? data?.bag_limit <= data?.tag_count
                       : data?.bag_limit <= data?.bag_count)
                       || status === 1 || data?.is_belt_running === false) ? null : (
-                        <BiRightArrowAlt />
-                      )}
+                      <BiRightArrowAlt />
+                    )}
                   </Button>
                   {status === 1 && (
                     <Button
@@ -318,56 +318,56 @@ function AnalyticsCard({
               {(DEACTIVATE_LOADER_SOLUTION
                 ? data?.bag_limit <= data?.tag_count
                 : data?.bag_limit <= data?.bag_count) && status === 0 ? (
-                  <FrinksButton
-                    variant="filled"
-                    className="view-button"
-                    onClick={() => handleBagDone(
-                      data?.id,
-                      data?.bag_counting_belt_id,
-                      data?.printing_belt_id,
-                      data?.vehicle_id,
-                      data?.vehicle_type,
-                    )}
-                    text="Done"
-                    style={{
-                      borderTopWidth: '3px',
-                      borderRightWidth: '3px',
-                      borderBottomWidth: '3px',
-                      borderLeftWidth: '3px',
-                      padding: '5px 15px',
-                      width: '48%',
-                      height: '45px',
-                      color: 'white',
-                    }}
-                  />
-                ) : (
-                  <>
-                    {data?.is_belt_running === false ? (
-                      <FrinksButton
-                        variant="filled"
-                        className="view-button"
-                        onClick={() => handleBeltReset(
-                          data?.id,
-                          data?.bag_counting_belt_id,
-                          data?.printing_belt_id,
-                          data?.vehicle_id,
-                          data?.vehicle_type,
-                        )}
-                        text="Reset"
-                        style={{
-                          borderTopWidth: '3px',
-                          borderRightWidth: '3px',
-                          borderBottomWidth: '3px',
-                          borderLeftWidth: '3px',
-                          padding: '5px 15px',
-                          width: '48%',
-                          height: '45px',
-                          color: 'white',
-                        }}
-                      />
-                    ) : null}
-                  </>
-                )}
+                <FrinksButton
+                  variant="filled"
+                  className="view-button"
+                  onClick={() => handleBagDone(
+                    data?.id,
+                    data?.bag_counting_belt_id,
+                    data?.printing_belt_id,
+                    data?.vehicle_id,
+                    data?.vehicle_type,
+                  )}
+                  text="Done"
+                  style={{
+                    borderTopWidth: '3px',
+                    borderRightWidth: '3px',
+                    borderBottomWidth: '3px',
+                    borderLeftWidth: '3px',
+                    padding: '5px 15px',
+                    width: '48%',
+                    height: '45px',
+                    color: 'white',
+                  }}
+                />
+              ) : (
+                <>
+                  {data?.is_belt_running === false ? (
+                    <FrinksButton
+                      variant="filled"
+                      className="view-button"
+                      onClick={() => handleBeltReset(
+                        data?.id,
+                        data?.bag_counting_belt_id,
+                        data?.printing_belt_id,
+                        data?.vehicle_id,
+                        data?.vehicle_type,
+                      )}
+                      text="Reset"
+                      style={{
+                        borderTopWidth: '3px',
+                        borderRightWidth: '3px',
+                        borderBottomWidth: '3px',
+                        borderLeftWidth: '3px',
+                        padding: '5px 15px',
+                        width: '48%',
+                        height: '45px',
+                        color: 'white',
+                      }}
+                    />
+                  ) : null}
+                </>
+              )}
             </div>
           )}
         </>
