@@ -114,13 +114,13 @@ function Index() {
     id,
     bag_counting_belt_id,
     printing_belt_id,
-    vehicle_id
+    vehicle_id,
   ) => {
     try {
-      if(vehicle_id){
+      if (vehicle_id) {
         await put('/api/shipment/reset-belt', {
           belt_id: vehicle_id,
-          transaction_id: id
+          transaction_id: id,
         });
         // on success reset belt
         setOngoingTransactions((prevState) => {
@@ -133,7 +133,7 @@ function Index() {
             },
           };
         });
-      }else{
+      } else {
         await put('/api/shipment/reset-belt', {
           belt_id: printing_belt_id || id,
         });
