@@ -3,13 +3,43 @@ import { IoMdAdd } from 'react-icons/io';
 import { Avatar } from '@material-ui/core';
 import AddMoreBagsModal from 'components/AddMoreBagsModal';
 
-const ShipmentAnalysisRow = ({
+import { makeStyles } from '@material-ui/core/styles';
+import Button from '@material-ui/core/Button';
+
+// Define styles using makeStyles
+const useStyles = makeStyles(theme => ({
+  root: {
+    backgroundColor: 'white',
+    color: 'black',
+    padding: '5px 10px',
+
+    fontSize: '18px',
+    opacity: '0.4',
+    fontWeight: 200
+  },
+  td1: {
+    backgroundColor: '#69E866',
+    width: '150px'
+  },
+  td2: {
+    outline: '2px solid black'
+  },
+  td3: {
+    outline: '2px solid black'
+  },
+  td4: {
+    outline: '2px solid #6B4EFF'
+  }
+}));
+
+function ShipmentAnalysisRow({
   ongoingTransactions,
   handleBagDone,
   handleBagIncrement,
   index,
   vehicleType
-}) => {
+}) {
+  const classes = useStyles();
   const [bagCount, setBagCount] = useState(null);
   const [startTime, setStartTime] = useState(null);
 
@@ -43,24 +73,17 @@ const ShipmentAnalysisRow = ({
   }, []);
 
   return (
-    <Fragment>
+    <>
       <tr className="custom-table">
         <td>{index + 1}</td>
-        <td style={{ backgroundColor: '#69E866', width: '150px' }}>
-          {ongoingTransactions?.vehicle_id}
-        </td>
-        <td style={{ outline: '2px solid black' }}>
-          {' '}
-          {ongoingTransactions?.bag_type}
-        </td>
-        <td style={{ outline: '2px solid black' }}>
+        <td className={classes.td1}>{ongoingTransactions?.vehicle_id}</td>
+        <td className={classes.td1}> {ongoingTransactions?.bag_type}</td>
+        <td className={classes.td3}>
           {vehicleType === 0
             ? ongoingTransactions?.wagon_no
             : ongoingTransactions?.licence_number}
         </td>
-        <td style={{ outline: '2px solid black' }}>
-          {ongoingTransactions?.bag_limit}
-        </td>
+        <td className={classes.td4}>{ongoingTransactions?.bag_limit}</td>
         <td style={{ outline: '2px solid #6B4EFF' }}>
           {ongoingTransactions?.bag_count}
         </td>
@@ -82,7 +105,7 @@ const ShipmentAnalysisRow = ({
               fontSize: '20px'
             }}
             onChange={e => setBagCount(e.target.value)}
-          ></input>
+          />
           <Avatar
             style={{
               height: '40px',
@@ -100,22 +123,12 @@ const ShipmentAnalysisRow = ({
 
         <td>{startTime}</td>
         <td>
-          <div
-            className="table-button"
-            style={{
-              textAlign: 'center',
-              alignItems: 'center',
-              paddingTop: '7px'
-            }}
-            onClick={handleReset}
-          >
+          <Button className={classes.root} onClick={handleReset}>
             RESET
-          </div>
+          </Button>
         </td>
         <td>
-          <button className="table-button" style={{ fontWeight: '600' }}>
-            VIEW
-          </button>
+          <Button className={classes.root}>VIEW</Button>
         </td>
       </tr>
       {bagModifyModalOpen ? (
@@ -130,8 +143,8 @@ const ShipmentAnalysisRow = ({
           }}
         />
       ) : null}
-    </Fragment>
+    </>
   );
-};
+}
 
 export default ShipmentAnalysisRow;

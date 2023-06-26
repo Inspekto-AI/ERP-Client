@@ -2,6 +2,37 @@ import React, { useEffect, useState, useContext, Fragment } from 'react';
 import { GlobalContext } from 'context/GlobalContext';
 import ShipmentAnalysisRow from './AciveLoaderAnalysis';
 import ShipmentInactiveAnalysis from './InAciveLoaderAnalysis';
+import { makeStyles } from '@material-ui/core/styles';
+import Button from '@material-ui/core/Button';
+
+// Define styles using makeStyles
+const useStyles = makeStyles(theme => ({
+  rackContainer: {
+    marginTop: '120px',
+    marginLeft: '80px',
+    fontSize: '24px',
+    fontWeight: '800'
+  },
+  inputRackNo: {
+    marginTop: '20px',
+    height: '30px',
+    fontSize: '20px',
+    marginRight: '10px',
+    marginLeft: '5px',
+    borderRadius: '6px',
+    width: '130px',
+    border: 'none',
+    padding: '0 10px'
+  },
+  rackButton: {
+    // backgroundColor: edit === true ? '#008847' : '#69E866',
+    fontSize: '20px',
+    borderRadius: '6px',
+    padding: '2px 9px',
+    fontWeight: '700',
+    border: 'none'
+  }
+}));
 
 function ShipmentAnalysis({
   ongoingTransactions,
@@ -12,6 +43,8 @@ function ShipmentAnalysis({
   handleBagDone,
   handleBagIncrement
 }) {
+  const classes = useStyles();
+
   const {
     getLocalStorage,
     setLocalStorage,
@@ -48,40 +81,16 @@ function ShipmentAnalysis({
   return (
     <Fragment>
       {vehicleType === 0 && (
-        <div
-          style={{
-            marginTop: '120px',
-            marginLeft: '80px',
-            fontSize: '24px',
-            fontWeight: '800'
-          }}
-        >
+        <div className={classes.rackContainer}>
           RACK NUMBER :{' '}
           <input
-            style={{
-              marginTop: '20px',
-              height: '30px',
-              fontSize: '20px',
-              marginRight: '10px',
-              marginLeft: '5px',
-              borderRadius: '6px',
-              width: '130px',
-              border: 'none',
-              padding: '0 10px'
-            }}
+            className={classes.inputRackNo}
             placeholder="&nbsp;&nbsp;&nbsp;Enter Rack No."
             onChange={e => setRackNo(e.target.value)}
             value={rackNo}
-          ></input>
-          <button
-            style={{
-              backgroundColor: edit === true ? '#008847' : '#69E866',
-              fontSize: '20px',
-              borderRadius: '6px',
-              padding: '2px 9px',
-              fontWeight: '700',
-              border: 'none'
-            }}
+          />
+          <Button
+            className={classes.rackButton}
             onClick={e => {
               setLocalStorage('rackNo', rackNo);
               setRackNoSaved(rackNo);
@@ -92,19 +101,10 @@ function ShipmentAnalysis({
             }}
           >
             {edit === true ? 'SAVED' : rackNoSaved === null ? 'SAVE' : 'EDIT'}
-          </button>
+          </Button>
         </div>
       )}
-      <div
-        style={{
-          height: '810px',
-          maxWidth: '1900px',
-          overflowX: 'auto',
-          maxHeight: '810px',
-          overflowY: 'auto',
-          marginTop: vehicleType === 0 ? '0' : '130px'
-        }}
-      >
+      <div>
         <table className="custom-table">
           <thead>
             <tr>
@@ -128,7 +128,6 @@ function ShipmentAnalysis({
                 )
                 ?.map((e, index) => {
                   len++;
-                  // console.log(ongoingTransactions[e]);
                   return (
                     <ShipmentAnalysisRow
                       ongoingTransactions={ongoingTransactions[e]}
