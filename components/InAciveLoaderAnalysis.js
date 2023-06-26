@@ -12,10 +12,23 @@ const useStyles = makeStyles(theme => ({
 
     fontSize: '18px',
     opacity: '0.4',
-    fontWeight: 200
+    fontWeight: 200,
+    hover: 'none',
+    margin: '0'
+  },
+  rootColored: {
+    backgroundColor: '#008847',
+    color: 'white',
+    padding: '5px 10px',
+
+    fontSize: '18px',
+    opacity: '0.8',
+    fontWeight: 200,
+    hover: 'none',
+    margin: '0'
   },
   tableButton: {
-    width: '280px',
+    width: '14vw',
     height: '40px',
     padding: '0px',
     margin: '0px',
@@ -23,16 +36,22 @@ const useStyles = makeStyles(theme => ({
     outline: 'none'
   },
   input1: {
-    width: '100px'
+    width: '5vw'
   },
   input2: {
-    width: '160px'
+    width: '8vw'
   },
   input3: {
-    width: '180px'
+    width: '9vw'
   },
   bagCount: {
-    width: '100px'
+    width: '6vw'
+  },
+  bagTypeSelect: {
+    width: '9vw'
+  },
+  wagnoNoSelect: {
+    maxWidth: '7vw'
   }
 }));
 function ShipmentAnalysisRow({
@@ -84,7 +103,7 @@ function ShipmentAnalysisRow({
       <tr className="custom-table">
         <td>{index}</td>
         <td>{data?.id}</td>
-        <td>
+        <td className={classes.bagTypeSelect}>
           <Select
             variant="outlined"
             value={bagType}
@@ -100,8 +119,9 @@ function ShipmentAnalysisRow({
         </td>
         <td>
           <input
+            className={classes.wagnoNoSelect}
             value={wagonno}
-            placeholder={vehicleType === 0 ? 'Add Wagon No.' : 'Add Truck No.'}
+            placeholder={vehicleType === 0 ? 'Wagon No.' : 'Truck No.'}
             onChange={e => {
               setWagonno(e.target.value);
             }}
@@ -121,7 +141,14 @@ function ShipmentAnalysisRow({
         <td>-</td>
         <td>-</td>
         <td>
-          <Button className={classes.root} onClick={handleSubmit}>
+          <Button
+            className={
+              rackNo != null && wagonno != null && bagCount != null
+                ? classes.rootColored
+                : classes.root
+            }
+            onClick={handleSubmit}
+          >
             START
           </Button>
         </td>

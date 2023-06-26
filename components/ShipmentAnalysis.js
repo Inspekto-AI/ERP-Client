@@ -1,9 +1,9 @@
 import React, { useEffect, useState, useContext, Fragment } from 'react';
 import { GlobalContext } from 'context/GlobalContext';
-import ShipmentAnalysisRow from './AciveLoaderAnalysis';
-import ShipmentInactiveAnalysis from './InAciveLoaderAnalysis';
 import { makeStyles } from '@material-ui/core/styles';
 import Button from '@material-ui/core/Button';
+import ShipmentAnalysisRow from './AciveLoaderAnalysis';
+import ShipmentInactiveAnalysis from './InAciveLoaderAnalysis';
 
 // Define styles using makeStyles
 const useStyles = makeStyles(theme => ({
@@ -25,12 +25,22 @@ const useStyles = makeStyles(theme => ({
     padding: '0 10px'
   },
   rackButton: {
-    // backgroundColor: edit === true ? '#008847' : '#69E866',
+    backgroundColor: '#008847',
     fontSize: '20px',
     borderRadius: '6px',
-    padding: '2px 9px',
+    // padding: '2px 9px',
     fontWeight: '700',
-    border: 'none'
+    border: 'none',
+    height: '30px'
+  },
+  editRackButton: {
+    backgroundColor: '#69E866',
+    fontSize: '20px',
+    borderRadius: '6px',
+    // padding: '2px 9px',
+    fontWeight: '700',
+    border: 'none',
+    height: '30px'
   }
 }));
 
@@ -79,18 +89,18 @@ function ShipmentAnalysis({
   }, [vehicleBelts, filterButton]);
 
   return (
-    <Fragment>
+    <>
       {vehicleType === 0 && (
         <div className={classes.rackContainer}>
           RACK NUMBER :{' '}
           <input
             className={classes.inputRackNo}
-            placeholder="&nbsp;&nbsp;&nbsp;Enter Rack No."
+            placeholder="Rack No."
             onChange={e => setRackNo(e.target.value)}
             value={rackNo}
           />
           <Button
-            className={classes.rackButton}
+            className={edit ? classes.editRackButton : classes.rackButton}
             onClick={e => {
               setLocalStorage('rackNo', rackNo);
               setRackNoSaved(rackNo);
@@ -158,7 +168,7 @@ function ShipmentAnalysis({
           </tbody>
         </table>
       </div>
-    </Fragment>
+    </>
   );
 }
 

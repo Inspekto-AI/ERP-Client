@@ -17,18 +17,43 @@ const useStyles = makeStyles(theme => ({
     opacity: '0.4',
     fontWeight: 200
   },
+
   td1: {
     backgroundColor: '#69E866',
-    width: '150px'
+    width: '8vw'
   },
   td2: {
     outline: '2px solid black'
   },
   td3: {
-    outline: '2px solid black'
+    outline: '2px solid black',
+    maxWidth: '6vw'
   },
   td4: {
     outline: '2px solid #6B4EFF'
+  },
+  avatar: {
+    height: '40px',
+    width: '40px',
+    marginLeft: '-1px',
+    backgroundColor: '#00A86B',
+    margin: '0px',
+    padding: '0px'
+  },
+  td5: {
+    width: '8vw',
+    display: 'flex',
+    height: '40px',
+    maxHeight: '40px',
+    margin: '0px',
+    padding: '0px'
+  },
+  td6: {
+    outline: '2px solid #6B4EFF'
+  },
+  addBagInput: {
+    width: '6vw',
+    fontSize: '20px'
   }
 }));
 
@@ -74,45 +99,26 @@ function ShipmentAnalysisRow({
 
   return (
     <>
-      <tr className="custom-table">
+      <tr>
         <td>{index + 1}</td>
         <td className={classes.td1}>{ongoingTransactions?.vehicle_id}</td>
-        <td className={classes.td1}> {ongoingTransactions?.bag_type}</td>
+        <td className={classes.td2}> {ongoingTransactions?.bag_type}</td>
         <td className={classes.td3}>
           {vehicleType === 0
             ? ongoingTransactions?.wagon_no
             : ongoingTransactions?.licence_number}
         </td>
         <td className={classes.td4}>{ongoingTransactions?.bag_limit}</td>
-        <td style={{ outline: '2px solid #6B4EFF' }}>
-          {ongoingTransactions?.bag_count}
-        </td>
-        <td
-          style={{
-            height: '40px',
-            width: '60px',
-            display: 'flex',
-            maxHeight: '40px',
-            padding: '0',
-            margin: '0'
-          }}
-        >
+        <td className={classes.td6}>{ongoingTransactions?.bag_count}</td>
+        <td className={classes.td5}>
           <input
             value={bagCount}
-            placeholder="&nbsp;&nbsp;&nbsp;&nbsp;-"
-            style={{
-              width: '100px',
-              fontSize: '20px'
-            }}
+            // placeholder="&nbsp;&nbsp;&nbsp;&nbsp;-"
+            className={classes.addBagInput}
             onChange={e => setBagCount(e.target.value)}
           />
           <Avatar
-            style={{
-              height: '40px',
-              width: '40px',
-              marginLeft: '20px',
-              backgroundColor: '#00A86B'
-            }}
+            className={classes.avatar}
             onClick={() => {
               handleAddButton();
             }}

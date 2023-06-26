@@ -338,6 +338,7 @@ function Index() {
           if (e.id !== data.bag_counting_belt_id) {
             return e;
           }
+          return false;
         });
         return newBelts;
       });
