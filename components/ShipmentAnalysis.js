@@ -1,112 +1,142 @@
-import { useState } from 'react';
-import { Grid } from '@material-ui/core';
-import { AiOutlineExclamationCircle } from 'react-icons/ai';
-import AnalyticsCard from 'components/AnalyticsCard';
-import PropTypes from 'prop-types';
-import AddMoreBagsModal from 'components/AddMoreBagsModal';
-import DefectiveBags from 'components/DefectiveBags';
-import InfoModal from 'components/InfoModal';
+import React, { useEffect, useState, useContext, Fragment } from 'react';
+import { GlobalContext } from 'context/GlobalContext';
+import ShipmentAnalysisRow from './LoaderAnalysisRow';
+import { setLocalStorage, getLocalStorage } from 'utils/storage';
 
-function ShipmentTracking({
-  activeTransactions,
-  handleBagIncrement,
-  handleStop,
+function ShipmentAnalysis({
+  vehicleType,
+  vehicleBelts,
+  handleNewShipment,
+  handleFlag,
+  handleBagDone,
+  handleBagIncrement
 }) {
-  const [detailModalOpen, setDetailModalOpen] = useState(null);
-  const [rejectModalOpen, setRejectModalOpen] = useState(null);
-  const [bagModifyModalOpen, setBagModifyModalOpen] = useState(null);
+  const { bagTypes: BAG_TYPES } = useContext(GlobalContext);
+  const [filterButton, setFilterButton] = useState(2);
+  const [filterVehicle, setFiltervehicle] = useState();
+  const [rackNo, setRackNo] = useState('');
+  const [rackNoModified, setRackNoModified] = useState(false);
+  const [savedRackNo, setSavedRackNo] = useState('');
+
+  useEffect(() => {
+    setFilterButton(vehicleType);
+  }, [vehicleType]);
+
+  useEffect(() => {
+    const filtertedLoaders = {};
+    if (vehicleBelts) {
+      Object.values(vehicleBelts).forEach(element => {
+        if (element.vehicle_type === filterButton) {
+          filtertedLoaders[element.vehicle_id] = element;
+        }
+      });
+      setFiltervehicle(filtertedLoaders);
+    }
+  }, [vehicleBelts, filterButton]);
+
+  useEffect(() => {
+    setSavedRackNo(getLocalStorage('rackno'));
+    setRackNo(getLocalStorage('rackno'));
+  }, [])
 
   return (
-    <>
-      <div className="analysis-container">
-        <div className="head">
-          <h2>Shipment tracking</h2>
-          <div className="search-container" />
-        </div>
-        <div className="analytics">
-          {activeTransactions
-          && Object.keys(activeTransactions)?.length === 0 ? (
-            <p style={{ fontSize: '20px', textAlign: 'center', color: 'gray' }}>
-              <AiOutlineExclamationCircle style={{ fontSize: '70px' }} />
-              <br />
-              No shipment created.
-              <br />
-              Please create a shipment first.
-            </p>
-            ) : (
-              <Grid container className="par">
-                {activeTransactions
-                && Object.keys(activeTransactions)?.map((e, index) => (
-                  <div key={index} className="childd">
-                    <AnalyticsCard
-                      data={{
-                        transaction_id: e,
-                        ...activeTransactions[e],
-                      }}
-                      rejectModalOpen={() => setRejectModalOpen({
-                        transaction_id: e,
-                        ...activeTransactions[e],
-                      })}
-                      bagModifyModalOpen={() => setBagModifyModalOpen({
-                        transaction_id: e,
-                        ...activeTransactions[e],
-                      })}
-                      setDetailModalOpen={() => setDetailModalOpen({
-                        transaction_id: e,
-                        ...activeTransactions[e],
-                      })}
-                    />
-                  </div>
-                ))}
-              </Grid>
-            )}
-        </div>
-      </div>
-      {detailModalOpen ? (
-        <AddMoreBagsModal
-          open={detailModalOpen}
-          close={() => setDetailModalOpen(null)}
-          heading="Transaction details"
-          handleSubmit={(e) => {
-            handleBagIncrement(e);
-            setDetailModalOpen(null);
+    <Fragment>
+      {vehicleType === 1 && (
+        <div
+          style={{
+            marginTop: '120px',
+            marginLeft: '80px',
+            fontSize: '24px',
+            fontWeight: '800'
           }}
-          handleStop={(e) => {
-            handleStop(e);
-            setDetailModalOpen(null);
-          }}
-        />
-      ) : null}
-      {rejectModalOpen ? (
-        <InfoModal
-          open={rejectModalOpen}
-          close={() => setRejectModalOpen(null)}
-          title="Misprint bags"
-          hideConfirm
-          hideComment
         >
-          <DefectiveBags transaction_id={rejectModalOpen?.transaction_id} />
-        </InfoModal>
-      ) : null}
-      {bagModifyModalOpen ? (
-        <AddMoreBagsModal
-          open={bagModifyModalOpen}
-          close={() => setBagModifyModalOpen(null)}
-          onlyBags
-          handleSubmit={(e) => {
-            handleBagIncrement(e);
-            setBagModifyModalOpen(null);
-          }}
-        />
-      ) : null}
-    </>
+          RACK NUMBER :{' '}
+          <input
+            style={{
+              marginTop: '20px',
+              height: '30px',
+              fontSize: '20px',
+              marginRight: '10px',
+              marginLeft: '5px',
+              borderRadius: '6px',
+              width: '160px',
+              border: 'none',
+              padding: '0 10px'
+            }}
+            placeholder="Enter Rack No."
+            onChange={e => {
+              setRackNo(e.target.value);
+              setRackNoModified(true);
+            }}
+            value={rackNo}
+          />
+          {rackNoModified ? (
+            <button
+              style={{
+                backgroundColor: '#69E866',
+                fontSize: '20px',
+                borderRadius: '6px',
+                padding: '2px 9px',
+                fontWeight: '700',
+                border: 'none'
+              }}
+              onClick={() => {
+                setRackNoModified(false);
+                setLocalStorage('rackno', rackNo);
+                setSavedRackNo(rackNo);
+              }}
+            >
+              SAVE
+            </button>) : null}
+        </div>
+      )}
+      <div
+        style={{
+          height: '810px',
+          maxWidth: '1900px',
+          overflowX: 'auto',
+          maxHeight: '810px',
+          overflowY: 'auto',
+          marginTop: vehicleType === 1 ? '0' : '120px'
+        }}
+      >
+        <table className="custom-table">
+          <thead>
+            <tr>
+              <th>S.No.</th>
+              <th>LODNO</th>
+              <th>GRADE</th>
+              <th>{vehicleType === 1 ? 'WAGON NO' : 'TRUCK NO'}</th>
+              <th>TARGET</th>
+              <th>ACTUAL</th>
+              <th>ADD BAG</th>
+              <th>START TIME</th>
+              <th>SET</th>
+              <th>VIEW</th>
+            </tr>
+          </thead>
+          <tbody>
+            {filterVehicle && Object.values(filterVehicle).map((e, index) => {
+              return (
+                <ShipmentAnalysisRow
+                  key={index}
+                  data={e}
+                  BAG_TYPES={BAG_TYPES}
+                  handleNewShipment={arg => handleNewShipment(arg)}
+                  handleFlag={handleFlag}
+                  index={index + 1}
+                  rackNo={savedRackNo}
+                  vehicleType={vehicleType}
+                  handleBagDone={handleBagDone}
+                  handleBagIncrement={handleBagIncrement}
+                />
+              )
+            })}
+          </tbody>
+        </table>
+      </div>
+    </Fragment>
   );
 }
 
-ShipmentTracking.propTypes = {
-  activeTransactions: PropTypes.object,
-  handleBagIncrement: PropTypes.func,
-  handleStop: PropTypes.func,
-};
-
-export default ShipmentTracking;
+export default ShipmentAnalysis;

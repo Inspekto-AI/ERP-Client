@@ -77,31 +77,31 @@ function LoaderAnalysis({
             && Object.keys(ongoingTransactions)?.filter(
               (e) => ongoingTransactions[e].vehicle_type === vehicleType,
             ).length === 0 ? (
-              <p
-                style={{
-                  fontSize: '20px',
-                  textAlign: 'center',
-                  color: 'gray',
-                }}
-              >
-                <AiOutlineExclamationCircle style={{ fontSize: '70px' }} />
-                <br />
-                No shipment created.
-                <br />
-                Please create a shipment first.
-              </p>
-            ) : (
-              <Grid
-                container
-                spacing={2}
-                style={{
-                  backgroundColor: '#4DA76638',
-                  padding: '20px 10px 0',
-                  borderRadius: '10px',
-                }}
-              >
-                {' '}
-                {ongoingTransactions
+            <p
+              style={{
+                fontSize: '20px',
+                textAlign: 'center',
+                color: 'gray',
+              }}
+            >
+              <AiOutlineExclamationCircle style={{ fontSize: '70px' }} />
+              <br />
+              No shipment created.
+              <br />
+              Please create a shipment first.
+            </p>
+          ) : (
+            <Grid
+              container
+              spacing={2}
+              style={{
+                backgroundColor: '#4DA76638',
+                padding: '20px 10px 0',
+                borderRadius: '10px',
+              }}
+            >
+              {' '}
+              {ongoingTransactions
                 && Object.keys(ongoingTransactions)?.filter(
                   (e) => ongoingTransactions[e].vehicle_type === vehicleType,
                 )?.map((e, index) => (
@@ -128,8 +128,8 @@ function LoaderAnalysis({
                     />
                   </Grid>
                 ))}
-              </Grid>
-            )}
+            </Grid>
+          )}
           <div className="shipment-type" style={{ marginTop: '20px' }}>
             <div
               style={{
@@ -150,28 +150,6 @@ function LoaderAnalysis({
             </span>
             <hr />
           </div>
-          {/* <div className="filter-bottom">
-            <FilterButton
-              text="All"
-              index={2}
-              filtervalue={filterButton}
-              setFilterValue={e => setFilterButton(e)}
-            />
-            <FilterButton
-              image1="freight-wagon(1).png"
-              image2="freight-wagon(2).png"
-              index={1}
-              filtervalue={filterButton}
-              setFilterValue={e => setFilterButton(e)}
-            />
-            <FilterButton
-              image1="van.png"
-              image2="van(1).png"
-              index={0}
-              filtervalue={filterButton}
-              setFilterValue={e => setFilterButton(e)}
-            />
-          </div> */}
           {filterVehicle && filterVehicle?.length === 0 ? (
             <p
               style={{
