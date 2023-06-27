@@ -11,7 +11,6 @@ const useStyles = makeStyles(() => ({
     color: 'black',
     padding: '5px 10px',
     fontSize: '18px',
-    opacity: '0.4',
     fontWeight: 200,
     width: '2vw'
   },
@@ -34,12 +33,13 @@ const useStyles = makeStyles(() => ({
     maxWidth: '8vw'
   },
   avatar: {
-    height: '40px',
-    width: '40px',
+    height: '1vh',
+    width: '1vh',
     marginLeft: '-1px',
     backgroundColor: '#00A86B',
-    margin: '0 0 0 10px',
-    padding: '0px'
+    margin: '0px',
+    padding: '0px',
+    marginLeft: '10px'
   },
   td5: {
     width: '8vw',
@@ -47,13 +47,14 @@ const useStyles = makeStyles(() => ({
     height: '40px',
     maxHeight: '40px',
     margin: '0px',
-    padding: '0px'
+    padding: '0px',
+    backgroundColor: 'transparent'
   },
   td6: {
     outline: '2px solid #6B4EFF'
   },
   addBagInput: {
-    width: '6vw',
+    width: '7vw',
     fontSize: '20px'
   },
   transpatentBorder: {
@@ -61,7 +62,8 @@ const useStyles = makeStyles(() => ({
   },
   td7: {
     outline: '2px solid black',
-    maxWidth: '8vw'
+    maxWidth: '8vw',
+    width: '10vh'
   },
 }));
 
@@ -93,7 +95,16 @@ const LoaderAnalysisRow = ({
   };
 
   const handleReset = () => {
-    handleBagDone(data?.shipment_id, data?.vehicle_id, null, data?.vehicle_id, data?.vehicle_type, '', data?.bag_count, data?.bag_limit);
+    handleBagDone(
+      data?.shipment_id,
+      data?.vehicle_id,
+      null,
+      data?.vehicle_id,
+      data?.vehicle_type,
+      '',
+      data?.bag_count,
+      data?.bag_limit
+    );
   };
 
   const handleSubmit = async e => {
@@ -208,7 +219,7 @@ const LoaderAnalysisRow = ({
             </Avatar>
           </td>
         ) : (
-          <td>-</td>
+          <td className={classes.td4Inactive}>-</td>
         )}
         <td>
           {data?.created_at
@@ -227,7 +238,7 @@ const LoaderAnalysisRow = ({
           )}
         </td>
         <td>
-          <Button className={classes.root}>VIEW</Button>
+          <Button className={classes.root} disabled={!data.shipment_id || data.is_belt_running} >VIEW</Button>
         </td>
       </tr>
     </Fragment>
