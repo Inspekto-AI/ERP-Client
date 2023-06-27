@@ -33,8 +33,8 @@ const useStyles = makeStyles(() => ({
     maxWidth: '8vw'
   },
   avatar: {
-    height: '1vh',
-    width: '1vh',
+    height: '40px',
+    width: '40px',
     marginLeft: '-1px',
     backgroundColor: '#00A86B',
     margin: '0px',
