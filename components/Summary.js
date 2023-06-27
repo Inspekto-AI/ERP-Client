@@ -1,7 +1,7 @@
 import { useEffect, useState } from 'react';
 import Container from 'styles/summary.styles';
 import { Grid, Select, ButtonGroup, Button, MenuItem } from '@material-ui/core';
-import { get, put, getFile } from 'utils/api';
+import { get, getFile } from 'utils/api';
 import Layout from 'components/Layout';
 import Maintenance from 'components/Maintenance';
 import Notification from 'components/Notification';
@@ -13,15 +13,16 @@ import SummaryChart from './SummaryChart';
 import SummaryAnalysis from './SummaryAnalysis';
 import SummaryLoaderAnalysis from './SummaryLoaderAnalysis';
 import { AiOutlineCloudDownload } from 'react-icons/ai';
+import Loader from 'components/Loader';
 
-const downloadPDF = pdf => {
-  const linkSource = `application/wps-office.xlsx,${pdf}`;
+const downloadPDF = file => {
   const downloadLink = document.createElement('a');
   const fileName = 'report.xlsx';
-  downloadLink.href = linkSource;
-  downloadLink.download = fileName;
-  console.log(downloadLink);
+  downloadLink.setAttribute('download', fileName);
+  downloadLink.href = URL.createObjectURL(new Blob([file]));
+  document.body.appendChild(downloadLink);
   downloadLink.click();
+  downloadLink.remove();
 };
 
 const useStyles = makeStyles(theme => ({
@@ -66,8 +67,8 @@ function Summary() {
   const [maintenanceFormOpen, setMaintenanceFormOpen] = useState(false);
   const [notificationsFormOpen, setNotificationsFormOpen] = useState(false);
   const [isLoading, setIsLoading] = useState(true);
-  const [meterDegree, setMeterDegree] = useState(20);
   const options = { day: 'numeric', month: 'short', year: 'numeric' };
+
   const getCurrentFormattedDate = () => {
     const currentDate = new Date();
     const day = String(currentDate.getDate()).padStart(2, '0');
@@ -126,27 +127,25 @@ function Summary() {
   }, [time, shiftType]);
 
   const handleDownload = async () => {
-    console.log(1);
     const res = await getFile('/api/report/datewise', {
       date: time
     });
-    console.log('data', res.data);
     downloadPDF(res.data);
   };
 
-  const markMaintenanceComplete = async id => {
-    try {
-      await put('/api/maintenance', { id });
-      setMaintenanceTickets(prevData =>
-        prevData.map(e => {
-          if (e.id === id) return { ...e, marked_complete: 1 };
-          return e;
-        })
-      );
-    } catch (err) {
-      console.log(err);
-    }
-  };
+  // const markMaintenanceComplete = async id => {
+  //   try {
+  //     await put('/api/maintenance', { id });
+  //     setMaintenanceTickets(prevData =>
+  //       prevData.map(e => {
+  //         if (e.id === id) return { ...e, marked_complete: 1 };
+  //         return e;
+  //       })
+  //     );
+  //   } catch (err) {
+  //     console.log(err);
+  //   }
+  // };
 
   if (notificationsFormOpen) {
     return <Notification close={() => setNotificationsFormOpen(false)} />;
@@ -158,6 +157,7 @@ function Summary() {
 
   return (
     <Container>
+      {isLoading ? <Loader /> : null}
       <div className="analysis-container">
         <div
           style={{
@@ -258,9 +258,9 @@ function Summary() {
                     setTime(item?.$d.toLocaleDateString('en-US', options));
                     // setDateUnAltered(false);
                   }}
-                  // moveRangeOnFirstSelection={false}
-                  // ranges={date}
-                  // rangeColors={['#051c3f']}
+                // moveRangeOnFirstSelection={false}
+                // ranges={date}
+                // rangeColors={['#051c3f']}
                 />
               </Select>
             </div>
@@ -321,8 +321,8 @@ function Summary() {
                             ? `${summaryData?.total_bags_packed} Bags`
                             : `${summaryData?.total_bags_packed / 20} Tones`
                           : bagType === 0
-                          ? `${summaryData?.total_bags_dispatched} Bags`
-                          : `${summaryData?.total_bags_dispatched / 20} Tones`
+                            ? `${summaryData?.total_bags_dispatched} Bags`
+                            : `${summaryData?.total_bags_dispatched / 20} Tones`
                         : 'NA'}
                     </p>
                     <p className="description">

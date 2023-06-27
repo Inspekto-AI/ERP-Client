@@ -60,7 +60,7 @@ export const get = (url, payload) => axiosInstance.get(url, {
 export const getFile = (url, payload) => axiosFileInstance.get(url, {
   withCredentials: true,
   params: payload,
-  responseEncoding: 'binary',
+  responseType: 'blob'
 });
 
 export const post = (url, body) => axiosInstance.post(url, body, { withCredentials: true });
