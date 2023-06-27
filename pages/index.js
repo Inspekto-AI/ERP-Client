@@ -30,7 +30,7 @@ function DashboardComponent({
   handleBagDone,
   handleBeltReset,
   handleNewShipment,
-  handleFlag
+  handleFlag,
 }) {
   // console.log(handleBeltReset);
   if (activeSection === 0) {
@@ -97,48 +97,29 @@ function Index() {
     setBeltTrippingEnabled,
     deactivatePrintingSolution: DEACTIVATE_PRINTING_SOLUTION,
     setShipmentOverflow,
-    shipmentOverflow
+    shipmentOverflow,
   } = useContext(GlobalContext);
 
   const handleBeltReset = async (
     id,
     bag_counting_belt_id,
     printing_belt_id,
-    vehicle_id,
   ) => {
     try {
-      if (vehicle_id) {
-        await put('/api/shipment/reset-belt', {
-          belt_id: vehicle_id,
-          transaction_id: id,
-        });
-        // on success reset belt
-        setOngoingTransactions((prevState) => {
-          if (!prevState) return null;
-          return {
-            ...prevState,
-            [id]: {
-              ...prevState[id],
-              is_belt_running: true,
-            },
-          };
-        });
-      } else {
-        await put('/api/shipment/reset-belt', {
-          belt_id: printing_belt_id || id,
-        });
-        // on success reset belt
-        setPrintingBelts((prevState) => {
-          if (!prevState) return null;
-          return {
-            ...prevState,
-            [printing_belt_id || id]: {
-              ...prevState[printing_belt_id || id],
-              is_belt_running: true,
-            },
-          };
-        });
-      }
+      await put('/api/shipment/reset-belt', {
+        belt_id: printing_belt_id || id,
+      });
+      // on success reset belt
+      setPrintingBelts((prevState) => {
+        if (!prevState) return null;
+        return {
+          ...prevState,
+          [printing_belt_id || id]: {
+            ...prevState[printing_belt_id || id],
+            is_belt_running: true,
+          },
+        };
+      });
     } catch (error) {
       console.log(error);
     }
@@ -150,7 +131,7 @@ function Index() {
     printing_belt_id,
     machine_id,
     vehicle_type,
-    comment
+    comment,
   ) => {
     setIsLoading(true);
     await put('/api/shipment/done', {
@@ -159,19 +140,19 @@ function Index() {
       vehicle_id,
       printing_belt_id,
       machine_id,
-      vehicle_type
+      vehicle_type,
     });
   };
 
-  const handleNewShipment = async data => {
+  const handleNewShipment = async (data) => {
     serviceMutation.mutate(data);
   };
 
-  const alertsnooze = e => {
+  const alertsnooze = (e) => {
     const transactiondata = missPrintTransactionId;
     delete transactiondata[e];
     setmissPrintTransactionId(transactiondata);
-    setAlertCounter(prevState => prevState - 1);
+    setAlertCounter((prevState) => prevState - 1);
   };
 
   useEffect(() => {
@@ -188,7 +169,7 @@ function Index() {
     }
   }, [serviceMutation]);
 
-  const handleBagIncrement = async data => {
+  const handleBagIncrement = async (data) => {
     setIsLoading(true);
     try {
       await post('/api/shipment/bag-change', data);
@@ -221,14 +202,14 @@ function Index() {
       });
       return prevState;
     });
-    socket.on('tag-entry', data => {
+    socket.on('tag-entry', (data) => {
       const transaction_id = parseInt(data?.transaction_id, 10);
       const belt_id = data?.belt_id;
       if (data.transactionMissed > 0 && data.transactionMissed % 10 === 0) {
         // setAlertCounter(Object.keys(missPrintTransactionId).length + 1);
-        setAlertCounter(prevState => prevState + 1);
+        setAlertCounter((prevState) => prevState + 1);
 
-        setmissPrintTransactionId(prevState => ({
+        setmissPrintTransactionId((prevState) => ({
           ...prevState,
           [transaction_id]: {
             belt_id,
@@ -244,22 +225,22 @@ function Index() {
           [belt_id]: {
             ...prevState[belt_id],
             tag_count: data?.count,
-            missed_label_count: data?.missed_count
-          }
+            missed_label_count: data?.missed_count,
+          },
         };
       });
     });
-    socket.on('tag-entry-deactivated', data => {
+    socket.on('tag-entry-deactivated', (data) => {
       const belt_id = data?.belt_id;
-      setPrintingBelts(prevState => {
+      setPrintingBelts((prevState) => {
         if (!prevState) return null;
         return {
           ...prevState,
           [belt_id]: {
             ...prevState[belt_id],
             tag_count: data?.count,
-            missed_label_count: data?.missed_count
-          }
+            missed_label_count: data?.missed_count,
+          },
         };
       });
     });
@@ -285,15 +266,15 @@ function Index() {
       });
     });
     socket.on('background-reset', () => {
-      setPrintingBelts(prevState => {
+      setPrintingBelts((prevState) => {
         if (!prevState) return null;
         const newState = {};
-        Object.keys(prevState).forEach(e => {
+        Object.keys(prevState).forEach((e) => {
           newState[e] = {
             printing_id: prevState[e]?.printing_id,
             missed_label_count: 0,
             tag_count: 0,
-            id: e
+            id: e,
           };
         });
         return newState;
@@ -334,14 +315,14 @@ function Index() {
       setIsLoading(false);
     });
     socket.on('tripping_belt', ({ belt_id }) => {
-      setPrintingBelts(prevState => {
+      setPrintingBelts((prevState) => {
         if (!prevState) return null;
         return {
           ...prevState,
           [belt_id]: {
             ...prevState[belt_id],
-            is_belt_running: false
-          }
+            is_belt_running: false,
+          },
         };
       });
     });
@@ -366,7 +347,7 @@ function Index() {
         close={() => setShipmentFormOpen(false)}
         handleSubmit={handleNewShipment}
         reverseShipmentFormOpen={reverseShipmentFormOpen}
-        setReverseShipmentFormOpen={e => setReverseShipmentFormOpen(e)}
+        setReverseShipmentFormOpen={(e) => setReverseShipmentFormOpen(e)}
       />
     );
   }
@@ -477,9 +458,9 @@ function Index() {
                     style={{
                       backgroundColor: 'red',
                       marginBottom: '0.938em',
-                      width: '500px'
+                      width: '500px',
                     }}
-                    action={
+                    action={(
                       <Button
                         color="inherit"
                         size="small"
@@ -488,7 +469,7 @@ function Index() {
                       >
                         Snooze
                       </Button>
-                    }
+                    )}
                     key={index}
                   >
                     {`${missPrintTransactionId[e].missed_count} misprint bags passed from - ${missPrintTransactionId[e].machine_id}`}
@@ -521,7 +502,7 @@ DashboardComponent.propTypes = {
   vehicleBelts: PropTypes.any,
   setReverseShipmentFormOpen: PropTypes.func,
   handleBagDone: PropTypes.func,
-  handleBeltReset: PropTypes.func
+  handleBeltReset: PropTypes.func,
 };
 
 export default Index;

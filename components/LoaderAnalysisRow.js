@@ -1,8 +1,61 @@
 import { Select, MenuItem, Avatar } from '@material-ui/core';
-import { useState, Fragment, useEffect } from 'react';
+import { useState, Fragment } from 'react';
 import { IoMdAdd } from 'react-icons/io';
 
-const ShipmentAnalysisRow = ({
+import { makeStyles } from '@material-ui/core/styles';
+import Button from '@material-ui/core/Button';
+
+const useStyles = makeStyles(() => ({
+  root: {
+    backgroundColor: 'white',
+    color: 'black',
+    padding: '5px 10px',
+
+    fontSize: '18px',
+    opacity: '0.4',
+    fontWeight: 200
+  },
+
+  td1: {
+    backgroundColor: '#69E866',
+    width: '8vw'
+  },
+  td2: {
+    outline: '2px solid black'
+  },
+  td3: {
+    outline: '2px solid black',
+    maxWidth: '6vw'
+  },
+  td4: {
+    outline: '2px solid #6B4EFF'
+  },
+  avatar: {
+    height: '40px',
+    width: '40px',
+    marginLeft: '-1px',
+    backgroundColor: '#00A86B',
+    margin: '0px',
+    padding: '0px'
+  },
+  td5: {
+    width: '8vw',
+    display: 'flex',
+    height: '40px',
+    maxHeight: '40px',
+    margin: '0px',
+    padding: '0px'
+  },
+  td6: {
+    outline: '2px solid #6B4EFF'
+  },
+  addBagInput: {
+    width: '6vw',
+    fontSize: '20px'
+  }
+}));
+
+const LoaderAnalysisRow = ({
   data,
   BAG_TYPES,
   handleNewShipment,
@@ -12,6 +65,7 @@ const ShipmentAnalysisRow = ({
   handleBagDone,
   handleBagIncrement,
 }) => {
+  const classes = useStyles();
   const [bagType, setBagType] = useState(BAG_TYPES ? BAG_TYPES[0] : '');
   const [wagonno, setWagonno] = useState('');
   const [bagCount, setBagCount] = useState('');
@@ -72,35 +126,25 @@ const ShipmentAnalysisRow = ({
   return (
     <Fragment>
       <tr className="custom-table">
-        <td>{index}</td>
-        <td style={{ background: data?.shipment_id ? data?.is_belt_running ? 'green' : 'red' : 'white' }} >{data?.id}</td>
-        <td style={{ width: '150px' }}>
-          {data?.shipment_id ? (data?.bag_type) : (
-            <Select
-              variant="outlined"
-              value={bagType}
-              disabled={data?.shipment_id}
-              className="table-button"
-              onChange={e => setBagType(e.target.value)}
-              style={{
-                width: '250px',
-                height: '40px',
-                padding: '0px',
-                margin: '0px',
-                fontWeight: '600',
-                outline: 'none'
-              }}
-            >
-              {BAG_TYPES.map((e, index) => (
-                <MenuItem className="table-button" value={e} key={index}>
-                  {e}
-                </MenuItem>
-              ))}
-            </Select>
-          )}
-        </td>
-        <td style={{ width: '220px' }}>
-          {data?.shipment_id ? (data?.wagon_no||data?.licence_number) : (
+        <td className={classes.td1}>{index}</td>
+        <td className={classes.td2} style={{ background: data?.shipment_id ? data?.is_belt_running ? 'green' : 'red' : 'white' }} >{data?.id}</td>
+        {data?.shipment_id ? (data?.bag_type) : (
+          <Select
+            variant="outlined"
+            value={bagType}
+            disabled={data?.shipment_id}
+            className="table-button"
+            onChange={e => setBagType(e.target.value)}
+          >
+            {BAG_TYPES.map((e, index) => (
+              <MenuItem className="table-button" value={e} key={index}>
+                {e}
+              </MenuItem>
+            ))}
+          </Select>
+        )}
+        <td className={classes.td4}>
+          {data?.shipment_id ? (data?.wagon_no || data?.licence_number) : (
             <input
               value={wagonno}
               disabled={data?.shipment_id}
@@ -120,81 +164,38 @@ const ShipmentAnalysisRow = ({
             />
           )}
         </td>
-        <td style={{ width: '60px' }}>{data?.shipment_id ? data?.bag_count : '-'}</td>
+        <td className={classes.td6}>{data?.shipment_id ? data?.bag_count : '-'}</td>
         {data?.shipment_id ? (
-          <td
-            style={{
-              height: '40px',
-              width: '60px',
-              display: 'flex',
-              maxHeight: '40px',
-              padding: '0',
-              margin: '0'
-            }}
-          >
+          <td className={classes.td5}>
             <input
               value={addBagCount}
-              placeholder="&nbsp;&nbsp;&nbsp;&nbsp;-"
-              style={{
-                width: '100px',
-                fontSize: '20px'
-              }}
+              className={classes.addBagInput}
               onChange={e => handleValueChange(e, setAddBagCount)}
             ></input>
             <Avatar
-              style={{
-                height: '40px',
-                width: '40px',
-                marginLeft: '20px',
-                backgroundColor: '#00A86B'
-              }}
+              className={classes.avatar}
               onClick={handleAddButton}
             >
               <IoMdAdd />
             </Avatar>
           </td>
         ) : (
-          <td style={{ width: '160px' }}>-</td>
+          <td>-</td>
         )}
-        <td style={{ width: '180px' }}>{data?.created_at ? new Date(data?.created_at).toLocaleTimeString() : '-'}</td>
+        <td>{data?.created_at ? new Date(data?.created_at).toLocaleTimeString() : '-'}</td>
         {data?.shipment_id ? (
-          <td
-            className="table-button"
-            onClick={handleReset}
-          >
+          <Button className={classes.root} onClick={handleReset}>
             RESET
-          </td>
+          </Button>
         ) : (
-          <td
-            className="table-button"
-            style={{
-              backgroundColor:
-                rackNo !== null &&
-                  wagonno !== null &&
-                  bagCount !== null &&
-                  bagCount !== ''
-                  ? '#008847'
-                  : 'white',
-              color:
-                rackNo !== null &&
-                  wagonno !== null &&
-                  bagCount !== null &&
-                  bagCount !== ''
-                  ? 'white'
-                  : 'black'
-            }}
-            onClick={handleSubmit}
-          >
+          <Button className={classes.root} onClick={handleSubmit}>
             START
-          </td>)}
-        <td>
-          <button className="table-button" style={{ fontWeight: '600' }}>
-            VIEW
-          </button>
-        </td>
+          </Button>
+        )}
+        <Button className={classes.root}>VIEW</Button>
       </tr>
     </Fragment>
   );
 };
 
-export default ShipmentAnalysisRow;
+export default LoaderAnalysisRow;
