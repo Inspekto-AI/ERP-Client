@@ -15,11 +15,12 @@ import SummaryLoaderAnalysis from './SummaryLoaderAnalysis';
 import { AiOutlineCloudDownload } from 'react-icons/ai';
 
 const downloadPDF = pdf => {
-  const linkSource = `data:application/pdf;base64,${pdf}`;
+  const linkSource = `application/wps-office.xlsx,${pdf}`;
   const downloadLink = document.createElement('a');
-  const fileName = 'report.pdf';
+  const fileName = 'report.xlsx';
   downloadLink.href = linkSource;
   downloadLink.download = fileName;
+  console.log(downloadLink);
   downloadLink.click();
 };
 
@@ -125,11 +126,12 @@ function Summary() {
   }, [time, shiftType]);
 
   const handleDownload = async () => {
+    console.log(1);
     const res = await getFile('/api/report/datewise', {
-      dateRange: [1, 2]
+      date: time
     });
-
-    // downloadPDF(res.data);
+    console.log('data', res.data);
+    downloadPDF(res.data);
   };
 
   const markMaintenanceComplete = async id => {
@@ -394,13 +396,10 @@ function Summary() {
                 style={{
                   maxHeight: '58vh',
                   background: 'white',
-                  // marginBottom: '20px'
-                  // padding: '0 50px'
                   overflowY: 'auto',
                   overflowX: 'hidden'
                 }}
               >
-                {/* <SummaryPackerCard /> */}
                 <div className="count-container">
                   {!filter &&
                     summaryData?.packerBags &&
@@ -416,15 +415,11 @@ function Summary() {
                         />
                       );
                     })}
-
-                  {/* SummaryLoaderCard */}
-                  {filter && (
+                  {filter ? (
                     <Grid container spacing={3}>
                       {summaryData?.loaderBags &&
                         Object.keys(summaryData?.loaderBags)?.map(key => {
                           const value = summaryData?.loaderBags[key];
-                          // console.log(key, value)
-
                           return (
                             <SummaryLoaderAnalysis
                               filter={filter}
@@ -435,7 +430,7 @@ function Summary() {
                           );
                         })}
                     </Grid>
-                  )}
+                  ) : null}
                 </div>
               </Layout>
             </div>

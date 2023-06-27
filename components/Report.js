@@ -8,6 +8,7 @@ import { get, getFile } from 'utils/api';
 import { getStartAndEndDate } from 'utils/globalFunctions';
 import { AiOutlineCloudDownload } from 'react-icons/ai';
 import { Button } from '@material-ui/core';
+import axios from 'axios';
 import FrinksButton from './FrinksButton';
 
 const downloadPDF = pdf => {
@@ -97,8 +98,6 @@ function Report() {
     const res = await getFile('/api/report/datewise', {
       dateRange: getStartAndEndDate(date, dateUnAltered)
     });
-
-    downloadPDF(res.data);
   };
 
   const handleSearch = async () => {

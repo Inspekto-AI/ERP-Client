@@ -1,10 +1,66 @@
-import React, { useEffect, useState, useContext, Fragment } from 'react';
+import React, { useEffect, useState, useContext } from 'react';
 import { GlobalContext } from 'context/GlobalContext';
-import ShipmentAnalysisRow from './AciveLoaderAnalysis';
-import ShipmentInactiveAnalysis from './InAciveLoaderAnalysis';
+import LoaderAnalysisRow from './LoaderAnalysisRow';
+import { setLocalStorage, getLocalStorage } from 'utils/storage';
+import { makeStyles } from '@material-ui/core/styles';
+import Button from '@material-ui/core/Button';
+
+// Define styles using makeStyles
+const useStyles = makeStyles(() => ({
+  rackContainer: {
+    marginTop: '120px',
+    marginLeft: '80px',
+    fontSize: '24px',
+    fontWeight: '800'
+  },
+  rackContainer1: {
+    marginTop: '120px',
+    marginLeft: '80px',
+    fontSize: '24px',
+    fontWeight: '800',
+    height: '20px'
+  },
+  inputRackNo: {
+    marginTop: '20px',
+    height: '30px',
+    fontSize: '20px',
+    marginRight: '10px',
+    marginLeft: '5px',
+    borderRadius: '6px',
+    width: '130px',
+    border: 'none',
+    padding: '0 10px'
+  },
+  rackButton: {
+    backgroundColor: '#008847',
+    fontSize: '20px',
+    borderRadius: '6px',
+    // padding: '2px 9px',
+    fontWeight: '700',
+    border: 'none',
+    height: '30px'
+  },
+  editRackButton: {
+    backgroundColor: '#69E866',
+    fontSize: '20px',
+    borderRadius: '6px',
+    // padding: '2px 9px',
+    fontWeight: '700',
+    border: 'none',
+    height: '30px'
+  },
+  tableContainer: {
+    marginTop: '140px'
+    // marginLeft: '80px',
+    // fontSize: '24px',
+    // fontWeight: '800'
+  },
+  tableDiv: {
+    paddingBottom: '30px'
+  }
+}));
 
 function ShipmentAnalysis({
-  ongoingTransactions,
   vehicleType,
   vehicleBelts,
   handleNewShipment,
@@ -12,106 +68,72 @@ function ShipmentAnalysis({
   handleBagDone,
   handleBagIncrement
 }) {
-  const {
-    getLocalStorage,
-    setLocalStorage,
-    bagTypes: BAG_TYPES
-  } = useContext(GlobalContext);
-
+  const classes = useStyles();
+  const { bagTypes: BAG_TYPES } = useContext(GlobalContext);
   const [filterButton, setFilterButton] = useState(2);
   const [filterVehicle, setFiltervehicle] = useState();
-  const [rackNo, setRackNo] = useState(getLocalStorage('rackNo'));
-  const [rackNoSaved, setRackNoSaved] = useState(getLocalStorage('rackNo'));
-  const [edit, setEdit] = useState(false);
-  let len = 0;
+  const [rackNo, setRackNo] = useState('');
+  const [rackNoModified, setRackNoModified] = useState(false);
+  const [savedRackNo, setSavedRackNo] = useState('');
 
   useEffect(() => {
     setFilterButton(vehicleType);
   }, [vehicleType]);
 
   useEffect(() => {
-    if (filterButton === 2) {
-      setFiltervehicle(vehicleBelts);
-    } else {
-      setFiltervehicle(
-        vehicleBelts && vehicleBelts.length !== 0
-          ? vehicleBelts.filter(
-              vehicle => vehicle.vehicle_type === filterButton
-            )
-          : null
-      );
+    const filtertedLoaders = {};
+    if (vehicleBelts) {
+      Object.values(vehicleBelts).forEach(element => {
+        if (element.vehicle_type === filterButton) {
+          filtertedLoaders[element.vehicle_id] = element;
+        }
+      });
+      setFiltervehicle(filtertedLoaders);
     }
-    setRackNoSaved(getLocalStorage('rackNo'));
-    setRackNo(getLocalStorage('rackNo'));
   }, [vehicleBelts, filterButton]);
 
+  useEffect(() => {
+    setSavedRackNo(getLocalStorage('rackno'));
+    setRackNo(getLocalStorage('rackno'));
+  }, []);
+
   return (
-    <Fragment>
-      {vehicleType === 0 && (
-        <div
-          style={{
-            marginTop: '120px',
-            marginLeft: '80px',
-            fontSize: '24px',
-            fontWeight: '800'
-          }}
-        >
+    <>
+      {vehicleType === 1 && (
+        <div className={classes.rackContainer}>
           RACK NUMBER :{' '}
           <input
-            style={{
-              marginTop: '20px',
-              height: '30px',
-              fontSize: '20px',
-              marginRight: '10px',
-              marginLeft: '5px',
-              borderRadius: '6px',
-              width: '130px',
-              border: 'none',
-              padding: '0 10px'
+            className={classes.inputRackNo}
+            placeholder="Rack No."
+            onChange={e => {
+              setRackNo(e.target.value);
+              setRackNoModified(true);
             }}
-            placeholder="&nbsp;&nbsp;&nbsp;Enter Rack No."
-            onChange={e => setRackNo(e.target.value)}
             value={rackNo}
-          ></input>
-          <button
-            style={{
-              backgroundColor: edit === true ? '#008847' : '#69E866',
-              fontSize: '20px',
-              borderRadius: '6px',
-              padding: '2px 9px',
-              fontWeight: '700',
-              border: 'none'
-            }}
-            onClick={e => {
-              setLocalStorage('rackNo', rackNo);
-              setRackNoSaved(rackNo);
-              setEdit(true);
-              setTimeout(() => {
-                setEdit(false);
-              }, 1000);
-            }}
-          >
-            {edit === true ? 'SAVED' : rackNoSaved === null ? 'SAVE' : 'EDIT'}
-          </button>
+          />
+          {rackNoModified ? (
+            <Button
+              className={classes.editRackButton}
+              onClick={() => {
+                setRackNoModified(false);
+                setLocalStorage('rackno', rackNo);
+                setSavedRackNo(rackNo);
+              }}
+            >
+              SAVE
+            </Button>
+          ) : null}
         </div>
       )}
-      <div
-        style={{
-          height: '810px',
-          maxWidth: '1900px',
-          overflowX: 'auto',
-          maxHeight: '810px',
-          overflowY: 'auto',
-          marginTop: vehicleType === 0 ? '0' : '130px'
-        }}
-      >
+      {vehicleType === 0 && <div className={classes.rackContainer1}></div>}
+      <div className={classes.tableDiv}>
         <table className="custom-table">
           <thead>
             <tr>
               <th>S.No.</th>
               <th>LODNO</th>
               <th>GRADE</th>
-              <th>{vehicleType === 0 ? 'WAGON NO' : 'TRUCK NO'}</th>
+              <th>{vehicleType === 1 ? 'WAGON NO' : 'TRUCK NO'}</th>
               <th>TARGET</th>
               <th>ACTUAL</th>
               <th>ADD BAG</th>
@@ -121,45 +143,27 @@ function ShipmentAnalysis({
             </tr>
           </thead>
           <tbody>
-            {ongoingTransactions &&
-              Object.keys(ongoingTransactions)
-                ?.filter(
-                  e => ongoingTransactions[e].vehicle_type === vehicleType
-                )
-                ?.map((e, index) => {
-                  len++;
-                  // console.log(ongoingTransactions[e]);
-                  return (
-                    <ShipmentAnalysisRow
-                      ongoingTransactions={ongoingTransactions[e]}
-                      BAG_TYPES={BAG_TYPES}
-                      handleBagDone={handleBagDone}
-                      handleBagIncrement={handleBagIncrement}
-                      index={index}
-                      vehicleType={vehicleType}
-                    />
-                  );
-                })}
-
             {filterVehicle &&
-              filterVehicle?.map((e, index) => {
-                len++;
+              Object.values(filterVehicle).map((e, index) => {
                 return (
-                  <ShipmentInactiveAnalysis
+                  <LoaderAnalysisRow
+                    key={index}
                     data={e}
                     BAG_TYPES={BAG_TYPES}
                     handleNewShipment={arg => handleNewShipment(arg)}
                     handleFlag={handleFlag}
-                    index={len}
-                    rackNo={rackNoSaved}
+                    index={index + 1}
+                    rackNo={savedRackNo}
                     vehicleType={vehicleType}
+                    handleBagDone={handleBagDone}
+                    handleBagIncrement={handleBagIncrement}
                   />
                 );
               })}
           </tbody>
         </table>
       </div>
-    </Fragment>
+    </>
   );
 }
 
