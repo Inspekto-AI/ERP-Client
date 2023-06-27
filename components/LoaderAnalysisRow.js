@@ -13,22 +13,24 @@ const useStyles = makeStyles(() => ({
 
     fontSize: '18px',
     opacity: '0.4',
-    fontWeight: 200
+    fontWeight: 200,
+    width: '2vw'
   },
 
   td1: {
     backgroundColor: '#69E866',
-    width: '8vw'
+    width: '3vw'
   },
   td2: {
     outline: '2px solid black'
   },
   td3: {
     outline: '2px solid black',
-    maxWidth: '6vw'
+    width: '10vw'
   },
   td4: {
-    outline: '2px solid #6B4EFF'
+    outline: '2px solid #6B4EFF',
+    maxWidth: '8vw'
   },
   avatar: {
     height: '40px',
@@ -63,7 +65,7 @@ const LoaderAnalysisRow = ({
   rackNo,
   vehicleType,
   handleBagDone,
-  handleBagIncrement,
+  handleBagIncrement
 }) => {
   const classes = useStyles();
   const [bagType, setBagType] = useState(BAG_TYPES ? BAG_TYPES[0] : '');
@@ -83,10 +85,17 @@ const LoaderAnalysisRow = ({
   };
 
   const handleReset = () => {
-    handleBagDone(data?.shipment_id, data?.vehicle_id, null, data?.vehicle_id, data?.vehicle_type, 'test');
+    handleBagDone(
+      data?.shipment_id,
+      data?.vehicle_id,
+      null,
+      data?.vehicle_id,
+      data?.vehicle_type,
+      'test'
+    );
   };
 
-  const handleSubmit = async (e) => {
+  const handleSubmit = async e => {
     e.preventDefault();
     if (rackNo === null && vehicleType === 1) {
       alert('Enter Rack no');
@@ -121,19 +130,33 @@ const LoaderAnalysisRow = ({
     if (!isNaN(e.target.value) || e.target.value === '') {
       setterFunction(e.target.value);
     }
-  }
+  };
 
   return (
     <Fragment>
       <tr className="custom-table">
         <td className={classes.td1}>{index}</td>
-        <td className={classes.td2} style={{ background: data?.shipment_id ? data?.is_belt_running ? 'green' : 'red' : 'white' }} >{data?.id}</td>
-        {data?.shipment_id ? (data?.bag_type) : (
+        <td
+          className={classes.td2}
+          style={{
+            background: data?.shipment_id
+              ? data?.is_belt_running
+                ? 'green'
+                : 'red'
+              : 'white'
+          }}
+        >
+          {data?.id}
+        </td>{' '}
+        {data?.shipment_id ? (
+          data?.bag_type
+        ) : (
           <Select
+            className={classes.td3}
             variant="outlined"
             value={bagType}
             disabled={data?.shipment_id}
-            className="table-button"
+            // className="table-button"
             onChange={e => setBagType(e.target.value)}
           >
             {BAG_TYPES.map((e, index) => (
@@ -144,7 +167,9 @@ const LoaderAnalysisRow = ({
           </Select>
         )}
         <td className={classes.td4}>
-          {data?.shipment_id ? (data?.wagon_no || data?.licence_number) : (
+          {data?.shipment_id ? (
+            data?.wagon_no || data?.licence_number
+          ) : (
             <input
               value={wagonno}
               disabled={data?.shipment_id}
@@ -154,7 +179,9 @@ const LoaderAnalysisRow = ({
           )}
         </td>
         <td>
-          {data?.shipment_id ? (data?.bag_limit) : (
+          {data?.shipment_id ? (
+            data?.bag_limit
+          ) : (
             <input
               style={{ width: '55px' }}
               placeholder="Target"
@@ -164,7 +191,9 @@ const LoaderAnalysisRow = ({
             />
           )}
         </td>
-        <td className={classes.td6}>{data?.shipment_id ? data?.bag_count : '-'}</td>
+        <td className={classes.td6}>
+          {data?.shipment_id ? data?.bag_count : '-'}
+        </td>
         {data?.shipment_id ? (
           <td className={classes.td5}>
             <input
@@ -172,27 +201,33 @@ const LoaderAnalysisRow = ({
               className={classes.addBagInput}
               onChange={e => handleValueChange(e, setAddBagCount)}
             ></input>
-            <Avatar
-              className={classes.avatar}
-              onClick={handleAddButton}
-            >
+            <Avatar className={classes.avatar} onClick={handleAddButton}>
               <IoMdAdd />
             </Avatar>
           </td>
         ) : (
           <td>-</td>
         )}
-        <td>{data?.created_at ? new Date(data?.created_at).toLocaleTimeString() : '-'}</td>
-        {data?.shipment_id ? (
-          <Button className={classes.root} onClick={handleReset}>
-            RESET
-          </Button>
-        ) : (
-          <Button className={classes.root} onClick={handleSubmit}>
-            START
-          </Button>
-        )}
-        <Button className={classes.root}>VIEW</Button>
+        <td>
+          {data?.created_at
+            ? new Date(data?.created_at).toLocaleTimeString()
+            : '-'}
+        </td>
+        <td>
+          {' '}
+          {data?.shipment_id ? (
+            <Button className={classes.root} onClick={handleReset}>
+              RESET
+            </Button>
+          ) : (
+            <Button className={classes.root} onClick={handleSubmit}>
+              START
+            </Button>
+          )}
+        </td>
+        <td>
+          <Button className={classes.root}>VIEW</Button>
+        </td>
       </tr>
     </Fragment>
   );
