@@ -323,7 +323,7 @@ function Index() {
       });
       setIsLoading(false);
     });
-    socket.on('tripping_belt', ({ belt_id }) => {
+    socket.on('tripping_belt', ({ belt_id, issue_with_belt }) => {
       setPrintingBelts((prevState) => {
         if (!prevState) return null;
         return {
@@ -331,18 +331,20 @@ function Index() {
           [belt_id]: {
             ...prevState[belt_id],
             is_belt_running: false,
+            issue_with_belt
           },
         };
       });
     });
-    socket.on('bag-congestion-frontend', ({ belt_id }) => {
+    socket.on('bag-congestion-frontend', ({ belt_id, issue_with_belt }) => {
       setVehicleBelts(prevState => {
         if (!prevState) return null;
         const newState = { ...prevState };
         if (newState[belt_id]) {
           newState[belt_id] = {
             ...newState[belt_id],
-            is_belt_running: false
+            is_belt_running: false,
+            issue_with_belt
           }
         }
         return newState;

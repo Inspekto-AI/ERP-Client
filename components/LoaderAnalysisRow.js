@@ -1,18 +1,17 @@
 import { Select, MenuItem, Avatar } from '@material-ui/core';
-import { useState, Fragment } from 'react';
+import { useState } from 'react';
 import { IoMdAdd } from 'react-icons/io';
 
 import { makeStyles } from '@material-ui/core/styles';
 import Button from '@material-ui/core/Button';
+import InfoModal from 'components/InfoModal';
 
 const useStyles = makeStyles(() => ({
   root: {
     backgroundColor: 'white',
     color: 'black',
     padding: '5px 10px',
-
     fontSize: '18px',
-    opacity: '0.4',
     fontWeight: 200,
     width: '2vw'
   },
@@ -21,15 +20,17 @@ const useStyles = makeStyles(() => ({
     backgroundColor: '#69E866',
     width: '3vw'
   },
-  td2: {
-    outline: '2px solid black'
-  },
   td3: {
-    outline: '2px solid black',
-    width: '10vw'
+    outline: '2px solid transparent',
+    width: '100%',
+    background: 'white'
   },
   td4: {
     outline: '2px solid #6B4EFF',
+    maxWidth: '8vw'
+  },
+  td4Inactive: {
+    outline: '2px solid transparent',
     maxWidth: '8vw'
   },
   avatar: {
@@ -57,9 +58,14 @@ const useStyles = makeStyles(() => ({
     width: '7vw',
     fontSize: '20px'
   },
+  transpatentBorder: {
+    outline: '2px solid black'
+  },
   td7: {
+    outline: '2px solid black',
+    maxWidth: '8vw',
     width: '10vh'
-  }
+  },
 }));
 
 const LoaderAnalysisRow = ({
@@ -70,13 +76,14 @@ const LoaderAnalysisRow = ({
   rackNo,
   vehicleType,
   handleBagDone,
-  handleBagIncrement
+  handleBagIncrement,
 }) => {
   const classes = useStyles();
   const [bagType, setBagType] = useState(BAG_TYPES ? BAG_TYPES[0] : '');
   const [wagonno, setWagonno] = useState('');
   const [bagCount, setBagCount] = useState('');
   const [addBagCount, setAddBagCount] = useState('');
+  const [detailModalOpen, setDetailModalOpen] = useState(null);
 
   const handleAddButton = async () => {
     await handleBagIncrement({
@@ -140,7 +147,7 @@ const LoaderAnalysisRow = ({
   };
 
   return (
-    <Fragment>
+    <>
       <tr className="custom-table">
         <td className={classes.td1}>{index}</td>
         <td
@@ -154,16 +161,17 @@ const LoaderAnalysisRow = ({
           }}
         >
           {data?.id}
-        </td>{' '}
+        </td>
         {data?.shipment_id ? (
-          data?.bag_type
+          <td className={classes.transpatentBorder}>
+            {data?.bag_type}
+          </td>
         ) : (
           <Select
             className={classes.td3}
             variant="outlined"
             value={bagType}
             disabled={data?.shipment_id}
-            // className="table-button"
             onChange={e => setBagType(e.target.value)}
           >
             {BAG_TYPES.map((e, index) => (
@@ -173,7 +181,7 @@ const LoaderAnalysisRow = ({
             ))}
           </Select>
         )}
-        <td className={classes.td4}>
+        <td className={data?.shipment_id ? classes.td7 : classes.td4Inactive}>
           {data?.shipment_id ? (
             data?.wagon_no || data?.licence_number
           ) : (
@@ -185,7 +193,7 @@ const LoaderAnalysisRow = ({
             />
           )}
         </td>
-        <td>
+        <td className={data?.shipment_id ? classes.td7 : classes.td4Inactive}>
           {data?.shipment_id ? (
             data?.bag_limit
           ) : (
@@ -198,7 +206,7 @@ const LoaderAnalysisRow = ({
             />
           )}
         </td>
-        <td className={classes.td6}>
+        <td className={data?.shipment_id ? classes.td4 : classes.td4Inactive}>
           {data?.shipment_id ? data?.bag_count : '-'}
         </td>
         {data?.shipment_id ? (
@@ -207,13 +215,13 @@ const LoaderAnalysisRow = ({
               value={addBagCount}
               className={classes.addBagInput}
               onChange={e => handleValueChange(e, setAddBagCount)}
-            ></input>
+            />
             <Avatar className={classes.avatar} onClick={handleAddButton}>
               <IoMdAdd />
             </Avatar>
           </td>
         ) : (
-          <td className={classes.td7}>-</td>
+          <td className={classes.td4Inactive}>-</td>
         )}
         <td>
           {data?.created_at
@@ -232,10 +240,32 @@ const LoaderAnalysisRow = ({
           )}
         </td>
         <td>
-          <Button className={classes.root}>VIEW</Button>
+          <Button
+            className={classes.root}
+            disabled={!data.shipment_id || data.is_belt_running}
+            onClick={() => setDetailModalOpen({
+              issue_with_belt: data?.issue_with_belt,
+              belt_id: data?.id
+            })}
+          >
+            VIEW
+          </Button>
         </td>
       </tr>
-    </Fragment>
+      {detailModalOpen ? (
+        <InfoModal
+          open={detailModalOpen}
+          close={() => setDetailModalOpen(null)}
+          hideComment
+          hideConfirm
+          title="Belt Stopped"
+        >
+          <>
+            <p style={{textAlign: 'center'}}>{detailModalOpen?.issue_with_belt} - {detailModalOpen?.belt_id}</p>
+          </>
+        </InfoModal>
+      ) : null}
+    </>
   );
 };
 
