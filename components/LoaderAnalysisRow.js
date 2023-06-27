@@ -238,7 +238,7 @@ const LoaderAnalysisRow = ({
           )}
         </td>
         <td>
-          <Button className={classes.root} disabled={!data.shipment_id || data.is_belt_running} >VIEW</Button>
+          <Button className={classes.root} disabled={!data.shipment_id || data.is_belt_running} onClick={} >VIEW</Button>
         </td>
       </tr>
     </Fragment>
