@@ -1,13 +1,7 @@
 import { useEffect, useState } from 'react';
 import Container from 'styles/summary.styles';
-import {
-  Grid,
-  Select,
-  ButtonGroup,
-  Button,
-  MenuItem,
-} from '@material-ui/core';
-import { get, put } from 'utils/api';
+import { Grid, Select, ButtonGroup, Button, MenuItem } from '@material-ui/core';
+import { get, put, getFile } from 'utils/api';
 import Layout from 'components/Layout';
 import Maintenance from 'components/Maintenance';
 import Notification from 'components/Notification';
@@ -18,34 +12,43 @@ import KeyboardArrowDownSharpIcon from '@mui/icons-material/KeyboardArrowDownSha
 import SummaryChart from './SummaryChart';
 import SummaryAnalysis from './SummaryAnalysis';
 import SummaryLoaderAnalysis from './SummaryLoaderAnalysis';
+import { AiOutlineCloudDownload } from 'react-icons/ai';
 
-const useStyles = makeStyles((theme) => ({
+const downloadPDF = pdf => {
+  const linkSource = `data:application/pdf;base64,${pdf}`;
+  const downloadLink = document.createElement('a');
+  const fileName = 'report.pdf';
+  downloadLink.href = linkSource;
+  downloadLink.download = fileName;
+  downloadLink.click();
+};
+
+const useStyles = makeStyles(theme => ({
   select: {
     width: '300px',
     [theme.breakpoints.up(1550)]: {
       width: '450px',
       marginRight: '150px',
-      marginLeft: '-60px',
+      marginLeft: '-40px'
     },
     [theme.breakpoints.down(1550)]: {
       // width: '450px',
-      marginRight: 'auto',
-    },
+      marginRight: 'auto'
+    }
   },
   select_1: {
     width: '200px',
     [theme.breakpoints.up(1550)]: {
       width: '250px',
-      marginRight: '-30px',
-    },
+      marginRight: '-30px'
+    }
   },
   select_2: {
     width: '100px',
     [theme.breakpoints.up(1550)]: {
-      width: '125px',
-    },
-  },
-
+      width: '125px'
+    }
+  }
 }));
 
 function Summary() {
@@ -82,7 +85,7 @@ function Summary() {
       'Sep',
       'Oct',
       'Nov',
-      'Dec',
+      'Dec'
     ];
 
     const month = months[monthIndex];
@@ -96,15 +99,20 @@ function Summary() {
   useEffect(() => {
     const fetchSummary = async () => {
       const dateObj = new Date(time);
-      const newDateRange = [dateObj.setUTCHours(18, 30, 0, 999),
-        dateObj.setUTCHours(41, 89, 59, 999)];
+      const newDateRange = [
+        dateObj.setUTCHours(18, 30, 0, 999),
+        dateObj.setUTCHours(41, 89, 59, 999)
+      ];
 
-      const newUpdatedDateRange = [newDateRange[0] + 86400000, newDateRange[1] + 86400000];
+      const newUpdatedDateRange = [
+        newDateRange[0] + 86400000,
+        newDateRange[1] + 86400000
+      ];
       const data = await get('/api/stats/summarized-stats', {
         // dateRange: getStartAndEndDate()
         dateRange: newDateRange,
         shift: shiftType,
-        updatedDateRange: newUpdatedDateRange,
+        updatedDateRange: newUpdatedDateRange
       });
       setSummaryData(data?.data?.data?.analysis);
       setShiftCount(data?.data?.data?.shift);
@@ -116,13 +124,23 @@ function Summary() {
     fetchSummary();
   }, [time, shiftType]);
 
-  const markMaintenanceComplete = async (id) => {
+  const handleDownload = async () => {
+    const res = await getFile('/api/report/datewise', {
+      dateRange: [1, 2]
+    });
+
+    // downloadPDF(res.data);
+  };
+
+  const markMaintenanceComplete = async id => {
     try {
       await put('/api/maintenance', { id });
-      setMaintenanceTickets((prevData) => prevData.map((e) => {
-        if (e.id === id) return { ...e, marked_complete: 1 };
-        return e;
-      }));
+      setMaintenanceTickets(prevData =>
+        prevData.map(e => {
+          if (e.id === id) return { ...e, marked_complete: 1 };
+          return e;
+        })
+      );
     } catch (err) {
       console.log(err);
     }
@@ -145,7 +163,7 @@ function Summary() {
             justifyContent: 'space-around',
             // height: '40px',
             marginTop: '5px',
-            alignItems: 'center',
+            alignItems: 'center'
           }}
         >
           <LocalizationProvider dateAdapter={AdapterDayjs}>
@@ -153,7 +171,7 @@ function Summary() {
               <Select
                 value={filter}
                 className={classes.select}
-                onChange={(e) => setFilter(e.target.value)}
+                onChange={e => setFilter(e.target.value)}
                 style={{
                   fontSize: '28px',
                   fontWeight: '600',
@@ -162,12 +180,11 @@ function Summary() {
                   outlineColor: '#3A0CA3',
                   border: '1px solid #3A0CA3',
                   // width: '450px',
-                  padding: '0px',
+                  padding: '0px'
                   // marginLeft: '-40px'
                 }}
                 variant="outlined"
                 IconComponent={KeyboardArrowDownSharpIcon}
-
               >
                 <MenuItem value={0}>Packer Summary</MenuItem>
                 <MenuItem value={1}>Loader Summary</MenuItem>
@@ -185,7 +202,7 @@ function Summary() {
                   backgroundColor: bagType === 0 ? '#B5179E' : '#F5F5F5',
                   color: bagType === 1 ? '#B5179E' : '#F5F5F5',
                   // width: '120px',
-                  height: '50px',
+                  height: '50px'
                 }}
                 onClick={() => {
                   setBagType(0);
@@ -199,7 +216,7 @@ function Summary() {
                   backgroundColor: bagType === 1 ? '#B5179E' : '#F5F5F5',
                   color: bagType === 0 ? '#B5179E' : '#F5F5F5',
                   // width: '120px',
-                  height: '50px',
+                  height: '50px'
                 }}
                 onClick={() => {
                   setBagType(1);
@@ -222,7 +239,7 @@ function Summary() {
                   background: 'white',
                   // width: '240px',
                   // outline: 'none',
-                  outlineColor: 'blue',
+                  outlineColor: 'blue'
                 }}
                 IconComponent={KeyboardArrowDownSharpIcon}
                 variant="outlined"
@@ -231,7 +248,7 @@ function Summary() {
                 <DateCalendar
                   // val={0}
                   // editableDateInputs
-                  onChange={(item) => {
+                  onChange={item => {
                     // console.log(item);
                     console.log('time');
                     // console.log(item?.$d.toDateString());
@@ -239,9 +256,9 @@ function Summary() {
                     setTime(item?.$d.toLocaleDateString('en-US', options));
                     // setDateUnAltered(false);
                   }}
-                // moveRangeOnFirstSelection={false}
-                // ranges={date}
-                // rangeColors={['#051c3f']}
+                  // moveRangeOnFirstSelection={false}
+                  // ranges={date}
+                  // rangeColors={['#051c3f']}
                 />
               </Select>
             </div>
@@ -250,10 +267,10 @@ function Summary() {
               <Select
                 className={classes.select_1}
                 value={shiftType}
-                onChange={(e) => setShiftType(e.target.value)}
+                onChange={e => setShiftType(e.target.value)}
                 style={{
                   fontSize: '14px',
-                  background: 'white',
+                  background: 'white'
                   // width: '240px',
                   // marginRight: '-20px'
                 }}
@@ -266,6 +283,16 @@ function Summary() {
                 <MenuItem value={3}>All Shifts</MenuItem>
               </Select>
             </div>
+            <div className="view">
+              <Button
+                variant="outlined"
+                className="download-button"
+                color="primary"
+                onClick={handleDownload}
+              >
+                <AiOutlineCloudDownload />
+              </Button>
+            </div>
           </LocalizationProvider>
         </div>
 
@@ -275,7 +302,7 @@ function Summary() {
               className="count-container"
               style={{
                 // marginLeft: '40px',
-                marginTop: '20px',
+                marginTop: '20px'
                 // marginRight: '40px'
               }}
             >
@@ -287,9 +314,13 @@ function Summary() {
                   >
                     <p className="count">
                       {summaryData
-                        ? filter === 0 ? bagType === 0 ? `${summaryData?.total_bags_packed} Bags` : `${summaryData?.total_bags_packed / 20} Tones`
-                          : bagType === 0 ? `${summaryData?.total_bags_dispatched} Bags` : `${summaryData?.total_bags_dispatched / 20} Tones`
-
+                        ? filter === 0
+                          ? bagType === 0
+                            ? `${summaryData?.total_bags_packed} Bags`
+                            : `${summaryData?.total_bags_packed / 20} Tones`
+                          : bagType === 0
+                          ? `${summaryData?.total_bags_dispatched} Bags`
+                          : `${summaryData?.total_bags_dispatched / 20} Tones`
                         : 'NA'}
                     </p>
                     <p className="description">
@@ -304,7 +335,9 @@ function Summary() {
                   >
                     <p className="count">
                       {summaryData
-                        ? bagType === 0 ? `${summaryData?.total_missed_labels} Bags` : `${summaryData?.total_missed_labels / 20} Tones`
+                        ? bagType === 0
+                          ? `${summaryData?.total_missed_labels} Bags`
+                          : `${summaryData?.total_missed_labels / 20} Tones`
                         : 'NA'}
                     </p>
                     <p className="description">
@@ -331,7 +364,11 @@ function Summary() {
                 disableMinimumHeight
                 viewAllFunc={() => setMaintenanceFormOpen(true)}
                 // style={{ maxHeight: '60vh', overflowY: 'auto' }}
-                style={{ background: 'white', alignItems: 'center', justifyContent: 'center' }}
+                style={{
+                  background: 'white',
+                  alignItems: 'center',
+                  justifyContent: 'center'
+                }}
               >
                 <SummaryChart
                   hourlyPackerData={summaryData?.HourlyPackerBags}
@@ -360,35 +397,18 @@ function Summary() {
                   // marginBottom: '20px'
                   // padding: '0 50px'
                   overflowY: 'auto',
-                  overflowX: 'hidden',
+                  overflowX: 'hidden'
                 }}
               >
                 {/* <SummaryPackerCard /> */}
                 <div className="count-container">
-                  {!filter && summaryData?.packerBags
-                  && Object.keys(summaryData?.packerBags)?.map((key) => {
-                    const value = summaryData?.packerBags[key];
-
-                    return (
-                      <SummaryAnalysis
-                        filter={filter}
-                        key1={key}
-                        value={value}
-                        bagType={bagType}
-                      />
-                    );
-                  })}
-
-                  {/* SummaryLoaderCard */}
-                  {filter && (
-                  <Grid container spacing={3}>
-
-                    {summaryData?.loaderBags && Object.keys(summaryData?.loaderBags)?.map((key) => {
-                      const value = summaryData?.loaderBags[key];
-                      // console.log(key, value)
+                  {!filter &&
+                    summaryData?.packerBags &&
+                    Object.keys(summaryData?.packerBags)?.map(key => {
+                      const value = summaryData?.packerBags[key];
 
                       return (
-                        <SummaryLoaderAnalysis
+                        <SummaryAnalysis
                           filter={filter}
                           key1={key}
                           value={value}
@@ -397,9 +417,25 @@ function Summary() {
                       );
                     })}
 
-                  </Grid>
-                  )}
+                  {/* SummaryLoaderCard */}
+                  {filter && (
+                    <Grid container spacing={3}>
+                      {summaryData?.loaderBags &&
+                        Object.keys(summaryData?.loaderBags)?.map(key => {
+                          const value = summaryData?.loaderBags[key];
+                          // console.log(key, value)
 
+                          return (
+                            <SummaryLoaderAnalysis
+                              filter={filter}
+                              key1={key}
+                              value={value}
+                              bagType={bagType}
+                            />
+                          );
+                        })}
+                    </Grid>
+                  )}
                 </div>
               </Layout>
             </div>
