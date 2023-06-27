@@ -97,7 +97,7 @@ function Summary() {
     const fetchSummary = async () => {
       const dateObj = new Date(time);
       const newDateRange = [dateObj.setUTCHours(18, 30, 0, 999),
-        dateObj.setUTCHours(41, 89, 59, 999)];
+      dateObj.setUTCHours(41, 89, 59, 999)];
 
       const newUpdatedDateRange = [newDateRange[0] + 86400000, newDateRange[1] + 86400000];
       const data = await get('/api/stats/summarized-stats', {
@@ -357,38 +357,17 @@ function Summary() {
                 style={{
                   maxHeight: '58vh',
                   background: 'white',
-                  // marginBottom: '20px'
-                  // padding: '0 50px'
                   overflowY: 'auto',
                   overflowX: 'hidden',
                 }}
               >
-                {/* <SummaryPackerCard /> */}
                 <div className="count-container">
                   {!filter && summaryData?.packerBags
-                  && Object.keys(summaryData?.packerBags)?.map((key) => {
-                    const value = summaryData?.packerBags[key];
-
-                    return (
-                      <SummaryAnalysis
-                        filter={filter}
-                        key1={key}
-                        value={value}
-                        bagType={bagType}
-                      />
-                    );
-                  })}
-
-                  {/* SummaryLoaderCard */}
-                  {filter && (
-                  <Grid container spacing={3}>
-
-                    {summaryData?.loaderBags && Object.keys(summaryData?.loaderBags)?.map((key) => {
-                      const value = summaryData?.loaderBags[key];
-                      // console.log(key, value)
+                    && Object.keys(summaryData?.packerBags)?.map((key) => {
+                      const value = summaryData?.packerBags[key];
 
                       return (
-                        <SummaryLoaderAnalysis
+                        <SummaryAnalysis
                           filter={filter}
                           key1={key}
                           value={value}
@@ -396,10 +375,21 @@ function Summary() {
                         />
                       );
                     })}
-
-                  </Grid>
-                  )}
-
+                  {filter ? (
+                    <Grid container spacing={3}>
+                      {summaryData?.loaderBags && Object.keys(summaryData?.loaderBags)?.map((key) => {
+                        const value = summaryData?.loaderBags[key];
+                        return (
+                          <SummaryLoaderAnalysis
+                            filter={filter}
+                            key1={key}
+                            value={value}
+                            bagType={bagType}
+                          />
+                        );
+                      })}
+                    </Grid>
+                  ) : null}
                 </div>
               </Layout>
             </div>

@@ -1,4 +1,4 @@
-import React, { useEffect, useState, useContext, Fragment } from 'react';
+import React, { useEffect, useState, useContext } from 'react';
 import { GlobalContext } from 'context/GlobalContext';
 import LoaderAnalysisRow from './LoaderAnalysisRow';
 import { setLocalStorage, getLocalStorage } from 'utils/storage';
@@ -6,7 +6,7 @@ import { makeStyles } from '@material-ui/core/styles';
 import Button from '@material-ui/core/Button';
 
 // Define styles using makeStyles
-const useStyles = makeStyles(theme => ({
+const useStyles = makeStyles(() => ({
   rackContainer: {
     marginTop: '120px',
     marginLeft: '80px',
@@ -89,21 +89,24 @@ function ShipmentAnalysis({
           <input
             className={classes.inputRackNo}
             placeholder="Rack No."
-            onChange={e => setRackNo(e.target.value)}
+            onChange={e => {
+              setRackNo(e.target.value);
+              setRackNoModified(true);
+            }}
             value={rackNo}
           />
-          {rackNoModified?(
+          {rackNoModified ? (
             <Button
-            className={edit ? classes.editRackButton : classes.rackButton}
-            onClick={e => {
-              setRackNoModified(false);
+              className={classes.editRackButton}
+              onClick={() => {
+                setRackNoModified(false);
                 setLocalStorage('rackno', rackNo);
                 setSavedRackNo(rackNo);
-            }}
-          >
-            SAVE
-          </Button>
-          ):null}
+              }}
+            >
+              SAVE
+            </Button>
+          ) : null}
         </div>
       )}
       <div>

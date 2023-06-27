@@ -10,7 +10,6 @@ import Maintenance from 'components/Maintenance';
 import Notification from 'components/Notification';
 import PrintingAnalysis from 'components/PrintingAnalysis';
 import ServiceQuery from 'reactQueries/shipmentQueries';
-import PackerAnalysis from 'components/PackerAnalysis';
 import SystemHealth from 'components/SystemHealth';
 import { SocketContext } from 'context/SocketContext';
 import InfoModal from 'components/InfoModal/InfoModal';
@@ -66,12 +65,9 @@ function DashboardComponent({
     );
   }
   if (activeSection === 3) {
-    return <PackerAnalysis />;
-  }
-  if (activeSection === 4) {
     return <Summary />;
   }
-  if (activeSection === 5) {
+  if (activeSection === 4) {
     return <Report />;
   }
 
@@ -93,6 +89,7 @@ function Index() {
   const [missPrintTransactionId, setmissPrintTransactionId] = useState({});
   const [alertCounter, setAlertCounter] = useState(0);
   const [shipmentError, setShipmentError] = useState(null);
+  const [bagDoneModalOpen, setBagDoneModalOpen] = useState(null);
   const {
     setBeltTrippingEnabled,
     deactivatePrintingSolution: DEACTIVATE_PRINTING_SOLUTION,
@@ -132,7 +129,21 @@ function Index() {
     machine_id,
     vehicle_type,
     comment,
+    current_count,
+    bag_limit
   ) => {
+    if (current_count && bag_limit) {
+      if (current_count < bag_limit) {
+        setBagDoneModalOpen({
+          transaction_id,
+          vehicle_id,
+          printing_belt_id,
+          machine_id,
+          vehicle_type
+        });
+        return;
+      }
+    }
     setIsLoading(true);
     await put('/api/shipment/done', {
       transaction_id,
@@ -192,8 +203,8 @@ function Index() {
     socket.on('bag-entry', data => {
       setVehicleBelts(prevState => {
         if (!prevState) return null;
-        const newState = {...prevState};
-        if(newState[data?.belt_id]){
+        const newState = { ...prevState };
+        if (newState[data?.belt_id]) {
           newState[data?.belt_id] = {
             ...newState[data?.belt_id],
             bag_count: data?.count
@@ -206,9 +217,7 @@ function Index() {
       const transaction_id = parseInt(data?.transaction_id, 10);
       const belt_id = data?.belt_id;
       if (data.transactionMissed > 0 && data.transactionMissed % 10 === 0) {
-        // setAlertCounter(Object.keys(missPrintTransactionId).length + 1);
         setAlertCounter((prevState) => prevState + 1);
-
         setmissPrintTransactionId((prevState) => ({
           ...prevState,
           [transaction_id]: {
@@ -247,8 +256,8 @@ function Index() {
     socket.on('service', data => {
       setVehicleBelts(prevState => {
         if (!prevState) return null;
-        const newState = {...prevState};
-        if(newState[data?.vehicle_id]){
+        const newState = { ...prevState };
+        if (newState[data?.vehicle_id]) {
           newState[data?.vehicle_id] = {
             ...newState[data?.vehicle_id],
             shipment_id: data?.transaction_id,
@@ -287,8 +296,8 @@ function Index() {
       const { vehicle_id, vehicle_type } = data;
       setVehicleBelts(prevState => {
         if (!prevState) return null;
-        const newState = {...prevState};
-        if(newState[vehicle_id]){
+        const newState = { ...prevState };
+        if (newState[vehicle_id]) {
           newState[vehicle_id] = {
             id: vehicle_id,
             vehicle_id,
@@ -303,8 +312,8 @@ function Index() {
     socket.on('bag-update', data => {
       setVehicleBelts(prevState => {
         if (!prevState) return null;
-        const newState = {...prevState};
-        if(newState[data?.belt_id]){
+        const newState = { ...prevState };
+        if (newState[data?.belt_id]) {
           newState[data?.belt_id] = {
             ...newState[data?.belt_id],
             bag_limit: parseInt(data?.new_bag_limit, 10)
@@ -329,8 +338,8 @@ function Index() {
     socket.on('bag-congestion-frontend', ({ belt_id }) => {
       setVehicleBelts(prevState => {
         if (!prevState) return null;
-        const newState = {...prevState};
-        if(newState[belt_id]){
+        const newState = { ...prevState };
+        if (newState[belt_id]) {
           newState[belt_id] = {
             ...newState[belt_id],
             is_belt_running: false
@@ -399,7 +408,7 @@ function Index() {
               >
                 <h6 style={{ textAlign: 'center' }}>Wagon Loader</h6>
               </div>
-              
+
               {DEACTIVATE_PRINTING_SOLUTION ? null : (
                 <div
                   className={`option ${activeSection === 2 ? 'active' : ''}`}
@@ -412,13 +421,22 @@ function Index() {
                 </div>
               )}
               <div
+                className={`option ${activeSection === 3 ? 'active' : ''}`}
+                onClick={() => setActiveSection(3)}
+                onKeyPress={() => setActiveSection(3)}
+                role="button"
+                tabIndex={0}
+              >
+                <h6 style={{ textAlign: 'center' }}>Summary</h6>
+              </div>
+              <div
                 className={`option ${activeSection === 4 ? 'active' : ''}`}
                 onClick={() => setActiveSection(4)}
                 onKeyPress={() => setActiveSection(4)}
                 role="button"
                 tabIndex={0}
               >
-                <h6 style={{ textAlign: 'center' }}>Summary</h6>
+                <h6 style={{ textAlign: 'center' }}>Reports</h6>
               </div>
               <div
                 className={`option ${activeSection === 5 ? 'active' : ''}`}
@@ -427,21 +445,11 @@ function Index() {
                 role="button"
                 tabIndex={0}
               >
-                <h6 style={{ textAlign: 'center' }}>Reports</h6>
-              </div>
-              <div
-                className={`option ${activeSection === 6 ? 'active' : ''}`}
-                onClick={() => setActiveSection(6)}
-                onKeyPress={() => setActiveSection(6)}
-                role="button"
-                tabIndex={0}
-              >
                 <h6 style={{ textAlign: 'center' }}>System Health</h6>
               </div>
             </div>
             <DashboardComponent
               activeSection={activeSection}
-              // activeTransactions={activeTransactions}
               handleBagIncrement={handleBagIncrement}
               printingBelts={printingBelts}
               vehicleBelts={vehicleBelts}
@@ -487,6 +495,15 @@ function Index() {
                   <p>Do you want to go ahead and save the changes you made?</p>
                 </>
               </InfoModal>
+            ) : null}
+            {bagDoneModalOpen ? (
+              <InfoModal
+                open={bagDoneModalOpen}
+                close={() => setBagDoneModalOpen(null)}
+                handleBagDone={handleBagDone}
+                title="Stop Shipment?"
+                hideModify
+              />
             ) : null}
           </Container>
         </Layout>

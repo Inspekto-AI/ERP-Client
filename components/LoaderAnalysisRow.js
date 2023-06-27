@@ -83,7 +83,7 @@ const LoaderAnalysisRow = ({
   };
 
   const handleReset = () => {
-    handleBagDone(data?.shipment_id, data?.vehicle_id, null, data?.vehicle_id, data?.vehicle_type, 'test');
+    handleBagDone(data?.shipment_id, data?.vehicle_id, null, data?.vehicle_id, data?.vehicle_type, '', data?.bag_count, data?.bag_limit);
   };
 
   const handleSubmit = async (e) => {
@@ -192,7 +192,7 @@ const LoaderAnalysisRow = ({
             START
           </Button>
         )}
-        <Button className={classes.root}>VIEW</Button>
+        <Button className={classes.root} disabled={!data?.shipment_id || data?.is_belt_running} >VIEW</Button>
       </tr>
     </Fragment>
   );

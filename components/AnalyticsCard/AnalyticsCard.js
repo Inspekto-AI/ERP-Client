@@ -3,9 +3,8 @@ import PropTypes from 'prop-types';
 import { GrFlag } from 'react-icons/gr';
 import { IoMdAdd } from 'react-icons/io';
 import {
-  Avatar, Button, Grid, LinearProgress,
+  Avatar, Button, LinearProgress,
 } from '@material-ui/core';
-import { BiRightArrowAlt } from 'react-icons/bi';
 import { msToTime } from 'utils/globalFunctions';
 // import { PACKER_LIMIT } from 'utils/constants';
 import FrinksButton from 'components/FrinksButton';
@@ -41,7 +40,6 @@ function AnalyticsCard({
   printingCard,
   rejectModalOpen,
   bagModifyModalOpen,
-  setDetailModalOpen,
   setReverseShipmentFormOpen,
   handleBagDone,
   handleBeltReset,
@@ -296,28 +294,6 @@ function AnalyticsCard({
                 ) : null
               ) : (
                 <>
-                  <Button
-                    variant="outlined"
-                    className="view-button"
-                    onClick={setDetailModalOpen}
-                  >
-                    {status === 0
-                      ? (DEACTIVATE_LOADER_SOLUTION
-                        ? data?.bag_limit <= data?.tag_count
-                        : data?.bag_limit <= data?.bag_count)
-                        || data?.is_belt_running === false
-                        ? 'View'
-                        : 'View Details'
-                      : 'Edit'}
-                    {(DEACTIVATE_LOADER_SOLUTION
-                      ? data?.bag_limit <= data?.tag_count
-                      : data?.bag_limit <= data?.bag_count)
-                    || status === 1
-                    || data?.is_belt_running === false ? null : (
-                      <BiRightArrowAlt />
-                      )}
-                    {' '}
-                  </Button>
                   {status === 1 && (
                     <Button
                       className="view-button"

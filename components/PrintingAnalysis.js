@@ -3,12 +3,10 @@ import { Grid } from '@material-ui/core';
 import AnalyticsCard from 'components/AnalyticsCard';
 import { AiOutlineExclamationCircle } from 'react-icons/ai';
 import PropTypes from 'prop-types';
-import AddMoreBagsModal from 'components/AddMoreBagsModal';
 import DefectiveBags from 'components/DefectiveBags';
 import InfoModal from 'components/InfoModal';
 
 function PrintingAnalysis({ printingBelts, handleBeltReset }) {
-  const [detailModalOpen, setDetailModalOpen] = useState(null);
   const [rejectModalOpen, setRejectModalOpen] = useState(null);
 
   return (
@@ -39,10 +37,6 @@ function PrintingAnalysis({ printingBelts, handleBeltReset }) {
                         ...printingBelts[e],
                         printing_belt_id: e,
                       })}
-                      setDetailModalOpen={() => setDetailModalOpen({
-                        transaction_id: e,
-                        ...printingBelts[e],
-                      })}
                       handleBeltReset={handleBeltReset}
                       printingCard
                       status={0}
@@ -53,22 +47,6 @@ function PrintingAnalysis({ printingBelts, handleBeltReset }) {
           )}
         </div>
       </div>
-      {detailModalOpen ? (
-        <AddMoreBagsModal
-          open={detailModalOpen}
-          close={() => setDetailModalOpen(null)}
-          heading="Transaction details"
-          handleSubmit={() => {
-            // handleBagIncrement(e);
-            setDetailModalOpen(null);
-          }}
-          handleStop={() => {
-            // handleStop(e);
-            setDetailModalOpen(null);
-          }}
-          printingCard
-        />
-      ) : null}
       {rejectModalOpen ? (
         <InfoModal
           open={rejectModalOpen}

@@ -180,14 +180,12 @@ function InfoModal({
       setError('* All fields are required');
       return;
     }
-    handleBagDone(
-      open.transaction_id || open.id,
-      open?.bag_counting_belt_id,
-      open?.printing_belt_id,
+    handleBagDone(open?.transaction_id,
       open?.vehicle_id,
+      open?.printing_belt_id,
+      open?.machine_id,
       open?.vehicle_type,
-      comment,
-    );
+      comment);
     close();
   };
 
