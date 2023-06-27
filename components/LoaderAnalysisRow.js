@@ -1,9 +1,10 @@
 import { Select, MenuItem, Avatar } from '@material-ui/core';
-import { useState, Fragment } from 'react';
+import { useState } from 'react';
 import { IoMdAdd } from 'react-icons/io';
 
 import { makeStyles } from '@material-ui/core/styles';
 import Button from '@material-ui/core/Button';
+import InfoModal from 'components/InfoModal';
 
 const useStyles = makeStyles(() => ({
   root: {
@@ -75,13 +76,14 @@ const LoaderAnalysisRow = ({
   rackNo,
   vehicleType,
   handleBagDone,
-  handleBagIncrement
+  handleBagIncrement,
 }) => {
   const classes = useStyles();
   const [bagType, setBagType] = useState(BAG_TYPES ? BAG_TYPES[0] : '');
   const [wagonno, setWagonno] = useState('');
   const [bagCount, setBagCount] = useState('');
   const [addBagCount, setAddBagCount] = useState('');
+  const [detailModalOpen, setDetailModalOpen] = useState(null);
 
   const handleAddButton = async () => {
     await handleBagIncrement({
@@ -145,7 +147,7 @@ const LoaderAnalysisRow = ({
   };
 
   return (
-    <Fragment>
+    <>
       <tr className="custom-table">
         <td className={classes.td1}>{index}</td>
         <td
@@ -238,10 +240,32 @@ const LoaderAnalysisRow = ({
           )}
         </td>
         <td>
-          <Button className={classes.root} disabled={!data.shipment_id || data.is_belt_running} onClick={} >VIEW</Button>
+          <Button
+            className={classes.root}
+            disabled={!data.shipment_id || data.is_belt_running}
+            onClick={() => setDetailModalOpen({
+              issue_with_belt: data?.issue_with_belt,
+              belt_id: data?.id
+            })}
+          >
+            VIEW
+          </Button>
         </td>
       </tr>
-    </Fragment>
+      {detailModalOpen ? (
+        <InfoModal
+          open={detailModalOpen}
+          close={() => setDetailModalOpen(null)}
+          hideComment
+          hideConfirm
+          title="Belt Stopped"
+        >
+          <>
+            <p style={{textAlign: 'center'}}>{detailModalOpen?.issue_with_belt} - {detailModalOpen?.belt_id}</p>
+          </>
+        </InfoModal>
+      ) : null}
+    </>
   );
 };
 
