@@ -38,7 +38,8 @@ const useStyles = makeStyles(() => ({
     marginLeft: '-1px',
     backgroundColor: '#00A86B',
     margin: '0px',
-    padding: '0px'
+    padding: '0px',
+    marginLeft: '10px'
   },
   td5: {
     width: '8vw',
