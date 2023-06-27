@@ -40,7 +40,8 @@ const useStyles = makeStyles(() => ({
     backgroundColor: '#00A86B',
     margin: '0px',
     padding: '0px',
-    marginLeft: '10px'
+    marginLeft: '10px',
+    cursor: 'pointer'
   },
   td5: {
     width: '8vw',
