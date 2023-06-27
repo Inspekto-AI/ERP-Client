@@ -33,8 +33,8 @@ const useStyles = makeStyles(() => ({
     maxWidth: '8vw'
   },
   avatar: {
-    height: '40px',
-    width: '40px',
+    height: '1vh',
+    width: '1vh',
     marginLeft: '-1px',
     backgroundColor: '#00A86B',
     margin: '0px',
@@ -46,14 +46,18 @@ const useStyles = makeStyles(() => ({
     height: '40px',
     maxHeight: '40px',
     margin: '0px',
-    padding: '0px'
+    padding: '0px',
+    backgroundColor: 'transparent'
   },
   td6: {
     outline: '2px solid #6B4EFF'
   },
   addBagInput: {
-    width: '6vw',
+    width: '7vw',
     fontSize: '20px'
+  },
+  td7: {
+    width: '10vh'
   }
 }));
 
@@ -85,7 +89,16 @@ const LoaderAnalysisRow = ({
   };
 
   const handleReset = () => {
-    handleBagDone(data?.shipment_id, data?.vehicle_id, null, data?.vehicle_id, data?.vehicle_type, '', data?.bag_count, data?.bag_limit);
+    handleBagDone(
+      data?.shipment_id,
+      data?.vehicle_id,
+      null,
+      data?.vehicle_id,
+      data?.vehicle_type,
+      '',
+      data?.bag_count,
+      data?.bag_limit
+    );
   };
 
   const handleSubmit = async e => {
@@ -199,7 +212,7 @@ const LoaderAnalysisRow = ({
             </Avatar>
           </td>
         ) : (
-          <td>-</td>
+          <td className={classes.td7}>-</td>
         )}
         <td>
           {data?.created_at
