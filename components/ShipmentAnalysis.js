@@ -54,6 +54,9 @@ const useStyles = makeStyles(() => ({
     // marginLeft: '80px',
     // fontSize: '24px',
     // fontWeight: '800'
+  },
+  tableDiv: {
+    paddingBottom: '30px'
   }
 }));
 
@@ -123,7 +126,7 @@ function ShipmentAnalysis({
         </div>
       )}
       {vehicleType === 0 && <div className={classes.rackContainer1}></div>}
-      <div>
+      <div className={classes.tableDiv}>
         <table className="custom-table">
           <thead>
             <tr>
