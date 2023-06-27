@@ -47,7 +47,7 @@ const Container = styled.div`
   .analysis-container {
     padding: 30px 60px 20px 60px;
     background: #e5e5e5;
-    margin-top: 128.875px;
+    margin-top: 120px;
 
     @media all and (max-width: 960px) {
       padding: 20px;

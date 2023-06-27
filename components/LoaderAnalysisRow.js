@@ -10,7 +10,6 @@ const useStyles = makeStyles(() => ({
     backgroundColor: 'white',
     color: 'black',
     padding: '5px 10px',
-
     fontSize: '18px',
     opacity: '0.4',
     fontWeight: 200,
@@ -21,15 +20,17 @@ const useStyles = makeStyles(() => ({
     backgroundColor: '#69E866',
     width: '3vw'
   },
-  td2: {
-    outline: '2px solid black'
-  },
   td3: {
-    outline: '2px solid black',
-    width: '10vw'
+    outline: '2px solid transparent',
+    width: '100%',
+    background: 'white'
   },
   td4: {
     outline: '2px solid #6B4EFF',
+    maxWidth: '8vw'
+  },
+  td4Inactive: {
+    outline: '2px solid transparent',
     maxWidth: '8vw'
   },
   avatar: {
@@ -37,7 +38,7 @@ const useStyles = makeStyles(() => ({
     width: '40px',
     marginLeft: '-1px',
     backgroundColor: '#00A86B',
-    margin: '0px',
+    margin: '0 0 0 10px',
     padding: '0px'
   },
   td5: {
@@ -54,7 +55,14 @@ const useStyles = makeStyles(() => ({
   addBagInput: {
     width: '6vw',
     fontSize: '20px'
-  }
+  },
+  transpatentBorder: {
+    outline: '2px solid black'
+  },
+  td7: {
+    outline: '2px solid black',
+    maxWidth: '8vw'
+  },
 }));
 
 const LoaderAnalysisRow = ({
@@ -140,16 +148,17 @@ const LoaderAnalysisRow = ({
           }}
         >
           {data?.id}
-        </td>{' '}
+        </td>
         {data?.shipment_id ? (
-          data?.bag_type
+          <td className={classes.transpatentBorder}>
+            {data?.bag_type}
+          </td>
         ) : (
           <Select
             className={classes.td3}
             variant="outlined"
             value={bagType}
             disabled={data?.shipment_id}
-            // className="table-button"
             onChange={e => setBagType(e.target.value)}
           >
             {BAG_TYPES.map((e, index) => (
@@ -159,7 +168,7 @@ const LoaderAnalysisRow = ({
             ))}
           </Select>
         )}
-        <td className={classes.td4}>
+        <td className={data?.shipment_id ? classes.td7 : classes.td4Inactive}>
           {data?.shipment_id ? (
             data?.wagon_no || data?.licence_number
           ) : (
@@ -171,7 +180,7 @@ const LoaderAnalysisRow = ({
             />
           )}
         </td>
-        <td>
+        <td className={data?.shipment_id ? classes.td7 : classes.td4Inactive}>
           {data?.shipment_id ? (
             data?.bag_limit
           ) : (
@@ -184,7 +193,7 @@ const LoaderAnalysisRow = ({
             />
           )}
         </td>
-        <td className={classes.td6}>
+        <td className={data?.shipment_id ? classes.td4 : classes.td4Inactive}>
           {data?.shipment_id ? data?.bag_count : '-'}
         </td>
         {data?.shipment_id ? (
@@ -193,7 +202,7 @@ const LoaderAnalysisRow = ({
               value={addBagCount}
               className={classes.addBagInput}
               onChange={e => handleValueChange(e, setAddBagCount)}
-            ></input>
+            />
             <Avatar className={classes.avatar} onClick={handleAddButton}>
               <IoMdAdd />
             </Avatar>

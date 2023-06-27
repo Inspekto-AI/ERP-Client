@@ -47,7 +47,7 @@ function Layout({
       <div
         style={{
           background: `${changeBackground ? 'white' : '#E5E5E5'}`,
-          minHeight: `${disableMinimumHeight ? 'auto' : '100vh'}`,
+          minHeight: `${disableMinimumHeight ? 'auto' : 'calc(100vh - 120px)'}`,
           ...style
         }}
       >
