@@ -13,6 +13,13 @@ const useStyles = makeStyles(() => ({
     fontSize: '24px',
     fontWeight: '800'
   },
+  rackContainer1: {
+    marginTop: '120px',
+    marginLeft: '80px',
+    fontSize: '24px',
+    fontWeight: '800',
+    height: '20px'
+  },
   inputRackNo: {
     marginTop: '20px',
     height: '30px',
@@ -41,6 +48,12 @@ const useStyles = makeStyles(() => ({
     fontWeight: '700',
     border: 'none',
     height: '30px'
+  },
+  tableContainer: {
+    marginTop: '140px'
+    // marginLeft: '80px',
+    // fontSize: '24px',
+    // fontWeight: '800'
   }
 }));
 
@@ -79,7 +92,7 @@ function ShipmentAnalysis({
   useEffect(() => {
     setSavedRackNo(getLocalStorage('rackno'));
     setRackNo(getLocalStorage('rackno'));
-  }, [])
+  }, []);
 
   return (
     <>
@@ -109,6 +122,7 @@ function ShipmentAnalysis({
           ) : null}
         </div>
       )}
+      {vehicleType === 0 && <div className={classes.rackContainer1}></div>}
       <div>
         <table className="custom-table">
           <thead>
@@ -126,22 +140,23 @@ function ShipmentAnalysis({
             </tr>
           </thead>
           <tbody>
-            {filterVehicle && Object.values(filterVehicle).map((e, index) => {
-              return (
-                <LoaderAnalysisRow
-                  key={index}
-                  data={e}
-                  BAG_TYPES={BAG_TYPES}
-                  handleNewShipment={arg => handleNewShipment(arg)}
-                  handleFlag={handleFlag}
-                  index={index + 1}
-                  rackNo={savedRackNo}
-                  vehicleType={vehicleType}
-                  handleBagDone={handleBagDone}
-                  handleBagIncrement={handleBagIncrement}
-                />
-              )
-            })}
+            {filterVehicle &&
+              Object.values(filterVehicle).map((e, index) => {
+                return (
+                  <LoaderAnalysisRow
+                    key={index}
+                    data={e}
+                    BAG_TYPES={BAG_TYPES}
+                    handleNewShipment={arg => handleNewShipment(arg)}
+                    handleFlag={handleFlag}
+                    index={index + 1}
+                    rackNo={savedRackNo}
+                    vehicleType={vehicleType}
+                    handleBagDone={handleBagDone}
+                    handleBagIncrement={handleBagIncrement}
+                  />
+                );
+              })}
           </tbody>
         </table>
       </div>
