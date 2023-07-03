@@ -20,7 +20,7 @@ function Layout({
   summaryHeader,
   disableMinimumHeight,
   viewAllFunc,
-  style
+  style,
 }) {
   return (
     <>
@@ -48,7 +48,7 @@ function Layout({
         style={{
           background: `${changeBackground ? 'white' : '#E5E5E5'}`,
           minHeight: `${disableMinimumHeight ? 'auto' : 'calc(100vh - 120px)'}`,
-          ...style
+          ...style,
         }}
       >
         {children}
@@ -74,7 +74,7 @@ Layout.propTypes = {
   summaryHeader: PropTypes.bool,
   disableMinimumHeight: PropTypes.bool,
   viewAllFunc: PropTypes.func,
-  style: PropTypes.object
+  style: PropTypes.object,
 };
 
 export default Layout;

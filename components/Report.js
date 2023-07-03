@@ -6,9 +6,6 @@ import 'react-date-range/dist/styles.css'; // main css file
 import 'react-date-range/dist/theme/default.css'; // theme css file
 import { get, getFile } from 'utils/api';
 import { getStartAndEndDate } from 'utils/globalFunctions';
-import { AiOutlineCloudDownload } from 'react-icons/ai';
-import { Button } from '@material-ui/core';
-import axios from 'axios';
 import FrinksButton from './FrinksButton';
 
 const downloadPDF = pdf => {
@@ -57,6 +54,7 @@ function Report() {
         trackbar: [shipmentStartTrackBar, shipmentEndTrackBar],
         shipmentFilter
       });
+      console.log(res.data.data);
       setShipmentReport(res.data.data);
     };
     const fetchPrintingReport = async () => {
@@ -92,7 +90,7 @@ function Report() {
 
   useEffect(() => {
     fetchReports();
-  }, []);
+  }, [shipmentStartTrackBar, shipmentEndTrackBar]);
 
   const handleDownload = async () => {
     const res = await getFile('/api/report/datewise', {

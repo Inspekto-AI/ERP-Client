@@ -90,6 +90,7 @@ function Index() {
   const [alertCounter, setAlertCounter] = useState(0);
   const [shipmentError, setShipmentError] = useState(null);
   const [bagDoneModalOpen, setBagDoneModalOpen] = useState(null);
+  const [bagIncrementModalOpen, setBagIncrementModalOpen] = useState(null);
   const {
     setBeltTrippingEnabled,
     deactivatePrintingSolution: DEACTIVATE_PRINTING_SOLUTION,
@@ -130,16 +131,19 @@ function Index() {
     vehicle_type,
     comment,
     current_count,
-    bag_limit
+    bag_limit,
   ) => {
-    if (current_count && bag_limit) {
+    if (
+      typeof current_count !== 'undefined'
+      && typeof bag_limit !== 'undefined'
+    ) {
       if (current_count < bag_limit) {
         setBagDoneModalOpen({
           transaction_id,
           vehicle_id,
           printing_belt_id,
           machine_id,
-          vehicle_type
+          vehicle_type,
         });
         return;
       }
@@ -180,7 +184,13 @@ function Index() {
     }
   }, [serviceMutation]);
 
-  const handleBagIncrement = async (data) => {
+  const handleBagIncrement = async (data, flag) => {
+    if (flag === true) {
+      console.log('hey');
+      setBagIncrementModalOpen(data);
+      return;
+    }
+    console.log('inc');
     setIsLoading(true);
     try {
       await post('/api/shipment/bag-change', data);
@@ -200,18 +210,18 @@ function Index() {
   }, []);
 
   useEffect(() => {
-    socket.on('bag-entry', data => {
-      setVehicleBelts(prevState => {
+    socket.on('bag-entry', (data) => {
+      setVehicleBelts((prevState) => {
         if (!prevState) return null;
         const newState = { ...prevState };
         if (newState[data?.belt_id]) {
           newState[data?.belt_id] = {
             ...newState[data?.belt_id],
-            bag_count: data?.count
-          }
+            bag_count: data?.count,
+          };
         }
+        return newState;
       });
-      return prevState;
     });
     socket.on('tag-entry', (data) => {
       const transaction_id = parseInt(data?.transaction_id, 10);
@@ -223,11 +233,11 @@ function Index() {
           [transaction_id]: {
             belt_id,
             machine_id: belt_id,
-            missed_count: data?.transactionMissed
-          }
+            missed_count: data?.transactionMissed,
+          },
         }));
       }
-      setPrintingBelts(prevState => {
+      setPrintingBelts((prevState) => {
         if (!prevState) return null;
         return {
           ...prevState,
@@ -253,8 +263,8 @@ function Index() {
         };
       });
     });
-    socket.on('service', data => {
-      setVehicleBelts(prevState => {
+    socket.on('service', (data) => {
+      setVehicleBelts((prevState) => {
         if (!prevState) return null;
         const newState = { ...prevState };
         if (newState[data?.vehicle_id]) {
@@ -268,8 +278,8 @@ function Index() {
             bag_count: data?.bag_count,
             created_at: data?.created_at,
             state: data?.state,
-            is_belt_running: true
-          }
+            is_belt_running: true,
+          };
         }
         return newState;
       });
@@ -292,9 +302,9 @@ function Index() {
     // socket.on('release-belt', () => {
     //   console.log("Feature removed --- Release Maintenence Belt");
     // });
-    socket.on('bag-done', data => {
+    socket.on('bag-done', (data) => {
       const { vehicle_id, vehicle_type } = data;
-      setVehicleBelts(prevState => {
+      setVehicleBelts((prevState) => {
         if (!prevState) return null;
         const newState = { ...prevState };
         if (newState[vehicle_id]) {
@@ -302,22 +312,22 @@ function Index() {
             id: vehicle_id,
             vehicle_id,
             vehicle_type,
-            is_active: 1
-          }
+            is_active: 1,
+          };
         }
         return newState;
       });
       setIsLoading(false);
     });
-    socket.on('bag-update', data => {
-      setVehicleBelts(prevState => {
+    socket.on('bag-update', (data) => {
+      setVehicleBelts((prevState) => {
         if (!prevState) return null;
         const newState = { ...prevState };
         if (newState[data?.belt_id]) {
           newState[data?.belt_id] = {
             ...newState[data?.belt_id],
-            bag_limit: parseInt(data?.new_bag_limit, 10)
-          }
+            bag_limit: parseInt(data?.new_bag_limit, 10),
+          };
         }
         return newState;
       });
@@ -331,21 +341,21 @@ function Index() {
           [belt_id]: {
             ...prevState[belt_id],
             is_belt_running: false,
-            issue_with_belt
+            issue_with_belt,
           },
         };
       });
     });
     socket.on('bag-congestion-frontend', ({ belt_id, issue_with_belt }) => {
-      setVehicleBelts(prevState => {
+      setVehicleBelts((prevState) => {
         if (!prevState) return null;
         const newState = { ...prevState };
         if (newState[belt_id]) {
           newState[belt_id] = {
             ...newState[belt_id],
             is_belt_running: false,
-            issue_with_belt
-          }
+            issue_with_belt,
+          };
         }
         return newState;
       });
@@ -382,134 +392,143 @@ function Index() {
           error={shipmentError}
         />
       )}
-      {
-        <Layout
-          openShipmentForm={() => setShipmentFormOpen(true)}
-          openMaintenanceForm={() => setMaintenanceFormOpen(true)}
-          openNotificationForm={() => setNotificationsFormOpen(true)}
-        >
-          <Container>
-            {isLoading ? <Loader /> : null}
-            <div className="trackbar">
-              <div
-                className={`option ${activeSection === 0 ? 'active' : ''}`}
-                onClick={() => setActiveSection(0)}
-                onKeyPress={() => setActiveSection(0)}
-                role="button"
-                tabIndex={0}
-              >
-                <h6 style={{ textAlign: 'center' }}>Truck Loader</h6>
-              </div>
-
-              <div
-                className={`option ${activeSection === 1 ? 'active' : ''}`}
-                onClick={() => setActiveSection(1)}
-                onKeyPress={() => setActiveSection(1)}
-                role="button"
-                tabIndex={0}
-              >
-                <h6 style={{ textAlign: 'center' }}>Wagon Loader</h6>
-              </div>
-
-              {DEACTIVATE_PRINTING_SOLUTION ? null : (
-                <div
-                  className={`option ${activeSection === 2 ? 'active' : ''}`}
-                  onClick={() => setActiveSection(2)}
-                  onKeyPress={() => setActiveSection(2)}
-                  role="button"
-                  tabIndex={0}
-                >
-                  <h6 style={{ textAlign: 'center' }}>Printing belt</h6>
-                </div>
-              )}
-              <div
-                className={`option ${activeSection === 3 ? 'active' : ''}`}
-                onClick={() => setActiveSection(3)}
-                onKeyPress={() => setActiveSection(3)}
-                role="button"
-                tabIndex={0}
-              >
-                <h6 style={{ textAlign: 'center' }}>Summary</h6>
-              </div>
-              <div
-                className={`option ${activeSection === 4 ? 'active' : ''}`}
-                onClick={() => setActiveSection(4)}
-                onKeyPress={() => setActiveSection(4)}
-                role="button"
-                tabIndex={0}
-              >
-                <h6 style={{ textAlign: 'center' }}>Reports</h6>
-              </div>
-              <div
-                className={`option ${activeSection === 5 ? 'active' : ''}`}
-                onClick={() => setActiveSection(5)}
-                onKeyPress={() => setActiveSection(5)}
-                role="button"
-                tabIndex={0}
-              >
-                <h6 style={{ textAlign: 'center' }}>System Health</h6>
-              </div>
+      <Layout
+        openShipmentForm={() => setShipmentFormOpen(true)}
+        openMaintenanceForm={() => setMaintenanceFormOpen(true)}
+        openNotificationForm={() => setNotificationsFormOpen(true)}
+      >
+        <Container>
+          {isLoading ? <Loader /> : null}
+          <div className="trackbar">
+            <div
+              className={`option ${activeSection === 0 ? 'active' : ''}`}
+              onClick={() => setActiveSection(0)}
+              onKeyPress={() => setActiveSection(0)}
+              role="button"
+              tabIndex={0}
+            >
+              <h6 style={{ textAlign: 'center' }}>Truck Loader</h6>
             </div>
-            <DashboardComponent
-              activeSection={activeSection}
-              handleBagIncrement={handleBagIncrement}
-              printingBelts={printingBelts}
-              vehicleBelts={vehicleBelts}
-              setReverseShipmentFormOpen={e => setReverseShipmentFormOpen(e)}
-              handleBagDone={handleBagDone}
-              handleBeltReset={handleBeltReset}
-              handleNewShipment={handleNewShipment}
-            />
-            {alertCounter !== 0 ? (
-              <div className="alert">
-                {Object.keys(missPrintTransactionId).map((e, index) => (
-                  <Alert
-                    severity="warning"
-                    style={{
-                      backgroundColor: 'red',
-                      marginBottom: '0.938em',
-                      width: '500px',
-                    }}
-                    action={(
-                      <Button
-                        color="inherit"
-                        size="small"
-                        onClick={() => alertsnooze(e)}
-                        style={{ backgroundColor: 'white' }}
-                      >
-                        Snooze
-                      </Button>
-                    )}
-                    key={index}
-                  >
-                    {`${missPrintTransactionId[e].missed_count} misprint bags passed from - ${missPrintTransactionId[e].machine_id}`}
-                  </Alert>
-                ))}
-              </div>
-            ) : null}
-            {infoModalOpen ? (
-              <InfoModal
-                open={infoModalOpen}
-                close={() => setInfoModalOpen(false)}
-                title="Confirm changes"
+
+            <div
+              className={`option ${activeSection === 1 ? 'active' : ''}`}
+              onClick={() => setActiveSection(1)}
+              onKeyPress={() => setActiveSection(1)}
+              role="button"
+              tabIndex={0}
+            >
+              <h6 style={{ textAlign: 'center' }}>Wagon Loader</h6>
+            </div>
+
+            {DEACTIVATE_PRINTING_SOLUTION ? null : (
+              <div
+                className={`option ${activeSection === 2 ? 'active' : ''}`}
+                onClick={() => setActiveSection(2)}
+                onKeyPress={() => setActiveSection(2)}
+                role="button"
+                tabIndex={0}
               >
-                <>
-                  <p>Do you want to go ahead and save the changes you made?</p>
-                </>
-              </InfoModal>
-            ) : null}
-            {bagDoneModalOpen ? (
-              <InfoModal
-                open={bagDoneModalOpen}
-                close={() => setBagDoneModalOpen(null)}
-                handleBagDone={handleBagDone}
-                title="Stop Shipment?"
-                hideModify
-              />
-            ) : null}
-          </Container>
-        </Layout>
-      }
+                <h6 style={{ textAlign: 'center' }}>Printing belt</h6>
+              </div>
+            )}
+            <div
+              className={`option ${activeSection === 3 ? 'active' : ''}`}
+              onClick={() => setActiveSection(3)}
+              onKeyPress={() => setActiveSection(3)}
+              role="button"
+              tabIndex={0}
+            >
+              <h6 style={{ textAlign: 'center' }}>Summary</h6>
+            </div>
+            <div
+              className={`option ${activeSection === 4 ? 'active' : ''}`}
+              onClick={() => setActiveSection(4)}
+              onKeyPress={() => setActiveSection(4)}
+              role="button"
+              tabIndex={0}
+            >
+              <h6 style={{ textAlign: 'center' }}>Reports</h6>
+            </div>
+            <div
+              className={`option ${activeSection === 5 ? 'active' : ''}`}
+              onClick={() => setActiveSection(5)}
+              onKeyPress={() => setActiveSection(5)}
+              role="button"
+              tabIndex={0}
+            >
+              <h6 style={{ textAlign: 'center' }}>System Health</h6>
+            </div>
+          </div>
+          <DashboardComponent
+            activeSection={activeSection}
+            handleBagIncrement={handleBagIncrement}
+            printingBelts={printingBelts}
+            vehicleBelts={vehicleBelts}
+            setReverseShipmentFormOpen={(e) => setReverseShipmentFormOpen(e)}
+            handleBagDone={handleBagDone}
+            handleBeltReset={handleBeltReset}
+            handleNewShipment={handleNewShipment}
+          />
+          {alertCounter !== 0 ? (
+            <div className="alert">
+              {Object.keys(missPrintTransactionId).map((e, index) => (
+                <Alert
+                  severity="warning"
+                  style={{
+                    backgroundColor: 'red',
+                    marginBottom: '0.938em',
+                    width: '500px',
+                  }}
+                  action={(
+                    <Button
+                      color="inherit"
+                      size="small"
+                      onClick={() => alertsnooze(e)}
+                      style={{ backgroundColor: 'white' }}
+                    >
+                      Snooze
+                    </Button>
+                    )}
+                  key={index}
+                >
+                  {`${missPrintTransactionId[e].missed_count} misprint bags passed from - ${missPrintTransactionId[e].machine_id}`}
+                </Alert>
+              ))}
+            </div>
+          ) : null}
+          {infoModalOpen ? (
+            <InfoModal
+              open={infoModalOpen}
+              close={() => setInfoModalOpen(false)}
+              title="Confirm changes"
+            >
+              <>
+                <p>Do you want to go ahead and save the changes you made?</p>
+              </>
+            </InfoModal>
+          ) : null}
+          {bagDoneModalOpen ? (
+            <InfoModal
+              open={bagDoneModalOpen}
+              close={() => setBagDoneModalOpen(null)}
+              handleBagDone={handleBagDone}
+              title="Stop Shipment?"
+              hideModify
+            />
+          ) : null}
+
+          {bagIncrementModalOpen ? (
+            <InfoModal
+              open={bagIncrementModalOpen}
+              close={() => setBagIncrementModalOpen(null)}
+              handleBagDone={handleBagIncrement}
+              title="Increase Bags"
+              hideModify
+              incrementModal
+            />
+          ) : null}
+        </Container>
+      </Layout>
     </>
   );
 }

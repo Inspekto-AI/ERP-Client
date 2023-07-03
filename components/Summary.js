@@ -5,15 +5,22 @@ import { get, getFile } from 'utils/api';
 import Layout from 'components/Layout';
 import Maintenance from 'components/Maintenance';
 import Notification from 'components/Notification';
-import { LocalizationProvider, DateCalendar } from '@mui/x-date-pickers';
+import {
+  LocalizationProvider,
+  DateCalendar,
+  DatePicker,
+  DesktopDatePicker
+} from '@mui/x-date-pickers';
 import { AdapterDayjs } from '@mui/x-date-pickers/AdapterDayjs';
 import { makeStyles } from '@material-ui/core/styles';
 import KeyboardArrowDownSharpIcon from '@mui/icons-material/KeyboardArrowDownSharp';
+import { AiOutlineCloudDownload } from 'react-icons/ai';
+import Loader from 'components/Loader';
 import SummaryChart from './SummaryChart';
 import SummaryAnalysis from './SummaryAnalysis';
 import SummaryLoaderAnalysis from './SummaryLoaderAnalysis';
-import { AiOutlineCloudDownload } from 'react-icons/ai';
-import Loader from 'components/Loader';
+
+import dayjs from 'dayjs';
 
 const downloadPDF = file => {
   const downloadLink = document.createElement('a');
@@ -69,34 +76,34 @@ function Summary() {
   const [isLoading, setIsLoading] = useState(true);
   const options = { day: 'numeric', month: 'short', year: 'numeric' };
 
-  const getCurrentFormattedDate = () => {
-    const currentDate = new Date();
-    const day = String(currentDate.getDate()).padStart(2, '0');
-    const monthIndex = currentDate.getMonth();
-    const year = currentDate.getFullYear();
+  // const getCurrentFormattedDate = () => {
+  //   const currentDate = new Date();
+  //   const day = String(currentDate.getDate()).padStart(2, '0');
+  //   const monthIndex = currentDate.getMonth();
+  //   const year = currentDate.getFullYear();
 
-    const months = [
-      'Jan',
-      'Feb',
-      'Mar',
-      'Apr',
-      'May',
-      'Jun',
-      'Jul',
-      'Aug',
-      'Sep',
-      'Oct',
-      'Nov',
-      'Dec'
-    ];
+  //   const months = [
+  //     'Jan',
+  //     'Feb',
+  //     'Mar',
+  //     'Apr',
+  //     'May',
+  //     'Jun',
+  //     'Jul',
+  //     'Aug',
+  //     'Sep',
+  //     'Oct',
+  //     'Nov',
+  //     'Dec'
+  //   ];
 
-    const month = months[monthIndex];
+  //   const month = months[monthIndex];
 
-    return `${day} ${month} ${year}`;
-  };
+  //   return `${day} ${month}, ${year}`;
+  // };
 
-  const currentFormattedDate = getCurrentFormattedDate();
-  const [time, setTime] = useState(currentFormattedDate);
+  // const currentFormattedDate = getCurrentFormattedDate();
+  const [time, setTime] = useState(dayjs(new Date()));
 
   useEffect(() => {
     const fetchSummary = async () => {
@@ -229,7 +236,7 @@ function Summary() {
             </ButtonGroup>
 
             <div className="view">
-              <Select
+              {/* <Select
                 className={classes.select_1}
                 value={0}
                 // onChange={e => {
@@ -248,8 +255,12 @@ function Summary() {
               >
                 <MenuItem value={0}>{time}</MenuItem>
                 <DateCalendar
-                  // val={0}
-                  // editableDateInputs
+                  val={0}
+                  editableDateInputs
+                  onMonthChange={month => {
+                    console.log(month);
+                  }}
+                  onYearChange={() => {}}
                   onChange={item => {
                     // console.log(item);
                     console.log('time');
@@ -258,11 +269,22 @@ function Summary() {
                     setTime(item?.$d.toLocaleDateString('en-US', options));
                     // setDateUnAltered(false);
                   }}
-                // moveRangeOnFirstSelection={false}
-                // ranges={date}
-                // rangeColors={['#051c3f']}
+                  moveRangeOnFirstSelection={false}
+                  // ranges={date}
+                  rangeColors={['#051c3f']}
                 />
-              </Select>
+              </Select> */}
+              <DesktopDatePicker
+                format="DD MMM, YYYY"
+                value={time}
+                onChange={item => {
+                  console.log(time);
+                  // setTime(item?.$d.toLocaleDateString('en-US', options));
+
+                  setTime(dayjs(item?.$d));
+                }}
+                sx={{ bgcolor: 'white' }}
+              />
             </div>
 
             <div className="view">
@@ -321,8 +343,8 @@ function Summary() {
                             ? `${summaryData?.total_bags_packed} Bags`
                             : `${summaryData?.total_bags_packed / 20} Tones`
                           : bagType === 0
-                            ? `${summaryData?.total_bags_dispatched} Bags`
-                            : `${summaryData?.total_bags_dispatched / 20} Tones`
+                          ? `${summaryData?.total_bags_dispatched} Bags`
+                          : `${summaryData?.total_bags_dispatched / 20} Tones`
                         : 'NA'}
                     </p>
                     <p className="description">
@@ -337,9 +359,13 @@ function Summary() {
                   >
                     <p className="count">
                       {summaryData
-                        ? bagType === 0
-                          ? `${summaryData?.total_missed_labels} Bags`
-                          : `${summaryData?.total_missed_labels / 20} Tones`
+                        ? filter === 0
+                          ? bagType === 0
+                            ? `${summaryData?.total_missed_labels} Bags`
+                            : `${summaryData?.total_missed_labels / 20} Tones`
+                          : bagType === 0
+                          ? `${summaryData?.total_burstage_count} Bags`
+                          : `${summaryData?.total_burstage_count / 20} Tones`
                         : 'NA'}
                     </p>
                     <p className="description">

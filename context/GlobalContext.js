@@ -28,7 +28,7 @@ export function GlobalProvider({ children }) {
         deactivatePrintingSolution,
         setDeactivatePrintingSolution,
         shipmentOverflow,
-        setShipmentOverflow
+        setShipmentOverflow,
       }}
     >
       {children}

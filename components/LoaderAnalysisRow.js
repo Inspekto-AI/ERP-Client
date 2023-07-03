@@ -13,25 +13,25 @@ const useStyles = makeStyles(() => ({
     padding: '5px 10px',
     fontSize: '18px',
     fontWeight: 200,
-    width: '2vw'
+    width: '2vw',
   },
 
   td1: {
     backgroundColor: '#69E866',
-    width: '3vw'
+    width: '3vw',
   },
   td3: {
     outline: '2px solid transparent',
     width: '100%',
-    background: 'white'
+    background: 'white',
   },
   td4: {
     outline: '2px solid #6B4EFF',
-    maxWidth: '8vw'
+    maxWidth: '8vw',
   },
   td4Inactive: {
     outline: '2px solid transparent',
-    maxWidth: '8vw'
+    maxWidth: '8vw',
   },
   avatar: {
     height: '40px',
@@ -41,7 +41,7 @@ const useStyles = makeStyles(() => ({
     margin: '0px',
     padding: '0px',
     marginLeft: '10px',
-    cursor: 'pointer'
+    cursor: 'pointer',
   },
   td5: {
     width: '8vw',
@@ -50,26 +50,26 @@ const useStyles = makeStyles(() => ({
     maxHeight: '40px',
     margin: '0px',
     padding: '0px',
-    backgroundColor: 'transparent'
+    backgroundColor: 'transparent',
   },
   td6: {
-    outline: '2px solid #6B4EFF'
+    outline: '2px solid #6B4EFF',
   },
   addBagInput: {
     width: '7vw',
-    fontSize: '20px'
+    fontSize: '20px',
   },
   transpatentBorder: {
-    outline: '2px solid black'
+    outline: '2px solid black',
   },
   td7: {
     outline: '2px solid black',
     maxWidth: '8vw',
-    width: '10vh'
+    width: '10vh',
   },
 }));
 
-const LoaderAnalysisRow = ({
+function LoaderAnalysisRow({
   data,
   BAG_TYPES,
   handleNewShipment,
@@ -78,7 +78,7 @@ const LoaderAnalysisRow = ({
   vehicleType,
   handleBagDone,
   handleBagIncrement,
-}) => {
+}) {
   const classes = useStyles();
   const [bagType, setBagType] = useState(BAG_TYPES ? BAG_TYPES[0] : '');
   const [wagonno, setWagonno] = useState('');
@@ -87,13 +87,16 @@ const LoaderAnalysisRow = ({
   const [detailModalOpen, setDetailModalOpen] = useState(null);
 
   const handleAddButton = async () => {
-    await handleBagIncrement({
-      transaction_id: data?.shipment_id,
-      new_bag_limit: parseInt(addBagCount, 10),
-      old_limit: data?.bag_limit,
-      belt_id: data?.vehicle_id,
-      comment: 'test'
-    });
+    await handleBagIncrement(
+      {
+        transaction_id: data?.shipment_id,
+        new_bag_limit: parseInt(addBagCount, 10),
+        old_limit: data?.bag_limit,
+        belt_id: data?.vehicle_id,
+        comment: 'test',
+      },
+      true,
+    );
     setAddBagCount('');
   };
 
@@ -106,11 +109,11 @@ const LoaderAnalysisRow = ({
       data?.vehicle_type,
       '',
       data?.bag_count,
-      data?.bag_limit
+      data?.bag_limit,
     );
   };
 
-  const handleSubmit = async e => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
     if (rackNo === null && vehicleType === 1) {
       alert('Enter Rack no');
@@ -124,17 +127,18 @@ const LoaderAnalysisRow = ({
       alert('Enter target');
       return;
     }
+    console.log(rackNo);
 
     await handleNewShipment({
       printingId: null,
       loaderId: data?.id,
       licenceNumber: vehicleType === 0 ? wagonno : '',
-      bagType: bagType,
+      bagType,
       bagCount,
       wagonno: vehicleType === 1 ? wagonno : '',
       rackno: rackNo,
-      gateno: '12',
-      labelExample: '123'
+      gateno: 'default',
+      labelExample: 'default',
     });
     setWagonno('');
     setBagCount('');
@@ -158,22 +162,20 @@ const LoaderAnalysisRow = ({
               ? data?.is_belt_running
                 ? 'green'
                 : 'red'
-              : 'white'
+              : 'white',
           }}
         >
           {data?.id}
         </td>
         {data?.shipment_id ? (
-          <td className={classes.transpatentBorder}>
-            {data?.bag_type}
-          </td>
+          <td className={classes.transpatentBorder}>{data?.bag_type}</td>
         ) : (
           <Select
             className={classes.td3}
             variant="outlined"
             value={bagType}
             disabled={data?.shipment_id}
-            onChange={e => setBagType(e.target.value)}
+            onChange={(e) => setBagType(e.target.value)}
           >
             {BAG_TYPES.map((e, index) => (
               <MenuItem className="table-button" value={e} key={index}>
@@ -190,7 +192,7 @@ const LoaderAnalysisRow = ({
               value={wagonno}
               disabled={data?.shipment_id}
               placeholder={vehicleType == 1 ? 'Add Wagon No.' : 'Add Truck No.'}
-              onChange={e => handleValueChange(e, setWagonno)}
+              onChange={(e) => handleValueChange(e, setWagonno)}
             />
           )}
         </td>
@@ -203,7 +205,7 @@ const LoaderAnalysisRow = ({
               placeholder="Target"
               value={bagCount}
               disabled={data?.shipment_id}
-              onChange={e => handleValueChange(e, setBagCount)}
+              onChange={(e) => handleValueChange(e, setBagCount)}
             />
           )}
         </td>
@@ -215,7 +217,7 @@ const LoaderAnalysisRow = ({
             <input
               value={addBagCount}
               className={classes.addBagInput}
-              onChange={e => handleValueChange(e, setAddBagCount)}
+              onChange={(e) => handleValueChange(e, setAddBagCount)}
             />
             <Avatar className={classes.avatar} onClick={handleAddButton}>
               <IoMdAdd />
@@ -246,7 +248,7 @@ const LoaderAnalysisRow = ({
             disabled={!data.shipment_id || data.is_belt_running}
             onClick={() => setDetailModalOpen({
               issue_with_belt: data?.issue_with_belt,
-              belt_id: data?.id
+              belt_id: data?.id,
             })}
           >
             VIEW
@@ -262,12 +264,17 @@ const LoaderAnalysisRow = ({
           title="Belt Stopped"
         >
           <>
-            <p style={{textAlign: 'center'}}>{detailModalOpen?.issue_with_belt} - {detailModalOpen?.belt_id}</p>
+            <p style={{ textAlign: 'center' }}>
+              {detailModalOpen?.issue_with_belt}
+              {' '}
+              -
+              {detailModalOpen?.belt_id}
+            </p>
           </>
         </InfoModal>
       ) : null}
     </>
   );
-};
+}
 
 export default LoaderAnalysisRow;

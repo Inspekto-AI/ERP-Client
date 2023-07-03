@@ -160,6 +160,7 @@ function InfoModal({
   showDivision,
   handleBagDone,
   dataToDisplay,
+  incrementModal,
 }) {
   const classes = useStyles();
   const [newBagCount, setNewBagCount] = useState(0);
@@ -176,16 +177,24 @@ function InfoModal({
   };
 
   const handleTransactionStop = async () => {
+    if (incrementModal) {
+      console.log(handleBagDone);
+      handleBagDone({ ...open, comment }, false);
+      close();
+      return;
+    }
     if (comment === '') {
       setError('* All fields are required');
       return;
     }
-    handleBagDone(open?.transaction_id,
+    handleBagDone(
+      open?.transaction_id,
       open?.vehicle_id,
       open?.printing_belt_id,
       open?.machine_id,
       open?.vehicle_type,
-      comment);
+      comment,
+    );
     close();
   };
 
@@ -286,7 +295,13 @@ function InfoModal({
                 <div>
                   {!onlyBags ? (
                     <FrinksButton
-                      text={currentCount >= bagCount ? 'Done' : 'Stop'}
+                      text={
+                        incrementModal
+                          ? 'Add Bags'
+                          : currentCount >= bagCount
+                            ? 'Done'
+                            : 'Stop'
+                      }
                       onClick={handleTransactionStop}
                       variant="outlined"
                       style={{ marginRight: '10px' }}
