@@ -402,7 +402,6 @@ AnalyticsCard.propTypes = {
   data: PropTypes.object,
   rejectModalOpen: PropTypes.func,
   bagModifyModalOpen: PropTypes.func,
-  setDetailModalOpen: PropTypes.func,
   loaderCard: PropTypes.bool,
   setReverseShipmentFormOpen: PropTypes.func,
   handleBagDone: PropTypes.func,

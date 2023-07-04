@@ -36,7 +36,6 @@ const useStyles = makeStyles(() => ({
   avatar: {
     height: '40px',
     width: '40px',
-    marginLeft: '-1px',
     backgroundColor: '#00A86B',
     margin: '0px',
     padding: '0px',
@@ -146,7 +145,7 @@ function LoaderAnalysisRow({
   };
 
   const handleValueChange = (e, setterFunction) => {
-    if (!isNaN(e.target.value) || e.target.value === '') {
+    if (!Number.isNaN(e.target.value) || e.target.value === '') {
       setterFunction(e.target.value);
     }
   };
@@ -177,8 +176,8 @@ function LoaderAnalysisRow({
             disabled={data?.shipment_id}
             onChange={(e) => setBagType(e.target.value)}
           >
-            {BAG_TYPES.map((e, index) => (
-              <MenuItem className="table-button" value={e} key={index}>
+            {BAG_TYPES.map((e, idx) => (
+              <MenuItem className="table-button" value={e} key={idx}>
                 {e}
               </MenuItem>
             ))}
@@ -191,7 +190,7 @@ function LoaderAnalysisRow({
             <input
               value={wagonno}
               disabled={data?.shipment_id}
-              placeholder={vehicleType == 1 ? 'Add Wagon No.' : 'Add Truck No.'}
+              placeholder={vehicleType === 1 ? 'Add Wagon No.' : 'Add Truck No.'}
               onChange={(e) => handleValueChange(e, setWagonno)}
             />
           )}

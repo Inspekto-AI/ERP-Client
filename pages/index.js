@@ -538,7 +538,6 @@ DashboardComponent.propTypes = {
   handleBagIncrement: PropTypes.func,
   printingBelts: PropTypes.any,
   vehicleBelts: PropTypes.any,
-  setReverseShipmentFormOpen: PropTypes.func,
   handleBagDone: PropTypes.func,
   handleBeltReset: PropTypes.func,
 };
