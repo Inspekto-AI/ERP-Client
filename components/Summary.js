@@ -107,10 +107,14 @@ function Summary() {
   useEffect(() => {
     const fetchSummary = async () => {
       const dateObj = new Date(time);
-      const newDateRange = [
-        dateObj.setUTCHours(18, 30, 0, 999),
-        dateObj.setUTCHours(41, 89, 59, 999)
+
+      let newDateRange = [
+        dateObj.setUTCHours(-6, 30, 0, 999),
+        dateObj.setUTCHours(-6, 30, 0, 999) + 86400000
+        // dateObj.setUTCHours(17, 89, 59, 999)
       ];
+
+      newDateRange[1] += 86399000;
 
       const newUpdatedDateRange = [
         newDateRange[0] + 86400000,
@@ -135,10 +139,14 @@ function Summary() {
 
   const handleDownload = async () => {
     const dateObj = new Date(time);
-    const newDateRange = [
-      dateObj.setUTCHours(18, 30, 0, 999),
-      dateObj.setUTCHours(41, 89, 59, 999)
+
+    let newDateRange = [
+      dateObj.setUTCHours(-6, 30, 0, 999),
+      dateObj.setUTCHours(-6, 30, 0, 999) + 86400000
+      // dateObj.setUTCHours(17, 89, 59, 999)
     ];
+
+    newDateRange[1] += 86399000;
 
     const newUpdatedDateRange = [
       newDateRange[0] + 86400000,
@@ -290,7 +298,7 @@ function Summary() {
                 format="DD MMM, YYYY"
                 value={time}
                 onChange={item => {
-                  console.log(time);
+                  // console.log(time);
                   // setTime(item?.$d.toLocaleDateString('en-US', options));
 
                   setTime(dayjs(item?.$d));
