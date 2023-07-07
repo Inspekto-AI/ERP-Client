@@ -133,6 +133,14 @@ function Summary() {
       setPrintingBelts(data?.data?.data?.belt_info);
       setMaintenanceTickets(data?.data?.data?.maintenance_tickets);
       setIsLoading(false);
+
+      // const missedLabelData = await get('api/shipment/reject-bags-shiftwise', {
+      //   machine_id: '651BCA',
+      //   dateRange: newDateRange,
+      //   shift: 3,
+      //   updatedDateRange: newUpdatedDateRange
+      // });
+      // console.log(missedLabelData?.data?.data);
     };
     fetchSummary();
   }, [time, shiftType]);
