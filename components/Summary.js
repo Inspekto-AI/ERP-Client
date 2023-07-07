@@ -120,7 +120,7 @@ function Summary() {
         newDateRange[0] + 86400000,
         newDateRange[1] + 86400000
       ];
-      console.log(newDateRange, newUpdatedDateRange);
+      // console.log(newDateRange, newUpdatedDateRange);
       const data = await get('/api/stats/summarized-stats', {
         // dateRange: getStartAndEndDate()
         dateRange: newDateRange,
@@ -160,7 +160,7 @@ function Summary() {
       newDateRange[0] + 86400000,
       newDateRange[1] + 86400000
     ];
-    console.log(newDateRange, newUpdatedDateRange);
+    // console.log(newDateRange, newUpdatedDateRange);
     const res = await getFile('/api/report/datewise', {
       dateRange: newDateRange,
       updatedDateRange: newUpdatedDateRange
