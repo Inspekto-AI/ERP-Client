@@ -1,7 +1,9 @@
 import { Button, makeStyles } from '@material-ui/core';
 import PropTypes from 'prop-types';
+import Image from 'next/image';
+import ImageKitLoader from 'utils/ImageLoader';
 
-const useStyles = makeStyles(theme => ({
+const useStyles = makeStyles((theme) => ({
   buttonStyle: {
     position: 'relative',
     fontWeight: '900',
@@ -12,12 +14,12 @@ const useStyles = makeStyles(theme => ({
     background: theme.palette.byzantine.main,
     overflow: 'hidden',
     [theme.breakpoints.down('sm')]: {
-      height: 'auto'
+      height: 'auto',
     },
     '&:hover': {
       color: theme.palette.smokyWhite.main,
-      background: theme.palette.gradient.pink
-    }
+      background: theme.palette.gradient.pink,
+    },
   },
   buttonOutlined: {
     position: 'relative',
@@ -30,34 +32,57 @@ const useStyles = makeStyles(theme => ({
     borderColor: theme.palette.byzantine.main,
     overflow: 'hidden',
     [theme.breakpoints.down('sm')]: {
-      height: 'auto'
+      height: 'auto',
     },
     '&:hover': {
       color: theme.palette.smokyWhite.main,
-      background: theme.palette.gradient.pink
-    }
-  }
+      background: theme.palette.gradient.pink,
+    },
+  },
 }));
 
-const FrinksButton = ({ text, isInactive, type, onClick, variant, style }) => {
+function FrinksButton({
+  text,
+  isInactive,
+  type,
+  onClick,
+  variant,
+  style,
+  image,
+}) {
   const classes = useStyles();
 
   return (
     <Button
-      variant={variant || 'contained'}
+      variant={
+        variant || 'contained'
+    }
       color="primary"
       className={
-        variant === 'outlined' ? classes.buttonOutlined : classes.buttonStyle
-      }
+            variant === 'outlined' ? classes.buttonOutlined : classes.buttonStyle
+        }
       disabled={isInactive}
       type={type}
       onClick={onClick}
       style={style}
     >
-      {text}
+      {' '}
+      {
+            image ? (
+              <Image
+                src={image}
+                loader={ImageKitLoader}
+                layout="fixed"
+                height={35}
+                width={35}
+              />
+            ) : text
+        }
+      {' '}
+
     </Button>
   );
-};
+}
 
 FrinksButton.propTypes = {
   text: PropTypes.string.isRequired,
@@ -65,7 +90,7 @@ FrinksButton.propTypes = {
   type: PropTypes.string,
   onClick: PropTypes.func,
   variant: PropTypes.string,
-  style: PropTypes.any
+  style: PropTypes.object,
 };
 
 export default FrinksButton;

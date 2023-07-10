@@ -7,9 +7,14 @@ const Container = styled.div`
     background: ${theme.palette.royalBlue.main};
     color: ${theme.palette.smokyWhite.main};
     display: flex;
-    align-items: flex-start;
+    // align-items: flex-start;
     justify-content: space-between;
-    padding: 40px 60px;
+    // padding: 40px 60px;
+    position: fixed;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    z-index:200;
 
     @media all and (max-width: 960px) {
       padding: 40px 20px;
@@ -39,8 +44,8 @@ const Container = styled.div`
   }
 
   .copyright {
-    text-align: right;
-    margin-top: 20px;
+    // text-align: right;
+    // margin-top: 20px;
   }
 `;
 

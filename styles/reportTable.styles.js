@@ -194,7 +194,7 @@ export const ProgressBarContainer = styled.div`
   }
 
   .MuiLinearProgress-barColorPrimary {
-    background-color: ${props => props.progressBackground};
+    background-color: ${(props) => props.progressBackground};
   }
 
   .productivity {

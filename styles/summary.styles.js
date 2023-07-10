@@ -16,27 +16,41 @@ const Container = styled.div`
 
   .left-portion {
     ${
-      '' /* width: 50%;
+  '' /* width: 50%;
     padding-right: 20px; */
-    }
+}
     padding-right: 20px;
     flex: 1 1 400px;
 
     .maintenance-container {
       margin-top: 30px;
     }
+    margin-right: 30px;
+
+    @media(max-width: 1405px){
+      margin-left: 0px;
+      margin-right: 0px
+    }
   }
 
   .right-portion {
     ${
-      '' /* width: 50%;
+  '' /* width: 50%;
     padding-left: 20px; */
-    }
+}
     padding-right: 20px;
     flex: 1 1 400px;
 
+    margin-left: 30px;
+
+    
+
     @media all and (max-width: 850px) {
       margin-top: 20px;
+    }
+    @media(max-width: 1405px){
+      margin-left: 0px;
+      margin-right: 0px
     }
   }
 
@@ -47,10 +61,10 @@ const Container = styled.div`
   }
 
   .count-block {
-    height: 140px;
+    height: 180px;
     color: white;
     position: relative;
-    padding: 20px;
+    padding: 15px;
     box-shadow: 5.95181px 5.95181px 5.95181px rgb(0 0 0 / 8%);
     border-radius: 5px;
     overflow: hidden;
@@ -65,22 +79,64 @@ const Container = styled.div`
     }
 
     .count {
-      margin-top: 5px;
+      margin-left: 20px;
+      margin-top: 20px;
       font-family: 'Titillium Web';
       font-style: normal;
-      font-weight: 700;
-      font-size: 36px;
+      font-weight: 800;
+      font-size: 48px;
       line-height: 55px;
       position: relative;
       z-index: 2;
     }
 
-    .description {
+    .count_summary {
+      // margin-top: 2px;
+      font-family: 'Titillium Web';
+      font-style: normal;
       font-weight: 700;
-      font-size: 14px;
+      font-size: 36px;
+      line-height: 35px;
+      position: relative;
+      z-index: 2;
+    }
+
+    .description {
+      margin-left: 20px;
+      margin-top: 20px;
+      font-weight: 700;
+      font-size: 22px;
       line-height: 25px;
       position: relative;
       z-index: 2;
+    }
+
+    .description_summary {
+      // font-weight: 400;
+      font-size: 16px;
+      line-height: 25px;
+      position: relative;
+      z-index: 2;
+      margin-top: 5px;
+    }
+    .description_summary_ {
+      // font-weight: 400;
+      font-size: 16px;
+      line-height: 25px;
+      position: relative;
+      z-index: 2;
+      margin-top: -25px;
+    }
+    @media(max-width: 1600px) and (min-width: 1340px){
+      .count_summary {
+        font-size: 28px
+      }
+      .description_summary {
+        font-size: 13px;
+      }
+      .description_summary_ {
+        font-size: 13px;
+      }
     }
   }
 
@@ -115,11 +171,11 @@ const Container = styled.div`
   }
 
   .rdrMonthAndYearWrapper {
-    display: ${props => (props.datePickerOpen ? 'flex' : 'none')};
+    display: ${(props) => (props.datePickerOpen ? 'flex' : 'none')};
   }
 
   .rdrMonth {
-    display: ${props => (props.datePickerOpen ? 'block' : 'none')};
+    display: ${(props) => (props.datePickerOpen ? 'block' : 'none')};
   }
 
   .date-done-btn {
@@ -133,6 +189,26 @@ const Container = styled.div`
     padding-bottom: 15px;
     margin-top: 20px;
   }
+
+  .controllers {
+    min-width: 390px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+  }
+
+  .download-button {
+    padding: 0;
+    min-width: 0;
+    border-radius: 100%;
+    font-size: 35px;
+    padding: 5px;
+    margin-top: 3px;
+  }
+
+
+ 
+
 `;
 
 export default Container;

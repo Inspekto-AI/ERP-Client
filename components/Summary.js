@@ -1,22 +1,72 @@
 import { useEffect, useState } from 'react';
-import Image from 'next/image';
-import theme from 'styles/theme';
 import Container from 'styles/summary.styles';
-import { Grid } from '@material-ui/core';
-import NotificationContainer from 'styles/summaryNotification.styles';
-import MaintenanceContainer from 'styles/maintenanceNotification.styles';
-import ImageKitLoader from 'utils/ImageLoader';
-import { BASE_URL } from 'utils/constants';
-import { get, put } from 'utils/api';
+import {
+  Grid, Select, ButtonGroup, Button, MenuItem,
+} from '@material-ui/core';
+import { get, getFile } from 'utils/api';
 import Layout from 'components/Layout';
-import moment from 'moment';
-import FrinksButton from 'components/FrinksButton';
 import Maintenance from 'components/Maintenance';
 import Notification from 'components/Notification';
+import {
+  LocalizationProvider,
+  DateCalendar,
+  DatePicker,
+  DesktopDatePicker,
+} from '@mui/x-date-pickers';
+import { AdapterDayjs } from '@mui/x-date-pickers/AdapterDayjs';
+import { makeStyles } from '@material-ui/core/styles';
+import KeyboardArrowDownSharpIcon from '@mui/icons-material/KeyboardArrowDownSharp';
+import { AiOutlineCloudDownload } from 'react-icons/ai';
 import Loader from 'components/Loader';
-import { getStartAndEndDate } from 'utils/globalFunctions';
+import dayjs from 'dayjs';
+import SummaryChart from './SummaryChart';
+import SummaryAnalysis from './SummaryAnalysis';
+import SummaryLoaderAnalysis from './SummaryLoaderAnalysis';
 
-const Summary = () => {
+const downloadPDF = (file) => {
+  const downloadLink = document.createElement('a');
+  const fileName = 'report.xlsx';
+  downloadLink.setAttribute('download', fileName);
+  downloadLink.href = URL.createObjectURL(new Blob([file]));
+  document.body.appendChild(downloadLink);
+  downloadLink.click();
+  downloadLink.remove();
+};
+
+const useStyles = makeStyles((theme) => ({
+  select: {
+    width: '300px',
+    [theme.breakpoints.up(1550)]: {
+      width: '450px',
+      marginRight: '150px',
+      marginLeft: '-40px',
+    },
+    [theme.breakpoints.down(1550)]: {
+      // width: '450px',
+      marginRight: 'auto',
+    },
+  },
+  select_1: {
+    width: '200px',
+    [theme.breakpoints.up(1550)]: {
+      width: '250px',
+      marginRight: '-30px',
+    },
+  },
+  select_2: {
+    width: '100px',
+    [theme.breakpoints.up(1550)]: {
+      width: '125px',
+    },
+  },
+}));
+
+function Summary() {
+  const classes = useStyles();
+  const [bagType, setBagType] = useState(0);
+  const [filter, setFilter] = useState(0);
+  const [shiftType, setShiftType] = useState(0);
+
   const [summaryData, setSummaryData] = useState(null);
   const [shiftDate, setShiftDate] = useState(null);
   const [printingBelts, setPrintingBelts] = useState(null);
@@ -25,11 +75,59 @@ const Summary = () => {
   const [maintenanceFormOpen, setMaintenanceFormOpen] = useState(false);
   const [notificationsFormOpen, setNotificationsFormOpen] = useState(false);
   const [isLoading, setIsLoading] = useState(true);
+  const options = { day: 'numeric', month: 'short', year: 'numeric' };
+
+  // const getCurrentFormattedDate = () => {
+  //   const currentDate = new Date();
+  //   const day = String(currentDate.getDate()).padStart(2, '0');
+  //   const monthIndex = currentDate.getMonth();
+  //   const year = currentDate.getFullYear();
+
+  //   const months = [
+  //     'Jan',
+  //     'Feb',
+  //     'Mar',
+  //     'Apr',
+  //     'May',
+  //     'Jun',
+  //     'Jul',
+  //     'Aug',
+  //     'Sep',
+  //     'Oct',
+  //     'Nov',
+  //     'Dec'
+  //   ];
+
+  //   const month = months[monthIndex];
+
+  //   return `${day} ${month}, ${year}`;
+  // };
+
+  // const currentFormattedDate = getCurrentFormattedDate();
+  const [time, setTime] = useState(dayjs(new Date()));
 
   useEffect(() => {
     const fetchSummary = async () => {
-      const data = await get('/api/analysis/summary', {
-        dateRange: getStartAndEndDate()
+      const dateObj = new Date(time);
+
+      const newDateRange = [
+        dateObj.setUTCHours(-6, 30, 0, 999),
+        dateObj.setUTCHours(-6, 30, 0, 999) + 86400000,
+        // dateObj.setUTCHours(17, 89, 59, 999)
+      ];
+
+      newDateRange[1] += 86399000;
+
+      const newUpdatedDateRange = [
+        newDateRange[0] + 86400000,
+        newDateRange[1] + 86400000,
+      ];
+      // console.log(newDateRange, newUpdatedDateRange);
+      const data = await get('/api/stats/summarized-stats', {
+        // dateRange: getStartAndEndDate()
+        dateRange: newDateRange,
+        shift: shiftType,
+        updatedDateRange: newUpdatedDateRange,
       });
       setSummaryData(data?.data?.data?.analysis);
       setShiftCount(data?.data?.data?.shift);
@@ -37,26 +135,54 @@ const Summary = () => {
       setPrintingBelts(data?.data?.data?.belt_info);
       setMaintenanceTickets(data?.data?.data?.maintenance_tickets);
       setIsLoading(false);
-    };
-    if (!summaryData) {
-      fetchSummary();
-    }
-  }, [summaryData]);
 
-  const markMaintenanceComplete = async id => {
-    const data = await put('/api/transaction/maintenance', { id });
-    if (data?.data?.success) {
-      // remove ticket from list
-      const newTickets = maintenanceTickets.map(e => {
-        if (e.id !== id) return e;
-      });
-      if (newTickets[0]) {
-        setMaintenanceTickets(newTickets);
-      } else {
-        setMaintenanceTickets(null);
-      }
-    }
+      // const missedLabelData = await get('api/shipment/reject-bags-shiftwise', {
+      //   machine_id: '651BCA',
+      //   dateRange: newDateRange,
+      //   shift: 3,
+      //   updatedDateRange: newUpdatedDateRange
+      // });
+      // console.log(missedLabelData?.data?.data);
+    };
+    fetchSummary();
+  }, [time, shiftType]);
+
+  const handleDownload = async () => {
+    const dateObj = new Date(time);
+
+    const newDateRange = [
+      dateObj.setUTCHours(-6, 30, 0, 999),
+      dateObj.setUTCHours(-6, 30, 0, 999) + 86400000,
+      // dateObj.setUTCHours(17, 89, 59, 999)
+    ];
+
+    newDateRange[1] += 86399000;
+
+    const newUpdatedDateRange = [
+      newDateRange[0] + 86400000,
+      newDateRange[1] + 86400000,
+    ];
+    // console.log(newDateRange, newUpdatedDateRange);
+    const res = await getFile('/api/report/datewise', {
+      dateRange: newDateRange,
+      updatedDateRange: newUpdatedDateRange,
+    });
+    downloadPDF(res.data);
   };
+
+  // const markMaintenanceComplete = async id => {
+  //   try {
+  //     await put('/api/maintenance', { id });
+  //     setMaintenanceTickets(prevData =>
+  //       prevData.map(e => {
+  //         if (e.id === id) return { ...e, marked_complete: 1 };
+  //         return e;
+  //       })
+  //     );
+  //   } catch (err) {
+  //     console.log(err);
+  //   }
+  // };
 
   if (notificationsFormOpen) {
     return <Notification close={() => setNotificationsFormOpen(false)} />;
@@ -68,264 +194,300 @@ const Summary = () => {
 
   return (
     <Container>
-      {isLoading && <Loader />}
+      {isLoading ? <Loader /> : null}
       <div className="analysis-container">
-        <div className="head">
-          <h2>Shift Summary</h2>
-          <div className="date-container">
-            <div className="date-display">
-              Shift {shiftCount} - {new Date(shiftDate).toLocaleDateString()}
+        <div
+          style={{
+            display: 'flex',
+            justifyContent: 'space-around',
+            // height: '40px',
+            marginTop: '5px',
+            alignItems: 'center',
+          }}
+        >
+          <LocalizationProvider dateAdapter={AdapterDayjs}>
+            <div className="view">
+              <Select
+                value={filter}
+                className={classes.select}
+                onChange={(e) => setFilter(e.target.value)}
+                style={{
+                  fontSize: '28px',
+                  fontWeight: '600',
+                  color: '#3A0CA3',
+                  background: 'white',
+                  outlineColor: '#3A0CA3',
+                  border: '1px solid #3A0CA3',
+                  // width: '450px',
+                  padding: '0px',
+                  // marginLeft: '-40px'
+                }}
+                variant="outlined"
+                IconComponent={KeyboardArrowDownSharpIcon}
+              >
+                <MenuItem value={0}>Packer Summary</MenuItem>
+                <MenuItem value={1}>Loader Summary</MenuItem>
+              </Select>
             </div>
-          </div>
+
+            <ButtonGroup
+              // className={classes.select_1}
+              variant="contained"
+              aria-label="outlined primary button group"
+            >
+              <Button
+                className={classes.select_2}
+                style={{
+                  backgroundColor: bagType === 0 ? '#B5179E' : '#F5F5F5',
+                  color: bagType === 1 ? '#B5179E' : '#F5F5F5',
+                  // width: '120px',
+                  height: '50px',
+                }}
+                onClick={() => {
+                  setBagType(0);
+                }}
+              >
+                BAGS
+              </Button>
+              <Button
+                className={classes.select_2}
+                style={{
+                  backgroundColor: bagType === 1 ? '#B5179E' : '#F5F5F5',
+                  color: bagType === 0 ? '#B5179E' : '#F5F5F5',
+                  // width: '120px',
+                  height: '50px',
+                }}
+                onClick={() => {
+                  setBagType(1);
+                }}
+              >
+                TONNAGE
+              </Button>
+            </ButtonGroup>
+
+            <div className="view">
+              {/* <Select
+                className={classes.select_1}
+                value={0}
+                // onChange={e => {
+                //   console.log(e.target.value);
+                //   setTime(e.target.value);
+                // }}
+                style={{
+                  fontSize: '14px',
+                  background: 'white',
+                  // width: '240px',
+                  // outline: 'none',
+                  outlineColor: 'blue'
+                }}
+                IconComponent={KeyboardArrowDownSharpIcon}
+                variant="outlined"
+              >
+                <MenuItem value={0}>{time}</MenuItem>
+                <DateCalendar
+                  val={0}
+                  editableDateInputs
+                  onMonthChange={month => {
+                    console.log(month);
+                  }}
+                  onYearChange={() => {}}
+                  onChange={item => {
+                    // console.log(item);
+                    console.log('time');
+                    // console.log(item?.$d.toDateString());
+                    console.log(item?.$d.toLocaleDateString('en-US', options));
+                    setTime(item?.$d.toLocaleDateString('en-US', options));
+                    // setDateUnAltered(false);
+                  }}
+                  moveRangeOnFirstSelection={false}
+                  // ranges={date}
+                  rangeColors={['#051c3f']}
+                />
+              </Select> */}
+              <DesktopDatePicker
+                format="DD MMM, YYYY"
+                value={time}
+                onChange={(item) => {
+                  // console.log(time);
+                  // setTime(item?.$d.toLocaleDateString('en-US', options));
+
+                  setTime(dayjs(item?.$d));
+                }}
+                sx={{ bgcolor: 'white' }}
+              />
+            </div>
+
+            <div className="view">
+              <Select
+                className={classes.select_1}
+                value={shiftType}
+                onChange={(e) => setShiftType(e.target.value)}
+                style={{
+                  fontSize: '14px',
+                  background: 'white',
+                  // width: '240px',
+                  // marginRight: '-20px'
+                }}
+                variant="outlined"
+                IconComponent={KeyboardArrowDownSharpIcon}
+              >
+                <MenuItem value={0}>Shift A</MenuItem>
+                <MenuItem value={1}>Shift B</MenuItem>
+                <MenuItem value={2}>Shift C</MenuItem>
+                <MenuItem value={3}>All Shifts</MenuItem>
+              </Select>
+            </div>
+            <div className="view">
+              <Button
+                variant="outlined"
+                className="download-button"
+                color="primary"
+                onClick={handleDownload}
+              >
+                <AiOutlineCloudDownload />
+              </Button>
+            </div>
+          </LocalizationProvider>
         </div>
-        <div className="summary-container">
+
+        <div className="summary-container" style={{ marginTop: '20px' }}>
           <div className="left-portion">
-            <div className="count-container">
-              <Grid container spacing={3}>
+            <div
+              className="count-container"
+              style={{
+                // marginLeft: '40px',
+                marginTop: '20px',
+                // marginRight: '40px'
+              }}
+            >
+              <Grid container spacing={5}>
                 <Grid item xs={6}>
                   <div
                     className="count-block"
-                    style={{ background: theme.palette.summary.green }}
+                    style={{ background: '#3A71A5' }}
                   >
-                    <Image
-                      src="Package.svg"
-                      loader={ImageKitLoader}
-                      layout="fill"
-                    />
                     <p className="count">
                       {summaryData
-                        ? `${summaryData?.total_bags_packed} Bags`
+                        ? filter === 0
+                          ? bagType === 0
+                            ? `${summaryData?.total_bags_packed} Bags`
+                            : `${summaryData?.total_bags_packed / 20} Tones`
+                          : bagType === 0
+                            ? `${summaryData?.total_bags_dispatched} Bags`
+                            : `${summaryData?.total_bags_dispatched / 20} Tones`
                         : 'NA'}
                     </p>
-                    <p className="description">Bags printed so far</p>
+                    <p className="description">
+                      {filter === 0 ? 'Total Production' : 'Total Dispatch'}
+                    </p>
                   </div>
                 </Grid>
                 <Grid item xs={6}>
                   <div
                     className="count-block"
-                    style={{ background: theme.palette.summary.red }}
+                    style={{ background: '#FF5742' }}
                   >
-                    <Image
-                      src="Tag.svg"
-                      loader={ImageKitLoader}
-                      layout="fill"
-                    />
                     <p className="count">
                       {summaryData
-                        ? `${summaryData?.total_missed_labels} Bags`
+                        ? filter === 0
+                          ? bagType === 0
+                            ? `${summaryData?.total_missed_labels} Bags`
+                            : `${summaryData?.total_missed_labels / 20} Tones`
+                          : bagType === 0
+                            ? `${summaryData?.total_burstage_count} Bags`
+                            : `${summaryData?.total_burstage_count / 20} Tones`
                         : 'NA'}
                     </p>
-                    <p className="description">Bags printed without label</p>
+                    <p className="description">
+                      {filter === 0 ? 'Misprint Cases' : 'Burstage'}
+                    </p>
                   </div>
                 </Grid>
-                <Grid item xs={6}>
-                  <div
-                    className="count-block"
-                    style={{ background: theme.palette.summary['light-blue'] }}
-                  >
-                    <Image
-                      src="PaintBrushBroad.svg"
-                      loader={ImageKitLoader}
-                      layout="fill"
-                    />
-                    <p className="count">
-                      {summaryData
-                        ? `${summaryData?.total_bags_dispatched} Bags`
-                        : 'NA'}
-                    </p>
-                    <p className="description">Bags dispatched</p>
-                  </div>
-                </Grid>
-                {/* <Grid item xs={6}>
-                  <div
-                    className="count-block"
-                    style={{ background: theme.palette.summary['dark-blue'] }}
-                  >
-                    <Image
-                      src="PaintBrushBroad_dark.svg"
-                      loader={ImageKitLoader}
-                      layout="fill"
-                    />
-                    <p className="count">
-                      {summaryData
-                        ? `${summaryData?.packing_efficiency}`
-                        : 'NA'}
-                    </p>
-                    <p className="description">Packing efficiency</p>
-                  </div>
-                </Grid> */}
               </Grid>
             </div>
-            <div className="maintenance-container">
+            <div
+              className="maintenance-container"
+              style={{ marginTop: '50px' }}
+            >
               <Layout
                 alternateHeader
-                title="Assigned Tickets"
+                title={
+                  filter === 0
+                    ? 'Hourly Packer Data'
+                    : 'Hourly Loading Analytics'
+                }
                 hideFooter
                 counter={0}
                 summaryHeader
                 disableMinimumHeight
                 viewAllFunc={() => setMaintenanceFormOpen(true)}
+                // style={{ maxHeight: '60vh', overflowY: 'auto' }}
+                style={{
+                  background: 'white',
+                  alignItems: 'center',
+                  justifyContent: 'center',
+                }}
               >
-                <MaintenanceContainer>
-                  {maintenanceTickets && maintenanceTickets.length > 0 ? (
-                    <>
-                      {maintenanceTickets.map((e, index) => {
-                        return (
-                          <div className="defect active" key={index}>
-                            <div className="title">
-                              {new Date(e.created_at).toLocaleString()}
-                            </div>
-                            <div className="stepper">
-                              <div className="blank-thumb" />
-                              <div className="vr" />
-                            </div>
-                            <div className="notification">
-                              <div className="ticket-title">Ticket #{e.id}</div>
-                              {e.printing_belt ? (
-                                <div className="description">
-                                  Printing belt | Printing belt{' '}
-                                  {e?.printing_belt?.machine_id} | {e.reason}
-                                </div>
-                              ) : (
-                                <div className="description">
-                                  Vehicle belt | Vehicle belt{' '}
-                                  {e?.loader_belt?.machine_id} | {e.reason}
-                                </div>
-                              )}
-                              <div className="button-container">
-                                {/* <FrinksButton
-                            variant="outlined"
-                            color="inherit"
-                            text="Edit Ticket"
-                            style={{
-                              fontSize: '12px',
-                              height: '40px',
-                              marginRight: '14px'
-                            }}
-                          /> */}
-                                <FrinksButton
-                                  color="inherit"
-                                  text="Mark Complete"
-                                  style={{ fontSize: '12px', height: '40px' }}
-                                  onClick={() => markMaintenanceComplete(e.id)}
-                                />
-                              </div>
-                            </div>
-                          </div>
-                        );
-                      })}
-                    </>
-                  ) : (
-                    <p
-                      style={{
-                        padding: '20px',
-                        textAlign: 'center'
-                      }}
-                    >
-                      No maintenance ticket found
-                    </p>
-                  )}
-                </MaintenanceContainer>
+                <SummaryChart
+                  hourlyPackerData={summaryData?.HourlyPackerBags}
+                  hourlyLoaderData={summaryData?.HourlyLoaderBags}
+                  filter={filter}
+                />
               </Layout>
             </div>
           </div>
-          <div className="right-portion">
-            <div className="notification-container">
+          <div className="right-portion" style={{ marginTop: '20px' }}>
+            <div
+              className="notification-container"
+              style={{ marginBottom: '10px' }}
+            >
               <Layout
                 alternateHeader
-                title="Latest Activity"
+                title={filter === 0 ? 'Packer Analysis' : 'Loader Analysis'}
                 hideFooter
                 counter={summaryData?.total_missed_labels || 0}
                 summaryHeader
                 disableMinimumHeight
                 viewAllFunc={() => setNotificationsFormOpen(true)}
-                style={{ maxHeight: '60vh', overflowY: 'auto' }}
+                style={{
+                  maxHeight: '58vh',
+                  background: 'white',
+                  overflowY: 'auto',
+                  overflowX: 'hidden',
+                }}
               >
-                <NotificationContainer applyHeightLimit>
-                  {summaryData && printingBelts ? (
-                    <>
-                      {Object.values(summaryData?.missed_paths)?.map(
-                        (e, index) => {
-                          if (e.length <= 0) return null;
+                <div className="count-container">
+                  {!filter
+                    && summaryData?.packerBags
+                    && Object.keys(summaryData?.packerBags)?.map((key) => {
+                      const value = summaryData?.packerBags[key];
+
+                      return (
+                        <SummaryAnalysis
+                          filter={filter}
+                          key1={key}
+                          value={value}
+                          bagType={bagType}
+                        />
+                      );
+                    })}
+                  {filter ? (
+                    <Grid container spacing={3}>
+                      {summaryData?.loaderBags
+                        && Object.keys(summaryData?.loaderBags)?.map((key) => {
+                          const value = summaryData?.loaderBags[key];
                           return (
-                            <div className="defect active" key={index}>
-                              <div className="title">Just Now</div>
-                              <div className="stepper">
-                                <div className="thumb">
-                                  <div className="vr invert-vr" />
-                                  <Image
-                                    src="Package_5rbWbqc1A.svg"
-                                    loader={ImageKitLoader}
-                                    layout="fixed"
-                                    height={40}
-                                    width={40}
-                                  />
-                                </div>
-                                <div className="vr" />
-                              </div>
-                              <div className="notification">
-                                <div className="info-container">
-                                  <div className="info">
-                                    <div className="title">Incorrect bags</div>
-                                    <div className="sub-title">
-                                      {e.length} bags passed unmarked.
-                                    </div>
-                                  </div>
-                                  <div className="count">
-                                    {printingBelts[index - 1]}
-                                  </div>
-                                </div>
-                                <div className="image-container">
-                                  <Grid container>
-                                    {e.map((element, idx) => (
-                                      <Grid item xs={4}>
-                                        <div className="image" key={idx}>
-                                          <div className="image-container">
-                                            <Image
-                                              src={element.local_image_path}
-                                              loader={() =>
-                                                `${BASE_URL}/api/transaction/images?image_location=${
-                                                  element.local_image_path ||
-                                                  element.local_image_location
-                                                }`
-                                              }
-                                              layout="fill"
-                                              objectFit="contain"
-                                              objectPosition="top"
-                                            />
-                                          </div>
-                                          <div className="time">
-                                            {moment(
-                                              new Date(element.created_at)
-                                            ).format('h:mm A')}
-                                          </div>
-                                        </div>
-                                      </Grid>
-                                    ))}
-                                  </Grid>
-                                </div>
-                                {/* <div className="incorrect-container">
-                                  <Button variant="outlined" color="inherit">
-                                    Incorrect Alert?
-                                  </Button>
-                                </div> */}
-                              </div>
-                            </div>
+                            <SummaryLoaderAnalysis
+                              filter={filter}
+                              key1={key}
+                              value={value}
+                              bagType={bagType}
+                            />
                           );
-                        }
-                      )}
-                    </>
-                  ) : (
-                    <p
-                      style={{
-                        padding: '20px',
-                        textAlign: 'center'
-                      }}
-                    >
-                      No new activities found
-                    </p>
-                  )}
-                </NotificationContainer>
+                        })}
+                    </Grid>
+                  ) : null}
+                </div>
               </Layout>
             </div>
           </div>
@@ -333,6 +495,6 @@ const Summary = () => {
       </div>
     </Container>
   );
-};
+}
 
 export default Summary;

@@ -8,6 +8,11 @@ const Container = styled.div`
     align-items: center;
     padding: 5px 60px;
     color: #485057;
+    position: fixed;
+    top: 70px;
+    left: 0;
+    right: 0;
+    z-index: 100;
 
     @media all and (max-width: 960px) {
       padding: 10px;
@@ -42,6 +47,7 @@ const Container = styled.div`
   .analysis-container {
     padding: 30px 60px 20px 60px;
     background: #e5e5e5;
+    margin-top: 120px;
 
     @media all and (max-width: 960px) {
       padding: 20px;
@@ -108,6 +114,36 @@ const Container = styled.div`
       color: gray;
       font-size: 20px;
     }
+
+    .filter-bottom {
+      text-align: end;
+      padding-right: 30px;
+      padding-bottom: 40px;
+    }
+  }
+
+  .alert {
+    position: fixed;
+    top: 3.520833vw;
+    right: 1.0416666666666667vw;
+  }
+  .MuiAlert-message {
+    color: white;
+    font-size: 16px;
+  }
+  .MuiButton-textSizeSmall {
+    padding: 5px 18px;
+    font-size: 0.8125rem;
+  }
+  .MuiAlert-standardWarning .MuiAlert-icon {
+    font-size: 2.2.083333vw;
+  }
+  .MuiAlert-action {
+    display: flex;
+    align-items: center;
+    margin-left: auto;
+    margin-right: -8px;
+    padding-left: 16px;
   }
 `;
 

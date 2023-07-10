@@ -1,7 +1,7 @@
 import AlertModal from './AlertModal';
 
-const Index = ({ ...props }) => {
+function Index({ ...props }) {
   return <AlertModal {...props} />;
-};
+}
 
 export default Index;

@@ -2,8 +2,9 @@ import { useEffect, useState } from 'react';
 import { QueryClient, QueryClientProvider, Hydrate } from 'react-query';
 import CssBaseline from '@material-ui/core/CssBaseline';
 import { ThemeProvider } from '@material-ui/core/styles';
-import { GlobalProvider } from 'context/GlobalContext';
 import { SocketContext, socket } from 'context/SocketContext';
+import { GlobalProvider } from 'context/GlobalContext';
+import InitCheck from 'components/InitCheck';
 import CheckAuth from 'components/CheckAuth';
 
 import Head from 'next/head';
@@ -11,22 +12,20 @@ import PropTypes from 'prop-types';
 
 import theme from 'styles/theme';
 import 'styles/globalStyles.css';
-import { CLIENT_NAME } from 'utils/constants';
 
 export default function MyApp({ Component, pageProps }) {
   const [queryClient] = useState(
-    () =>
-      new QueryClient({
-        defaultOptions: {
-          queries: {
-            refetchOnWindowFocus: false,
-            refetchOnmount: false,
-            refetchOnReconnect: false,
-            retry: false,
-            staleTime: 86400000
-          }
-        }
-      })
+    () => new QueryClient({
+      defaultOptions: {
+        queries: {
+          refetchOnWindowFocus: false,
+          refetchOnmount: false,
+          refetchOnReconnect: false,
+          retry: false,
+          staleTime: 86400000,
+        },
+      },
+    }),
   );
 
   useEffect(() => {
@@ -40,7 +39,7 @@ export default function MyApp({ Component, pageProps }) {
   return (
     <>
       <Head>
-        <title>{CLIENT_NAME} | Frinks</title>
+        <title>Frinks</title>
         <meta
           name="viewport"
           content="minimum-scale=1, initial-scale=1, width=device-width"
@@ -54,7 +53,9 @@ export default function MyApp({ Component, pageProps }) {
             <Hydrate state={pageProps.dehydratedState}>
               <GlobalProvider>
                 <CheckAuth>
-                  <Component {...pageProps} />
+                  <InitCheck>
+                    <Component {...pageProps} />
+                  </InitCheck>
                 </CheckAuth>
               </GlobalProvider>
             </Hydrate>
@@ -67,5 +68,5 @@ export default function MyApp({ Component, pageProps }) {
 
 MyApp.propTypes = {
   Component: PropTypes.elementType.isRequired,
-  pageProps: PropTypes.object.isRequired
+  pageProps: PropTypes.object.isRequired,
 };

@@ -10,12 +10,25 @@ const Container = styled.div`
     height: 70px;
     background: ${theme.palette.royalBlue.main};
     padding: 0 60px 0 60px;
-    position: realtive;
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    z-index:100;
 
     @media all and (max-width: 960px) {
       padding: 0 20px 0 20px;
       height: 80px;
     }
+    
+  }
+
+  .sticky{
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    z-index:100;
   }
 
   .logo {
@@ -56,6 +69,11 @@ const Container = styled.div`
 
     .purple-button {
       background: ${theme.palette.purple.main};
+      font-weight: 600;
+    }
+
+    .red-button {
+      background: red;
       font-weight: 600;
     }
   }

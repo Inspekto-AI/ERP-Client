@@ -1,7 +1,5 @@
 import MaintenanceTicket from './MaintenanceTicket';
 
-const index = ({ ...props }) => {
-  return <MaintenanceTicket {...props} />;
-};
+const index = ({ ...props }) => <MaintenanceTicket {...props} />;
 
 export default index;

@@ -8,7 +8,7 @@ const Container = styled.div`
   align-items: center;
   justify-content: space-between;
   border-left: 8px solid
-    ${props => (props.isActive ? '#01ba8f' : 'rgb(102 102 102)')};
+    ${(props) => (props.isActive ? '#01ba8f' : 'rgb(102 102 102)')};
 
   .title {
     font-family: 'Inter';

@@ -8,7 +8,7 @@ import { LoginQuery } from 'reactQueries/authQueries';
 import { GlobalContext } from 'context/GlobalContext';
 import { useState, useEffect, useContext } from 'react';
 
-const Login = () => {
+function Login() {
   const router = useRouter();
   const loginQuery = LoginQuery();
   const [error, setError] = useState('');
@@ -16,11 +16,11 @@ const Login = () => {
   const [password, setPassword] = useState('');
   const { userData, setUserData } = useContext(GlobalContext);
 
-  const handleSubmit = async e => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
     loginQuery.mutate({
       email,
-      password
+      password,
     });
   };
 
@@ -67,7 +67,7 @@ const Login = () => {
             placeholder="Email"
             value={email}
             error={!!error}
-            onChange={e => setEmail(e.target.value)}
+            onChange={(e) => setEmail(e.target.value)}
             helperText={error ? error.desc : null}
           />
           <br />
@@ -81,19 +81,22 @@ const Login = () => {
             placeholder="Password"
             error={!!error}
             value={password}
-            onChange={e => setPassword(e.target.value)}
+            onChange={(e) => setPassword(e.target.value)}
             helperText={error ? error.desc : null}
           />
           <br />
           <div className="error-block">{error}</div>
           <FrinksButton text="Login" type="submit" />
           <p className="forgot">
-            Unable to login? Reach out to <span>Administrator</span>.
+            Unable to login? Reach out to
+            {' '}
+            <span>Administrator</span>
+            .
           </p>
         </form>
       </div>
     </Container>
   );
-};
+}
 
 export default Login;

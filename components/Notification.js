@@ -3,17 +3,30 @@ import Layout from 'components/Layout';
 import Image from 'next/image';
 import Container from 'styles/notification.styles';
 import ImageKitLoader from 'utils/ImageLoader';
-import { Button } from '@material-ui/core';
 import PropTypes from 'prop-types';
 import { get } from 'utils/api';
+import { getStartAndEndDate } from 'utils/globalFunctions';
+import moment from 'moment';
+import { BASE_URL } from 'utils/constants';
 
-const Notification = ({ close }) => {
+function Notification({ close }) {
   const [missingData, setMissingData] = useState(null);
+  const [totalCount, setTotalCount] = useState(0);
 
   useEffect(() => {
     const fetchPrintingBeltsIds = async () => {
-      const res = await get('/api/transaction/notifications');
+      const res = await get('/api/notification', {
+        dateRange: getStartAndEndDate(),
+      });
       setMissingData(res?.data?.data);
+      let count = 0;
+      // res?.data?.data?.forEach(e => console.log(e));
+      if (res?.data?.data) {
+        Object.values(res?.data?.data).forEach((e) => {
+          count += e.length;
+        });
+      }
+      setTotalCount(count);
     };
     fetchPrintingBeltsIds();
     return () => {
@@ -21,119 +34,88 @@ const Notification = ({ close }) => {
     };
   }, []);
 
-  console.log(missingData);
-
   return (
     <Layout
       alternateHeader
       title="Latest Activity"
-      counter={21}
+      counter={totalCount}
       changeBackground
       close={close}
       hideFooter
     >
       <Container>
-        <div className="defect active">
-          <div className="title">Just Now</div>
-          <div className="stepper">
-            <div className="thumb">
-              <div className="vr invert-vr" />
-              <Image
-                src="Package_5rbWbqc1A.svg"
-                loader={ImageKitLoader}
-                layout="fixed"
-                height={60}
-                width={60}
-              />
-            </div>
-            <div className="vr" />
-          </div>
-          <div className="notification">
-            <div className="info-container">
-              <div className="info">
-                <div className="title">Incorrect bags</div>
-                <div className="sub-title">5 bags passed unmarked.</div>
-              </div>
-              <div className="count">5 bags</div>
-            </div>
-            <div className={`${'image-container'} ${'outer-image-container'}`}>
-              <div className="image">
-                <div className="image-container">
-                  <Image
-                    src="/Misc/cement_bag_OVJ7LTPaH.png"
-                    loader={ImageKitLoader}
-                    layout="fill"
-                    objectFit="contain"
-                  />
+        {missingData
+          && Object.keys(missingData)
+            .filter((e) => {
+              if (missingData[e].length !== 0) return true;
+              return false;
+            })
+            .map((e, index) => (
+              <div className="defect active" key={index}>
+                <div className="title">{e}</div>
+                <div className="stepper">
+                  <div className="thumb">
+                    <div className="vr invert-vr" />
+                    <Image
+                      src="Package_5rbWbqc1A.svg"
+                      loader={ImageKitLoader}
+                      layout="fixed"
+                      height={60}
+                      width={60}
+                    />
+                  </div>
+                  <div className="vr" />
                 </div>
-                <div className="time">8.48am</div>
-              </div>
-              <div className="image">
-                <div className="image-container">
-                  <Image
-                    src="/Misc/cement_bag_OVJ7LTPaH.png"
-                    loader={ImageKitLoader}
-                    layout="fill"
-                    objectFit="contain"
-                  />
+                <div className="notification">
+                  <div className="info-container">
+                    <div className="info">
+                      <div className="title">Incorrect bags</div>
+                      <div className="sub-title">
+                        {missingData[e].length}
+                        {' '}
+                        bags passed unmarked from Belt -
+                        {' '}
+                        {e}
+                        .
+                      </div>
+                    </div>
+                    <div className="count">
+                      {missingData[e].length}
+                      {' '}
+                      bags
+                    </div>
+                  </div>
+                  <div
+                    className={`${'image-container'} ${'outer-image-container'}`}
+                  >
+                    {missingData[e].map((ele, idx) => (
+                      <div className="image" key={idx}>
+                        <div className="image-container">
+                          <Image
+                            src={ele.local_image_path}
+                            loader={() => `${BASE_URL}/api/shipment/images?image_location=${ele.local_image_path
+                              || ele.local_image_location
+                            }`}
+                            layout="fill"
+                            objectFit="contain"
+                          />
+                        </div>
+                        <div className="time">
+                          {moment(ele.created_at).format('hh:mm')}
+                        </div>
+                      </div>
+                    ))}
+                  </div>
                 </div>
-                <div className="time">8.48am</div>
               </div>
-              <div className="image">
-                <div className="image-container">
-                  <Image
-                    src="/Misc/cement_bag_OVJ7LTPaH.png"
-                    loader={ImageKitLoader}
-                    layout="fill"
-                    objectFit="contain"
-                  />
-                </div>
-                <div className="time">8.48am</div>
-              </div>
-            </div>
-            <div className="incorrect-container">
-              <Button variant="outlined" color="inherit">
-                Incorrect Alert?
-              </Button>
-            </div>
-          </div>
-        </div>
-        <div className="defect">
-          <div className="title">8:44am</div>
-          <div className="stepper">
-            <div className="thumb">
-              <Image
-                src="Package_5rbWbqc1A.svg"
-                loader={ImageKitLoader}
-                layout="fixed"
-                height={60}
-                width={60}
-              />
-            </div>
-            {/* <div className="vr" /> */}
-          </div>
-          <div className="notification">
-            <div className="info-container">
-              <div className="info">
-                <div className="title">Printing Belt</div>
-                <div className="sub-title">Belt was marked in idle status.</div>
-              </div>
-              <div className="count">Belt ID</div>
-            </div>
-            <div className="incorrect-container">
-              <Button variant="outlined" color="inherit">
-                Incorrect Alert?
-              </Button>
-            </div>
-          </div>
-        </div>
+            ))}
       </Container>
     </Layout>
   );
-};
+}
 
 Notification.propTypes = {
-  close: PropTypes.func
+  close: PropTypes.func,
 };
 
 export default Notification;

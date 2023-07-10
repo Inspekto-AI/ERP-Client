@@ -3,21 +3,39 @@ import PropTypes from 'prop-types';
 
 export const GlobalContext = createContext();
 
-export const GlobalProvider = ({ children }) => {
+export function GlobalProvider({ children }) {
+  const [beltTrippingEnabled, setBeltTrippingEnabled] = useState(false);
+  const [trippingStatus, setTrippingStatus] = useState(null);
   const [userData, setUserData] = useState(null);
+  const [bagTypes, setBagTypes] = useState(null);
+  const [deactivateLoaderSolution, setDeactivateLoaderSolution] = useState(0);
+  const [deactivatePrintingSolution, setDeactivatePrintingSolution] = useState(0);
+  const [shipmentOverflow, setShipmentOverflow] = useState(false);
 
   return (
     <GlobalContext.Provider
       value={{
+        trippingStatus,
+        setTrippingStatus,
+        beltTrippingEnabled,
+        setBeltTrippingEnabled,
         userData,
-        setUserData
+        setUserData,
+        bagTypes,
+        setBagTypes,
+        deactivateLoaderSolution,
+        setDeactivateLoaderSolution,
+        deactivatePrintingSolution,
+        setDeactivatePrintingSolution,
+        shipmentOverflow,
+        setShipmentOverflow,
       }}
     >
       {children}
     </GlobalContext.Provider>
   );
-};
+}
 
 GlobalProvider.propTypes = {
-  children: PropTypes.any
+  children: PropTypes.object,
 };

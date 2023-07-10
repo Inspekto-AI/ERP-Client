@@ -5,37 +5,69 @@ import { getLocalStorage, setLocalStorage } from './storage';
 export const axiosInstance = axios.create({
   baseURL: BASE_URL,
   headers: {
-    Accept: 'application/json',
     'Content-Type': 'application/json',
-    pragma: 'no-cache'
-  }
+  },
+  maxContentLength: Infinity,
+  maxBodyLength: Infinity,
 });
 
-axiosInstance.interceptors.request.use(config => {
-  config.headers.Authorization = `${getLocalStorage('jwt')}`;
-  return config;
+export const axiosFileInstance = axios.create({
+  baseURL: BASE_URL,
+  headers: {
+    'Content-Type': 'application/pdf',
+  },
+  maxContentLength: Infinity,
+  maxBodyLength: Infinity,
+});
+
+axiosInstance.interceptors.request.use((config) => {
+  const configuration = config;
+  configuration.headers.Authorization = `${getLocalStorage('jwt')}`;
+  return configuration;
 });
 
 axiosInstance.interceptors.response.use(
-  async res => {
+  async (res) => {
     if (res.headers.authorization) {
       setLocalStorage('jwt', res.headers.authorization);
     }
     return res;
   },
-  err => {
-    return Promise.reject(err);
-  }
+  (err) => Promise.reject(err),
 );
 
-export const get = (url, payload) =>
-  axiosInstance.get(url, { withCredentials: true, params: payload });
+axiosFileInstance.interceptors.request.use((config) => {
+  const configuration = config;
+  configuration.headers.Authorization = `${getLocalStorage('jwt')}`;
+  return configuration;
+});
 
-export const post = (url, body) =>
-  axiosInstance.post(url, body, { withCredentials: true });
+axiosFileInstance.interceptors.response.use(
+  async (res) => {
+    if (res.headers.authorization) {
+      setLocalStorage('jwt', res.headers.authorization);
+    }
+    return res;
+  },
+  (err) => Promise.reject(err),
+);
 
-export const put = (url, body) =>
-  axiosInstance.put(url, body, { withCredentials: true });
+export const get = (url, payload) => axiosInstance.get(url, {
+  withCredentials: true,
+  params: payload,
+});
 
-export const deleteApi = (url, body) =>
-  axiosInstance.delete(url, { withCredentials: true, params: body });
+export const getFile = (url, payload) => axiosFileInstance.get(url, {
+  withCredentials: true,
+  params: payload,
+  responseType: 'blob',
+});
+
+export const post = (url, body) => axiosInstance.post(url, body, { withCredentials: true });
+
+export const put = (url, body) => axiosInstance.put(url, body, { withCredentials: true });
+
+export const deleteApi = (url, body) => axiosInstance.delete(
+  url,
+  { withCredentials: true, params: body },
+);

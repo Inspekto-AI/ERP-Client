@@ -3,74 +3,69 @@ import { useRouter } from 'next/router';
 import PropTypes from 'prop-types';
 import { IoIosMenu } from 'react-icons/io';
 import { Button, Drawer, makeStyles } from '@material-ui/core';
-import Container from './Header.styles';
 import ImageKitLoader from 'utils/ImageLoader';
 import customTheme from 'styles/theme';
+import Container from './Header.styles';
 
-const useStyles = makeStyles(theme => ({
+const useStyles = makeStyles((theme) => ({
   item1: {
     order: 1,
     [theme.breakpoints.down('sm')]: {
-      order: 2
-    }
+      order: 2,
+    },
   },
   item2: {
     order: 2,
     [theme.breakpoints.down('sm')]: {
-      order: 1
-    }
+      order: 1,
+    },
   },
   circularProgress: {
     position: 'fixed',
     top: '45%',
-    left: '45%'
+    left: '45%',
   },
   drawer: {
     borderBottomLeftRadius: '20px',
     borderBottomRightRadius: '20px',
-    background: customTheme.palette.royalBlue.main
+    background: customTheme.palette.royalBlue.main,
   },
   header: {
     display: 'flex',
     justifyContent: 'space-between',
-    padding: '10px'
+    padding: '10px',
   },
   headerImage: {
     width: '60px',
-    marginLeft: '10px'
+    marginLeft: '10px',
   },
   hamburgerMenuIcon: {
     fontSize: '30px',
-    color: customTheme.palette.smokyWhite.main
+    color: customTheme.palette.smokyWhite.main,
   },
   links: {
     display: 'flex',
     flexDirection: 'column',
     alignItems: 'center',
     justifyContent: 'center',
-    marginBottom: '20px'
+    marginBottom: '20px',
   },
   menuButton: {
     textTransform: 'capitalize',
-    color: customTheme.palette.smokyWhite.main
-  }
+    color: customTheme.palette.smokyWhite.main,
+  },
 }));
 
-const HomepageDrawer = ({
+function HomepageDrawer({
   open,
   close,
   openShipmentForm,
   openMaintenanceForm,
   openNotificationForm,
-  maintenanceForm
-}) => {
+  maintenanceForm,
+}) {
   const classes = useStyles();
   const router = useRouter();
-
-  const handleButtonClick = nav => {
-    router.push(nav);
-    close();
-  };
 
   return (
     <Drawer
@@ -152,11 +147,11 @@ const HomepageDrawer = ({
       </Container>
     </Drawer>
   );
-};
+}
 
 HomepageDrawer.propTypes = {
   open: PropTypes.bool.isRequired,
-  close: PropTypes.func.isRequired
+  close: PropTypes.func.isRequired,
 };
 
 export default HomepageDrawer;

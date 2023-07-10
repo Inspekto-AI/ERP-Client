@@ -15,6 +15,12 @@ const Container = styled.div`
     font-size: 14px;
     line-height: 39px;
   }
+
+  .no-tickets {
+    text-align: center;
+    font-weight: 500;
+    font-size: 25px;
+  }
 `;
 
 export default Container;

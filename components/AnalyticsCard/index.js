@@ -1,7 +1,5 @@
 import AnalyticsCard from './AnalyticsCard';
 
-const index = ({ ...props }) => {
-  return <AnalyticsCard {...props} />;
-};
+const index = ({ ...props }) => <AnalyticsCard {...props} />;
 
 export default index;
