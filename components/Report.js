@@ -8,7 +8,7 @@ import { get, getFile } from 'utils/api';
 import { getStartAndEndDate } from 'utils/globalFunctions';
 import FrinksButton from './FrinksButton';
 
-const downloadPDF = (pdf) => {
+const downloadPDF = pdf => {
   const linkSource = `data:application/pdf;base64,${pdf}`;
   const downloadLink = document.createElement('a');
   const fileName = 'report.pdf';
@@ -18,9 +18,14 @@ const downloadPDF = (pdf) => {
 };
 
 function Report() {
-  const [shipmentReport, setShipmentReport] = useState(null);
-  const [shipmentStartTrackBar, setShipmentStartTrackBar] = useState(0);
-  const [shipmentEndTrackBar, setShipmentEndTrackBar] = useState(5);
+  const [truckShipmentReport, setTruckShipmentReport] = useState(null);
+  const [wagonShipmentReport, setWagonShipmentReport] = useState(null);
+  const [shipmentStartTrackBarTruck, setShipmentStartTrackBarTruck] =
+    useState(0);
+  const [shipmentStartTrackBarWagon, setShipmentStartTrackBarWagon] =
+    useState(0);
+  const [shipmentEndTrackBarTruck, setShipmentEndTrackBarTruck] = useState(5);
+  const [shipmentEndTrackBarWagon, setShipmentEndTrackBarWagon] = useState(5);
 
   // const [packerReport, setPackerReport] = useState(null);
   // const [packerStartTrackBar, setPackerStartTrackBar] = useState(0);
@@ -36,31 +41,41 @@ function Report() {
   const [loaderFilterReport, setLoaderFilterReport] = useState(null);
 
   const [datePickerOpen, setDatePickerOpen] = useState(false);
+
   const [date, setDate] = useState([
     {
       startDate: new Date(),
       endDate: new Date(),
-      key: 'selection',
-    },
+      key: 'selection'
+    }
   ]);
   const [dateUnAltered, setDateUnAltered] = useState(true);
   const [shipmentFilter, setShipmentFilter] = useState(2);
   const [loaderFilter, setLoaderFilter] = useState(2);
 
   const fetchReports = async () => {
-    const fetchShipmentReport = async () => {
+    const fetchShipmentReportTruck = async () => {
       const res = await get('/api/stats/shipment-stats', {
         dateRange: getStartAndEndDate(date, dateUnAltered),
-        trackbar: [shipmentStartTrackBar, shipmentEndTrackBar],
-        shipmentFilter,
+        trackbar: [shipmentStartTrackBarTruck, shipmentEndTrackBarTruck],
+        shipmentFilter: 0
       });
       // console.log(res.data.data);
-      setShipmentReport(res.data.data);
+      setTruckShipmentReport(res.data.data);
+    };
+    const fetchShipmentReportWagon = async () => {
+      const res = await get('/api/stats/shipment-stats', {
+        dateRange: getStartAndEndDate(date, dateUnAltered),
+        trackbar: [shipmentStartTrackBarWagon, shipmentEndTrackBarWagon],
+        shipmentFilter: 1
+      });
+      // console.log(res.data.data);
+      setWagonShipmentReport(res.data.data);
     };
     const fetchPrintingReport = async () => {
       const res = await get('/api/stats/printing-stats', {
         dateRange: getStartAndEndDate(date, dateUnAltered),
-        trackbar: [printingStartTrackBar, printingEndTrackBar],
+        trackbar: [printingStartTrackBar, printingEndTrackBar]
       });
       setPrintingReport(res.data.data);
     };
@@ -69,7 +84,7 @@ function Report() {
       const res = await get('/api/stats/loading-stats', {
         dateRange: getStartAndEndDate(date, dateUnAltered),
         trackbar: [loaderStartTrackBar, loaderEndTrackBar],
-        loaderFilter,
+        loaderFilter
       });
       setLoaderReport(res.data.data);
     };
@@ -81,20 +96,26 @@ function Report() {
     //   setPackerReport(res.data.data);
     // };
     await Promise.all([
-      fetchShipmentReport(),
+      fetchShipmentReportTruck(),
+      fetchShipmentReportWagon(),
       fetchPrintingReport(),
-      fetchLoadingReport(),
+      fetchLoadingReport()
       // fetchPackerReport()
     ]);
   };
 
   useEffect(() => {
     fetchReports();
-  }, [shipmentStartTrackBar, shipmentEndTrackBar]);
+  }, [
+    shipmentStartTrackBarTruck,
+    shipmentEndTrackBarTruck,
+    shipmentStartTrackBarWagon,
+    shipmentEndTrackBarWagon
+  ]);
 
   const handleDownload = async () => {
     const res = await getFile('/api/report/datewise', {
-      dateRange: getStartAndEndDate(date, dateUnAltered),
+      dateRange: getStartAndEndDate(date, dateUnAltered)
     });
   };
 
@@ -107,12 +128,13 @@ function Report() {
     if (loaderReport) {
       if (loaderFilter === 2) setLoaderFilterReport(loaderReport);
       else if (loaderFilter === 1) {
-        setLoaderFilterReport(loaderReport.filter((e) => e.vehicle_type === 1));
-      } else setLoaderFilterReport(loaderReport.filter((e) => e.vehicle_type === 0));
+        setLoaderFilterReport(loaderReport.filter(e => e.vehicle_type === 1));
+      } else
+        setLoaderFilterReport(loaderReport.filter(e => e.vehicle_type === 0));
     }
   }, [loaderFilter, loaderReport]);
 
-  const handleBlur = (e) => {
+  const handleBlur = e => {
     if (!e.currentTarget.contains(e.relatedTarget)) {
       setDatePickerOpen(false);
     }
@@ -148,7 +170,7 @@ function Report() {
                 ) : null}
                 <DateRange
                   editableDateInputs
-                  onChange={(item) => {
+                  onChange={item => {
                     setDate([item.selection]);
                     setDateUnAltered(false);
                   }}
@@ -162,15 +184,26 @@ function Report() {
         </div>
         <div className="report-container">
           <ReportTable
-            title="Shipment Tracking"
+            title="Shipment Tracking (Truck)"
             layoutType={0}
-            data={shipmentReport}
-            startCount={shipmentStartTrackBar}
-            endCount={shipmentEndTrackBar}
-            setStartCount={(e) => setShipmentStartTrackBar(e)}
-            setEndCount={(e) => setShipmentEndTrackBar(e)}
+            data={truckShipmentReport}
+            startCount={shipmentStartTrackBarTruck}
+            endCount={shipmentEndTrackBarTruck}
+            setStartCount={e => setShipmentStartTrackBarTruck(e)}
+            setEndCount={e => setShipmentEndTrackBarTruck(e)}
             filter={shipmentFilter}
-            setFilter={(e) => setShipmentFilter(e)}
+            setFilter={e => setShipmentFilter(e)}
+          />
+          <ReportTable
+            title="Shipment Tracking (Wagon)"
+            layoutType={3}
+            data={wagonShipmentReport}
+            startCount={shipmentStartTrackBarWagon}
+            endCount={shipmentEndTrackBarWagon}
+            setStartCount={e => setShipmentStartTrackBarWagon(e)}
+            setEndCount={e => setShipmentEndTrackBarWagon(e)}
+            filter={shipmentFilter}
+            setFilter={e => setShipmentFilter(e)}
           />
           <ReportTable
             title="Printing Bay(Shift A)"
@@ -178,11 +211,12 @@ function Report() {
             data={printingReport ? printingReport[0] : null}
             startCount={printingStartTrackBar}
             endCount={printingEndTrackBar}
-            setStartCount={(e) => setPrintingStartTrackBar(e)}
-            setEndCount={(e) => setPrintingEndTrackBar(e)}
+            setStartCount={e => setPrintingStartTrackBar(e)}
+            setEndCount={e => setPrintingEndTrackBar(e)}
             hideRowCount
             date={date}
             dateUnAltered={dateUnAltered}
+            shift={0}
           />
           <ReportTable
             title="Printing Bay(Shift B)"
@@ -190,11 +224,12 @@ function Report() {
             data={printingReport ? printingReport[1] : null}
             startCount={printingStartTrackBar}
             endCount={printingEndTrackBar}
-            setStartCount={(e) => setPrintingStartTrackBar(e)}
-            setEndCount={(e) => setPrintingEndTrackBar(e)}
+            setStartCount={e => setPrintingStartTrackBar(e)}
+            setEndCount={e => setPrintingEndTrackBar(e)}
             hideRowCount
             date={date}
             dateUnAltered={dateUnAltered}
+            shift={1}
           />
           <ReportTable
             title="Printing Bay(Shift C)"
@@ -202,11 +237,12 @@ function Report() {
             data={printingReport ? printingReport[2] : null}
             startCount={printingStartTrackBar}
             endCount={printingEndTrackBar}
-            setStartCount={(e) => setPrintingStartTrackBar(e)}
-            setEndCount={(e) => setPrintingEndTrackBar(e)}
+            setStartCount={e => setPrintingStartTrackBar(e)}
+            setEndCount={e => setPrintingEndTrackBar(e)}
             hideRowCount
             date={date}
             dateUnAltered={dateUnAltered}
+            shift={2}
           />
           <ReportTable
             title="Loading bay"
@@ -214,11 +250,11 @@ function Report() {
             data={loaderFilterReport}
             startCount={loaderStartTrackBar}
             endCount={loaderEndTrackBar}
-            setStartCount={(e) => setLoaderStartTrackBar(e)}
-            setEndCount={(e) => setLoaderEndTrackBar(e)}
+            setStartCount={e => setLoaderStartTrackBar(e)}
+            setEndCount={e => setLoaderEndTrackBar(e)}
             hideRowCount
             filter={loaderFilter}
-            setFilter={(e) => setLoaderFilter(e)}
+            setFilter={e => setLoaderFilter(e)}
           />
           {/* <ReportTable
             title="Packer Analytics"

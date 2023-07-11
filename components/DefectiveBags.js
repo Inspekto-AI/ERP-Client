@@ -12,30 +12,45 @@ function DefectiveBags({
   belt_id: beltId,
   date,
   dateUnAltered,
+  shift
 }) {
   const [rejectBags, setRejectBags] = useState(null);
 
   useEffect(() => {
     const fetchRejectBags = async () => {
       const res = await get('/api/shipment/reject-bags', {
-        shipment_id: transactionId,
+        shipment_id: transactionId
       });
       setRejectBags(res?.data?.data);
     };
     const fetchRejectBagsByBelt = async () => {
       const res = await get('/api/shipment/reject-belt-bags', {
         machine_id: beltId,
-        dateRange: getStartAndEndDate(date, dateUnAltered),
+        dateRange: getStartAndEndDate(date, dateUnAltered)
       });
       setRejectBags(res?.data?.data);
     };
-    if (!beltId) fetchRejectBags();
+    const fetchRejectBagsByBeltShiftWise = async () => {
+      const res = await get('/api/shipment/reject-bags-shiftwise', {
+        machine_id: beltId,
+        dateRange: getStartAndEndDate(date, dateUnAltered),
+        // updatedDateRange: [dateRange[0] + 86400000, dateRange[1] + 86400000],
+        // updatedDateRange: getStartAndEndDate(date),
+        updatedDateRange: getStartAndEndDate(date, dateUnAltered),
+
+        shift: shift
+      });
+      setRejectBags(res?.data?.data);
+    };
+    console.log(shift);
+    if (shift !== null && beltId) fetchRejectBagsByBeltShiftWise();
+    else if (!beltId) fetchRejectBags();
     else fetchRejectBagsByBelt();
   }, [beltId, transactionId]);
 
   const removeFromMissprint = async (id, imageLocation, index) => {
     const response = await put(
-      `/api/shipment/mark-false-positive?id=${id}&image_location=${imageLocation}`,
+      `/api/shipment/mark-false-positive?id=${id}&image_location=${imageLocation}`
     );
 
     if (response?.data?.success) {
@@ -64,30 +79,29 @@ function DefectiveBags({
                 <div className="image-container">
                   <Image
                     src={e.local_image_path}
-                      // src={
-                      //   transactionId || printingBeltId
-                      //     ? e.local_image_location || e.local_image_path
-                      //     : e.s3_image_url
-                      // }
+                    // src={
+                    //   transactionId || printingBeltId
+                    //     ? e.local_image_location || e.local_image_path
+                    //     : e.s3_image_url
+                    // }
                     layout="fill"
-                    loader={() => `${BASE_URL}/api/shipment/images?image_location=${e.local_image_path}`}
+                    loader={() =>
+                      `${BASE_URL}/api/shipment/images?image_location=${e.local_image_path}`
+                    }
                     objectFit="contain"
                     objectPosition="top"
                   />
                 </div>
                 <div className="description">
-                  <div className="heading">
-                    Alert #
-                    {index + 1}
-                  </div>
+                  <div className="heading">Alert #{index + 1}</div>
                   <div className="sub-heading">Bag tag missing</div>
                   {e?.is_false_positive === 1 ? null : (
                     <Button
-                      onClick={
-                        () => removeFromMissprint(
+                      onClick={() =>
+                        removeFromMissprint(
                           e?.misprint_id,
                           e?.local_image_path,
-                          index,
+                          index
                         )
                       }
                       variant="outlined"
@@ -111,7 +125,7 @@ function DefectiveBags({
 
 DefectiveBags.propTypes = {
   transaction_id: PropTypes.number,
-  belt_id: PropTypes.string,
+  belt_id: PropTypes.string
 };
 
 export default DefectiveBags;

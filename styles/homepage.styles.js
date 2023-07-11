@@ -86,7 +86,7 @@ const Container = styled.div`
 
     .analytics {
       background: #f3f4f6;
-      margin-top: 40px;
+      margin-top: 10px;
       padding: 20px;
 
       .MuiGrid-item {

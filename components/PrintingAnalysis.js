@@ -12,10 +12,10 @@ function PrintingAnalysis({ printingBelts, handleBeltReset }) {
   return (
     <>
       <div className="analysis-container">
-        <div className="head">
+        {/* <div className="head">
           <h2>Printing Analysis</h2>
           <div className="search-container" />
-        </div>
+        </div> */}
         <div className="analytics">
           {printingBelts && Object.keys(printingBelts)?.length === 0 ? (
             <p style={{ fontSize: '20px', textAlign: 'center', color: 'gray' }}>
@@ -26,17 +26,19 @@ function PrintingAnalysis({ printingBelts, handleBeltReset }) {
             </p>
           ) : (
             <Grid container spacing={2}>
-              {printingBelts
-                && Object.keys(printingBelts)?.map((e, index) => (
+              {printingBelts &&
+                Object.keys(printingBelts)?.map((e, index) => (
                   <Grid item xs={12} sm={6} md={4} lg={3} key={index}>
                     <AnalyticsCard
                       data={{
-                        ...printingBelts[e],
+                        ...printingBelts[e]
                       }}
-                      rejectModalOpen={() => setRejectModalOpen({
-                        ...printingBelts[e],
-                        printing_belt_id: e,
-                      })}
+                      rejectModalOpen={() =>
+                        setRejectModalOpen({
+                          ...printingBelts[e],
+                          printing_belt_id: e
+                        })
+                      }
                       handleBeltReset={handleBeltReset}
                       printingCard
                       status={0}
@@ -64,7 +66,7 @@ function PrintingAnalysis({ printingBelts, handleBeltReset }) {
 
 PrintingAnalysis.propTypes = {
   printingBelts: PropTypes.object,
-  handleBeltReset: PropTypes.func,
+  handleBeltReset: PropTypes.func
 };
 
 export default PrintingAnalysis;
