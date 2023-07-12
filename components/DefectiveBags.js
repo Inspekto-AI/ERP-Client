@@ -13,7 +13,7 @@ function DefectiveBags({
   belt_id: beltId,
   date,
   dateUnAltered,
-  shift
+  shift,
 }) {
   const [rejectBags, setRejectBags] = useState(null);
   const [isLoading, setIsLoading] = useState(true);
@@ -21,7 +21,7 @@ function DefectiveBags({
   useEffect(() => {
     const fetchRejectBags = async () => {
       const res = await get('/api/shipment/reject-bags', {
-        shipment_id: transactionId
+        shipment_id: transactionId,
       });
       setRejectBags(res?.data?.data);
       setIsLoading(false);
@@ -29,7 +29,7 @@ function DefectiveBags({
     const fetchRejectBagsByBelt = async () => {
       const res = await get('/api/shipment/reject-belt-bags', {
         machine_id: beltId,
-        dateRange: getStartAndEndDate(date, dateUnAltered)
+        dateRange: getStartAndEndDate(date, dateUnAltered),
       });
       setRejectBags(res?.data?.data);
       setIsLoading(false);
@@ -42,7 +42,7 @@ function DefectiveBags({
         // updatedDateRange: getStartAndEndDate(date),
         updatedDateRange: getStartAndEndDate(date, dateUnAltered),
 
-        shift: shift
+        shift,
       });
       setRejectBags(res?.data?.data);
       setIsLoading(false);
@@ -55,7 +55,7 @@ function DefectiveBags({
 
   const removeFromMissprint = async (id, imageLocation, index) => {
     const response = await put(
-      `/api/shipment/mark-false-positive?id=${id}&image_location=${imageLocation}`
+      `/api/shipment/mark-false-positive?id=${id}&image_location=${imageLocation}`,
     );
 
     if (response?.data?.success) {
@@ -92,25 +92,24 @@ function DefectiveBags({
                     //     : e.s3_image_url
                     // }
                     layout="fill"
-                    loader={() =>
-                      `${BASE_URL}/api/shipment/images?image_location=${e.local_image_path}`
-                    }
+                    loader={() => `${BASE_URL}/api/shipment/images?image_location=${e.local_image_path}`}
                     objectFit="contain"
                     objectPosition="top"
                   />
                 </div>
                 <div className="description">
-                  <div className="heading">Alert #{index + 1}</div>
+                  <div className="heading">
+                    Alert #
+                    {index + 1}
+                  </div>
                   <div className="sub-heading">Bag tag missing</div>
                   {e?.is_false_positive === 1 ? null : (
                     <Button
-                      onClick={() =>
-                        removeFromMissprint(
-                          e?.misprint_id,
-                          e?.local_image_path,
-                          index
-                        )
-                      }
+                      onClick={() => removeFromMissprint(
+                        e?.misprint_id,
+                        e?.local_image_path,
+                        index,
+                      )}
                       variant="outlined"
                       color="secondary"
                       style={{ fontSize: '10px', fontWeight: '600' }}
@@ -132,7 +131,7 @@ function DefectiveBags({
 
 DefectiveBags.propTypes = {
   transaction_id: PropTypes.number,
-  belt_id: PropTypes.string
+  belt_id: PropTypes.string,
 };
 
 export default DefectiveBags;
