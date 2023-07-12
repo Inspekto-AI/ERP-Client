@@ -13,25 +13,25 @@ const useStyles = makeStyles(() => ({
     padding: '5px 10px',
     fontSize: '18px',
     fontWeight: 200,
-    width: '2vw'
+    width: '2vw',
   },
 
   td1: {
     backgroundColor: '#69E866',
-    width: '3vw'
+    width: '3vw',
   },
   td3: {
     outline: '2px solid transparent',
     width: '100%',
-    background: 'white'
+    background: 'white',
   },
   td4: {
     outline: '2px solid #6B4EFF',
-    maxWidth: '8vw'
+    maxWidth: '8vw',
   },
   td4Inactive: {
     outline: '2px solid transparent',
-    maxWidth: '8vw'
+    maxWidth: '8vw',
   },
   avatar: {
     height: '40px',
@@ -40,7 +40,7 @@ const useStyles = makeStyles(() => ({
     margin: '0px',
     padding: '0px',
     marginLeft: '10px',
-    cursor: 'pointer'
+    cursor: 'pointer',
   },
   td5: {
     width: '8vw',
@@ -49,23 +49,23 @@ const useStyles = makeStyles(() => ({
     maxHeight: '40px',
     margin: '0px',
     padding: '0px',
-    backgroundColor: 'transparent'
+    backgroundColor: 'transparent',
   },
   td6: {
-    outline: '2px solid #6B4EFF'
+    outline: '2px solid #6B4EFF',
   },
   addBagInput: {
     width: '7vw',
-    fontSize: '20px'
+    fontSize: '20px',
   },
   transpatentBorder: {
-    outline: '2px solid black'
+    outline: '2px solid black',
   },
   td7: {
     outline: '2px solid black',
     maxWidth: '8vw',
-    width: '10vh'
-  }
+    width: '10vh',
+  },
 }));
 
 function LoaderAnalysisRow({
@@ -76,7 +76,7 @@ function LoaderAnalysisRow({
   rackNo,
   vehicleType,
   handleBagDone,
-  handleBagIncrement
+  handleBagIncrement,
 }) {
   const classes = useStyles();
   const [bagType, setBagType] = useState(BAG_TYPES ? BAG_TYPES[0] : '');
@@ -92,9 +92,9 @@ function LoaderAnalysisRow({
         new_bag_limit: parseInt(addBagCount, 10),
         old_limit: data?.bag_limit,
         belt_id: data?.vehicle_id,
-        comment: 'test'
+        comment: 'test',
       },
-      true
+      true,
     );
     setAddBagCount('');
   };
@@ -108,11 +108,11 @@ function LoaderAnalysisRow({
       data?.vehicle_type,
       '',
       data?.bag_count,
-      data?.bag_limit
+      data?.bag_limit,
     );
   };
 
-  const handleSubmit = async e => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
     if (rackNo === null && vehicleType === 1) {
       alert('Enter Rack no');
@@ -137,7 +137,7 @@ function LoaderAnalysisRow({
       wagonno: vehicleType === 1 ? wagonno : '',
       rackno: rackNo,
       gateno: 'default',
-      labelExample: 'default'
+      labelExample: 'default',
     });
     setWagonno('');
     setBagCount('');
@@ -161,7 +161,7 @@ function LoaderAnalysisRow({
               ? data?.is_belt_running
                 ? 'green'
                 : 'red'
-              : 'white'
+              : 'white',
           }}
         >
           {data?.id}
@@ -174,7 +174,7 @@ function LoaderAnalysisRow({
             variant="outlined"
             value={bagType}
             disabled={data?.shipment_id}
-            onChange={e => setBagType(e.target.value)}
+            onChange={(e) => setBagType(e.target.value)}
           >
             {BAG_TYPES.map((e, idx) => (
               <MenuItem className="table-button" value={e} key={idx}>
@@ -193,7 +193,7 @@ function LoaderAnalysisRow({
               placeholder={
                 vehicleType === 1 ? 'Add Wagon No.' : 'Add Truck No.'
               }
-              onChange={e => handleValueChange(e, setWagonno)}
+              onChange={(e) => handleValueChange(e, setWagonno)}
             />
           )}
         </td>
@@ -206,7 +206,7 @@ function LoaderAnalysisRow({
               placeholder="Target"
               value={bagCount}
               disabled={data?.shipment_id}
-              onChange={e => handleValueChange(e, setBagCount)}
+              onChange={(e) => handleValueChange(e, setBagCount)}
             />
           )}
         </td>
@@ -218,7 +218,7 @@ function LoaderAnalysisRow({
             <input
               value={addBagCount}
               className={classes.addBagInput}
-              onChange={e => handleValueChange(e, setAddBagCount)}
+              onChange={(e) => handleValueChange(e, setAddBagCount)}
             />
             <Avatar className={classes.avatar} onClick={handleAddButton}>
               <IoMdAdd />
@@ -247,12 +247,10 @@ function LoaderAnalysisRow({
           <Button
             className={classes.root}
             disabled={!data.shipment_id || data.is_belt_running}
-            onClick={() =>
-              setDetailModalOpen({
-                issue_with_belt: data?.issue_with_belt,
-                belt_id: data?.id
-              })
-            }
+            onClick={() => setDetailModalOpen({
+              issue_with_belt: data?.issue_with_belt,
+              belt_id: data?.id,
+            })}
           >
             VIEW
           </Button>
@@ -269,7 +267,10 @@ function LoaderAnalysisRow({
         >
           <>
             <p style={{ textAlign: 'center' }}>
-              {detailModalOpen?.issue_with_belt} -{detailModalOpen?.belt_id}
+              {detailModalOpen?.issue_with_belt}
+              {' '}
+              -
+              {detailModalOpen?.belt_id}
             </p>
           </>
         </InfoModal>
