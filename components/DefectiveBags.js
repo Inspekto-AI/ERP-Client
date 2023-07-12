@@ -6,6 +6,7 @@ import { BASE_URL } from 'utils/constants';
 import { get, put } from 'utils/api';
 import { getStartAndEndDate } from 'utils/globalFunctions';
 import { Button } from '@material-ui/core';
+import Loader from './Loader';
 
 function DefectiveBags({
   transaction_id: transactionId,
@@ -15,6 +16,7 @@ function DefectiveBags({
   shift
 }) {
   const [rejectBags, setRejectBags] = useState(null);
+  const [isLoading, setIsLoading] = useState(true);
 
   useEffect(() => {
     const fetchRejectBags = async () => {
@@ -22,6 +24,7 @@ function DefectiveBags({
         shipment_id: transactionId
       });
       setRejectBags(res?.data?.data);
+      setIsLoading(false);
     };
     const fetchRejectBagsByBelt = async () => {
       const res = await get('/api/shipment/reject-belt-bags', {
@@ -29,6 +32,7 @@ function DefectiveBags({
         dateRange: getStartAndEndDate(date, dateUnAltered)
       });
       setRejectBags(res?.data?.data);
+      setIsLoading(false);
     };
     const fetchRejectBagsByBeltShiftWise = async () => {
       const res = await get('/api/shipment/reject-bags-shiftwise', {
@@ -41,8 +45,9 @@ function DefectiveBags({
         shift: shift
       });
       setRejectBags(res?.data?.data);
+      setIsLoading(false);
     };
-    console.log(shift);
+    // console.log(shift);
     if (shift !== null && beltId) fetchRejectBagsByBeltShiftWise();
     else if (!beltId) fetchRejectBags();
     else fetchRejectBagsByBelt();
@@ -62,7 +67,9 @@ function DefectiveBags({
 
   return (
     <DefectiveBagsContainer>
-      {rejectBags && rejectBags.length > 0 ? (
+      {isLoading ? (
+        <Loader />
+      ) : rejectBags && rejectBags.length > 0 ? (
         <>
           {rejectBags.map((e, index) => (
             <div className="defect" key={index + 1}>

@@ -83,14 +83,14 @@ const shipmentHead = [
     label: 'Bag Type'
   },
   {
-    id: 'bag_count',
-    disablePadding: true,
-    label: 'Bags Dispatched'
-  },
-  {
     id: 'tag_count',
     disablePadding: true,
     label: 'Bag Limit'
+  },
+  {
+    id: 'bag_count',
+    disablePadding: true,
+    label: 'Bags Dispatched'
   },
   {
     id: 'bags_increased',
@@ -543,10 +543,10 @@ function RenderTable({ layoutType, data, setRejectIndex }) {
                     {row?.bag_type}{' '}
                   </TableCell>
                   <TableCell style={{ textAlign: 'center' }}>
-                    {row?.loading_count || 0}{' '}
+                    {row?.bag_limit}{' '}
                   </TableCell>
                   <TableCell style={{ textAlign: 'center' }}>
-                    {row?.bag_limit}{' '}
+                    {row?.loading_count || 0}{' '}
                   </TableCell>
                   <TableCell style={{ textAlign: 'center' }}>
                     {row?.bags_increased}{' '}
@@ -630,10 +630,10 @@ function RenderTable({ layoutType, data, setRejectIndex }) {
                     {row?.bag_type}{' '}
                   </TableCell>
                   <TableCell style={{ textAlign: 'center' }}>
-                    {row?.loading_count || 0}{' '}
+                    {row?.bag_limit}{' '}
                   </TableCell>
                   <TableCell style={{ textAlign: 'center' }}>
-                    {row?.bag_limit}{' '}
+                    {row?.loading_count || 0}{' '}
                   </TableCell>
                   <TableCell style={{ textAlign: 'center' }}>
                     {row?.bags_increased}{' '}
