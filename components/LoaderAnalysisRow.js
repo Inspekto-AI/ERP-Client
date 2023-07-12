@@ -79,7 +79,7 @@ function LoaderAnalysisRow({
   handleBagIncrement
 }) {
   const classes = useStyles();
-  const [bagType, setBagType] = useState(BAG_TYPES ? BAG_TYPES[0] : '');
+  const [bagType, setBagType] = useState('');
   const [wagonno, setWagonno] = useState('');
   const [bagCount, setBagCount] = useState('');
   const [addBagCount, setAddBagCount] = useState('');
@@ -172,10 +172,13 @@ function LoaderAnalysisRow({
           <Select
             className={classes.td3}
             variant="outlined"
-            value={bagType}
+            value={bagType === '' ? 0 : bagType}
             disabled={data?.shipment_id}
             onChange={e => setBagType(e.target.value)}
           >
+            <MenuItem className="table-button" value={0}>
+              Select Grade
+            </MenuItem>
             {BAG_TYPES.map((e, idx) => (
               <MenuItem className="table-button" value={e} key={idx}>
                 {e}
@@ -238,7 +241,11 @@ function LoaderAnalysisRow({
               RESET
             </Button>
           ) : (
-            <Button className={classes.root} onClick={handleSubmit}>
+            <Button
+              disabled={bagCount === ''}
+              className={classes.root}
+              onClick={handleSubmit}
+            >
               START
             </Button>
           )}
