@@ -41,6 +41,7 @@ function DashboardComponent({
         handleFlag={handleFlag}
         handleBagDone={handleBagDone}
         handleBagIncrement={handleBagIncrement}
+        handleBeltReset={handleBeltReset}
       />
     );
   }
@@ -53,6 +54,7 @@ function DashboardComponent({
         handleFlag={handleFlag}
         handleBagDone={handleBagDone}
         handleBagIncrement={handleBagIncrement}
+        handleBeltReset={handleBeltReset}
       />
     );
   }
@@ -102,10 +104,16 @@ function Index() {
     id,
     bag_counting_belt_id,
     printing_belt_id,
+    transaction_id
   ) => {
     try {
+      console.log({
+        belt_id: printing_belt_id || bag_counting_belt_id || id,
+        transaction_id
+      })
       await put('/api/shipment/reset-belt', {
-        belt_id: printing_belt_id || id,
+        belt_id: printing_belt_id || bag_counting_belt_id || id,
+        transaction_id
       });
       // on success reset belt
       setPrintingBelts((prevState) => {
@@ -190,7 +198,6 @@ function Index() {
       setBagIncrementModalOpen(data);
       return;
     }
-    console.log('inc');
     setIsLoading(true);
     try {
       await post('/api/shipment/bag-change', data);

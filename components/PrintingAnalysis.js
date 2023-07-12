@@ -12,10 +12,6 @@ function PrintingAnalysis({ printingBelts, handleBeltReset }) {
   return (
     <>
       <div className="analysis-container">
-        {/* <div className="head">
-          <h2>Printing Analysis</h2>
-          <div className="search-container" />
-        </div> */}
         <div className="analytics">
           {printingBelts && Object.keys(printingBelts)?.length === 0 ? (
             <p style={{ fontSize: '20px', textAlign: 'center', color: 'gray' }}>

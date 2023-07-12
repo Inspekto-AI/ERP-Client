@@ -67,6 +67,7 @@ function ShipmentAnalysis({
   handleFlag,
   handleBagDone,
   handleBagIncrement,
+  handleBeltReset
 }) {
   const classes = useStyles();
   const { bagTypes: BAG_TYPES } = useContext(GlobalContext);
@@ -157,6 +158,7 @@ function ShipmentAnalysis({
                   vehicleType={vehicleType}
                   handleBagDone={handleBagDone}
                   handleBagIncrement={handleBagIncrement}
+                  handleBeltReset={handleBeltReset}
                 />
               ))}
           </tbody>
