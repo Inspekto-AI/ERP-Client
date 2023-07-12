@@ -104,16 +104,16 @@ function Index() {
     id,
     bag_counting_belt_id,
     printing_belt_id,
-    transaction_id
+    transaction_id,
   ) => {
     try {
       console.log({
         belt_id: printing_belt_id || bag_counting_belt_id || id,
-        transaction_id
-      })
+        transaction_id,
+      });
       await put('/api/shipment/reset-belt', {
         belt_id: printing_belt_id || bag_counting_belt_id || id,
-        transaction_id
+        transaction_id,
       });
       // on success reset belt
       setPrintingBelts((prevState) => {

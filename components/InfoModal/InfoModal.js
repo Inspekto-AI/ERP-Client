@@ -162,7 +162,7 @@ function InfoModal({
   dataToDisplay,
   incrementModal,
   jamReset,
-  handleBeltReset
+  handleBeltReset,
 }) {
   const classes = useStyles();
   const [newBagCount, setNewBagCount] = useState(0);
@@ -179,12 +179,12 @@ function InfoModal({
   };
 
   const handleTransactionStop = async () => {
-    if(jamReset){
+    if (jamReset) {
       handleBeltReset(
         null,
         open?.belt_id,
         null,
-        open.transaction_id
+        open.transaction_id,
       );
       close();
     }
@@ -350,6 +350,6 @@ InfoModal.propTypes = {
   currentCount: PropTypes.number,
   handleBagDone: PropTypes.func,
   dataToDisplay: PropTypes.object,
-  handleBeltReset: PropTypes.func
+  handleBeltReset: PropTypes.func,
 };
 export default InfoModal;
