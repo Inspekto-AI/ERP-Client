@@ -1,6 +1,8 @@
 import { useState } from 'react';
 import { makeStyles } from '@material-ui/core/styles';
-import { Modal, Backdrop, Fade, Button, TextField } from '@material-ui/core';
+import {
+  Modal, Backdrop, Fade, Button, TextField,
+} from '@material-ui/core';
 import PropTypes from 'prop-types';
 import FrinksButton from 'components/FrinksButton';
 import theme from 'styles/theme';
@@ -12,7 +14,7 @@ const useStyles = makeStyles(() => ({
     display: 'flex',
     padding: '10px',
     alignItems: 'center',
-    justifyContent: 'center'
+    justifyContent: 'center',
   },
   paper: {
     position: 'relative',
@@ -21,7 +23,7 @@ const useStyles = makeStyles(() => ({
     color: 'black',
     fontSize: '15px',
     borderRadius: '8px',
-    marginTop: '30px'
+    marginTop: '30px',
     // minWidth: '650px'
   },
   header: {
@@ -30,12 +32,12 @@ const useStyles = makeStyles(() => ({
     justifyContent: 'space-between',
     '& h3': {
       color: theme.palette.trypanBlue.main,
-      fontWeight: '900'
+      fontWeight: '900',
     },
     '& .MuiButton-label': {
       fontWeight: '900',
-      color: '#646464'
-    }
+      color: '#646464',
+    },
   },
   btnContainer: {
     textAlign: 'right',
@@ -43,8 +45,8 @@ const useStyles = makeStyles(() => ({
     alignItems: 'center',
     justifyContent: 'space-between',
     '& .MuiButton-root': {
-      padding: '5px 20px'
-    }
+      padding: '5px 20px',
+    },
   },
   children: {
     padding: '20px 0',
@@ -52,8 +54,8 @@ const useStyles = makeStyles(() => ({
       fontSize: '18px',
       opacity: '0.6',
       fontWeight: '500',
-      height: '80px'
-    }
+      height: '80px',
+    },
   },
   counterContainer: {
     display: 'flex',
@@ -62,35 +64,35 @@ const useStyles = makeStyles(() => ({
     marginRight: '50px',
     '& .MuiFormControl-root': {
       width: '90px',
-      margin: '0 10px'
+      margin: '0 10px',
     },
     '& .MuiOutlinedInput-input': {
-      padding: '10px'
+      padding: '10px',
     },
     '& .MuiInputBase-root': {
-      fontSize: '25px'
+      fontSize: '25px',
     },
     '& span': {
-      cursor: 'pointer'
-    }
+      cursor: 'pointer',
+    },
   },
   division: {
     borderColor: 'rgba(0, 0, 0, 0.1)',
     borderWidth: 'thin',
     borderBottomWidth: 0,
-    marginBottom: '15px'
+    marginBottom: '15px',
   },
   title: {
-    marginRight: '65px'
+    marginRight: '65px',
   },
   commentField: {
     width: '100%',
-    marginBottom: '10px'
+    marginBottom: '10px',
   },
   error: {
     marginBottom: '20px',
-    color: 'red'
-  }
+    color: 'red',
+  },
 }));
 
 function ConfirmationPreview({ data }) {
@@ -101,7 +103,7 @@ function ConfirmationPreview({ data }) {
     rackNo,
     gateNo,
     bagType,
-    bagCount
+    bagCount,
   } = data;
 
   return (
@@ -172,7 +174,7 @@ function InfoModal({
       transaction_id: open.id || open.transaction_id,
       new_bag_limit: newBagCount,
       old_limit: open.bag_limit,
-      comment
+      comment,
     });
   };
 
@@ -202,7 +204,7 @@ function InfoModal({
       open?.printing_belt_id,
       open?.machine_id,
       open?.vehicle_type,
-      comment
+      comment,
     );
     close();
   };
@@ -214,7 +216,7 @@ function InfoModal({
       className={classes.modal}
       BackdropComponent={Backdrop}
       BackdropProps={{
-        timeout: 500
+        timeout: 500,
       }}
     >
       <Fade in={open}>
@@ -247,7 +249,7 @@ function InfoModal({
                 variant="filled"
                 placeholder="Enter comment"
                 value={comment}
-                onChange={e => setComment(e.target.value)}
+                onChange={(e) => setComment(e.target.value)}
                 className={classes.commentField}
                 inputProps={{ maxLength: 500 }}
                 error={error !== ''}
@@ -268,26 +270,24 @@ function InfoModal({
                     layout="fixed"
                     height={40}
                     width={40}
-                    onClick={() =>
-                      setNewBagCount(Math.max(1, parseInt(newBagCount, 10) - 1))
-                    }
+                    onClick={() => setNewBagCount(Math.max(1, parseInt(newBagCount, 10) - 1))}
                   />
                   <TextField
                     variant="outlined"
                     value={newBagCount}
-                    onChange={e => {
+                    onChange={(e) => {
                       if (e.target.value === '') setNewBagCount(1);
                       else if (!Number.isNaN(e.target.value)) {
                         setNewBagCount(
                           Math.max(
                             1,
-                            Math.min(parseInt(e.target.value, 10), 100)
-                          )
+                            Math.min(parseInt(e.target.value, 10), 100),
+                          ),
                         );
                       }
                     }}
                     InputProps={{
-                      inputProps: { min: 1, max: 100 }
+                      inputProps: { min: 1, max: 100 },
                     }}
                   />
                   <Image
@@ -296,9 +296,7 @@ function InfoModal({
                     layout="fixed"
                     height={40}
                     width={40}
-                    onClick={() =>
-                      setNewBagCount(parseInt(newBagCount, 10) + 1)
-                    }
+                    onClick={() => setNewBagCount(parseInt(newBagCount, 10) + 1)}
                   />
                 </div>
               ) : (
@@ -312,10 +310,10 @@ function InfoModal({
                         jamReset
                           ? 'Reset'
                           : incrementModal
-                          ? 'Add Bags'
-                          : currentCount >= bagCount
-                          ? 'Done'
-                          : 'Stop'
+                            ? 'Add Bags'
+                            : currentCount >= bagCount
+                              ? 'Done'
+                              : 'Stop'
                       }
                       onClick={handleTransactionStop}
                       variant="outlined"
