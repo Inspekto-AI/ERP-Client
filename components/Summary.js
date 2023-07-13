@@ -445,7 +445,7 @@ function Summary() {
                 alternateHeader
                 title={filter === 0 ? 'Packer Analysis' : 'Loader Analysis'}
                 hideFooter
-                counter={summaryData?.total_missed_labels || 0}
+                // counter={summaryData?.total_missed_labels || 0}
                 summaryHeader
                 disableMinimumHeight
                 viewAllFunc={() => setNotificationsFormOpen(true)}

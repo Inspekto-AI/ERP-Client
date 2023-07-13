@@ -87,6 +87,10 @@ function LoaderAnalysisRow({
   const [detailModalOpen, setDetailModalOpen] = useState(null);
 
   const handleAddButton = async () => {
+    console.log(addBagCount);
+    if (addBagCount === '0' || addBagCount === 0 || addBagCount === '') {
+      return;
+    }
     await handleBagIncrement(
       {
         transaction_id: data?.shipment_id,
@@ -223,7 +227,11 @@ function LoaderAnalysisRow({
               className={classes.addBagInput}
               onChange={(e) => handleValueChange(e, setAddBagCount)}
             />
-            <Avatar className={classes.avatar} onClick={handleAddButton}>
+            <Avatar
+              // disabled={null}
+              className={classes.avatar}
+              onClick={handleAddButton}
+            >
               <IoMdAdd />
             </Avatar>
           </td>
