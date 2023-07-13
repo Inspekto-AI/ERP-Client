@@ -149,7 +149,7 @@ function LoaderAnalysisRow({
       bagType,
       bagCount,
       wagonno: vehicleType === 1 ? wagonno : '',
-      rackno: rackNo,
+      rackno: vehicleType === 1 ? rackNo : null,
       gateno: 'default',
       labelExample: 'default'
     });
@@ -219,7 +219,9 @@ function LoaderAnalysisRow({
               onChange={
                 vehicleType === 1
                   ? e => handleValueChange(e, setWagonno)
-                  : e => setWagonno(e.target.value)
+                  : e => {
+                      setWagonno(e.target.value.slice(0, 10));
+                    }
               }
             />
           )}
