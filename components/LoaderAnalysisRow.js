@@ -77,6 +77,7 @@ function LoaderAnalysisRow({
   vehicleType,
   handleBagDone,
   handleBagIncrement,
+  handleBeltReset,
 }) {
   const classes = useStyles();
   const [bagType, setBagType] = useState('');
@@ -130,7 +131,6 @@ function LoaderAnalysisRow({
       alert('Enter target');
       return;
     }
-    // console.log(rackNo);
 
     await handleNewShipment({
       printingId: null,
@@ -265,6 +265,7 @@ function LoaderAnalysisRow({
             onClick={() => setDetailModalOpen({
               issue_with_belt: data?.issue_with_belt,
               belt_id: data?.id,
+              transaction_id: data?.shipment_id,
             })}
           >
             VIEW
@@ -279,6 +280,7 @@ function LoaderAnalysisRow({
           hideModify
           jamReset
           title="Belt Stopped"
+          handleBeltReset={handleBeltReset}
         >
           <>
             <p style={{ textAlign: 'center' }}>

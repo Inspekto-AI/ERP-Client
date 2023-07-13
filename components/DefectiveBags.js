@@ -6,14 +6,17 @@ import { BASE_URL } from 'utils/constants';
 import { get, put } from 'utils/api';
 import { getStartAndEndDate } from 'utils/globalFunctions';
 import { Button } from '@material-ui/core';
+import Loader from './Loader';
 
 function DefectiveBags({
   transaction_id: transactionId,
   belt_id: beltId,
   date,
   dateUnAltered,
+  shift,
 }) {
   const [rejectBags, setRejectBags] = useState(null);
+  const [isLoading, setIsLoading] = useState(true);
 
   useEffect(() => {
     const fetchRejectBags = async () => {
@@ -21,6 +24,7 @@ function DefectiveBags({
         shipment_id: transactionId,
       });
       setRejectBags(res?.data?.data);
+      setIsLoading(false);
     };
     const fetchRejectBagsByBelt = async () => {
       const res = await get('/api/shipment/reject-belt-bags', {
@@ -28,8 +32,24 @@ function DefectiveBags({
         dateRange: getStartAndEndDate(date, dateUnAltered),
       });
       setRejectBags(res?.data?.data);
+      setIsLoading(false);
     };
-    if (!beltId) fetchRejectBags();
+    const fetchRejectBagsByBeltShiftWise = async () => {
+      const res = await get('/api/shipment/reject-bags-shiftwise', {
+        machine_id: beltId,
+        dateRange: getStartAndEndDate(date, dateUnAltered),
+        // updatedDateRange: [dateRange[0] + 86400000, dateRange[1] + 86400000],
+        // updatedDateRange: getStartAndEndDate(date),
+        updatedDateRange: getStartAndEndDate(date, dateUnAltered),
+
+        shift,
+      });
+      setRejectBags(res?.data?.data);
+      setIsLoading(false);
+    };
+    // console.log(shift);
+    if (shift !== null && beltId) fetchRejectBagsByBeltShiftWise();
+    else if (!beltId) fetchRejectBags();
     else fetchRejectBagsByBelt();
   }, [beltId, transactionId]);
 
@@ -47,7 +67,9 @@ function DefectiveBags({
 
   return (
     <DefectiveBagsContainer>
-      {rejectBags && rejectBags.length > 0 ? (
+      {isLoading ? (
+        <Loader />
+      ) : rejectBags && rejectBags.length > 0 ? (
         <>
           {rejectBags.map((e, index) => (
             <div className="defect" key={index + 1}>
@@ -64,11 +86,11 @@ function DefectiveBags({
                 <div className="image-container">
                   <Image
                     src={e.local_image_path}
-                      // src={
-                      //   transactionId || printingBeltId
-                      //     ? e.local_image_location || e.local_image_path
-                      //     : e.s3_image_url
-                      // }
+                    // src={
+                    //   transactionId || printingBeltId
+                    //     ? e.local_image_location || e.local_image_path
+                    //     : e.s3_image_url
+                    // }
                     layout="fill"
                     loader={() => `${BASE_URL}/api/shipment/images?image_location=${e.local_image_path}`}
                     objectFit="contain"
@@ -83,13 +105,11 @@ function DefectiveBags({
                   <div className="sub-heading">Bag tag missing</div>
                   {e?.is_false_positive === 1 ? null : (
                     <Button
-                      onClick={
-                        () => removeFromMissprint(
-                          e?.misprint_id,
-                          e?.local_image_path,
-                          index,
-                        )
-                      }
+                      onClick={() => removeFromMissprint(
+                        e?.misprint_id,
+                        e?.local_image_path,
+                        index,
+                      )}
                       variant="outlined"
                       color="secondary"
                       style={{ fontSize: '10px', fontWeight: '600' }}

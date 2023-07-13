@@ -162,6 +162,7 @@ function InfoModal({
   dataToDisplay,
   incrementModal,
   jamReset,
+  handleBeltReset,
 }) {
   const classes = useStyles();
   const [newBagCount, setNewBagCount] = useState(0);
@@ -178,6 +179,15 @@ function InfoModal({
   };
 
   const handleTransactionStop = async () => {
+    if (jamReset) {
+      handleBeltReset(
+        null,
+        open?.belt_id,
+        null,
+        open.transaction_id,
+      );
+      close();
+    }
     if (comment === '') {
       setError('* All fields are required');
       return;
@@ -340,5 +350,6 @@ InfoModal.propTypes = {
   currentCount: PropTypes.number,
   handleBagDone: PropTypes.func,
   dataToDisplay: PropTypes.object,
+  handleBeltReset: PropTypes.func,
 };
 export default InfoModal;

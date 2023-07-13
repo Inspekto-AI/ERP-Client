@@ -18,9 +18,12 @@ const downloadPDF = (pdf) => {
 };
 
 function Report() {
-  const [shipmentReport, setShipmentReport] = useState(null);
-  const [shipmentStartTrackBar, setShipmentStartTrackBar] = useState(0);
-  const [shipmentEndTrackBar, setShipmentEndTrackBar] = useState(5);
+  const [truckShipmentReport, setTruckShipmentReport] = useState(null);
+  const [wagonShipmentReport, setWagonShipmentReport] = useState(null);
+  const [shipmentStartTrackBarTruck, setShipmentStartTrackBarTruck] = useState(0);
+  const [shipmentStartTrackBarWagon, setShipmentStartTrackBarWagon] = useState(0);
+  const [shipmentEndTrackBarTruck, setShipmentEndTrackBarTruck] = useState(5);
+  const [shipmentEndTrackBarWagon, setShipmentEndTrackBarWagon] = useState(5);
 
   // const [packerReport, setPackerReport] = useState(null);
   // const [packerStartTrackBar, setPackerStartTrackBar] = useState(0);
@@ -36,6 +39,7 @@ function Report() {
   const [loaderFilterReport, setLoaderFilterReport] = useState(null);
 
   const [datePickerOpen, setDatePickerOpen] = useState(false);
+
   const [date, setDate] = useState([
     {
       startDate: new Date(),
@@ -48,14 +52,23 @@ function Report() {
   const [loaderFilter, setLoaderFilter] = useState(2);
 
   const fetchReports = async () => {
-    const fetchShipmentReport = async () => {
+    const fetchShipmentReportTruck = async () => {
       const res = await get('/api/stats/shipment-stats', {
         dateRange: getStartAndEndDate(date, dateUnAltered),
-        trackbar: [shipmentStartTrackBar, shipmentEndTrackBar],
-        shipmentFilter,
+        trackbar: [shipmentStartTrackBarTruck, shipmentEndTrackBarTruck],
+        shipmentFilter: 0,
       });
       // console.log(res.data.data);
-      setShipmentReport(res.data.data);
+      setTruckShipmentReport(res.data.data);
+    };
+    const fetchShipmentReportWagon = async () => {
+      const res = await get('/api/stats/shipment-stats', {
+        dateRange: getStartAndEndDate(date, dateUnAltered),
+        trackbar: [shipmentStartTrackBarWagon, shipmentEndTrackBarWagon],
+        shipmentFilter: 1,
+      });
+      // console.log(res.data.data);
+      setWagonShipmentReport(res.data.data);
     };
     const fetchPrintingReport = async () => {
       const res = await get('/api/stats/printing-stats', {
@@ -81,7 +94,8 @@ function Report() {
     //   setPackerReport(res.data.data);
     // };
     await Promise.all([
-      fetchShipmentReport(),
+      fetchShipmentReportTruck(),
+      fetchShipmentReportWagon(),
       fetchPrintingReport(),
       fetchLoadingReport(),
       // fetchPackerReport()
@@ -90,7 +104,12 @@ function Report() {
 
   useEffect(() => {
     fetchReports();
-  }, [shipmentStartTrackBar, shipmentEndTrackBar]);
+  }, [
+    shipmentStartTrackBarTruck,
+    shipmentEndTrackBarTruck,
+    shipmentStartTrackBarWagon,
+    shipmentEndTrackBarWagon,
+  ]);
 
   const handleDownload = async () => {
     const res = await getFile('/api/report/datewise', {
@@ -162,13 +181,24 @@ function Report() {
         </div>
         <div className="report-container">
           <ReportTable
-            title="Shipment Tracking"
+            title="Shipment Tracking (Truck)"
             layoutType={0}
-            data={shipmentReport}
-            startCount={shipmentStartTrackBar}
-            endCount={shipmentEndTrackBar}
-            setStartCount={(e) => setShipmentStartTrackBar(e)}
-            setEndCount={(e) => setShipmentEndTrackBar(e)}
+            data={truckShipmentReport}
+            startCount={shipmentStartTrackBarTruck}
+            endCount={shipmentEndTrackBarTruck}
+            setStartCount={(e) => setShipmentStartTrackBarTruck(e)}
+            setEndCount={(e) => setShipmentEndTrackBarTruck(e)}
+            filter={shipmentFilter}
+            setFilter={(e) => setShipmentFilter(e)}
+          />
+          <ReportTable
+            title="Shipment Tracking (Wagon)"
+            layoutType={3}
+            data={wagonShipmentReport}
+            startCount={shipmentStartTrackBarWagon}
+            endCount={shipmentEndTrackBarWagon}
+            setStartCount={(e) => setShipmentStartTrackBarWagon(e)}
+            setEndCount={(e) => setShipmentEndTrackBarWagon(e)}
             filter={shipmentFilter}
             setFilter={(e) => setShipmentFilter(e)}
           />
@@ -183,6 +213,7 @@ function Report() {
             hideRowCount
             date={date}
             dateUnAltered={dateUnAltered}
+            shift={0}
           />
           <ReportTable
             title="Printing Bay(Shift B)"
@@ -195,6 +226,7 @@ function Report() {
             hideRowCount
             date={date}
             dateUnAltered={dateUnAltered}
+            shift={1}
           />
           <ReportTable
             title="Printing Bay(Shift C)"
@@ -207,6 +239,7 @@ function Report() {
             hideRowCount
             date={date}
             dateUnAltered={dateUnAltered}
+            shift={2}
           />
           <ReportTable
             title="Loading bay"

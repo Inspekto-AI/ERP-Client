@@ -41,6 +41,7 @@ function DashboardComponent({
         handleFlag={handleFlag}
         handleBagDone={handleBagDone}
         handleBagIncrement={handleBagIncrement}
+        handleBeltReset={handleBeltReset}
       />
     );
   }
@@ -53,6 +54,7 @@ function DashboardComponent({
         handleFlag={handleFlag}
         handleBagDone={handleBagDone}
         handleBagIncrement={handleBagIncrement}
+        handleBeltReset={handleBeltReset}
       />
     );
   }
@@ -102,22 +104,39 @@ function Index() {
     id,
     bag_counting_belt_id,
     printing_belt_id,
+    transaction_id,
   ) => {
     try {
       await put('/api/shipment/reset-belt', {
-        belt_id: printing_belt_id || id,
+        belt_id: printing_belt_id || bag_counting_belt_id || id,
+        transaction_id,
       });
       // on success reset belt
-      setPrintingBelts((prevState) => {
-        if (!prevState) return null;
-        return {
-          ...prevState,
-          [printing_belt_id || id]: {
-            ...prevState[printing_belt_id || id],
-            is_belt_running: true,
-          },
-        };
-      });
+      if(bag_counting_belt_id){
+        setVehicleBelts((prevState) => {
+          if (!prevState) return null;
+          const newState = { ...prevState };
+          if (newState[bag_counting_belt_id]) {
+            newState[bag_counting_belt_id] = {
+              ...newState[bag_counting_belt_id],
+              is_belt_running: true,
+              issue_with_belt: null,
+            };
+          }
+          return newState;
+        });
+      }else{
+        setPrintingBelts((prevState) => {
+          if (!prevState) return null;
+          return {
+            ...prevState,
+            [printing_belt_id || id]: {
+              ...prevState[printing_belt_id || id],
+              is_belt_running: true,
+            },
+          };
+        });
+      }
     } catch (error) {
       console.log(error);
     }
@@ -190,7 +209,6 @@ function Index() {
       setBagIncrementModalOpen(data);
       return;
     }
-    console.log('inc');
     setIsLoading(true);
     try {
       await post('/api/shipment/bag-change', data);

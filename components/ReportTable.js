@@ -82,14 +82,14 @@ const shipmentHead = [
     label: 'Bag Type',
   },
   {
+    id: 'tag_count',
+    disablePadding: true,
+    label: 'Bag Limit',
+  },
+  {
     id: 'bag_count',
     disablePadding: true,
     label: 'Bags Dispatched',
-  },
-  {
-    id: 'tag_count',
-    disablePadding: true,
-    label: 'Bags Packed',
   },
   {
     id: 'bags_increased',
@@ -116,11 +116,11 @@ const shipmentHead = [
     disablePadding: true,
     label: 'Loading Time',
   },
-  {
-    id: 'action',
-    disablePadding: true,
-    label: 'View',
-  },
+  // {
+  //   id: 'action',
+  //   disablePadding: true,
+  //   label: 'View',
+  // },
 ];
 
 const printingHead = [
@@ -284,6 +284,36 @@ function RenderTableHeader({
             <TableCell
               key={headCell.id}
               padding={headCell.disablePadding ? 'none' : 'normal'}
+              sortDirection={orderBy === headCell.id ? order : false}
+            >
+              <TableSortLabel
+                active={orderBy === headCell.id}
+                direction={orderBy === headCell.id ? order : 'asc'}
+                onClick={createSortHandler(headCell.id)}
+              >
+                {headCell.label}
+                {orderBy === headCell.id ? (
+                  <span className={classes.visuallyHidden}>
+                    {order === 'desc'
+                      ? 'sorted descending'
+                      : 'sorted ascending'}
+                    {' '}
+                  </span>
+                ) : null}
+                {' '}
+              </TableSortLabel>
+            </TableCell>
+          ))}
+          {' '}
+        </TableRow>
+      );
+    case 3:
+      return (
+        <TableRow>
+          {' '}
+          {shipmentHead.map((headCell) => (
+            <TableCell
+              key={headCell.id}
               sortDirection={orderBy === headCell.id ? order : false}
             >
               <TableSortLabel
@@ -505,6 +535,7 @@ function RenderTable({ layoutType, data, setRejectIndex }) {
             {' '}
             {stableSort(data?.rows, getComparator(order, orderBy))?.map(
               (row, index) => (
+                // row?.licence_number ? (
                 <TableRow hover tabIndex={-1} key={index}>
                   <TableCell
                     component="th"
@@ -533,11 +564,11 @@ function RenderTable({ layoutType, data, setRejectIndex }) {
                     {' '}
                   </TableCell>
                   <TableCell style={{ textAlign: 'center' }}>
-                    {row?.loading_count || 0}
+                    {row?.bag_limit}
                     {' '}
                   </TableCell>
                   <TableCell style={{ textAlign: 'center' }}>
-                    {row?.printing_count}
+                    {row?.loading_count || 0}
                     {' '}
                   </TableCell>
                   <TableCell style={{ textAlign: 'center' }}>
@@ -567,19 +598,117 @@ function RenderTable({ layoutType, data, setRejectIndex }) {
                       .format('HH:mm:ss')}
                     {' '}
                   </TableCell>
-                  <TableCell style={{ textAlign: 'center' }}>
+
+                  {/* <TableCell style={{ textAlign: 'center' }}>
                     <FrinksButton
                       text="View"
                       variant="outlined"
                       style={{
                         fontSize: '12px',
                         padding: '2px 10px 2px 10px',
-                        height: '30px',
+                        height: '30px'
                       }}
                       onClick={() => setRejectIndex(index)}
                       isInactive={row?.misprinting_count === 0}
                     />
+                  </TableCell> */}
+                </TableRow>
+              ),
+              // ) : null
+            )}
+            {' '}
+          </TableBody>
+        </Table>
+      );
+    case 3:
+      return (
+        <Table className={classes.table} size="medium">
+          <EnhancedTableHead
+            classes={classes}
+            order={order}
+            orderBy={orderBy}
+            onRequestSort={handleRequestSort}
+            layoutType={layoutType}
+          />
+          <TableBody>
+            {' '}
+            {stableSort(data?.rows, getComparator(order, orderBy))?.map(
+              (row, index) => (
+                <TableRow hover tabIndex={-1} key={index}>
+                  <TableCell
+                    component="th"
+                    scope="row"
+                    padding="none"
+                    style={{ textAlign: 'center' }}
+                  >
+                    {row?.shipment_id}
+                    {' '}
                   </TableCell>
+                  <TableCell style={{ textAlign: 'center' }}>
+                    {row?.licence_number === ''
+                      ? `W - ${row.wagon_no}, Gate/Door No.- ${row.gate_no}, Rake No.- ${row.rack_no}`
+                      : `T - ${row?.licence_number}`}
+                    {' '}
+                  </TableCell>
+                  <TableCell style={{ textAlign: 'center' }}>
+                    {row?.loading_belt_id || 'NA'}
+                    {' '}
+                  </TableCell>
+                  {/* <TableCell style={{ textAlign: 'center' }}>
+                      {row?.printing_belt_id || 'NA'}{' '}
+                    </TableCell> */}
+                  <TableCell style={{ textAlign: 'center' }}>
+                    {row?.bag_type}
+                    {' '}
+                  </TableCell>
+                  <TableCell style={{ textAlign: 'center' }}>
+                    {row?.bag_limit}
+                    {' '}
+                  </TableCell>
+                  <TableCell style={{ textAlign: 'center' }}>
+                    {row?.loading_count || 0}
+                    {' '}
+                  </TableCell>
+                  <TableCell style={{ textAlign: 'center' }}>
+                    {row?.bags_increased}
+                    {' '}
+                  </TableCell>
+                  {/* <TableCell style={{ textAlign: 'center' }}>
+                      {row?.misprinting_count}{' '}
+                    </TableCell> */}
+                  <TableCell style={{ textAlign: 'center' }}>
+                    {new Date(row?.created_at).toLocaleDateString()}
+                    {' '}
+                  </TableCell>
+                  <TableCell style={{ textAlign: 'center' }}>
+                    {new Date(row?.created_at).toLocaleTimeString()}
+                    {' '}
+                  </TableCell>
+                  <TableCell style={{ textAlign: 'center' }}>
+                    {moment
+                      .utc(
+                        moment
+                          .duration(
+                            moment(row?.stopped_at).diff(row?.created_at),
+                          )
+                          .asMilliseconds(),
+                      )
+                      .format('HH:mm:ss')}
+                    {' '}
+                  </TableCell>
+                  {/* <TableCell style={{ textAlign: 'center' }}>
+                    <FrinksButton
+                      text="View"
+                      variant="outlined"
+                      style={{
+                        fontSize: '12px',
+                        padding: '2px 10px 2px 10px',
+                        height: '30px'
+                      }}
+                      onClick={() => setRejectIndex(index)}
+                      isInactive={row?.misprinting_count === 0}
+                    />
+                  </TableCell> */}
                 </TableRow>
               ),
             )}
@@ -715,8 +844,8 @@ function RenderTable({ layoutType, data, setRejectIndex }) {
                     {row.runtime_performance ? (
                       <ProgressBarContainer
                         progressBackground={
-                            getStatus(row.runtime_performance).colorCode
-                          }
+                          getStatus(row.runtime_performance).colorCode
+                        }
                       >
                         <LinearProgress
                           variant="determinate"
@@ -732,8 +861,8 @@ function RenderTable({ layoutType, data, setRejectIndex }) {
                     {row.overall_performance ? (
                       <ProgressBarContainer
                         progressBackground={
-                            getStatus(row.overall_performance).colorCode
-                          }
+                          getStatus(row.overall_performance).colorCode
+                        }
                       >
                         <LinearProgress
                           variant="determinate"
@@ -774,6 +903,7 @@ function ReportTable({
   setFilter,
   date,
   dateUnAltered,
+  shift,
 }) {
   const classes = useStyles();
   const [rowCount, setRowCount] = useState(5);
@@ -831,20 +961,20 @@ function ReportTable({
             </div>
           ) : (
             <div className="view">
-              <Select
+              {/* <Select
                 value={filter}
-                onChange={(e) => setFilter(e.target.value)}
+                onChange={e => setFilter(e.target.value)}
                 style={{
                   fontSize: '14px',
                   background: 'white',
-                  width: '160px',
+                  width: '160px'
                 }}
                 variant="outlined"
               >
                 <MenuItem value={2}>All</MenuItem>
                 <MenuItem value={1}>Wagon Loader</MenuItem>
                 <MenuItem value={0}>Truck Loader</MenuItem>
-              </Select>
+              </Select> */}
             </div>
           )}
           {' '}
@@ -933,9 +1063,12 @@ function ReportTable({
         >
           <DefectiveBags
             belt_id={Array.isArray(data) ? data[rejectIndex]?.belt_id : null}
-            transaction_id={data?.rows ? data?.rows[rejectIndex]?.shipment_id : null}
+            transaction_id={
+              data?.rows ? data?.rows[rejectIndex]?.shipment_id : null
+            }
             date={date}
             dateUnAltered={dateUnAltered}
+            shift={shift}
           />
         </InfoModal>
       ) : null}
