@@ -112,7 +112,7 @@ function Index() {
         transaction_id,
       });
       // on success reset belt
-      if(bag_counting_belt_id){
+      if (bag_counting_belt_id) {
         setVehicleBelts((prevState) => {
           if (!prevState) return null;
           const newState = { ...prevState };
@@ -125,7 +125,7 @@ function Index() {
           }
           return newState;
         });
-      }else{
+      } else {
         setPrintingBelts((prevState) => {
           if (!prevState) return null;
           return {
