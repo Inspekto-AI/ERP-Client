@@ -4,7 +4,9 @@ import ImageKitLoader from 'utils/ImageLoader';
 import Image from 'next/image';
 
 // import wagonIcon from 'public/icons/wagon.png';
-function SummaryLoaderAnalysis({ filter, key1, value, bagType, vehicleType }) {
+function SummaryLoaderAnalysis({
+  filter, key1, value, bagType, vehicleType,
+}) {
   // console.log(value)
   return (
     <Grid item xs={6}>
@@ -15,7 +17,7 @@ function SummaryLoaderAnalysis({ filter, key1, value, bagType, vehicleType }) {
           display: 'flex',
           justifyContent: 'space-around',
           marginTop: '15px',
-          height: '90px'
+          height: '90px',
         }}
       >
         <div>
