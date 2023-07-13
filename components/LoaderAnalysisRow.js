@@ -159,9 +159,14 @@ function LoaderAnalysisRow({
   };
 
   const handleValueChange = (e, setterFunction) => {
-    if (!Number.isNaN(e.target.value) || e.target.value === '') {
+    const inputValue = e.target.value;
+    if (/^\d*$/.test(inputValue)) {
       setterFunction(e.target.value);
     }
+    // console.log(!Number.isNaN(parseInt(e.target.value)));
+    // if (!Number.isNaN(parseInt(e.target.value)) || e.target.value === '') {
+    //   setterFunction(e.target.value);
+    // }
     // console.log(bagCount);
   };
 
