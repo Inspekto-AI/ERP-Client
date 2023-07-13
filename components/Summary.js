@@ -476,12 +476,14 @@ function Summary() {
                       {summaryData?.loaderBags
                         && Object.keys(summaryData?.loaderBags)?.map((key) => {
                           const value = summaryData?.loaderBags[key];
+                          console.log(key, summaryData?.vehicleType[key]);
                           return (
                             <SummaryLoaderAnalysis
                               filter={filter}
                               key1={key}
                               value={value}
                               bagType={bagType}
+                              vehicleType={summaryData?.vehicleType[key]}
                             />
                           );
                         })}

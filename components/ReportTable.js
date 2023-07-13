@@ -55,7 +55,7 @@ const stableSort = (array, comparator) => {
   });
   return stabilizedThis?.map((el) => el[0]);
 };
-const shipmentHead = [
+const shipmentHeadTruck = [
   {
     id: 'id',
     disablePadding: true,
@@ -64,7 +64,74 @@ const shipmentHead = [
   {
     id: 'licence_number',
     disablePadding: true,
-    label: 'Truck No. / Wagon No.',
+    label: 'Truck No.',
+  },
+  {
+    id: 'vehicle.machine_id',
+    disablePadding: true,
+    label: 'Loader ID',
+  },
+  // {
+  //   id: 'printing_belt.machine_id',
+  //   disablePadding: true,
+  //   label: 'Printing Belt ID'
+  // },
+  {
+    id: 'bag_type',
+    disablePadding: true,
+    label: 'Bag Type',
+  },
+  {
+    id: 'tag_count',
+    disablePadding: true,
+    label: 'Bag Limit',
+  },
+  {
+    id: 'bag_count',
+    disablePadding: true,
+    label: 'Bags Dispatched',
+  },
+  {
+    id: 'bags_increased',
+    disablePadding: true,
+    label: 'Bags Increased',
+  },
+  // {
+  //   id: 'aws_missed_labels',
+  //   disablePadding: true,
+  //   label: 'Misprint bags'
+  // },
+  {
+    id: 'created_at_date',
+    disablePadding: true,
+    label: 'Start Date',
+  },
+  {
+    id: 'created_at_time',
+    disablePadding: true,
+    label: 'Start Time',
+  },
+  {
+    id: 'bag_count_completed_at',
+    disablePadding: true,
+    label: 'Loading Time',
+  },
+  // {
+  //   id: 'action',
+  //   disablePadding: true,
+  //   label: 'View',
+  // },
+];
+const shipmentHeadWagon = [
+  {
+    id: 'id',
+    disablePadding: true,
+    label: 'Shipment ID',
+  },
+  {
+    id: 'licence_number',
+    disablePadding: true,
+    label: 'Wagon No.',
   },
   {
     id: 'vehicle.machine_id',
@@ -218,7 +285,7 @@ function RenderTableHeader({
       return (
         <TableRow>
           {' '}
-          {shipmentHead.map((headCell) => (
+          {shipmentHeadTruck.map((headCell) => (
             <TableCell
               key={headCell.id}
               sortDirection={orderBy === headCell.id ? order : false}
@@ -311,7 +378,7 @@ function RenderTableHeader({
       return (
         <TableRow>
           {' '}
-          {shipmentHead.map((headCell) => (
+          {shipmentHeadWagon.map((headCell) => (
             <TableCell
               key={headCell.id}
               sortDirection={orderBy === headCell.id ? order : false}
@@ -547,10 +614,11 @@ function RenderTable({ layoutType, data, setRejectIndex }) {
                     {' '}
                   </TableCell>
                   <TableCell style={{ textAlign: 'center' }}>
-                    {row?.licence_number === ''
-                      ? `W - ${row.wagon_no}, Gate/Door No.- ${row.gate_no}, Rake No.- ${row.rack_no}`
-                      : `T - ${row?.licence_number}`}
-                    {' '}
+                    {row?.rack_no !== null
+                      ? `${row.wagon_no}`
+                      : `${row?.licence_number}`}
+                    {/* // , Gate/Door No.- ${row.gate_no}, Rake No.- ${row.rack_no} */}
+                    `
                   </TableCell>
                   <TableCell style={{ textAlign: 'center' }}>
                     {row?.loading_belt_id || 'NA'}

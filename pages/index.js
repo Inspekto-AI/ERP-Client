@@ -93,6 +93,9 @@ function Index() {
   const [shipmentError, setShipmentError] = useState(null);
   const [bagDoneModalOpen, setBagDoneModalOpen] = useState(null);
   const [bagIncrementModalOpen, setBagIncrementModalOpen] = useState(null);
+  const [showTruckLoader, setShowTruckLoader] = useState(true);
+  const [showWagonLoader, setShowWagonLoader] = useState(true);
+  const [showPrinting, setShowPrinting] = useState(true);
   const {
     setBeltTrippingEnabled,
     deactivatePrintingSolution: DEACTIVATE_PRINTING_SOLUTION,
@@ -223,9 +226,46 @@ function Index() {
       setPrintingBelts(res?.data?.data?.printingBeltRes);
       setVehicleBelts(res?.data?.data?.vehicleBeltRes);
       setBeltTrippingEnabled(res?.data?.data?.enableBeltTripping);
+      setShowPrinting(!res?.data?.data?.showPrinting);
+      setShowTruckLoader(
+        res?.data?.data?.showLoader === 0 && res?.data?.data.truckLoaders > 0,
+      );
+      setShowWagonLoader(
+        res?.data?.data?.showLoader === 0 && res?.data?.data.wagonLoaders > 0,
+      );
+      console.log(
+        res?.data?.data?.showLoader === 0,
+        res?.data?.data.wagonLoaders > 0,
+      );
+      // console.log(res?.data?.data.truckLoaders);
+      // setShowTruckLoader(
+      //   res?.data?.data.truckLoaders === 0 ? false : showTruckLoader
+      // );
+      // setShowWagonLoader(
+      //   res?.data?.data.wagonLoaders === 0 ? false : showWagonLoader
+      // );
     };
     getActiveTransactions();
+    // console.log(showTruckLoader, showWagonLoader, showPrinting);
+    // if (!showTruckLoader && showWagonLoader) {
+    //   setActiveSection(1);
+    // } else if (!showTruckLoader && !showWagonLoader && showPrinting) {
+    //   setActiveSection(2);
+    // } else if (!showTruckLoader && !showWagonLoader && !showPrinting) {
+    //   setActiveSection(3);
+    // }
   }, []);
+
+  useEffect(() => {
+    // console.log(showTruckLoader, showWagonLoader, showPrinting);
+    if (!showTruckLoader && showWagonLoader) {
+      setActiveSection(1);
+    } else if (!showTruckLoader && !showWagonLoader && showPrinting) {
+      setActiveSection(2);
+    } else if (!showTruckLoader && !showWagonLoader && !showPrinting) {
+      setActiveSection(3);
+    }
+  }, [showTruckLoader, showWagonLoader, showPrinting]);
 
   useEffect(() => {
     socket.on('bag-entry', (data) => {
@@ -418,27 +458,30 @@ function Index() {
         <Container>
           {isLoading ? <Loader /> : null}
           <div className="trackbar">
-            <div
-              className={`option ${activeSection === 0 ? 'active' : ''}`}
-              onClick={() => setActiveSection(0)}
-              onKeyPress={() => setActiveSection(0)}
-              role="button"
-              tabIndex={0}
-            >
-              <h6 style={{ textAlign: 'center' }}>Truck Loader</h6>
-            </div>
-
-            <div
-              className={`option ${activeSection === 1 ? 'active' : ''}`}
-              onClick={() => setActiveSection(1)}
-              onKeyPress={() => setActiveSection(1)}
-              role="button"
-              tabIndex={0}
-            >
-              <h6 style={{ textAlign: 'center' }}>Wagon Loader</h6>
-            </div>
-
-            {DEACTIVATE_PRINTING_SOLUTION ? null : (
+            {showTruckLoader && (
+              <div
+                className={`option ${activeSection === 0 ? 'active' : ''}`}
+                onClick={() => setActiveSection(0)}
+                onKeyPress={() => setActiveSection(0)}
+                role="button"
+                tabIndex={0}
+              >
+                <h6 style={{ textAlign: 'center' }}>Truck Loader</h6>
+              </div>
+            )}
+            {showWagonLoader && (
+              <div
+                className={`option ${activeSection === 1 ? 'active' : ''}`}
+                onClick={() => setActiveSection(1)}
+                onKeyPress={() => setActiveSection(1)}
+                role="button"
+                tabIndex={0}
+              >
+                <h6 style={{ textAlign: 'center' }}>Wagon Loader</h6>
+              </div>
+            )}
+            {/* {DEACTIVATE_PRINTING_SOLUTION */}
+            {!showPrinting ? null : (
               <div
                 className={`option ${activeSection === 2 ? 'active' : ''}`}
                 onClick={() => setActiveSection(2)}
