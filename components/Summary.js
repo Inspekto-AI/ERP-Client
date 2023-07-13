@@ -1,8 +1,6 @@
 import { useEffect, useState } from 'react';
 import Container from 'styles/summary.styles';
-import {
-  Grid, Select, ButtonGroup, Button, MenuItem,
-} from '@material-ui/core';
+import { Grid, Select, ButtonGroup, Button, MenuItem } from '@material-ui/core';
 import { get, getFile } from 'utils/api';
 import Layout from 'components/Layout';
 import Maintenance from 'components/Maintenance';
@@ -11,7 +9,7 @@ import {
   LocalizationProvider,
   DateCalendar,
   DatePicker,
-  DesktopDatePicker,
+  DesktopDatePicker
 } from '@mui/x-date-pickers';
 import { AdapterDayjs } from '@mui/x-date-pickers/AdapterDayjs';
 import { makeStyles } from '@material-ui/core/styles';
@@ -23,7 +21,7 @@ import SummaryChart from './SummaryChart';
 import SummaryAnalysis from './SummaryAnalysis';
 import SummaryLoaderAnalysis from './SummaryLoaderAnalysis';
 
-const downloadPDF = (file) => {
+const downloadPDF = file => {
   const downloadLink = document.createElement('a');
   const fileName = 'report.xlsx';
   downloadLink.setAttribute('download', fileName);
@@ -33,32 +31,32 @@ const downloadPDF = (file) => {
   downloadLink.remove();
 };
 
-const useStyles = makeStyles((theme) => ({
+const useStyles = makeStyles(theme => ({
   select: {
     width: '300px',
     [theme.breakpoints.up(1550)]: {
       width: '450px',
       marginRight: '150px',
-      marginLeft: '-40px',
+      marginLeft: '-40px'
     },
     [theme.breakpoints.down(1550)]: {
       // width: '450px',
-      marginRight: 'auto',
-    },
+      marginRight: 'auto'
+    }
   },
   select_1: {
     width: '200px',
     [theme.breakpoints.up(1550)]: {
       width: '250px',
-      marginRight: '-30px',
-    },
+      marginRight: '-30px'
+    }
   },
   select_2: {
     width: '100px',
     [theme.breakpoints.up(1550)]: {
-      width: '125px',
-    },
-  },
+      width: '125px'
+    }
+  }
 }));
 
 function Summary() {
@@ -112,7 +110,7 @@ function Summary() {
 
       const newDateRange = [
         dateObj.setUTCHours(-6, 30, 0, 999),
-        dateObj.setUTCHours(-6, 30, 0, 999) + 86400000,
+        dateObj.setUTCHours(-6, 30, 0, 999) + 86400000
         // dateObj.setUTCHours(17, 89, 59, 999)
       ];
 
@@ -120,14 +118,14 @@ function Summary() {
 
       const newUpdatedDateRange = [
         newDateRange[0] + 86400000,
-        newDateRange[1] + 86400000,
+        newDateRange[1] + 86400000
       ];
       // console.log(newDateRange, newUpdatedDateRange);
       const data = await get('/api/stats/summarized-stats', {
         // dateRange: getStartAndEndDate()
         dateRange: newDateRange,
         shift: shiftType,
-        updatedDateRange: newUpdatedDateRange,
+        updatedDateRange: newUpdatedDateRange
       });
       setSummaryData(data?.data?.data?.analysis);
       setShiftCount(data?.data?.data?.shift);
@@ -152,7 +150,7 @@ function Summary() {
 
     const newDateRange = [
       dateObj.setUTCHours(-6, 30, 0, 999),
-      dateObj.setUTCHours(-6, 30, 0, 999) + 86400000,
+      dateObj.setUTCHours(-6, 30, 0, 999) + 86400000
       // dateObj.setUTCHours(17, 89, 59, 999)
     ];
 
@@ -160,12 +158,12 @@ function Summary() {
 
     const newUpdatedDateRange = [
       newDateRange[0] + 86400000,
-      newDateRange[1] + 86400000,
+      newDateRange[1] + 86400000
     ];
     // console.log(newDateRange, newUpdatedDateRange);
     const res = await getFile('/api/report/datewise', {
       dateRange: newDateRange,
-      updatedDateRange: newUpdatedDateRange,
+      updatedDateRange: newUpdatedDateRange
     });
     downloadPDF(res.data);
   };
@@ -202,7 +200,7 @@ function Summary() {
             justifyContent: 'space-around',
             // height: '40px',
             marginTop: '5px',
-            alignItems: 'center',
+            alignItems: 'center'
           }}
         >
           <LocalizationProvider dateAdapter={AdapterDayjs}>
@@ -210,7 +208,7 @@ function Summary() {
               <Select
                 value={filter}
                 className={classes.select}
-                onChange={(e) => setFilter(e.target.value)}
+                onChange={e => setFilter(e.target.value)}
                 style={{
                   fontSize: '28px',
                   fontWeight: '600',
@@ -219,7 +217,7 @@ function Summary() {
                   outlineColor: '#3A0CA3',
                   border: '1px solid #3A0CA3',
                   // width: '450px',
-                  padding: '0px',
+                  padding: '0px'
                   // marginLeft: '-40px'
                 }}
                 variant="outlined"
@@ -241,7 +239,7 @@ function Summary() {
                   backgroundColor: bagType === 0 ? '#B5179E' : '#F5F5F5',
                   color: bagType === 1 ? '#B5179E' : '#F5F5F5',
                   // width: '120px',
-                  height: '50px',
+                  height: '50px'
                 }}
                 onClick={() => {
                   setBagType(0);
@@ -255,7 +253,7 @@ function Summary() {
                   backgroundColor: bagType === 1 ? '#B5179E' : '#F5F5F5',
                   color: bagType === 0 ? '#B5179E' : '#F5F5F5',
                   // width: '120px',
-                  height: '50px',
+                  height: '50px'
                 }}
                 onClick={() => {
                   setBagType(1);
@@ -307,7 +305,7 @@ function Summary() {
               <DesktopDatePicker
                 format="DD MMM, YYYY"
                 value={time}
-                onChange={(item) => {
+                onChange={item => {
                   // console.log(time);
                   // setTime(item?.$d.toLocaleDateString('en-US', options));
 
@@ -321,10 +319,10 @@ function Summary() {
               <Select
                 className={classes.select_1}
                 value={shiftType}
-                onChange={(e) => setShiftType(e.target.value)}
+                onChange={e => setShiftType(e.target.value)}
                 style={{
                   fontSize: '14px',
-                  background: 'white',
+                  background: 'white'
                   // width: '240px',
                   // marginRight: '-20px'
                 }}
@@ -356,7 +354,7 @@ function Summary() {
               className="count-container"
               style={{
                 // marginLeft: '40px',
-                marginTop: '20px',
+                marginTop: '20px'
                 // marginRight: '40px'
               }}
             >
@@ -373,8 +371,8 @@ function Summary() {
                             ? `${summaryData?.total_bags_packed} Bags`
                             : `${summaryData?.total_bags_packed / 20} Tones`
                           : bagType === 0
-                            ? `${summaryData?.total_bags_dispatched} Bags`
-                            : `${summaryData?.total_bags_dispatched / 20} Tones`
+                          ? `${summaryData?.total_bags_dispatched} Bags`
+                          : `${summaryData?.total_bags_dispatched / 20} Tones`
                         : 'NA'}
                     </p>
                     <p className="description">
@@ -394,8 +392,8 @@ function Summary() {
                             ? `${summaryData?.total_missed_labels} Bags`
                             : `${summaryData?.total_missed_labels / 20} Tones`
                           : bagType === 0
-                            ? `${summaryData?.total_burstage_count} Bags`
-                            : `${summaryData?.total_burstage_count / 20} Tones`
+                          ? `${summaryData?.total_burstage_count} Bags`
+                          : `${summaryData?.total_burstage_count / 20} Tones`
                         : 'NA'}
                     </p>
                     <p className="description">
@@ -425,7 +423,7 @@ function Summary() {
                 style={{
                   background: 'white',
                   alignItems: 'center',
-                  justifyContent: 'center',
+                  justifyContent: 'center'
                 }}
               >
                 <SummaryChart
@@ -445,7 +443,7 @@ function Summary() {
                 alternateHeader
                 title={filter === 0 ? 'Packer Analysis' : 'Loader Analysis'}
                 hideFooter
-                counter={summaryData?.total_missed_labels || 0}
+                // counter={summaryData?.total_missed_labels || 0}
                 summaryHeader
                 disableMinimumHeight
                 viewAllFunc={() => setNotificationsFormOpen(true)}
@@ -453,13 +451,13 @@ function Summary() {
                   maxHeight: '58vh',
                   background: 'white',
                   overflowY: 'auto',
-                  overflowX: 'hidden',
+                  overflowX: 'hidden'
                 }}
               >
                 <div className="count-container">
-                  {!filter
-                    && summaryData?.packerBags
-                    && Object.keys(summaryData?.packerBags)?.map((key) => {
+                  {!filter &&
+                    summaryData?.packerBags &&
+                    Object.keys(summaryData?.packerBags)?.map(key => {
                       const value = summaryData?.packerBags[key];
 
                       return (
@@ -473,8 +471,8 @@ function Summary() {
                     })}
                   {filter ? (
                     <Grid container spacing={3}>
-                      {summaryData?.loaderBags
-                        && Object.keys(summaryData?.loaderBags)?.map((key) => {
+                      {summaryData?.loaderBags &&
+                        Object.keys(summaryData?.loaderBags)?.map(key => {
                           const value = summaryData?.loaderBags[key];
                           return (
                             <SummaryLoaderAnalysis
