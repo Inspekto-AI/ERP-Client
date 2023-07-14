@@ -110,10 +110,14 @@ function Index() {
     transaction_id,
   ) => {
     try {
-      await put('/api/shipment/reset-belt', {
+      const data = await put('/api/shipment/reset-belt', {
         belt_id: printing_belt_id || bag_counting_belt_id || id,
         transaction_id,
       });
+      if(data?.error){
+        setShipmentError(data?.error);
+        setShipmentOverflow(true);
+      }
       // on success reset belt
       if (bag_counting_belt_id) {
         setVehicleBelts((prevState) => {
@@ -269,6 +273,10 @@ function Index() {
 
   useEffect(() => {
     socket.on('bag-entry', (data) => {
+      if(data?.error){
+        setShipmentError(data?.error);
+        setShipmentOverflow(true);
+      }
       setVehicleBelts((prevState) => {
         if (!prevState) return null;
         const newState = { ...prevState };
@@ -322,6 +330,10 @@ function Index() {
       });
     });
     socket.on('service', (data) => {
+      if(data?.error){
+        setShipmentError(data?.error);
+        setShipmentOverflow(true);
+      }
       setVehicleBelts((prevState) => {
         if (!prevState) return null;
         const newState = { ...prevState };
@@ -361,6 +373,10 @@ function Index() {
     //   console.log("Feature removed --- Release Maintenence Belt");
     // });
     socket.on('bag-done', (data) => {
+      if(data?.error){
+        setShipmentError(data?.error);
+        setShipmentOverflow(true);
+      }
       const { vehicle_id, vehicle_type } = data;
       setVehicleBelts((prevState) => {
         if (!prevState) return null;
@@ -378,6 +394,10 @@ function Index() {
       setIsLoading(false);
     });
     socket.on('bag-update', (data) => {
+      if(data?.error){
+        setShipmentError(data?.error);
+        setShipmentOverflow(true);
+      }
       setVehicleBelts((prevState) => {
         if (!prevState) return null;
         const newState = { ...prevState };
@@ -404,7 +424,11 @@ function Index() {
         };
       });
     });
-    socket.on('bag-congestion-frontend', ({ belt_id, issue_with_belt }) => {
+    socket.on('bag-congestion-frontend', ({ belt_id, issue_with_belt, error }) => {
+      if(error){
+        setShipmentError(error);
+        setShipmentOverflow(true);
+      }
       setVehicleBelts((prevState) => {
         if (!prevState) return null;
         const newState = { ...prevState };
