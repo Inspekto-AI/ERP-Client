@@ -114,8 +114,8 @@ function Index() {
         belt_id: printing_belt_id || bag_counting_belt_id || id,
         transaction_id,
       });
-      if(data?.error){
-        setShipmentError(data?.error);
+      if(data?.data?.data?.error){
+        setShipmentError(data?.data?.data?.error);
         setShipmentOverflow(true);
       }
       // on success reset belt
