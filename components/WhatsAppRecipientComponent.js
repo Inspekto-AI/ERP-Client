@@ -30,7 +30,7 @@ const useStyles = makeStyles(theme => ({
   }
 }));
 
-const WhatsappRecipientComponent = ({ item, setIsFetch }) => {
+const WhatsappRecipientComponent = ({ item, setIsFetch, isFirst }) => {
   const classes = useStyles();
   const [name1, setName1] = useState(item.recipient_name);
   const [number1, setNumber1] = useState(item.recipient_phone);
@@ -102,7 +102,10 @@ const WhatsappRecipientComponent = ({ item, setIsFetch }) => {
   return (
     <div>
       <div
-        style={{ marginTop: '120px', display: 'flex', alignItems: 'center' }}
+        style={{
+          display: 'flex',
+          alignItems: 'center'
+        }}
       >
         <Input
           placeholder="Enter name"

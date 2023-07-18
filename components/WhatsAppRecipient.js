@@ -1,17 +1,18 @@
-import { useEffect, useState } from 'react';
+import { useEffect, useState, useContext } from 'react';
 import { get } from 'utils/api';
 import { BASE_URL } from 'utils/constants';
 import WhatsappRecipientComponent from './WhatsAppRecipientComponent';
-import { NUMBER_OF_WHATSAPP_RECIPIENT } from 'utils/constants';
+import { GlobalContext } from 'context/GlobalContext';
 
 const WhatsappRecipient = () => {
   const [isFetch, setIsFetch] = useState(true);
+  const { numberOfWhatsappRecipient } = useContext(GlobalContext);
 
   const [whatsAppList, setWhatsAppList] = useState(null);
 
   const fetchWhatsAppRecipient = async () => {
     const res = await get(`${BASE_URL}/api/update-db/get-whatsapp-recipient`);
-    const len = NUMBER_OF_WHATSAPP_RECIPIENT;
+    const len = numberOfWhatsappRecipient;
 
     let a = 0;
 
@@ -37,7 +38,7 @@ const WhatsappRecipient = () => {
     fetchWhatsAppRecipient();
   }, [isFetch]);
   return (
-    <div>
+    <div style={{ paddingTop: '50px' }}>
       {whatsAppList?.map(item => {
         // console.log(item);
         return (
