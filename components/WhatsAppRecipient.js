@@ -1,10 +1,10 @@
 import { useEffect, useState, useContext } from 'react';
 import { get } from 'utils/api';
 import { BASE_URL } from 'utils/constants';
-import WhatsappRecipientComponent from './WhatsAppRecipientComponent';
 import { GlobalContext } from 'context/GlobalContext';
+import WhatsappRecipientComponent from './WhatsAppRecipientComponent';
 
-const WhatsappRecipient = () => {
+function WhatsappRecipient() {
   const [isFetch, setIsFetch] = useState(true);
   const { numberOfWhatsappRecipient } = useContext(GlobalContext);
 
@@ -16,13 +16,14 @@ const WhatsappRecipient = () => {
 
     let a = 0;
 
-    let whatsAppListTemp = [];
+    const whatsAppListTemp = [];
 
-    res?.data?.map(item => {
+    res?.data?.map((item) => {
       a++;
       if (a <= len) {
         whatsAppListTemp.push(item);
       }
+      return 0;
     });
 
     while (a < len) {
@@ -39,17 +40,14 @@ const WhatsappRecipient = () => {
   }, [isFetch]);
   return (
     <div style={{ paddingTop: '50px' }}>
-      {whatsAppList?.map(item => {
-        // console.log(item);
-        return (
-          <WhatsappRecipientComponent
-            item={item}
-            setIsFetch={() => setIsFetch(false)}
-          />
-        );
-      })}
+      {whatsAppList?.map((item) => (
+        <WhatsappRecipientComponent
+          item={item}
+          setIsFetch={() => setIsFetch(false)}
+        />
+      ))}
     </div>
   );
-};
+}
 
 export default WhatsappRecipient;

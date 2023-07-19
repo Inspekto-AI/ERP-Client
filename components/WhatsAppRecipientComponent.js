@@ -1,10 +1,11 @@
-import { Input, Button, InputLabel } from '@material-ui/core';
-import { makeStyles } from '@material-ui/core';
+import {
+  Input, Button, InputLabel, makeStyles,
+} from '@material-ui/core';
 import { useEffect, useState } from 'react';
 import { get, post, put } from 'utils/api';
 import { BASE_URL } from 'utils/constants';
 
-const useStyles = makeStyles(theme => ({
+const useStyles = makeStyles((theme) => ({
   input: {
     border: '1px solid black',
     borderRadius: theme.shape.borderRadius,
@@ -14,7 +15,7 @@ const useStyles = makeStyles(theme => ({
     backgroundColor: 'white',
     // marginTop: '80x',
     margin: '20px',
-    fontSize: '20px'
+    fontSize: '20px',
   },
   button: {
     border: '1px solid black',
@@ -26,26 +27,20 @@ const useStyles = makeStyles(theme => ({
     // marginTop: '80x',
     margin: '20px',
     height: '48px',
-    fontSize: '20px'
-  }
+    fontSize: '20px',
+  },
 }));
 
-const WhatsappRecipientComponent = ({ item, setIsFetch, isFirst }) => {
+function WhatsappRecipientComponent({ item, setIsFetch, isFirst }) {
   const classes = useStyles();
   const [name1, setName1] = useState(item.recipient_name);
   const [number1, setNumber1] = useState(item.recipient_phone);
   const [phoneNumber1, setPhoneNumber1] = useState(item.recipient_phone);
   const [phoneNumberError1, setPhoneNumberError1] = useState('');
 
-  const [isEdit1, setIsEdit1] = useState(
-    item.recipient_name === undefined ? false : true
-  );
+  const [isEdit1, setIsEdit1] = useState(item.recipient_name !== undefined);
 
   const [isEditButton1, setIsEditButton1] = useState(true);
-
-  const handleBlur1 = () => {
-    validatePhoneNumber(number1, setPhoneNumberError1);
-  };
 
   const validatePhoneNumber = (number, setPhoneNumberError) => {
     const phoneRegex = /^\d{10}$/;
@@ -56,20 +51,23 @@ const WhatsappRecipientComponent = ({ item, setIsFetch, isFirst }) => {
       setPhoneNumberError('');
     }
   };
+  const handleBlur1 = () => {
+    validatePhoneNumber(number1, setPhoneNumberError1);
+  };
 
   const handleSubmit1 = async () => {
     if (
-      phoneNumberError1 ||
-      number1 === '' ||
-      name1 === '' ||
-      name1 === undefined
+      phoneNumberError1
+      || number1 === ''
+      || name1 === ''
+      || name1 === undefined
     ) {
       alert('Enter Valid Name and Phone Number');
       return;
     }
     await post(`${BASE_URL}/api/update-db/add-whatsapp-recipient`, {
       recipient_name: name1,
-      recipient_phone: number1
+      recipient_phone: number1,
     });
     // setName1('');
     // setNumber1('');
@@ -80,10 +78,10 @@ const WhatsappRecipientComponent = ({ item, setIsFetch, isFirst }) => {
 
   const handleEditSubmit1 = async () => {
     if (
-      phoneNumberError1 ||
-      number1 === '' ||
-      name1 === '' ||
-      name1 === undefined
+      phoneNumberError1
+      || number1 === ''
+      || name1 === ''
+      || name1 === undefined
     ) {
       alert('Enter Valid Name and Phone Number');
       return;
@@ -91,7 +89,7 @@ const WhatsappRecipientComponent = ({ item, setIsFetch, isFirst }) => {
     await put(`${BASE_URL}/api/update-db/update-whatsapp-recipient`, {
       recipient_name: name1,
       recipient_phone: number1,
-      phone_number: phoneNumber1
+      phone_number: phoneNumber1,
     });
     setIsEditButton1(true);
   };
@@ -104,7 +102,7 @@ const WhatsappRecipientComponent = ({ item, setIsFetch, isFirst }) => {
       <div
         style={{
           display: 'flex',
-          alignItems: 'center'
+          alignItems: 'center',
         }}
       >
         <Input
@@ -112,7 +110,7 @@ const WhatsappRecipientComponent = ({ item, setIsFetch, isFirst }) => {
           className={classes.input}
           disableUnderline
           value={name1}
-          onChange={e => setName1(e.target.value)}
+          onChange={(e) => setName1(e.target.value)}
           disabled={isEdit1 && isEditButton1}
         />
         <div>
@@ -122,7 +120,7 @@ const WhatsappRecipientComponent = ({ item, setIsFetch, isFirst }) => {
             disableUnderline
             onBlur={handleBlur1}
             style={{ borderColor: phoneNumberError1 ? 'red' : 'initial' }}
-            onChange={e => setNumber1(e.target.value)}
+            onChange={(e) => setNumber1(e.target.value)}
             value={number1}
             disabled={isEdit1 && isEditButton1}
           />
@@ -142,8 +140,8 @@ const WhatsappRecipientComponent = ({ item, setIsFetch, isFirst }) => {
             onClick={
               isEditButton1 === true
                 ? () => {
-                    setIsEditButton1(false);
-                  }
+                  setIsEditButton1(false);
+                }
                 : handleEditSubmit1
             }
             class={classes.button}
@@ -154,6 +152,6 @@ const WhatsappRecipientComponent = ({ item, setIsFetch, isFirst }) => {
       </div>
     </div>
   );
-};
+}
 
 export default WhatsappRecipientComponent;

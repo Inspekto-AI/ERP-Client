@@ -8,7 +8,7 @@ import { MdOutlineExpandMore } from 'react-icons/md';
 import {
   Accordion,
   AccordionDetails,
-  AccordionSummary
+  AccordionSummary,
 } from '@material-ui/core';
 import UpdateDatabase from 'components/UpdateDatabase';
 import UpdateModelWeights from 'components/UpdateModelWeights';
@@ -64,7 +64,7 @@ function Admin() {
           <AccordionDetails>
             <PythonDataExtraction
               dataExtractionStatus={dataExtractionStatus}
-              setDataExtractionStatus={e => setDataExtractionStatus(e)}
+              setDataExtractionStatus={(e) => setDataExtractionStatus(e)}
             />
           </AccordionDetails>
         </Accordion>

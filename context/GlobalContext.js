@@ -9,8 +9,7 @@ export function GlobalProvider({ children }) {
   const [userData, setUserData] = useState(null);
   const [bagTypes, setBagTypes] = useState(null);
   const [deactivateLoaderSolution, setDeactivateLoaderSolution] = useState(0);
-  const [deactivatePrintingSolution, setDeactivatePrintingSolution] =
-    useState(0);
+  const [deactivatePrintingSolution, setDeactivatePrintingSolution] = useState(0);
   const [shipmentOverflow, setShipmentOverflow] = useState(false);
   const [numberOfWhatsappRecipient, setNumberOfWhatsappRecipient] = useState(0);
 
@@ -32,7 +31,7 @@ export function GlobalProvider({ children }) {
         shipmentOverflow,
         setShipmentOverflow,
         numberOfWhatsappRecipient,
-        setNumberOfWhatsappRecipient
+        setNumberOfWhatsappRecipient,
       }}
     >
       {children}
@@ -41,5 +40,5 @@ export function GlobalProvider({ children }) {
 }
 
 GlobalProvider.propTypes = {
-  children: PropTypes.object
+  children: PropTypes.object,
 };
