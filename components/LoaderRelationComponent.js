@@ -6,22 +6,33 @@ import { styled } from '@material-ui/core/styles';
 import { useEffect, useState } from 'react';
 import { post } from 'utils/api';
 import { BASE_URL } from 'utils/constants';
+import KeyboardArrowDownSharpIcon from '@mui/icons-material/KeyboardArrowDownSharp';
 
 const StyledInput = styled(Input)({
-  margin: '30px',
+  marginLeft: '30px',
+  marginRight: '30px',
+  marginTop: '30px',
   backgroundColor: 'white',
   borderRadius: '5px',
   border: 'none',
-  width: '10vw',
+  width: '6vw',
+  color: 'black',
+  '& .MuiInputBase-input': {
+    cursor: 'pointer',
+  },
+  // boxShadow: '1px 1px 1px 1px black'
 });
 
 const StyledSelect = styled(Select)({
-  margin: '30px',
+  marginLeft: '30px',
+  marginRight: '30px',
+  marginTop: '30px',
   fontSize: '16px',
   backgroundColor: 'white',
   borderRadius: '5px',
   border: 'none',
-  width: '10vw',
+  width: '6vw',
+  // boxShadow: '1px 1px 1px 1px black'
 });
 
 // ...
@@ -49,11 +60,14 @@ export default function LoaderRelationComponent({
   return (
     <>
       <Grid xs={3}>
-        <StyledInput value={item?.machine_id} />
+        <StyledInput disableUnderline value={item?.machine_id} />
         {/* <Input class={classes.input} /> */}
       </Grid>
+
       <Grid xs={3}>
         <StyledSelect
+          disableUnderline
+          IconComponent={KeyboardArrowDownSharpIcon}
           value={printingId === null ? 0 : printingId}
           onChange={async (e) => {
             // console.log(e.target.value);
@@ -68,7 +82,7 @@ export default function LoaderRelationComponent({
             );
           }}
         >
-          <MenuItem value={0}>Select Printing Belt</MenuItem>
+          <MenuItem value={0}>Select Belt</MenuItem>
           {printingBelts?.map((belt) => (
             <MenuItem value={belt?.id}>
               {' '}

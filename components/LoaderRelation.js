@@ -45,33 +45,143 @@ export default function LoaderRelation() {
   }, []);
 
   return (
-    <div style={{ marginTop: '150px' }}>
-      <Grid container>
-        <Grid container xs={6}>
-          {truckLoadingBelts?.map((item) => (
-            <LoaderRelationComponent
-              item={item}
-              printingBelts={printingBelts}
-              loaderRelation={loaderRelation}
-            />
-          ))}
-          {/* <LoaderRelationComponent />
-          <LoaderRelationComponent />
-          <LoaderRelationComponent />
-          <LoaderRelationComponent />
-          <LoaderRelationComponent />
-          <LoaderRelationComponent /> */}
+    <div
+      style={{
+        marginTop: '120px',
+        marginLeft: '50px',
+        marginRight: '50px',
+        paddingTop: '50px',
+      }}
+    >
+      <div
+        style={{
+          backgroundColor: '#F3F4F6',
+          paddingLeft: '50px',
+          height: '75vh',
+        }}
+      >
+        <Grid container>
+          <Grid container xs={5} spacing={2}>
+            <Grid xs={12}>
+              <h2 style={{ marginLeft: '30px', marginTop: '20px' }}>
+                Truck Loaders
+              </h2>
+            </Grid>
+            <Grid xs={3}>
+              <h4
+                style={{
+                  marginLeft: '30px',
+                  marginTop: '20px',
+                  fontWeight: 800,
+                }}
+              >
+                Loader ID
+              </h4>
+            </Grid>
+
+            <Grid xs={3}>
+              <h4
+                style={{
+                  marginLeft: '30px',
+                  marginTop: '20px',
+                  fontWeight: 800,
+                }}
+              >
+                Packer ID
+              </h4>
+            </Grid>
+            <Grid xs={3}>
+              <h4
+                style={{
+                  marginLeft: '30px',
+                  marginTop: '20px',
+                  fontWeight: 800,
+                }}
+              >
+                Loader ID
+              </h4>
+            </Grid>
+            <Grid xs={3}>
+              <h4
+                style={{
+                  marginLeft: '30px',
+                  marginTop: '20px',
+                  fontWeight: 800,
+                }}
+              >
+                Packer ID
+              </h4>
+            </Grid>
+            {truckLoadingBelts?.map((item) => (
+              <LoaderRelationComponent
+                item={item}
+                printingBelts={printingBelts}
+                loaderRelation={loaderRelation}
+              />
+            ))}
+          </Grid>
+          <hr style={{ marginLeft: '100px', marginRight: '100px' }} />
+          <Grid container xs={5} spacing={2}>
+            <Grid xs={12}>
+              <h2 style={{ marginLeft: '30px', marginTop: '20px' }}>
+                Wagon Loaders
+              </h2>
+            </Grid>
+            <Grid xs={3}>
+              <h4
+                style={{
+                  marginLeft: '30px',
+                  marginTop: '20px',
+                  fontWeight: 800,
+                }}
+              >
+                Loader ID
+              </h4>
+            </Grid>
+
+            <Grid xs={3}>
+              <h4
+                style={{
+                  marginLeft: '30px',
+                  marginTop: '20px',
+                  fontWeight: 800,
+                }}
+              >
+                Packer ID
+              </h4>
+            </Grid>
+            <Grid xs={3}>
+              <h4
+                style={{
+                  marginLeft: '30px',
+                  marginTop: '20px',
+                  fontWeight: 800,
+                }}
+              >
+                Loader ID
+              </h4>
+            </Grid>
+            <Grid xs={3}>
+              <h4
+                style={{
+                  marginLeft: '30px',
+                  marginTop: '20px',
+                  fontWeight: 800,
+                }}
+              >
+                Packer ID
+              </h4>
+            </Grid>
+            {wagonLoadingBelts?.map((item) => (
+              <LoaderRelationComponent
+                item={item}
+                printingBelts={printingBelts}
+                loaderRelation={loaderRelation}
+              />
+            ))}
+          </Grid>
         </Grid>
-        <Grid container xs={6}>
-          {wagonLoadingBelts?.map((item) => (
-            <LoaderRelationComponent
-              item={item}
-              printingBelts={printingBelts}
-              loaderRelation={loaderRelation}
-            />
-          ))}
-        </Grid>
-      </Grid>
+      </div>
     </div>
   );
 }
