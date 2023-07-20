@@ -220,7 +220,7 @@ function LoaderAnalysisRow({
                 vehicleType === 1
                   ? (e) => handleValueChange(e, setWagonno)
                   : (e) => {
-                    setWagonno(e.target.value.slice(0, 10));
+                    setWagonno(e.target.value);
                   }
               }
             />
