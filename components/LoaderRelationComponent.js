@@ -46,14 +46,8 @@ export default function LoaderRelationComponent({
   isLineBreak,
 }) {
   const [printingId, setPrintingId] = useState(null);
-  const handleUpdate = async () => {
-    console.log(printingId);
-    const res = await post(`${BASE_URL}/api/shipment/update-loader-relation`, {
-      printing_belt_id: 'ern',
-      loading_belt_id: item?.machine_id,
-    });
-  };
-  console.log(isLineBreak);
+
+  // console.log(isLineBreak);
 
   useEffect(() => {
     if (loaderRelation !== null && loaderRelation !== undefined) {
@@ -98,9 +92,9 @@ export default function LoaderRelationComponent({
       >
         <MenuItem value={0}>Select</MenuItem>
         {printingBelts?.map((belt) => (
-          <MenuItem value={belt?.id}>
+          <MenuItem value={belt?.printing_belt_id}>
             {' '}
-            {belt?.id}
+            {belt?.printing_belt_id}
           </MenuItem>
         ))}
       </StyledSelect>
