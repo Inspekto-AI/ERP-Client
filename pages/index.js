@@ -89,7 +89,7 @@ function Index() {
   const [shipmentFormOpen, setShipmentFormOpen] = useState(false);
   const [maintenanceFormOpen, setMaintenanceFormOpen] = useState(false);
   const [notificationsFormOpen, setNotificationsFormOpen] = useState(false);
-  const [activeSection, setActiveSection] = useState(6);
+  const [activeSection, setActiveSection] = useState(0);
   const [reverseShipmentFormOpen, setReverseShipmentFormOpen] = useState(null);
   const [missPrintTransactionId, setmissPrintTransactionId] = useState({});
   const [alertCounter, setAlertCounter] = useState(0);

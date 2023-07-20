@@ -201,6 +201,12 @@ code {
   width: 8vw;
 }
 
+.custom-line {
+  border: none;
+  border-top: 2px solid black;
+  /* margin: 20px 0; */
+}
+
 @media (max-width: 1400px) {
   .custom-table th {
     font-size: 1vw;

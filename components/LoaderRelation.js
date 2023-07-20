@@ -9,7 +9,7 @@ export default function LoaderRelation() {
   const [truckLoadingBelts, setTruckLoadingBelts] = useState(null);
   const [wagonLoadingBelts, setWagonLoadingBelts] = useState(null);
   const [loaderRelation, setLoaderRelation] = useState(null);
-
+  const [truckCount, setTruckCount] = useState(0);
   const fetchPrintingBelts = async () => {
     const res = await get(`${BASE_URL}/api/shipment/printing-belt`);
     // console.log(res?.data?.data);
@@ -117,6 +117,7 @@ export default function LoaderRelation() {
                 item={item}
                 printingBelts={printingBelts}
                 loaderRelation={loaderRelation}
+                isLineBreak={truckCount % 2 === 1}
               />
             ))}
           </Grid>
