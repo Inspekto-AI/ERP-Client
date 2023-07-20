@@ -20,6 +20,7 @@ import ShipmentOverFlowModal from 'components/ShipmentOverFlowModal';
 import Alert from '@material-ui/lab/Alert';
 import { Button } from '@material-ui/core';
 import ShipmentTracking from 'components/ShipmentAnalysis';
+import LoaderRelation from 'components/LoaderRelation';
 
 function DashboardComponent({
   activeSection,
@@ -72,8 +73,10 @@ function DashboardComponent({
   if (activeSection === 4) {
     return <Report />;
   }
-
-  return <SystemHealth />;
+  if (activeSection === 5) {
+    return <SystemHealth />;
+  }
+  return <LoaderRelation />;
 }
 
 function Index() {
@@ -114,7 +117,7 @@ function Index() {
         belt_id: printing_belt_id || bag_counting_belt_id || id,
         transaction_id,
       });
-      if(data?.data?.data?.error){
+      if (data?.data?.data?.error) {
         setShipmentError(data?.data?.data?.error);
         setShipmentOverflow(true);
       }
@@ -237,10 +240,7 @@ function Index() {
       setShowWagonLoader(
         res?.data?.data?.showLoader === 0 && res?.data?.data.wagonLoaders > 0,
       );
-      console.log(
-        res?.data?.data?.showLoader === 0,
-        res?.data?.data.wagonLoaders > 0,
-      );
+
       // console.log(res?.data?.data.truckLoaders);
       // setShowTruckLoader(
       //   res?.data?.data.truckLoaders === 0 ? false : showTruckLoader
@@ -273,7 +273,7 @@ function Index() {
 
   useEffect(() => {
     socket.on('bag-entry', (data) => {
-      if(data?.error){
+      if (data?.error) {
         setShipmentError(data?.error);
         setShipmentOverflow(true);
       }
@@ -330,7 +330,7 @@ function Index() {
       });
     });
     socket.on('service', (data) => {
-      if(data?.error){
+      if (data?.error) {
         setShipmentError(data?.error);
         setShipmentOverflow(true);
       }
@@ -373,7 +373,7 @@ function Index() {
     //   console.log("Feature removed --- Release Maintenence Belt");
     // });
     socket.on('bag-done', (data) => {
-      if(data?.error){
+      if (data?.error) {
         setShipmentError(data?.error);
         setShipmentOverflow(true);
       }
@@ -394,7 +394,7 @@ function Index() {
       setIsLoading(false);
     });
     socket.on('bag-update', (data) => {
-      if(data?.error){
+      if (data?.error) {
         setShipmentError(data?.error);
         setShipmentOverflow(true);
       }
@@ -424,24 +424,27 @@ function Index() {
         };
       });
     });
-    socket.on('bag-congestion-frontend', ({ belt_id, issue_with_belt, error }) => {
-      if(error){
-        setShipmentError(error);
-        setShipmentOverflow(true);
-      }
-      setVehicleBelts((prevState) => {
-        if (!prevState) return null;
-        const newState = { ...prevState };
-        if (newState[belt_id]) {
-          newState[belt_id] = {
-            ...newState[belt_id],
-            is_belt_running: false,
-            issue_with_belt,
-          };
+    socket.on(
+      'bag-congestion-frontend',
+      ({ belt_id, issue_with_belt, error }) => {
+        if (error) {
+          setShipmentError(error);
+          setShipmentOverflow(true);
         }
-        return newState;
-      });
-    });
+        setVehicleBelts((prevState) => {
+          if (!prevState) return null;
+          const newState = { ...prevState };
+          if (newState[belt_id]) {
+            newState[belt_id] = {
+              ...newState[belt_id],
+              is_belt_running: false,
+              issue_with_belt,
+            };
+          }
+          return newState;
+        });
+      },
+    );
   }, [socket]);
 
   if (shipmentFormOpen || reverseShipmentFormOpen) {
@@ -542,6 +545,15 @@ function Index() {
               tabIndex={0}
             >
               <h6 style={{ textAlign: 'center' }}>System Health</h6>
+            </div>
+            <div
+              className={`option ${activeSection === 6 ? 'active' : ''}`}
+              onClick={() => setActiveSection(6)}
+              onKeyPress={() => setActiveSection(6)}
+              role="button"
+              tabIndex={0}
+            >
+              <h6 style={{ textAlign: 'center' }}>Loader Relation</h6>
             </div>
           </div>
           <DashboardComponent
