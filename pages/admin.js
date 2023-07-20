@@ -4,6 +4,7 @@ import Layout from 'components/Layout';
 import Container from 'styles/homepage.styles';
 import { useState } from 'react';
 import Parameters from 'components/Parameters';
+import Belts from 'components/Belts';
 
 function DashboardComponent({ activeSection }) {
   // console.log(handleBeltReset);
@@ -16,10 +17,13 @@ function DashboardComponent({ activeSection }) {
   if (activeSection === 2) {
     return <Parameters />;
   }
+  if (activeSection === 3) {
+    return <Belts />;
+  }
 }
 
 function Index() {
-  const [activeSection, setActiveSection] = useState(2);
+  const [activeSection, setActiveSection] = useState(3);
 
   return (
     <>
@@ -52,6 +56,15 @@ function Index() {
               tabIndex={0}
             >
               <h6 style={{ textAlign: 'center' }}>Parameters</h6>
+            </div>
+            <div
+              className={`option ${activeSection === 3 ? 'active' : ''}`}
+              onClick={() => setActiveSection(3)}
+              onKeyPress={() => setActiveSection(3)}
+              role="button"
+              tabIndex={0}
+            >
+              <h6 style={{ textAlign: 'center' }}>Belts</h6>
             </div>
           </div>
           <DashboardComponent activeSection={activeSection} />
