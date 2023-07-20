@@ -10,9 +10,10 @@ export default function LoaderRelation() {
   const [wagonLoadingBelts, setWagonLoadingBelts] = useState(null);
   const [loaderRelation, setLoaderRelation] = useState(null);
   const [truckCount, setTruckCount] = useState(0);
+  const [isMobile, setIsMobile] = useState(false);
   const fetchPrintingBelts = async () => {
-    const res = await get(`${BASE_URL}/api/shipment/printing-belt`);
-    // console.log(res?.data?.data);
+    const res = await get(`${BASE_URL}/api/shipment/all-printing-belt`);
+    console.log(res?.data?.data);
     setPrintingBelts(res?.data?.data);
   };
   const fetchLoadingBelts = async () => {
@@ -44,6 +45,20 @@ export default function LoaderRelation() {
     fetchLoadingRelation();
   }, []);
 
+  useEffect(() => {
+    const handleResize = () => {
+      setIsMobile(window.innerWidth > 1790); // Set your desired breakpoint here
+    };
+
+    handleResize(); // Call the handler initially
+
+    window.addEventListener('resize', handleResize);
+
+    return () => {
+      window.removeEventListener('resize', handleResize);
+    };
+  }, []);
+
   return (
     <div
       style={{
@@ -60,58 +75,71 @@ export default function LoaderRelation() {
           height: '75vh',
         }}
       >
-        <Grid container>
+        <Grid container alignItems="flex-start">
           <Grid container xs={5} spacing={2}>
             <Grid xs={12}>
               <h2 style={{ marginLeft: '30px', marginTop: '20px' }}>
                 Truck Loaders
               </h2>
             </Grid>
-            <Grid xs={3}>
-              <h4
-                style={{
-                  marginLeft: '30px',
-                  marginTop: '20px',
-                  fontWeight: 800,
-                }}
-              >
-                Loader ID
+            {truckLoadingBelts?.length === 0 && (
+              <h4 style={{ marginLeft: '30px', marginTop: '50px' }}>
+                No Truck Loaders
               </h4>
-            </Grid>
+            )}
+            {truckLoadingBelts?.length !== 0 && (
+              <Grid xs={3}>
+                <h4
+                  style={{
+                    marginLeft: '30px',
+                    marginTop: '20px',
+                    fontWeight: 800,
+                  }}
+                >
+                  Loader ID
+                </h4>
+              </Grid>
+            )}
+            {truckLoadingBelts?.length !== 0 && (
+              <Grid xs={3}>
+                <h4
+                  style={{
+                    marginLeft: '30px',
+                    marginTop: '20px',
+                    fontWeight: 800,
+                  }}
+                >
+                  Packer ID
+                </h4>
+              </Grid>
+            )}
+            {isMobile && truckLoadingBelts?.length !== 0 && (
+              <Grid xs={3}>
+                <h4
+                  style={{
+                    marginLeft: '30px',
+                    marginTop: '20px',
+                    fontWeight: 800,
+                  }}
+                >
+                  Loader ID
+                </h4>
+              </Grid>
+            )}
+            {isMobile && truckLoadingBelts?.length !== 0 && (
+              <Grid xs={3}>
+                <h4
+                  style={{
+                    marginLeft: '30px',
+                    marginTop: '20px',
+                    fontWeight: 800,
+                  }}
+                >
+                  Packer ID
+                </h4>
+              </Grid>
+            )}
 
-            <Grid xs={3}>
-              <h4
-                style={{
-                  marginLeft: '30px',
-                  marginTop: '20px',
-                  fontWeight: 800,
-                }}
-              >
-                Packer ID
-              </h4>
-            </Grid>
-            <Grid xs={3}>
-              <h4
-                style={{
-                  marginLeft: '30px',
-                  marginTop: '20px',
-                  fontWeight: 800,
-                }}
-              >
-                Loader ID
-              </h4>
-            </Grid>
-            <Grid xs={3}>
-              <h4
-                style={{
-                  marginLeft: '30px',
-                  marginTop: '20px',
-                  fontWeight: 800,
-                }}
-              >
-                Packer ID
-              </h4>
-            </Grid>
             {truckLoadingBelts?.map((item) => (
               <LoaderRelationComponent
                 item={item}
@@ -128,51 +156,63 @@ export default function LoaderRelation() {
                 Wagon Loaders
               </h2>
             </Grid>
-            <Grid xs={3}>
-              <h4
-                style={{
-                  marginLeft: '30px',
-                  marginTop: '20px',
-                  fontWeight: 800,
-                }}
-              >
-                Loader ID
+            {wagonLoadingBelts?.length === 0 && (
+              <h4 style={{ marginLeft: '30px', marginTop: '50px' }}>
+                No Wagon Loaders
               </h4>
-            </Grid>
-
-            <Grid xs={3}>
-              <h4
-                style={{
-                  marginLeft: '30px',
-                  marginTop: '20px',
-                  fontWeight: 800,
-                }}
-              >
-                Packer ID
-              </h4>
-            </Grid>
-            <Grid xs={3}>
-              <h4
-                style={{
-                  marginLeft: '30px',
-                  marginTop: '20px',
-                  fontWeight: 800,
-                }}
-              >
-                Loader ID
-              </h4>
-            </Grid>
-            <Grid xs={3}>
-              <h4
-                style={{
-                  marginLeft: '30px',
-                  marginTop: '20px',
-                  fontWeight: 800,
-                }}
-              >
-                Packer ID
-              </h4>
-            </Grid>
+            )}
+            {wagonLoadingBelts?.length !== 0 && (
+              <Grid xs={3}>
+                <h4
+                  style={{
+                    marginLeft: '30px',
+                    marginTop: '20px',
+                    fontWeight: 800,
+                  }}
+                >
+                  Loader ID
+                </h4>
+              </Grid>
+            )}
+            {wagonLoadingBelts?.length !== 0 && (
+              <Grid xs={3}>
+                <h4
+                  style={{
+                    marginLeft: '30px',
+                    marginTop: '20px',
+                    fontWeight: 800,
+                  }}
+                >
+                  Packer ID
+                </h4>
+              </Grid>
+            )}
+            {isMobile && wagonLoadingBelts?.length !== 0 && (
+              <Grid xs={3}>
+                <h4
+                  style={{
+                    marginLeft: '30px',
+                    marginTop: '20px',
+                    fontWeight: 800,
+                  }}
+                >
+                  Loader ID
+                </h4>
+              </Grid>
+            )}
+            {isMobile && wagonLoadingBelts?.length !== 0 && (
+              <Grid xs={3}>
+                <h4
+                  style={{
+                    marginLeft: '30px',
+                    marginTop: '20px',
+                    fontWeight: 800,
+                  }}
+                >
+                  Packer ID
+                </h4>
+              </Grid>
+            )}
             {wagonLoadingBelts?.map((item) => (
               <LoaderRelationComponent
                 item={item}
