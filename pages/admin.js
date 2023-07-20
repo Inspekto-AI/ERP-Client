@@ -3,6 +3,7 @@ import WhatsappRecipient from 'components/WhatsAppRecipient';
 import Layout from 'components/Layout';
 import Container from 'styles/homepage.styles';
 import { useState } from 'react';
+import Parameters from 'components/Parameters';
 
 function DashboardComponent({ activeSection }) {
   // console.log(handleBeltReset);
@@ -12,10 +13,13 @@ function DashboardComponent({ activeSection }) {
   if (activeSection === 1) {
     return <WhatsappRecipient />;
   }
+  if (activeSection === 2) {
+    return <Parameters />;
+  }
 }
 
 function Index() {
-  const [activeSection, setActiveSection] = useState(0);
+  const [activeSection, setActiveSection] = useState(2);
 
   return (
     <>
@@ -38,7 +42,16 @@ function Index() {
               role="button"
               tabIndex={0}
             >
-              <h6 style={{ textAlign: 'center' }}>WhatsAppRecipient</h6>
+              <h6 style={{ textAlign: 'center' }}>WhatsApp Recipient</h6>
+            </div>
+            <div
+              className={`option ${activeSection === 2 ? 'active' : ''}`}
+              onClick={() => setActiveSection(2)}
+              onKeyPress={() => setActiveSection(2)}
+              role="button"
+              tabIndex={0}
+            >
+              <h6 style={{ textAlign: 'center' }}>Parameters</h6>
             </div>
           </div>
           <DashboardComponent activeSection={activeSection} />
