@@ -4,6 +4,9 @@ import { BASE_URL } from 'utils/constants';
 import { Button, Grid, Input, InputLabel, makeStyles } from '@material-ui/core';
 
 const useStyles = makeStyles(theme => ({
+  label: {
+    marginLeft: '20px'
+  },
   input: {
     border: '1px solid black',
     borderRadius: theme.shape.borderRadius,
@@ -152,16 +155,20 @@ export default function Parameters() {
         number_of_whatsapp_recipient
       }
     );
+    setaiParamasEdit(true);
+    setnodeParamasEdit(true);
   };
   useEffect(() => {
     fetchParameters();
   }, []);
   return (
     <div style={{ marginTop: '120px' }}>
-      <Grid container>
+      <Grid container alignItems="flex-start">
         <Grid container xs={12} lg={6}>
           <Grid xs={6}>
-            <h3 style={{ margin: '20px' }}>AI Engine Parameter</h3>
+            <h3 style={{ margin: '20px', marginBottom: '80px' }}>
+              AI Engine Parameter
+            </h3>
           </Grid>
           <Grid container xs={3}>
             <Button
@@ -174,12 +181,15 @@ export default function Parameters() {
             </Button>
           </Grid>
           <Grid container xs={3}>
-            className={classes.button}
-            <Button onClick={handleSubmit}>Save</Button>
+            <Button className={classes.button} onClick={handleSubmit}>
+              Save
+            </Button>
           </Grid>
 
           <Grid xs={4}>
-            <InputLabel>score_threshold_bag_wagon </InputLabel>
+            <InputLabel className={classes.label}>
+              Score Threshold Bag Wagon{' '}
+            </InputLabel>
             <Input
               placeholder="Enter name"
               className={classes.input}
@@ -190,7 +200,9 @@ export default function Parameters() {
             />
           </Grid>
           <Grid xs={4}>
-            <InputLabel>score_threshold_bag </InputLabel>
+            <InputLabel className={classes.label}>
+              Score Threshold Bag
+            </InputLabel>
 
             <Input
               placeholder="Enter name"
@@ -203,7 +215,9 @@ export default function Parameters() {
             />
           </Grid>
           <Grid xs={4}>
-            <InputLabel>score_threshold_bag_wagon </InputLabel>
+            <InputLabel className={classes.label}>
+              Score Threshold Bag Wagon
+            </InputLabel>
 
             <Input
               placeholder="Enter name"
@@ -216,7 +230,7 @@ export default function Parameters() {
             />
           </Grid>
           <Grid xs={4}>
-            <InputLabel>iou_threshold_bag </InputLabel>
+            <InputLabel className={classes.label}>Iou Threshold Bag</InputLabel>
 
             <Input
               placeholder="Enter name"
@@ -229,7 +243,7 @@ export default function Parameters() {
             />
           </Grid>
           <Grid xs={4}>
-            <InputLabel>iou_threshold_tag </InputLabel>
+            <InputLabel className={classes.label}>Iou Threshold Tag</InputLabel>
 
             <Input
               placeholder="Enter name"
@@ -242,7 +256,9 @@ export default function Parameters() {
             />
           </Grid>
           <Grid xs={4}>
-            <InputLabel>iou_threshold_bag_wagon </InputLabel>
+            <InputLabel className={classes.label}>
+              Iou Threshold Bag Wagon
+            </InputLabel>
 
             <Input
               placeholder="Enter name"
@@ -255,7 +271,7 @@ export default function Parameters() {
             />
           </Grid>
           <Grid xs={4}>
-            <InputLabel>img_compression </InputLabel>
+            <InputLabel className={classes.label}>Img Compression </InputLabel>
 
             <Input
               placeholder="Enter name"
@@ -268,7 +284,9 @@ export default function Parameters() {
             />
           </Grid>
           <Grid xs={4}>
-            <InputLabel>congestion_threshold </InputLabel>
+            <InputLabel className={classes.label}>
+              Congestion Threshold
+            </InputLabel>
 
             <Input
               placeholder="Enter name"
@@ -283,22 +301,27 @@ export default function Parameters() {
         </Grid>
         <Grid container xs={12} lg={6}>
           <Grid xs={6}>
-            <h3 style={{ margin: '20px' }}>NodeJs Parameter</h3>
+            <h3 style={{ margin: '20px', marginBottom: '80px' }}>
+              NodeJs Parameter
+            </h3>
           </Grid>
           <Grid container xs={3}>
-            <button
+            <Button
+              className={classes.button}
               onClick={() => {
                 setnodeParamasEdit(false);
               }}
             >
               Edit
-            </button>
+            </Button>
           </Grid>
           <Grid container xs={3}>
-            <button onClick={handleSubmit}>Save</button>
+            <Button className={classes.button} onClick={handleSubmit}>
+              Save
+            </Button>
           </Grid>
           <Grid xs={4}>
-            <InputLabel>bag_types </InputLabel>
+            <InputLabel className={classes.label}>Bag Types </InputLabel>
 
             <Input
               placeholder="Enter name"
@@ -311,7 +334,9 @@ export default function Parameters() {
             />
           </Grid>
           <Grid xs={4}>
-            <InputLabel>deactivate_loader_solution </InputLabel>
+            <InputLabel className={classes.label}>
+              deactivate_loader_solution{' '}
+            </InputLabel>
 
             <Input
               placeholder="Enter name"
@@ -324,7 +349,9 @@ export default function Parameters() {
             />
           </Grid>
           <Grid xs={4}>
-            <InputLabel>deactivate_printing_solution </InputLabel>
+            <InputLabel className={classes.label}>
+              Deactivate Printing Solution
+            </InputLabel>
 
             <Input
               placeholder="Enter name"
@@ -337,7 +364,7 @@ export default function Parameters() {
             />
           </Grid>
           <Grid xs={4}>
-            <InputLabel>enable_loader_plc </InputLabel>
+            <InputLabel className={classes.label}>Enable Loader Plc</InputLabel>
 
             <Input
               placeholder="Enter name"
@@ -350,7 +377,9 @@ export default function Parameters() {
             />
           </Grid>
           <Grid xs={4}>
-            <InputLabel>enable_printing_plc </InputLabel>
+            <InputLabel className={classes.label}>
+              Enable Printing Plc
+            </InputLabel>
 
             <Input
               placeholder="Enter name"
@@ -363,7 +392,9 @@ export default function Parameters() {
             />
           </Grid>
           <Grid xs={4}>
-            <InputLabel>enable_misprint_plc </InputLabel>
+            <InputLabel className={classes.label}>
+              Enable Misprint Plc
+            </InputLabel>
 
             <Input
               placeholder="Enter name"
@@ -376,7 +407,9 @@ export default function Parameters() {
             />
           </Grid>
           <Grid xs={4}>
-            <InputLabel>misprint_alert_limit </InputLabel>
+            <InputLabel className={classes.label}>
+              Misprint Alert Limit
+            </InputLabel>
 
             <Input
               placeholder="Enter name"
@@ -389,7 +422,9 @@ export default function Parameters() {
             />
           </Grid>
           <Grid xs={4}>
-            <InputLabel>relay_belt_running </InputLabel>
+            <InputLabel className={classes.label}>
+              Relay Belt Running
+            </InputLabel>
 
             <Input
               placeholder="Enter name"
@@ -402,7 +437,9 @@ export default function Parameters() {
             />
           </Grid>
           <Grid xs={4}>
-            <InputLabel>relay_belt_stopped </InputLabel>
+            <InputLabel className={classes.label}>
+              Relay Belt Stopped{' '}
+            </InputLabel>
 
             <Input
               placeholder="Enter name"
@@ -415,7 +452,7 @@ export default function Parameters() {
             />
           </Grid>
           <Grid xs={4}>
-            <InputLabel>enable_hooter </InputLabel>
+            <InputLabel className={classes.label}>Enable Hooter </InputLabel>
 
             <Input
               placeholder="Enter name"
@@ -428,7 +465,7 @@ export default function Parameters() {
             />
           </Grid>
           <Grid xs={4}>
-            <InputLabel>hooter_timeout </InputLabel>
+            <InputLabel className={classes.label}>Hooter Timeout </InputLabel>
 
             <Input
               placeholder="Enter name"
@@ -441,7 +478,9 @@ export default function Parameters() {
             />
           </Grid>
           <Grid xs={4}>
-            <InputLabel>enable_online_reports </InputLabel>
+            <InputLabel className={classes.label}>
+              Enable Online Reports{' '}
+            </InputLabel>
 
             <Input
               placeholder="Enter name"
@@ -454,7 +493,7 @@ export default function Parameters() {
             />
           </Grid>
           <Grid xs={4}>
-            <InputLabel>number_of_slaves </InputLabel>
+            <InputLabel className={classes.label}>Number Of Slaves </InputLabel>
 
             <Input
               placeholder="Enter name"
@@ -467,7 +506,9 @@ export default function Parameters() {
             />
           </Grid>
           <Grid xs={4}>
-            <InputLabel>number_of_shipments_allowed </InputLabel>
+            <InputLabel className={classes.label}>
+              Number Of Shipments Allowed{' '}
+            </InputLabel>
 
             <Input
               placeholder="Enter name"
@@ -480,7 +521,9 @@ export default function Parameters() {
             />
           </Grid>
           <Grid xs={4}>
-            <InputLabel>enable_loader_display </InputLabel>
+            <InputLabel className={classes.label}>
+              Enable Loader Display{' '}
+            </InputLabel>
 
             <Input
               placeholder="Enter name"
@@ -493,7 +536,9 @@ export default function Parameters() {
             />
           </Grid>
           <Grid xs={4}>
-            <InputLabel>number_of_whatsapp_recipient </InputLabel>
+            <InputLabel className={classes.label}>
+              Number Of Whatsapp Recipient{' '}
+            </InputLabel>
 
             <Input
               placeholder="Enter name"
