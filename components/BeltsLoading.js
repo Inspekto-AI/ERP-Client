@@ -1,11 +1,13 @@
-import { Input, Button, InputLabel, makeStyles } from '@material-ui/core';
+import {
+  Input, Button, InputLabel, makeStyles,
+} from '@material-ui/core';
 import { useEffect, useState } from 'react';
 import { get, post, put } from 'utils/api';
 import { BASE_URL } from 'utils/constants';
 
-const useStyles = makeStyles(theme => ({
+const useStyles = makeStyles((theme) => ({
   label: {
-    marginLeft: '20px'
+    marginLeft: '20px',
   },
   input: {
     border: '1px solid black',
@@ -16,7 +18,7 @@ const useStyles = makeStyles(theme => ({
     backgroundColor: 'white',
     // marginTop: '80x',
     margin: '20px',
-    fontSize: '20px'
+    fontSize: '20px',
   },
   button: {
     border: '1px solid black',
@@ -28,8 +30,8 @@ const useStyles = makeStyles(theme => ({
     // marginTop: '80x',
     margin: '20px',
     height: '48px',
-    fontSize: '20px'
-  }
+    fontSize: '20px',
+  },
 }));
 
 function BeltsLoading({ item, beltType }) {
@@ -78,85 +80,85 @@ function BeltsLoading({ item, beltType }) {
     //     <div>
     //       <InputLabel className={classes.label}>Vehicle Type</InputLabel>
 
-    //       <Input
-    //         placeholder="Enter name"
-    //         className={classes.input}
-    //         disableUnderline
-    //         value={item?.vehicle_type === 0 ? 'Truck' : 'Wagon'}
-    //         //   onChange={e => setName1(e.target.value)}
-    //         //   disabled={isEdit1 && isEditButton1}
-    //         disabled={true}
-    //       />
-    //     </div>
-    //     <div>
-    //       <InputLabel className={classes.label}>Belt Direction</InputLabel>
+  //       <Input
+  //         placeholder="Enter name"
+  //         className={classes.input}
+  //         disableUnderline
+  //         value={item?.vehicle_type === 0 ? 'Truck' : 'Wagon'}
+  //         //   onChange={e => setName1(e.target.value)}
+  //         //   disabled={isEdit1 && isEditButton1}
+  //         disabled={true}
+  //       />
+  //     </div>
+  //     <div>
+  //       <InputLabel className={classes.label}>Belt Direction</InputLabel>
 
-    //       <Input
-    //         placeholder="Enter name"
-    //         className={classes.input}
-    //         style={{ width: '150px' }}
-    //         disableUnderline
-    //         value={
-    //           item?.belt_direction === 0 ? 'Left to Right' : 'Right to Left'
-    //         }
-    //         //   onChange={e => setName1(e.target.value)}
-    //         //   disabled={isEdit1 && isEditButton1}
-    //         disabled={true}
-    //       />
-    //     </div>
-    //     <div>
-    //       <InputLabel className={classes.label}>Belt ROI</InputLabel>
+  //       <Input
+  //         placeholder="Enter name"
+  //         className={classes.input}
+  //         style={{ width: '150px' }}
+  //         disableUnderline
+  //         value={
+  //           item?.belt_direction === 0 ? 'Left to Right' : 'Right to Left'
+  //         }
+  //         //   onChange={e => setName1(e.target.value)}
+  //         //   disabled={isEdit1 && isEditButton1}
+  //         disabled={true}
+  //       />
+  //     </div>
+  //     <div>
+  //       <InputLabel className={classes.label}>Belt ROI</InputLabel>
 
-    //       <Input
-    //         placeholder="Enter name"
-    //         className={classes.input}
-    //         disableUnderline
-    //         value={item?.belt_roi}
-    //         //   onChange={e => setName1(e.target.value)}
-    //         //   disabled={isEdit1 && isEditButton1}
-    //         disabled={true}
-    //       />
-    //     </div>
-    //     <div>
-    //       <InputLabel className={classes.label}>Camera IP</InputLabel>
+  //       <Input
+  //         placeholder="Enter name"
+  //         className={classes.input}
+  //         disableUnderline
+  //         value={item?.belt_roi}
+  //         //   onChange={e => setName1(e.target.value)}
+  //         //   disabled={isEdit1 && isEditButton1}
+  //         disabled={true}
+  //       />
+  //     </div>
+  //     <div>
+  //       <InputLabel className={classes.label}>Camera IP</InputLabel>
 
-    //       <Input
-    //         placeholder="Enter name"
-    //         className={classes.input}
-    //         disableUnderline
-    //         value={item?.camera_ip}
-    //         //   onChange={e => setName1(e.target.value)}
-    //         //   disabled={isEdit1 && isEditButton1}
-    //         disabled={true}
-    //       />
-    //     </div>
-    //     <div>
-    //       <InputLabel className={classes.label}>Frame Height</InputLabel>
+  //       <Input
+  //         placeholder="Enter name"
+  //         className={classes.input}
+  //         disableUnderline
+  //         value={item?.camera_ip}
+  //         //   onChange={e => setName1(e.target.value)}
+  //         //   disabled={isEdit1 && isEditButton1}
+  //         disabled={true}
+  //       />
+  //     </div>
+  //     <div>
+  //       <InputLabel className={classes.label}>Frame Height</InputLabel>
 
-    //       <Input
-    //         placeholder="Enter name"
-    //         className={classes.input}
-    //         disableUnderline
-    //           value={item?.frame_height}
-    //         //   onChange={e => setName1(e.target.value)}
-    //         //   disabled={isEdit1 && isEditButton1}
-    //         disabled={true}
-    //       />
-    //     </div>
-    //     <div>
-    //       <InputLabel className={classes.label}>Frame Width</InputLabel>
+  //       <Input
+  //         placeholder="Enter name"
+  //         className={classes.input}
+  //         disableUnderline
+  //           value={item?.frame_height}
+  //         //   onChange={e => setName1(e.target.value)}
+  //         //   disabled={isEdit1 && isEditButton1}
+  //         disabled={true}
+  //       />
+  //     </div>
+  //     <div>
+  //       <InputLabel className={classes.label}>Frame Width</InputLabel>
 
-    //       <Input
-    //         placeholder="Enter name"
-    //         className={classes.input}
-    //         disableUnderline
-    //         //   value={item?.}
-    //         //   onChange={e => setName1(e.target.value)}
-    //         //   disabled={isEdit1 && isEditButton1}
-    //       />
-    //     </div>
-    //   </div>
-    // </div>
+  //       <Input
+  //         placeholder="Enter name"
+  //         className={classes.input}
+  //         disableUnderline
+  //         //   value={item?.}
+  //         //   onChange={e => setName1(e.target.value)}
+  //         //   disabled={isEdit1 && isEditButton1}
+  //       />
+  //     </div>
+  //   </div>
+  // </div>
   );
 }
 

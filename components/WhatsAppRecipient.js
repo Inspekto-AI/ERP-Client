@@ -35,7 +35,7 @@ function WhatsappRecipient() {
   };
 
   useEffect(() => {
-    console.log(isFetch);
+    // console.log(isFetch);
     fetchWhatsAppRecipient();
   }, [isFetch]);
   return (

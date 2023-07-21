@@ -4,7 +4,7 @@ import { get, post, put } from 'utils/api';
 import { BASE_URL } from 'utils/constants';
 import BeltsLoading from './BeltsLoading';
 
-const useStyles = makeStyles(theme => ({
+const useStyles = makeStyles((theme) => ({
   input: {
     border: '1px solid black',
     borderRadius: theme.shape.borderRadius,
@@ -14,7 +14,7 @@ const useStyles = makeStyles(theme => ({
     backgroundColor: 'white',
     // marginTop: '80x',
     margin: '20px',
-    fontSize: '20px'
+    fontSize: '20px',
   },
   button: {
     border: '1px solid black',
@@ -26,8 +26,8 @@ const useStyles = makeStyles(theme => ({
     // marginTop: '80x',
     margin: '20px',
     height: '48px',
-    fontSize: '20px'
-  }
+    fontSize: '20px',
+  },
 }));
 
 function Belts() {
@@ -57,7 +57,7 @@ function Belts() {
       <Select
         className={classes.input}
         value={beltType}
-        onChange={e => {
+        onChange={(e) => {
           setBeltType(e.target.value);
         }}
       >
@@ -84,9 +84,7 @@ function Belts() {
             </tr>
           </thead>
 
-          {loadingBelts?.map(item => {
-            return <BeltsLoading item={item} beltType={0} />;
-          })}
+          {loadingBelts?.map((item) => <BeltsLoading item={item} beltType={0} />)}
         </table>
       )}
       {beltType === 1 && (
@@ -108,9 +106,7 @@ function Belts() {
             </tr>
           </thead>
 
-          {printingBelts?.map(item => {
-            return <BeltsLoading item={item} beltType={1} />;
-          })}
+          {printingBelts?.map((item) => <BeltsLoading item={item} beltType={1} />)}
         </table>
       )}
     </div>
