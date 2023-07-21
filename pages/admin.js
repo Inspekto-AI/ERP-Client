@@ -23,7 +23,7 @@ function DashboardComponent({ activeSection }) {
 }
 
 function Index() {
-  const [activeSection, setActiveSection] = useState(3);
+  const [activeSection, setActiveSection] = useState(0);
 
   return (
     <>
