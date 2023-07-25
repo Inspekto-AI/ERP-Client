@@ -85,7 +85,8 @@ function DiagnosticComponent({ item, beltType }) {
 
   const fetchAnalysingStatus = async () => {
     const res = await get('/api/analyse/get-analyse-status', {
-      beltId: item?.machine_id
+      beltId: beltType === 0 ? item?.machine_id : item?.printing_belt_id,
+      beltType: beltType
     });
     setIsAnalysing(res?.data[0]?.is_analysing);
   };
