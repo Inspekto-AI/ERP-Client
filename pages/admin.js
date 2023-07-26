@@ -2,10 +2,11 @@ import Admin from 'components/AdminUpdate';
 import WhatsappRecipient from 'components/WhatsAppRecipient';
 import Layout from 'components/Layout';
 import Container from 'styles/homepage.styles';
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import Parameters from 'components/Parameters';
 import Belts from 'components/Belts';
 import Diagnostic from 'components/Diagnostic';
+import { GlobalContext } from 'context/GlobalContext';
 
 function DashboardComponent({ activeSection }) {
   // console.log(handleBeltReset);
@@ -27,7 +28,16 @@ function DashboardComponent({ activeSection }) {
 }
 
 function Index() {
+  const socket = useContext(SocketContext);
+
   const [activeSection, setActiveSection] = useState(4);
+  const [isqfullError, setIsqfullError] = useState(false);
+
+  useEffect(() => {
+    socket.on('qfull', data => {
+      setIsqfullError(true);
+    });
+  });
 
   return (
     <>
@@ -83,6 +93,9 @@ function Index() {
           <DashboardComponent activeSection={activeSection} />
         </Container>
       </Layout>
+      {isqfullError && (
+        <p style={{ marginTop: '200px', zIndex: '200' }}>QFull</p>
+      )}
     </>
   );
 }
