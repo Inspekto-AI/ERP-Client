@@ -2,7 +2,7 @@ import Admin from 'components/AdminUpdate';
 import WhatsappRecipient from 'components/WhatsAppRecipient';
 import Layout from 'components/Layout';
 import Container from 'styles/homepage.styles';
-import { useEffect, useState } from 'react';
+import { useEffect, useState, useContext } from 'react';
 import Parameters from 'components/Parameters';
 import Belts from 'components/Belts';
 import Diagnostic from 'components/Diagnostic';
