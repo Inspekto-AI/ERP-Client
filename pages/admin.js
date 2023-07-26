@@ -6,8 +6,6 @@ import { useEffect, useState, useContext } from 'react';
 import Parameters from 'components/Parameters';
 import Belts from 'components/Belts';
 import Diagnostic from 'components/Diagnostic';
-import { GlobalContext } from 'context/GlobalContext';
-import { SocketContext } from 'context/SocketContext';
 
 function DashboardComponent({ activeSection }) {
   // console.log(handleBeltReset);
@@ -29,16 +27,8 @@ function DashboardComponent({ activeSection }) {
 }
 
 function Index() {
-  const socket = useContext(SocketContext);
-
   const [activeSection, setActiveSection] = useState(4);
   const [isqfullError, setIsqfullError] = useState(true);
-
-  useEffect(() => {
-    socket.on('qfull', data => {
-      setIsqfullError(true);
-    });
-  });
 
   return (
     <>
