@@ -7,6 +7,7 @@ import Parameters from 'components/Parameters';
 import Belts from 'components/Belts';
 import Diagnostic from 'components/Diagnostic';
 import { GlobalContext } from 'context/GlobalContext';
+import { SocketContext } from 'context/SocketContext';
 
 function DashboardComponent({ activeSection }) {
   // console.log(handleBeltReset);
