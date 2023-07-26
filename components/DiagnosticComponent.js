@@ -73,7 +73,9 @@ function DiagnosticComponent({ item, beltType }) {
   };
 
   const handleDownload = async () => {
-    const url = `http://localhost:9000/api/analyse/download?beltId=${item?.machine_id}`;
+    const url = `http://localhost:9000/api/analyse/download?beltId=${
+      beltType === 0 ? item?.machine_id : item?.printing_belt_id
+    }`;
 
     const link = document.createElement('a');
     link.href = url;
