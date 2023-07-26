@@ -32,7 +32,7 @@ function Index() {
   const socket = useContext(SocketContext);
 
   const [activeSection, setActiveSection] = useState(4);
-  const [isqfullError, setIsqfullError] = useState(false);
+  const [isqfullError, setIsqfullError] = useState(true);
 
   useEffect(() => {
     socket.on('qfull', data => {
@@ -95,7 +95,17 @@ function Index() {
         </Container>
       </Layout>
       {isqfullError && (
-        <p style={{ marginTop: '200px', zIndex: '200' }}>QFull</p>
+        <p
+          style={{
+            fontSize: '50px',
+            // marginTop: '300px',
+            zIndex: '20000',
+            top: '200px',
+            left: '200px'
+          }}
+        >
+          QFull
+        </p>
       )}
     </>
   );
