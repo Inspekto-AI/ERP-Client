@@ -67,7 +67,7 @@ function DiagnosticComponent({ item, beltType }) {
         });
         console.log('response', response);
         if (response?.data?.data === 'No more shipments allowed') {
-          setShipmentOverflow(true);
+          setShipmentOverflow(response?.data?.data);
         }
         // console.log(response.data.message);
         // Display a success message or perform other actions upon successful upload.
@@ -120,7 +120,7 @@ function DiagnosticComponent({ item, beltType }) {
           close={() => {
             setShipmentOverflow(false);
           }}
-          error={'Shipment Limit has reached.'}
+          error={shipmentOverflow}
         />
       )}
       <td>{beltType === 0 ? item?.machine_id : item?.printing_belt_id}</td>
