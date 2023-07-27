@@ -9,9 +9,11 @@ export function GlobalProvider({ children }) {
   const [userData, setUserData] = useState(null);
   const [bagTypes, setBagTypes] = useState(null);
   const [deactivateLoaderSolution, setDeactivateLoaderSolution] = useState(0);
-  const [deactivatePrintingSolution, setDeactivatePrintingSolution] = useState(0);
+  const [deactivatePrintingSolution, setDeactivatePrintingSolution] =
+    useState(0);
   const [shipmentOverflow, setShipmentOverflow] = useState(false);
   const [numberOfWhatsappRecipient, setNumberOfWhatsappRecipient] = useState(0);
+  const [isQfullError, setIsQfullError] = useState(null);
 
   return (
     <GlobalContext.Provider
@@ -32,6 +34,8 @@ export function GlobalProvider({ children }) {
         setShipmentOverflow,
         numberOfWhatsappRecipient,
         setNumberOfWhatsappRecipient,
+        isQfullError,
+        setIsQfullError
       }}
     >
       {children}
@@ -40,5 +44,5 @@ export function GlobalProvider({ children }) {
 }
 
 GlobalProvider.propTypes = {
-  children: PropTypes.object,
+  children: PropTypes.object
 };

@@ -5,6 +5,7 @@ import Container from 'styles/homepage.styles';
 import { useEffect, useState, useContext } from 'react';
 import Parameters from 'components/Parameters';
 import Belts from 'components/Belts';
+import { GlobalContext } from 'context/GlobalContext';
 import Diagnostic from 'components/Diagnostic';
 
 function DashboardComponent({ activeSection }) {
@@ -28,7 +29,8 @@ function DashboardComponent({ activeSection }) {
 
 function Index() {
   const [activeSection, setActiveSection] = useState(4);
-  const [isqfullError, setIsqfullError] = useState(true);
+
+  const { isqfullError } = useContext(GlobalContext);
 
   return (
     <>

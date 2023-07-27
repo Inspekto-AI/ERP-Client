@@ -100,11 +100,13 @@ function Index() {
   const [showTruckLoader, setShowTruckLoader] = useState(true);
   const [showWagonLoader, setShowWagonLoader] = useState(true);
   const [showPrinting, setShowPrinting] = useState(true);
+
   const {
     setBeltTrippingEnabled,
     deactivatePrintingSolution: DEACTIVATE_PRINTING_SOLUTION,
     setShipmentOverflow,
-    shipmentOverflow
+    shipmentOverflow,
+    setIsQfullError
   } = useContext(GlobalContext);
 
   const handleBeltReset = async (
@@ -447,7 +449,7 @@ function Index() {
       }
     );
     socket.on('qfull', data => {
-      console.log('qfull');
+      setIsQfullError(true);
     });
   }, [socket]);
 
