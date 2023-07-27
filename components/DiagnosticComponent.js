@@ -2,6 +2,7 @@ import { Input, Button, InputLabel, makeStyles } from '@material-ui/core';
 import { useDebugValue, useEffect, useState } from 'react';
 import { get, post, put } from 'utils/api';
 import { BASE_URL } from 'utils/constants';
+import ShipmentOverFlowModal from './ShipmentOverFlowModal';
 
 const useStyles = makeStyles(theme => ({
   label: {
@@ -38,6 +39,8 @@ function DiagnosticComponent({ item, beltType }) {
   const [selectedFile, setSelectedFile] = useState(null);
   const [isAnalysing, setIsAnalysing] = useState(1);
 
+  const [shipmentOverflow, setShipmentOverflow] = useState(null);
+
   const handleFileChange = event => {
     setSelectedFile(event.target.files[0]);
   };
@@ -63,7 +66,9 @@ function DiagnosticComponent({ item, beltType }) {
           }
         });
         console.log('response', response);
-        console.log('shipment limit reached');
+        if (response?.data?.data === 'No more shipments allowed') {
+          setShipmentOverflow(true);
+        }
         // console.log(response.data.message);
         // Display a success message or perform other actions upon successful upload.
       } catch (error) {
@@ -99,6 +104,15 @@ function DiagnosticComponent({ item, beltType }) {
 
   return (
     <tr>
+      {shipmentOverflow && (
+        <ShipmentOverFlowModal
+          open={shipmentOverflow}
+          close={() => {
+            setShipmentOverflow(false);
+          }}
+          error={shipmentError}
+        />
+      )}
       <td>{beltType === 0 ? item?.machine_id : item?.printing_belt_id}</td>
 
       <Input
