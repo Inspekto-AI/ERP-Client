@@ -110,7 +110,7 @@ function DiagnosticComponent({ item, beltType }) {
           close={() => {
             setShipmentOverflow(false);
           }}
-          error={shipmentError}
+          // error={shipmentError}
         />
       )}
       <td>{beltType === 0 ? item?.machine_id : item?.printing_belt_id}</td>
