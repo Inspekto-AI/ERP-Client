@@ -34,6 +34,10 @@ function Index() {
     useContext(GlobalContext);
   console.log(isQfullError, deactivatePrintingSolution);
 
+  useEffect(() => {
+    console.log(isQfullError);
+  }, [isQfullError]);
+
   return (
     <>
       <Layout style={{ marginTop: '100px' }}>
