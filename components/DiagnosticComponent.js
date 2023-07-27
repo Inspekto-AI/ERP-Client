@@ -84,7 +84,10 @@ function DiagnosticComponent({ item, beltType }) {
     });
 
     console.log(isVideoPresent);
-    return;
+
+    if (isVideoPresent?.data === 'no video') {
+      return;
+    }
 
     const url = `http://localhost:9000/api/analyse/download?beltId=${
       beltType === 0 ? item?.machine_id : item?.printing_belt_id
