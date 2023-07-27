@@ -91,7 +91,7 @@ function DiagnosticComponent({ item, beltType }) {
       beltId: beltType === 0 ? item?.machine_id : item?.printing_belt_id,
       beltType: beltType
     });
-    setIsAnalysing(res?.data[0]?.is_analysing);
+    setIsAnalysing(res?.data[0]?.is_local_analysing);
   };
   useEffect(() => {
     fetchAnalysingStatus();
