@@ -62,7 +62,8 @@ function DiagnosticComponent({ item, beltType }) {
             'Content-Type': 'multipart/form-data'
           }
         });
-
+        console.log('response', response);
+        console.log('shipment limit reached');
         // console.log(response.data.message);
         // Display a success message or perform other actions upon successful upload.
       } catch (error) {

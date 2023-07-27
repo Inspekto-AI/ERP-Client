@@ -33,13 +33,10 @@ function Index() {
   const [activeSection, setActiveSection] = useState(4);
   const socket = useContext(SocketContext);
 
-  const { isQfullError, setIsQfullError, shipmentOverflow } =
-    useContext(GlobalContext);
-  console.log(isQfullError, shipmentOverflow);
+  const { isQfullError, setIsQfullError } = useContext(GlobalContext);
 
   useEffect(() => {
     socket.on('qfull', data => {
-      console.log('qfull');
       setIsQfullError(true);
     });
   }, [socket]);
@@ -52,7 +49,7 @@ function Index() {
           close={() => {
             setIsQfullError(false);
           }}
-          error={'Q-size is Full.'}
+          error={'Heavy Loads on server. Please reduce load.'}
         />
       )}
       <Layout style={{ marginTop: '100px' }}>

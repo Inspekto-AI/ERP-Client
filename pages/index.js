@@ -450,7 +450,6 @@ function Index() {
       }
     );
     socket.on('qfull', data => {
-      console.log('qfull');
       setIsQfullError(true);
     });
   }, [socket]);
@@ -491,7 +490,7 @@ function Index() {
           close={() => {
             setIsQfullError(false);
           }}
-          error={'Q-size is Full.'}
+          error={'Heavy Loads on server. Please reduce load.'}
         />
       )}
       <Layout
