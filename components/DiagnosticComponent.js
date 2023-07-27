@@ -79,6 +79,13 @@ function DiagnosticComponent({ item, beltType }) {
   };
 
   const handleDownload = async () => {
+    const isVideoPresent = await get('/api/analyse/is-video-present', {
+      beltId: beltType === 0 ? item?.machine_id : item?.printing_belt_id
+    });
+
+    console.log(isVideoPresent);
+    return;
+
     const url = `http://localhost:9000/api/analyse/download?beltId=${
       beltType === 0 ? item?.machine_id : item?.printing_belt_id
     }`;
