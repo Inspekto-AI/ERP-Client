@@ -14,7 +14,7 @@ export function GlobalProvider({ children }) {
   const [shipmentOverflow, setShipmentOverflow] = useState(false);
   const [numberOfWhatsappRecipient, setNumberOfWhatsappRecipient] = useState(0);
   const [isQfullError, setIsQfullError] = useState(null);
-
+  console.log(isQfullError);
   return (
     <GlobalContext.Provider
       value={{
