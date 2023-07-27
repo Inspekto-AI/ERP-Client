@@ -30,7 +30,7 @@ function DashboardComponent({ activeSection }) {
 function Index() {
   const [activeSection, setActiveSection] = useState(4);
 
-  const { isQfullError, deactivatePrintingSolution } =
+  const { isQfullError, setIsQfullError, deactivatePrintingSolution } =
     useContext(GlobalContext);
   console.log(isQfullError, deactivatePrintingSolution);
 
