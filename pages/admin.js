@@ -30,13 +30,9 @@ function DashboardComponent({ activeSection }) {
 function Index() {
   const [activeSection, setActiveSection] = useState(4);
 
-  const { isQfullError, setIsQfullError, deactivatePrintingSolution } =
+  const { isQfullError, setIsQfullError, shipmentOverflow } =
     useContext(GlobalContext);
-  console.log(isQfullError, deactivatePrintingSolution);
-
-  useEffect(() => {
-    console.log(isQfullError);
-  }, [isQfullError]);
+  console.log(isQfullError, shipmentOverflow);
 
   return (
     <>
