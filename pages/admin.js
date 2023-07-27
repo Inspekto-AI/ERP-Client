@@ -31,6 +31,7 @@ function Index() {
   const [activeSection, setActiveSection] = useState(4);
 
   const { isqfullError } = useContext(GlobalContext);
+  console.log(isqfullError);
 
   return (
     <>
