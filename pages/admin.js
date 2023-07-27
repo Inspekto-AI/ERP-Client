@@ -37,7 +37,7 @@ function Index() {
 
   useEffect(() => {
     socket.on('qfull', data => {
-      setIsQfullError(true);
+      setIsQfullError(data?.error);
     });
   }, [socket]);
 
@@ -49,7 +49,7 @@ function Index() {
           close={() => {
             setIsQfullError(false);
           }}
-          error={'Heavy Loads on server. Please reduce load.'}
+          error={isQfullError}
         />
       )}
       <Layout style={{ marginTop: '100px' }}>
