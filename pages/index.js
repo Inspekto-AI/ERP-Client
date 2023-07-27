@@ -452,7 +452,6 @@ function Index() {
     socket.on('qfull', data => {
       console.log('qfull');
       setIsQfullError(true);
-      setShipmentOverflow(true);
     });
   }, [socket]);
 

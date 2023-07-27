@@ -7,6 +7,8 @@ import Parameters from 'components/Parameters';
 import Belts from 'components/Belts';
 import { GlobalContext } from 'context/GlobalContext';
 import Diagnostic from 'components/Diagnostic';
+import { SocketContext } from 'context/SocketContext';
+import ShipmentOverFlowModal from 'components/ShipmentOverFlowModal';
 
 function DashboardComponent({ activeSection }) {
   // console.log(handleBeltReset);
@@ -29,13 +31,30 @@ function DashboardComponent({ activeSection }) {
 
 function Index() {
   const [activeSection, setActiveSection] = useState(4);
+  const socket = useContext(SocketContext);
 
   const { isQfullError, setIsQfullError, shipmentOverflow } =
     useContext(GlobalContext);
   console.log(isQfullError, shipmentOverflow);
 
+  useEffect(() => {
+    socket.on('qfull', data => {
+      console.log('qfull');
+      setIsQfullError(true);
+    });
+  }, [socket]);
+
   return (
     <>
+      {isQfullError && (
+        <ShipmentOverFlowModal
+          open={isQfullError}
+          close={() => {
+            setIsQfullError(false);
+          }}
+          error={'Q-size is Full.'}
+        />
+      )}
       <Layout style={{ marginTop: '100px' }}>
         <Container>
           <div className="trackbar">
