@@ -66,7 +66,7 @@ function DiagnosticComponent({ item, beltType }) {
           }
         });
         console.log('response', response);
-        if (response?.data?.data === 'No more shipments allowed') {
+        if (response?.data?.data !== 'done') {
           setShipmentOverflow(response?.data?.data);
         }
         // console.log(response.data.message);
