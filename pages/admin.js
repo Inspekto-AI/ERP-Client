@@ -36,7 +36,7 @@ function Index() {
   const { isQfullError, setIsQfullError } = useContext(GlobalContext);
 
   useEffect(() => {
-    socket.on('qfull', data => {
+    socket.on('qfull', (data) => {
       setIsQfullError(data?.error);
     });
   }, [socket]);
@@ -111,7 +111,7 @@ function Index() {
             // marginTop: '300px',
             zIndex: '20000',
             top: '200px',
-            left: '200px'
+            left: '200px',
           }}
         >
           QFull

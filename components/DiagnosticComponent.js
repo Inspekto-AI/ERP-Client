@@ -1,12 +1,14 @@
-import { Input, Button, InputLabel, makeStyles } from '@material-ui/core';
+import {
+  Input, Button, InputLabel, makeStyles,
+} from '@material-ui/core';
 import { useDebugValue, useEffect, useState } from 'react';
 import { get, post, put } from 'utils/api';
 import { BASE_URL } from 'utils/constants';
 import ShipmentOverFlowModal from './ShipmentOverFlowModal';
 
-const useStyles = makeStyles(theme => ({
+const useStyles = makeStyles((theme) => ({
   label: {
-    marginLeft: '20px'
+    marginLeft: '20px',
   },
   input: {
     border: '1px solid black',
@@ -17,7 +19,7 @@ const useStyles = makeStyles(theme => ({
     backgroundColor: 'white',
     // marginTop: '80x',
     margin: '20px',
-    fontSize: '20px'
+    fontSize: '20px',
   },
   button: {
     border: '1px solid black',
@@ -29,8 +31,8 @@ const useStyles = makeStyles(theme => ({
     // marginTop: '80x',
     margin: '20px',
     height: '48px',
-    fontSize: '20px'
-  }
+    fontSize: '20px',
+  },
 }));
 
 function DiagnosticComponent({ item, beltType }) {
@@ -41,7 +43,7 @@ function DiagnosticComponent({ item, beltType }) {
 
   const [shipmentOverflow, setShipmentOverflow] = useState(null);
 
-  const handleFileChange = event => {
+  const handleFileChange = (event) => {
     setSelectedFile(event.target.files[0]);
   };
   const handleUpload = async () => {
@@ -51,7 +53,7 @@ function DiagnosticComponent({ item, beltType }) {
       formData.append('video', selectedFile);
       formData.append(
         'beltId',
-        beltType === 0 ? item?.machine_id : item?.printing_belt_id
+        beltType === 0 ? item?.machine_id : item?.printing_belt_id,
       );
       formData.append('tcpPort', item?.frame_tcp_port);
       formData.append('frameHeight', item?.frame_height);
@@ -62,10 +64,10 @@ function DiagnosticComponent({ item, beltType }) {
       try {
         const response = await post('/api/analyse/upload', formData, {
           headers: {
-            'Content-Type': 'multipart/form-data'
-          }
+            'Content-Type': 'multipart/form-data',
+          },
         });
-        console.log('response', response);
+        // console.log('response', response);
         if (response?.data?.data !== 'done') {
           setShipmentOverflow(response?.data?.data);
         }
@@ -80,10 +82,10 @@ function DiagnosticComponent({ item, beltType }) {
 
   const handleDownload = async () => {
     const isVideoPresent = await get('/api/analyse/is-video-present', {
-      beltId: beltType === 0 ? item?.machine_id : item?.printing_belt_id
+      beltId: beltType === 0 ? item?.machine_id : item?.printing_belt_id,
     });
 
-    console.log(isVideoPresent);
+    // console.log(isVideoPresent);
 
     if (isVideoPresent?.data === 'no video') {
       return;
@@ -104,7 +106,7 @@ function DiagnosticComponent({ item, beltType }) {
   const fetchAnalysingStatus = async () => {
     const res = await get('/api/analyse/get-analyse-status', {
       beltId: beltType === 0 ? item?.machine_id : item?.printing_belt_id,
-      beltType: beltType
+      beltType,
     });
     setIsAnalysing(res?.data[0]?.is_local_analysing);
   };

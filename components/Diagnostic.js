@@ -4,7 +4,7 @@ import { get, post, put } from 'utils/api';
 import { BASE_URL } from 'utils/constants';
 import DiagnosticComponent from './DiagnosticComponent';
 
-const useStyles = makeStyles(theme => ({
+const useStyles = makeStyles((theme) => ({
   input: {
     border: '1px solid black',
     borderRadius: theme.shape.borderRadius,
@@ -14,7 +14,7 @@ const useStyles = makeStyles(theme => ({
     backgroundColor: 'white',
     // marginTop: '80x',
     margin: '20px',
-    fontSize: '20px'
+    fontSize: '20px',
   },
   button: {
     border: '1px solid black',
@@ -26,8 +26,8 @@ const useStyles = makeStyles(theme => ({
     // marginTop: '80x',
     margin: '20px',
     height: '48px',
-    fontSize: '20px'
-  }
+    fontSize: '20px',
+  },
 }));
 
 function Diagnostic() {
@@ -57,7 +57,7 @@ function Diagnostic() {
       <Select
         className={classes.input}
         value={beltType}
-        onChange={e => {
+        onChange={(e) => {
           setBeltType(e.target.value);
         }}
       >
@@ -87,7 +87,7 @@ function Diagnostic() {
             </tr>
           </thead>
 
-          {loadingBelts?.map(item => (
+          {loadingBelts?.map((item) => (
             <DiagnosticComponent item={item} beltType={0} />
           ))}
         </table>
@@ -112,7 +112,7 @@ function Diagnostic() {
             </tr>
           </thead>
 
-          {printingBelts?.map(item => (
+          {printingBelts?.map((item) => (
             <DiagnosticComponent item={item} beltType={1} />
           ))}
         </table>
