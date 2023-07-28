@@ -221,7 +221,7 @@ function LoaderAnalysisRow({
                 //   ? (e) => handleValueChange(e, setWagonno)
                 //   :
                 e => {
-                  setWagonno(e.target.value);
+                  setWagonno(e.target.value.slice(0, 10));
                 }
               }
             />
