@@ -71,7 +71,7 @@ const Container = styled.div`
     .MuiTableCell-root {
       padding: 15px;
       text-align: center;
-      font-size: 12px;
+      font-size: 18px;
     }
 
     .MuiTableCell-head {
@@ -194,7 +194,7 @@ export const ProgressBarContainer = styled.div`
   }
 
   .MuiLinearProgress-barColorPrimary {
-    background-color: ${(props) => props.progressBackground};
+    background-color: ${props => props.progressBackground};
   }
 
   .productivity {

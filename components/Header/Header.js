@@ -1,9 +1,7 @@
 import Image from 'next/image';
 import { useState, useContext } from 'react';
 import { useRouter } from 'next/router';
-import {
-  Hidden, Button, Popper, Fade,
-} from '@material-ui/core';
+import { Hidden, Button, Popper, Fade } from '@material-ui/core';
 import { BsFillTriangleFill } from 'react-icons/bs';
 import { IoIosMenu } from 'react-icons/io';
 
@@ -13,26 +11,33 @@ import BypassSystem from 'components/BypassSystem';
 import { GlobalContext } from 'context/GlobalContext';
 import Container from './Header.styles';
 import HeaderDrawer from './HeaderDrawer';
+import { put } from 'utils/api';
+import { BASE_URL } from 'utils/constants';
 
 function Header({
   openShipmentForm,
   openMaintenanceForm,
   openNotificationForm,
-  maintenanceForm,
+  maintenanceForm
 }) {
   const router = useRouter();
   const [anchorEl, setAnchorEl] = useState(null);
   const [headerDropDownVisible, setHeaderDropDownVisible] = useState(false);
   const [bypassSystem, setBypassSystem] = useState(false);
 
-  const { trippingStatus, setTrippingStatus, beltTrippingEnabled } = useContext(GlobalContext);
+  const { trippingStatus, setTrippingStatus, beltTrippingEnabled } =
+    useContext(GlobalContext);
 
-  const handleClick = (event) => {
+  const handleClick = event => {
     setAnchorEl(anchorEl ? null : event.currentTarget);
   };
 
   const open = Boolean(anchorEl);
   const id = open ? 'transitions-popper' : undefined;
+
+  const restartTmate = async () => {
+    const res = await put(`${BASE_URL}/api/configuration/restart-tmate`);
+  };
 
   return (
     <Container>
@@ -67,6 +72,24 @@ function Header({
                 </p>
               </Button>
             )}
+            <Button
+              variant="contained"
+              color="primary"
+              className={trippingStatus ? 'red-button' : 'purple-button'}
+              onClick={() => {
+                router.push('/admin');
+              }}
+            >
+              <p className="button-label">Admin</p>
+            </Button>{' '}
+            <Button
+              variant="contained"
+              color="primary"
+              className={trippingStatus ? 'red-button' : 'purple-button'}
+              onClick={restartTmate}
+            >
+              <p className="button-label">Restart T-mate</p>
+            </Button>
             {/* <Button
               variant="contained"
               color="primary"
@@ -135,12 +158,12 @@ function Header({
               disablePortal
               modifiers={{
                 flip: {
-                  enabled: false,
+                  enabled: false
                 },
                 preventOverflow: {
                   enabled: true,
-                  boundariesElement: 'viewport',
-                },
+                  boundariesElement: 'viewport'
+                }
               }}
             >
               {({ TransitionProps }) => (
@@ -184,7 +207,7 @@ function Header({
           open={bypassSystem}
           close={() => setBypassSystem(false)}
           trippingStatus={trippingStatus}
-          setTrippingStatus={(e) => setTrippingStatus(e)}
+          setTrippingStatus={e => setTrippingStatus(e)}
         />
       ) : null}
     </Container>
@@ -197,7 +220,7 @@ Header.propTypes = {
   openNotificationForm: PropTypes.func,
   maintenanceForm: PropTypes.func,
   bypassSystem: PropTypes.bool,
-  Closebypass: PropTypes.func,
+  Closebypass: PropTypes.func
 };
 
 export default Header;
