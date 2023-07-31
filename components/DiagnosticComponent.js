@@ -3,6 +3,7 @@ import { useDebugValue, useEffect, useState } from 'react';
 import { get, post, put } from 'utils/api';
 import { BASE_URL } from 'utils/constants';
 import ShipmentOverFlowModal from './ShipmentOverFlowModal';
+import { SocketContext } from 'context/SocketContext';
 
 const useStyles = makeStyles(theme => ({
   label: {
@@ -35,6 +36,7 @@ const useStyles = makeStyles(theme => ({
 
 function DiagnosticComponent({ item, beltType }) {
   const classes = useStyles();
+  const socket = useContext(SocketContext);
 
   const [selectedFile, setSelectedFile] = useState(null);
   const [isAnalysing, setIsAnalysing] = useState(1);
@@ -68,6 +70,8 @@ function DiagnosticComponent({ item, beltType }) {
         // console.log('response', response);
         if (response?.data?.data !== 'done') {
           setShipmentOverflow(response?.data?.data);
+        } else {
+          setIsAnalysing(true);
         }
         // console.log(response.data.message);
         // Display a success message or perform other actions upon successful upload.
@@ -111,7 +115,11 @@ function DiagnosticComponent({ item, beltType }) {
   useEffect(() => {
     fetchAnalysingStatus();
   });
-
+  useEffect(() => {
+    socket.on('analysis-complete', data => {
+      setIsAnalysing(false);
+    });
+  }, [socket]);
   return (
     <tr>
       {shipmentOverflow && (
