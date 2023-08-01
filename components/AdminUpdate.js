@@ -81,7 +81,7 @@ function Admin() {
     const fetchRealTimeVideo = async () => {
       const res = await get('/api/configuration/initialize-frontend');
       console.log(res?.data?.data);
-      setImShow(res?.data?.data?.im_show);
+      setImShow(res?.data?.data?.real_time_video);
     };
     fetchRealTimeVideo();
   }, []);
