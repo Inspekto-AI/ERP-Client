@@ -7,45 +7,53 @@ import FrinksButton from 'components/FrinksButton';
 import { LoginQuery } from 'reactQueries/authQueries';
 import { GlobalContext } from 'context/GlobalContext';
 import { useState, useEffect, useContext } from 'react';
+import { get, post } from 'utils/api';
 
 function Login() {
   const router = useRouter();
-  const loginQuery = LoginQuery();
+  // const loginQuery = LoginQuery();
   const [error, setError] = useState('');
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
-  const { userData, setUserData } = useContext(GlobalContext);
+  // const { userData, setUserData } = useContext(GlobalContext);
 
-  const handleSubmit = async (e) => {
+  const handleSubmit = async e => {
     e.preventDefault();
-    loginQuery.mutate({
+    const res = await get('/api/users/check-login', {
       email,
-      password,
+      password
     });
+
+    console.log(res?.data);
+    if (res?.data[0] === true) {
+      router.push('/admin');
+    } else {
+      setError(res?.data[1]);
+    }
   };
 
-  useEffect(() => {
-    if (loginQuery.isSuccess) {
-      setUserData({ ...loginQuery.data.data, isLoggedIn: true });
-      router.replace('/');
-      loginQuery.reset();
-    }
-    if (loginQuery.isError) {
-      if (loginQuery?.error?.response?.data?.errors) {
-        setError(Object.values(loginQuery?.error?.response?.data?.errors)[0]);
-      } else setError(loginQuery.error.response.data.message);
-      loginQuery.reset();
-    }
-  }, [loginQuery, router, setUserData]);
+  // useEffect(() => {
+  //   if (loginQuery.isSuccess) {
+  //     setUserData({ ...loginQuery.data.data, isLoggedIn: true });
+  //     router.replace('/');
+  //     loginQuery.reset();
+  //   }
+  //   if (loginQuery.isError) {
+  //     if (loginQuery?.error?.response?.data?.errors) {
+  //       setError(Object.values(loginQuery?.error?.response?.data?.errors)[0]);
+  //     } else setError(loginQuery.error.response.data.message);
+  //     loginQuery.reset();
+  //   }
+  // }, [loginQuery, router, setUserData]);
 
-  if (!userData) {
-    return <Loader />;
-  }
+  // if (!userData) {
+  //   return <Loader />;
+  // }
 
-  if (userData && userData.isLoggedIn) {
-    router.push('/');
-    return <Loader />;
-  }
+  // if (userData && userData.isLoggedIn) {
+  //   router.push('/admin');
+  //   return <Loader />;
+  // }
 
   return (
     <Container>
@@ -67,7 +75,7 @@ function Login() {
             placeholder="Email"
             value={email}
             error={!!error}
-            onChange={(e) => setEmail(e.target.value)}
+            onChange={e => setEmail(e.target.value)}
             helperText={error ? error.desc : null}
           />
           <br />
@@ -81,17 +89,14 @@ function Login() {
             placeholder="Password"
             error={!!error}
             value={password}
-            onChange={(e) => setPassword(e.target.value)}
+            onChange={e => setPassword(e.target.value)}
             helperText={error ? error.desc : null}
           />
           <br />
           <div className="error-block">{error}</div>
           <FrinksButton text="Login" type="submit" />
           <p className="forgot">
-            Unable to login? Reach out to
-            {' '}
-            <span>Administrator</span>
-            .
+            Unable to login? Reach out to <span>Administrator</span>.
           </p>
         </form>
       </div>
