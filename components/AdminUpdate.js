@@ -61,14 +61,14 @@ function Admin() {
   const handleImShowOff = async () => {
     setImShow(0);
     await post('api/configuration/toggle-imshow', {
-      imShow: 1
+      imShow: 0
     });
   };
 
   const handleImShowOn = async () => {
     setImShow(1);
     await post('api/configuration/toggle-imshow', {
-      imShow: 0
+      imShow: 1
     });
   };
 
@@ -122,7 +122,7 @@ function Admin() {
                     // width: '120px',
                     height: '50px'
                   }}
-                  onClick={handleImShowOff}
+                  onClick={handleImShowOn}
                 >
                   On
                 </Button>
@@ -134,7 +134,7 @@ function Admin() {
                     // width: '120px',
                     height: '50px'
                   }}
-                  onClick={handleImShowOn}
+                  onClick={handleImShowOff}
                 >
                   Off
                 </Button>
