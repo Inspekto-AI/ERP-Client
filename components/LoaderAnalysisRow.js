@@ -97,7 +97,7 @@ function LoaderAnalysisRow({
   const [detailModalOpen, setDetailModalOpen] = useState(null);
 
   const handleAddButton = async () => {
-    console.log(addBagCount);
+    // console.log(addBagCount);
     if (addBagCount === '0' || addBagCount === 0 || addBagCount === '') {
       return;
     }
@@ -217,11 +217,12 @@ function LoaderAnalysisRow({
                 vehicleType === 1 ? 'Add Wagon No.' : 'Add Truck No.'
               }
               onChange={
-                vehicleType === 1
-                  ? (e) => handleValueChange(e, setWagonno)
-                  : (e) => {
-                    setWagonno(e.target.value);
-                  }
+                // vehicleType === 1
+                //   ? (e) => handleValueChange(e, setWagonno)
+                //   :
+                (e) => {
+                  setWagonno(e.target.value.slice(0, 10));
+                }
               }
             />
           )}

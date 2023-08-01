@@ -16,6 +16,7 @@ import InfoModal from 'components/InfoModal/InfoModal';
 import { useState, useContext, useEffect } from 'react';
 import { GlobalContext } from 'context/GlobalContext';
 import ShipmentOverFlowModal from 'components/ShipmentOverFlowModal';
+import WhatsappRecipient from 'components/WhatsAppRecipient';
 
 import Alert from '@material-ui/lab/Alert';
 import { Button } from '@material-ui/core';
@@ -99,11 +100,14 @@ function Index() {
   const [showTruckLoader, setShowTruckLoader] = useState(true);
   const [showWagonLoader, setShowWagonLoader] = useState(true);
   const [showPrinting, setShowPrinting] = useState(true);
+
   const {
     setBeltTrippingEnabled,
     deactivatePrintingSolution: DEACTIVATE_PRINTING_SOLUTION,
     setShipmentOverflow,
     shipmentOverflow,
+    isQfullError,
+    setIsQfullError,
   } = useContext(GlobalContext);
 
   const handleBeltReset = async (
@@ -445,6 +449,9 @@ function Index() {
         });
       },
     );
+    socket.on('qfull', (data) => {
+      setIsQfullError(data?.error);
+    });
   }, [socket]);
 
   if (shipmentFormOpen || reverseShipmentFormOpen) {
@@ -475,6 +482,15 @@ function Index() {
             setShipmentOverflow(false);
           }}
           error={shipmentError}
+        />
+      )}
+      {isQfullError && (
+        <ShipmentOverFlowModal
+          open={isQfullError}
+          close={() => {
+            setIsQfullError(false);
+          }}
+          error={isQfullError}
         />
       )}
       <Layout

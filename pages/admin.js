@@ -1,88 +1,124 @@
-import { useContext, useEffect, useState } from 'react';
-import { useRouter } from 'next/router';
-import Loader from 'components/Loader';
-import { GlobalContext } from 'context/GlobalContext';
+import Admin from 'components/AdminUpdate';
+import WhatsappRecipient from 'components/WhatsAppRecipient';
 import Layout from 'components/Layout';
-import Container from 'styles/admin.styles';
-import { MdOutlineExpandMore } from 'react-icons/md';
-import { Accordion, AccordionDetails, AccordionSummary } from '@material-ui/core';
-import UpdateDatabase from 'components/UpdateDatabase';
-import UpdateModelWeights from 'components/UpdateModelWeights';
-import PythonDataExtraction from 'components/PythonDataExtraction';
-import { get } from 'utils/api';
-import UpdateTmate from 'components/UpdateTmate';
+import Container from 'styles/homepage.styles';
+import { useEffect, useState, useContext } from 'react';
+import Parameters from 'components/Parameters';
+import Belts from 'components/Belts';
+import { GlobalContext } from 'context/GlobalContext';
+import Diagnostic from 'components/Diagnostic';
+import { SocketContext } from 'context/SocketContext';
+import ShipmentOverFlowModal from 'components/ShipmentOverFlowModal';
 
-function Admin() {
-  const router = useRouter();
-  const { userData } = useContext(GlobalContext);
-  const [dataExtractionStatus, setDataExtractionStatus] = useState(false);
+function DashboardComponent({ activeSection }) {
+  // console.log(handleBeltReset);
+  if (activeSection === 0) {
+    return <Admin />;
+  }
+  if (activeSection === 1) {
+    return <WhatsappRecipient />;
+  }
+  if (activeSection === 2) {
+    return <Parameters />;
+  }
+  if (activeSection === 3) {
+    return <Belts />;
+  }
+  if (activeSection === 4) {
+    return <Diagnostic />;
+  }
+}
+
+function Index() {
+  const [activeSection, setActiveSection] = useState(0);
+  const socket = useContext(SocketContext);
+
+  const { isQfullError, setIsQfullError } = useContext(GlobalContext);
 
   useEffect(() => {
-    const fetchStatus = async () => {
-      const res = await get('/api/configuration/data-extraction');
-      setDataExtractionStatus(!!res?.data?.data?.dataExtractionStatus);
-    };
-    fetchStatus();
-  }, []);
-
-  if (!userData) {
-    return <Loader />;
-  }
-
-  if (userData.isLoggedIn === false) {
-    router.push('/login');
-    return <Loader />;
-  }
+    socket.on('qfull', (data) => {
+      setIsQfullError(data?.error);
+    });
+  }, [socket]);
 
   return (
-    <Layout alternateHeader title="Admin Portal">
-      <Container>
-        <Accordion>
-          <AccordionSummary
-            expandIcon={<MdOutlineExpandMore />}
-          >
-            Update Database
-          </AccordionSummary>
-          <AccordionDetails>
-            <UpdateDatabase />
-          </AccordionDetails>
-        </Accordion>
-        <Accordion>
-          <AccordionSummary
-            expandIcon={<MdOutlineExpandMore />}
-          >
-            Update Weight Files
-          </AccordionSummary>
-          <AccordionDetails>
-            <UpdateModelWeights />
-          </AccordionDetails>
-        </Accordion>
-        <Accordion>
-          <AccordionSummary
-            expandIcon={<MdOutlineExpandMore />}
-          >
-            Python Data Extraction
-          </AccordionSummary>
-          <AccordionDetails>
-            <PythonDataExtraction
-              dataExtractionStatus={dataExtractionStatus}
-              setDataExtractionStatus={(e) => setDataExtractionStatus(e)}
-            />
-          </AccordionDetails>
-        </Accordion>
-        <Accordion>
-          <AccordionSummary
-            expandIcon={<MdOutlineExpandMore />}
-          >
-            Update Tmate
-          </AccordionSummary>
-          <AccordionDetails>
-            <UpdateTmate />
-          </AccordionDetails>
-        </Accordion>
-      </Container>
-    </Layout>
+    <>
+      {isQfullError && (
+        <ShipmentOverFlowModal
+          open={isQfullError}
+          close={() => {
+            setIsQfullError(false);
+          }}
+          error={isQfullError}
+        />
+      )}
+      <Layout style={{ marginTop: '100px' }}>
+        <Container>
+          <div className="trackbar">
+            <div
+              className={`option ${activeSection === 0 ? 'active' : ''}`}
+              onClick={() => setActiveSection(0)}
+              onKeyPress={() => setActiveSection(0)}
+              role="button"
+              tabIndex={0}
+            >
+              <h6 style={{ textAlign: 'center' }}>System Configuration</h6>
+            </div>
+            <div
+              className={`option ${activeSection === 1 ? 'active' : ''}`}
+              onClick={() => setActiveSection(1)}
+              onKeyPress={() => setActiveSection(1)}
+              role="button"
+              tabIndex={0}
+            >
+              <h6 style={{ textAlign: 'center' }}>WhatsApp Recipient</h6>
+            </div>
+            <div
+              className={`option ${activeSection === 2 ? 'active' : ''}`}
+              onClick={() => setActiveSection(2)}
+              onKeyPress={() => setActiveSection(2)}
+              role="button"
+              tabIndex={0}
+            >
+              <h6 style={{ textAlign: 'center' }}>Parameters</h6>
+            </div>
+            <div
+              className={`option ${activeSection === 3 ? 'active' : ''}`}
+              onClick={() => setActiveSection(3)}
+              onKeyPress={() => setActiveSection(3)}
+              role="button"
+              tabIndex={0}
+            >
+              <h6 style={{ textAlign: 'center' }}>Belts</h6>
+            </div>
+            <div
+              className={`option ${activeSection === 4 ? 'active' : ''}`}
+              onClick={() => setActiveSection(4)}
+              onKeyPress={() => setActiveSection(4)}
+              role="button"
+              tabIndex={0}
+            >
+              <h6 style={{ textAlign: 'center' }}>Diagnostic</h6>
+            </div>
+          </div>
+          <DashboardComponent activeSection={activeSection} />
+        </Container>
+      </Layout>
+      {isQfullError && (
+        <p
+          style={{
+            fontSize: '50px',
+            // marginTop: '300px',
+            zIndex: '20000',
+            top: '200px',
+            left: '200px',
+          }}
+        >
+          QFull
+        </p>
+      )}
+    </>
   );
 }
 
-export default Admin;
+export default Index;

@@ -11,6 +11,8 @@ import ImageKitLoader from 'utils/ImageLoader';
 import PropTypes from 'prop-types';
 import BypassSystem from 'components/BypassSystem';
 import { GlobalContext } from 'context/GlobalContext';
+import { put } from 'utils/api';
+import { BASE_URL } from 'utils/constants';
 import Container from './Header.styles';
 import HeaderDrawer from './HeaderDrawer';
 
@@ -33,6 +35,10 @@ function Header({
 
   const open = Boolean(anchorEl);
   const id = open ? 'transitions-popper' : undefined;
+
+  const restartTmate = async () => {
+    const res = await put(`${BASE_URL}/api/configuration/restart-tmate`);
+  };
 
   return (
     <Container>
@@ -67,6 +73,25 @@ function Header({
                 </p>
               </Button>
             )}
+            <Button
+              variant="contained"
+              color="primary"
+              className={trippingStatus ? 'red-button' : 'purple-button'}
+              onClick={() => {
+                router.push('/admin');
+              }}
+            >
+              <p className="button-label">Admin</p>
+            </Button>
+            {' '}
+            <Button
+              variant="contained"
+              color="primary"
+              className={trippingStatus ? 'red-button' : 'purple-button'}
+              onClick={restartTmate}
+            >
+              <p className="button-label">Restart T-mate</p>
+            </Button>
             {/* <Button
               variant="contained"
               color="primary"

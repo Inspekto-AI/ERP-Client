@@ -11,7 +11,8 @@ export function GlobalProvider({ children }) {
   const [deactivateLoaderSolution, setDeactivateLoaderSolution] = useState(0);
   const [deactivatePrintingSolution, setDeactivatePrintingSolution] = useState(0);
   const [shipmentOverflow, setShipmentOverflow] = useState(false);
-
+  const [numberOfWhatsappRecipient, setNumberOfWhatsappRecipient] = useState(0);
+  const [isQfullError, setIsQfullError] = useState(null);
   return (
     <GlobalContext.Provider
       value={{
@@ -29,6 +30,10 @@ export function GlobalProvider({ children }) {
         setDeactivatePrintingSolution,
         shipmentOverflow,
         setShipmentOverflow,
+        numberOfWhatsappRecipient,
+        setNumberOfWhatsappRecipient,
+        isQfullError,
+        setIsQfullError,
       }}
     >
       {children}
