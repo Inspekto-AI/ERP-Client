@@ -56,7 +56,7 @@ function Admin() {
 
   const { userData } = useContext(GlobalContext);
   const [dataExtractionStatus, setDataExtractionStatus] = useState(false);
-  const [imShow, setImShow] = useState(0);
+  const [imShow, setImShow] = useState(1);
 
   const handleImShowOff = async () => {
     setImShow(0);
@@ -78,6 +78,12 @@ function Admin() {
       setDataExtractionStatus(!!res?.data?.data?.dataExtractionStatus);
     };
     fetchStatus();
+    const fetchRealTimeVideo = async () => {
+      const res = await get('/api/configuration/initialize-frontend');
+      console.log(res?.data?.data);
+      setImShow(res?.data?.data?.im_show);
+    };
+    fetchRealTimeVideo();
   }, []);
 
   if (!userData) {
@@ -111,8 +117,8 @@ function Admin() {
                 <Button
                   className={classes.select_2}
                   style={{
-                    backgroundColor: imShow === 0 ? '#B5179E' : '#F5F5F5',
-                    color: imShow === 1 ? '#B5179E' : '#F5F5F5',
+                    backgroundColor: imShow === 1 ? '#B5179E' : '#F5F5F5',
+                    color: imShow === 0 ? '#B5179E' : '#F5F5F5',
                     // width: '120px',
                     height: '50px'
                   }}
@@ -123,8 +129,8 @@ function Admin() {
                 <Button
                   className={classes.select_2}
                   style={{
-                    backgroundColor: imShow === 1 ? '#B5179E' : '#F5F5F5',
-                    color: imShow === 0 ? '#B5179E' : '#F5F5F5',
+                    backgroundColor: imShow === 0 ? '#B5179E' : '#F5F5F5',
+                    color: imShow === 1 ? '#B5179E' : '#F5F5F5',
                     // width: '120px',
                     height: '50px'
                   }}
