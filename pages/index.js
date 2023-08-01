@@ -481,11 +481,7 @@ function Index() {
           close={() => {
             setShipmentOverflow(false);
           }}
-          error={
-            shipmentError === 'Request failed with status code 404'
-              ? "Slave is not connected. Shipment can't be created"
-              : shipmentError
-          }
+          error={shipmentError}
         />
       )}
       {isQfullError && (
