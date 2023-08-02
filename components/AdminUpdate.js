@@ -57,6 +57,7 @@ function Admin() {
   const { userData } = useContext(GlobalContext);
   const [dataExtractionStatus, setDataExtractionStatus] = useState(false);
   const [imShow, setImShow] = useState(1);
+  const [frameExtraction, setFrameExtraction] = useState(1);
 
   const handleImShowOff = async () => {
     setImShow(0);
@@ -71,6 +72,19 @@ function Admin() {
       imShow: 1
     });
   };
+  const handleFrameExtractionOff = async () => {
+    setFrameExtraction(0);
+    await post('api/configuration/frame-extraction', {
+      frameExtraction: 0
+    });
+  };
+
+  const handleFrameExtractionOn = async () => {
+    setFrameExtraction(1);
+    await post('api/configuration/frame-extraction', {
+      frameExtraction: 1
+    });
+  };
 
   useEffect(() => {
     const fetchStatus = async () => {
@@ -82,18 +96,19 @@ function Admin() {
       const res = await get('/api/configuration/initialize-frontend');
       console.log(res?.data?.data);
       setImShow(res?.data?.data?.real_time_video);
+      setFrameExtraction(res?.data?.data?.frame_extraction);
     };
     fetchRealTimeVideo();
   }, []);
 
-  if (!userData) {
-    return <Loader />;
-  }
+  // if (!userData) {
+  //   return <Loader />;
+  // }
 
-  if (userData.isLoggedIn === false) {
-    router.push('/login');
-    return <Loader />;
-  }
+  // if (userData.isLoggedIn === false) {
+  //   router.push('/login');
+  //   return <Loader />;
+  // }
 
   return (
     <Layout alternateHeader title="Admin Portal">
@@ -142,6 +157,52 @@ function Admin() {
             </div>
           </AccordionDetails>
         </Accordion>{' '}
+        <Accordion>
+          <AccordionSummary expandIcon={<MdOutlineExpandMore />}>
+            Frame Extraction
+          </AccordionSummary>
+          <AccordionDetails>
+            <div className="center">
+              {/* <p className="update-scope">
+                Updates database values by fetching info from AWS and restarts
+                necessary modules
+              </p> */}
+              <ButtonGroup
+                // className={classes.select_1}
+                variant="contained"
+                aria-label="outlined primary button group"
+                // className={classes.toggle}
+              >
+                <Button
+                  className={classes.select_2}
+                  style={{
+                    backgroundColor:
+                      frameExtraction === 1 ? '#B5179E' : '#F5F5F5',
+                    color: frameExtraction === 0 ? '#B5179E' : '#F5F5F5',
+                    // width: '120px',
+                    height: '50px'
+                  }}
+                  onClick={handleFrameExtractionOn}
+                >
+                  On
+                </Button>
+                <Button
+                  className={classes.select_2}
+                  style={{
+                    backgroundColor:
+                      frameExtraction === 0 ? '#B5179E' : '#F5F5F5',
+                    color: frameExtraction === 1 ? '#B5179E' : '#F5F5F5',
+                    // width: '120px',
+                    height: '50px'
+                  }}
+                  onClick={handleFrameExtractionOff}
+                >
+                  Off
+                </Button>
+              </ButtonGroup>
+            </div>
+          </AccordionDetails>
+        </Accordion>
         <Accordion>
           <AccordionSummary expandIcon={<MdOutlineExpandMore />}>
             Update Database
