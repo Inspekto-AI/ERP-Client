@@ -20,6 +20,7 @@ import PythonDataExtraction from 'components/PythonDataExtraction';
 import { get, post } from 'utils/api';
 import UpdateTmate from 'components/UpdateTmate';
 import { makeStyles } from '@material-ui/core/styles';
+import ShipmentOverFlowModal from './ShipmentOverFlowModal';
 
 const useStyles = makeStyles(theme => ({
   select: {
@@ -64,6 +65,7 @@ function Admin() {
   const [allBelts, setAllBelts] = useState(null);
   const [allPrintingBelts, setAllPrintingBelts] = useState(null);
   const [isWagon, setIsWagon] = useState(0);
+  const [imShowError, setImShowError] = useState(null);
 
   const handleImShowOff = async () => {
     setImShow(0);
@@ -81,9 +83,10 @@ function Admin() {
       beltId: beltId,
       isWagon
     });
-    console.log(res?.data?.data);
-    if (res?.data?.data !== 'done') {
+    console.log(res?.data);
+    if (res?.data !== 'done') {
       console.log("Cmaera can't be displayed");
+      setImShowError(res?.data);
     }
   };
   const handleFrameExtractionOff = async () => {
@@ -135,173 +138,184 @@ function Admin() {
   // }
 
   return (
-    <Layout alternateHeader title="Admin Portal">
-      <Container>
-        <Accordion>
-          <AccordionSummary expandIcon={<MdOutlineExpandMore />}>
-            Real Time Video
-          </AccordionSummary>
-          <AccordionDetails>
-            <div
-              className="center"
-              style={{ display: 'flex', flexDirection: 'row' }}
-            >
-              {/* <p className="update-scope">
+    <>
+      {imShowError && (
+        <ShipmentOverFlowModal
+          open={imShowError}
+          close={() => {
+            setImShowError(false);
+          }}
+          error={imShowError}
+        />
+      )}
+      <Layout alternateHeader title="Admin Portal">
+        <Container>
+          <Accordion>
+            <AccordionSummary expandIcon={<MdOutlineExpandMore />}>
+              Real Time Video
+            </AccordionSummary>
+            <AccordionDetails>
+              <div
+                className="center"
+                style={{ display: 'flex', flexDirection: 'row' }}
+              >
+                {/* <p className="update-scope">
                 Updates database values by fetching info from AWS and restarts
                 necessary modules
               </p> */}
 
-              <Select
-                // className={classes.select_1}
-                value={[beltId, isWagon]}
-                onChange={e => {
-                  setBeltId(e.target.value[0]);
-                  setIsWagon(e.target.value[1]);
-                }}
-                style={{
-                  fontSize: '14px',
-                  background: 'white',
-                  width: '240px',
-                  marginRight: '50px'
-                  // marginRight: '-20px'
-                }}
-                variant="outlined"
-                // IconComponent={KeyboardArrowDownSharpIcon}
-              >
-                <MenuItem value={[null, 0]}>Select Belt</MenuItem>
-                {allBelts?.map(e => {
-                  return (
-                    <MenuItem value={[e?.machine_id, true]}>
-                      {e?.machine_id}
-                    </MenuItem>
-                  );
-                })}
-                {allPrintingBelts?.map(e => {
-                  return (
-                    <MenuItem value={[e?.printing_belt_id, false]}>
-                      {e?.printing_belt_id}
-                    </MenuItem>
-                  );
-                })}
-              </Select>
+                <Select
+                  // className={classes.select_1}
+                  value={[beltId, isWagon]}
+                  onChange={e => {
+                    setBeltId(e.target.value[0]);
+                    setIsWagon(e.target.value[1]);
+                  }}
+                  style={{
+                    fontSize: '14px',
+                    background: 'white',
+                    width: '240px',
+                    marginRight: '50px'
+                    // marginRight: '-20px'
+                  }}
+                  variant="outlined"
+                  // IconComponent={KeyboardArrowDownSharpIcon}
+                >
+                  <MenuItem value={[null, 0]}>Select Belt</MenuItem>
+                  {allBelts?.map(e => {
+                    return (
+                      <MenuItem value={[e?.machine_id, true]}>
+                        {e?.machine_id}
+                      </MenuItem>
+                    );
+                  })}
+                  {allPrintingBelts?.map(e => {
+                    return (
+                      <MenuItem value={[e?.printing_belt_id, false]}>
+                        {e?.printing_belt_id}
+                      </MenuItem>
+                    );
+                  })}
+                </Select>
 
-              <ButtonGroup
-                // className={classes.select_1}
-                variant="contained"
-                aria-label="outlined primary button group"
-                // className={classes.toggle}
-              >
-                <Button
-                  className={classes.select_2}
-                  style={{
-                    backgroundColor: imShow === 1 ? '#B5179E' : '#F5F5F5',
-                    color: imShow === 0 ? '#B5179E' : '#F5F5F5',
-                    // width: '120px',
-                    height: '50px'
-                  }}
-                  onClick={handleImShowOn}
+                <ButtonGroup
+                  // className={classes.select_1}
+                  variant="contained"
+                  aria-label="outlined primary button group"
+                  // className={classes.toggle}
                 >
-                  On
-                </Button>
-                <Button
-                  className={classes.select_2}
-                  style={{
-                    backgroundColor: imShow === 0 ? '#B5179E' : '#F5F5F5',
-                    color: imShow === 1 ? '#B5179E' : '#F5F5F5',
-                    // width: '120px',
-                    height: '50px'
-                  }}
-                  onClick={handleImShowOff}
-                >
-                  Off
-                </Button>
-              </ButtonGroup>
-            </div>
-          </AccordionDetails>
-        </Accordion>{' '}
-        <Accordion>
-          <AccordionSummary expandIcon={<MdOutlineExpandMore />}>
-            Frame Extraction
-          </AccordionSummary>
-          <AccordionDetails>
-            <div className="center">
-              {/* <p className="update-scope">
+                  <Button
+                    className={classes.select_2}
+                    style={{
+                      backgroundColor: imShow === 1 ? '#B5179E' : '#F5F5F5',
+                      color: imShow === 0 ? '#B5179E' : '#F5F5F5',
+                      // width: '120px',
+                      height: '50px'
+                    }}
+                    onClick={handleImShowOn}
+                  >
+                    On
+                  </Button>
+                  <Button
+                    className={classes.select_2}
+                    style={{
+                      backgroundColor: imShow === 0 ? '#B5179E' : '#F5F5F5',
+                      color: imShow === 1 ? '#B5179E' : '#F5F5F5',
+                      // width: '120px',
+                      height: '50px'
+                    }}
+                    onClick={handleImShowOff}
+                  >
+                    Off
+                  </Button>
+                </ButtonGroup>
+              </div>
+            </AccordionDetails>
+          </Accordion>{' '}
+          <Accordion>
+            <AccordionSummary expandIcon={<MdOutlineExpandMore />}>
+              Frame Extraction
+            </AccordionSummary>
+            <AccordionDetails>
+              <div className="center">
+                {/* <p className="update-scope">
                 Updates database values by fetching info from AWS and restarts
                 necessary modules
               </p> */}
-              <ButtonGroup
-                // className={classes.select_1}
-                variant="contained"
-                aria-label="outlined primary button group"
-                // className={classes.toggle}
-              >
-                <Button
-                  className={classes.select_2}
-                  style={{
-                    backgroundColor:
-                      frameExtraction === 1 ? '#B5179E' : '#F5F5F5',
-                    color: frameExtraction === 0 ? '#B5179E' : '#F5F5F5',
-                    // width: '120px',
-                    height: '50px'
-                  }}
-                  onClick={handleFrameExtractionOn}
+                <ButtonGroup
+                  // className={classes.select_1}
+                  variant="contained"
+                  aria-label="outlined primary button group"
+                  // className={classes.toggle}
                 >
-                  On
-                </Button>
-                <Button
-                  className={classes.select_2}
-                  style={{
-                    backgroundColor:
-                      frameExtraction === 0 ? '#B5179E' : '#F5F5F5',
-                    color: frameExtraction === 1 ? '#B5179E' : '#F5F5F5',
-                    // width: '120px',
-                    height: '50px'
-                  }}
-                  onClick={handleFrameExtractionOff}
-                >
-                  Off
-                </Button>
-              </ButtonGroup>
-            </div>
-          </AccordionDetails>
-        </Accordion>
-        <Accordion>
-          <AccordionSummary expandIcon={<MdOutlineExpandMore />}>
-            Update Database
-          </AccordionSummary>
-          <AccordionDetails>
-            <UpdateDatabase />
-          </AccordionDetails>
-        </Accordion>
-        <Accordion>
-          <AccordionSummary expandIcon={<MdOutlineExpandMore />}>
-            Update Weight Files
-          </AccordionSummary>
-          <AccordionDetails>
-            <UpdateModelWeights />
-          </AccordionDetails>
-        </Accordion>
-        <Accordion>
-          <AccordionSummary expandIcon={<MdOutlineExpandMore />}>
-            Python Data Extraction
-          </AccordionSummary>
-          <AccordionDetails>
-            <PythonDataExtraction
-              dataExtractionStatus={dataExtractionStatus}
-              setDataExtractionStatus={e => setDataExtractionStatus(e)}
-            />
-          </AccordionDetails>
-        </Accordion>
-        <Accordion>
-          <AccordionSummary expandIcon={<MdOutlineExpandMore />}>
-            Update Tmate
-          </AccordionSummary>
-          <AccordionDetails>
-            <UpdateTmate />
-          </AccordionDetails>
-        </Accordion>
-      </Container>
-    </Layout>
+                  <Button
+                    className={classes.select_2}
+                    style={{
+                      backgroundColor:
+                        frameExtraction === 1 ? '#B5179E' : '#F5F5F5',
+                      color: frameExtraction === 0 ? '#B5179E' : '#F5F5F5',
+                      // width: '120px',
+                      height: '50px'
+                    }}
+                    onClick={handleFrameExtractionOn}
+                  >
+                    On
+                  </Button>
+                  <Button
+                    className={classes.select_2}
+                    style={{
+                      backgroundColor:
+                        frameExtraction === 0 ? '#B5179E' : '#F5F5F5',
+                      color: frameExtraction === 1 ? '#B5179E' : '#F5F5F5',
+                      // width: '120px',
+                      height: '50px'
+                    }}
+                    onClick={handleFrameExtractionOff}
+                  >
+                    Off
+                  </Button>
+                </ButtonGroup>
+              </div>
+            </AccordionDetails>
+          </Accordion>
+          <Accordion>
+            <AccordionSummary expandIcon={<MdOutlineExpandMore />}>
+              Update Database
+            </AccordionSummary>
+            <AccordionDetails>
+              <UpdateDatabase />
+            </AccordionDetails>
+          </Accordion>
+          <Accordion>
+            <AccordionSummary expandIcon={<MdOutlineExpandMore />}>
+              Update Weight Files
+            </AccordionSummary>
+            <AccordionDetails>
+              <UpdateModelWeights />
+            </AccordionDetails>
+          </Accordion>
+          <Accordion>
+            <AccordionSummary expandIcon={<MdOutlineExpandMore />}>
+              Python Data Extraction
+            </AccordionSummary>
+            <AccordionDetails>
+              <PythonDataExtraction
+                dataExtractionStatus={dataExtractionStatus}
+                setDataExtractionStatus={e => setDataExtractionStatus(e)}
+              />
+            </AccordionDetails>
+          </Accordion>
+          <Accordion>
+            <AccordionSummary expandIcon={<MdOutlineExpandMore />}>
+              Update Tmate
+            </AccordionSummary>
+            <AccordionDetails>
+              <UpdateTmate />
+            </AccordionDetails>
+          </Accordion>
+        </Container>
+      </Layout>
+    </>
   );
 }
 
