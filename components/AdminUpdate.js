@@ -76,11 +76,15 @@ function Admin() {
 
   const handleImShowOn = async () => {
     setImShow(1);
-    await post('api/configuration/toggle-imshow', {
+    const res = await post('api/configuration/toggle-imshow', {
       imShow: 1,
       beltId: beltId,
       isWagon
     });
+    console.log(res?.data?.data);
+    if (res?.data?.data !== 'done') {
+      console.log("Cmaera can't be displayed");
+    }
   };
   const handleFrameExtractionOff = async () => {
     setFrameExtraction(0);
@@ -149,7 +153,7 @@ function Admin() {
 
               <Select
                 // className={classes.select_1}
-                value={beltId}
+                value={[beltId, isWagon]}
                 onChange={e => {
                   setBeltId(e.target.value[0]);
                   setIsWagon(e.target.value[1]);
@@ -164,7 +168,7 @@ function Admin() {
                 variant="outlined"
                 // IconComponent={KeyboardArrowDownSharpIcon}
               >
-                {/* <MenuItem value={null}>Select Belt</MenuItem> */}
+                <MenuItem value={[null, 0]}>Select Belt</MenuItem>
                 {allBelts?.map(e => {
                   return (
                     <MenuItem value={[e?.machine_id, true]}>
@@ -179,10 +183,6 @@ function Admin() {
                     </MenuItem>
                   );
                 })}
-                {/* <MenuItem value={0}>Shift A</MenuItem>
-                <MenuItem value={1}>Shift B</MenuItem>
-                <MenuItem value={2}>Shift C</MenuItem>
-                <MenuItem value={3}>All Shifts</MenuItem> */}
               </Select>
 
               <ButtonGroup
