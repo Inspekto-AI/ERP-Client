@@ -10,7 +10,9 @@ import {
   AccordionDetails,
   AccordionSummary,
   Button,
-  ButtonGroup
+  ButtonGroup,
+  MenuItem,
+  Select
 } from '@material-ui/core';
 import UpdateDatabase from 'components/UpdateDatabase';
 import UpdateModelWeights from 'components/UpdateModelWeights';
@@ -58,18 +60,22 @@ function Admin() {
   const [dataExtractionStatus, setDataExtractionStatus] = useState(false);
   const [imShow, setImShow] = useState(1);
   const [frameExtraction, setFrameExtraction] = useState(1);
+  const [beltId, setBeltId] = useState(null);
+  const [allBelts, setAllBelts] = useState(null);
 
   const handleImShowOff = async () => {
     setImShow(0);
     await post('api/configuration/toggle-imshow', {
-      imShow: 0
+      imShow: 0,
+      beltId: beltId
     });
   };
 
   const handleImShowOn = async () => {
     setImShow(1);
     await post('api/configuration/toggle-imshow', {
-      imShow: 1
+      imShow: 1,
+      beltId: beltId
     });
   };
   const handleFrameExtractionOff = async () => {
@@ -99,6 +105,11 @@ function Admin() {
       setFrameExtraction(res?.data?.data?.frame_extraction);
     };
     fetchRealTimeVideo();
+    const fetchBelts = async () => {
+      const res = await get('/api/shipment/all-vehicle');
+      setAllBelts(res?.data?.data);
+    };
+    fetchBelts();
   }, []);
 
   // if (!userData) {
@@ -118,11 +129,41 @@ function Admin() {
             Real Time Video
           </AccordionSummary>
           <AccordionDetails>
-            <div className="center">
+            <div
+              className="center"
+              style={{ display: 'flex', flexDirection: 'row' }}
+            >
               {/* <p className="update-scope">
                 Updates database values by fetching info from AWS and restarts
                 necessary modules
               </p> */}
+
+              <Select
+                // className={classes.select_1}
+                value={beltId}
+                onChange={e => setBeltId(e.target.value)}
+                style={{
+                  fontSize: '14px',
+                  background: 'white',
+                  width: '240px',
+                  marginRight: '50px'
+                  // marginRight: '-20px'
+                }}
+                variant="outlined"
+                // IconComponent={KeyboardArrowDownSharpIcon}
+              >
+                {/* <MenuItem value={null}>Select Belt</MenuItem> */}
+                {allBelts?.map(e => {
+                  return (
+                    <MenuItem value={e?.machine_id}>{e?.machine_id}</MenuItem>
+                  );
+                })}
+                {/* <MenuItem value={0}>Shift A</MenuItem>
+                <MenuItem value={1}>Shift B</MenuItem>
+                <MenuItem value={2}>Shift C</MenuItem>
+                <MenuItem value={3}>All Shifts</MenuItem> */}
+              </Select>
+
               <ButtonGroup
                 // className={classes.select_1}
                 variant="contained"
