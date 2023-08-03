@@ -9,9 +9,11 @@ import {
   Accordion,
   AccordionDetails,
   AccordionSummary,
+  Box,
   Button,
   ButtonGroup,
   MenuItem,
+  Modal,
   Select
 } from '@material-ui/core';
 import UpdateDatabase from 'components/UpdateDatabase';
@@ -53,6 +55,19 @@ const useStyles = makeStyles(theme => ({
   }
 }));
 
+const modalStyle = {
+  position: 'absolute',
+  top: '50%',
+  left: '50%',
+  transform: 'translate(-50%, -50%)',
+  width: 400,
+  // bgcolor: 'background.paper',
+  bgcolor: 'white',
+  border: '2px solid #000',
+  boxShadow: 24,
+  p: 4
+};
+
 function Admin() {
   const router = useRouter();
   const classes = useStyles();
@@ -66,6 +81,7 @@ function Admin() {
   const [allPrintingBelts, setAllPrintingBelts] = useState(null);
   const [isWagon, setIsWagon] = useState(false);
   const [imShowError, setImShowError] = useState(null);
+  const [showFrame, setShowFrame] = useState(null);
 
   const handleImShowOff = async () => {
     setImShow(0);
@@ -89,6 +105,7 @@ function Admin() {
       setIsWagon(false);
     }
     setImShow(1);
+    setShowFrame(true);
     const res = await post('api/configuration/toggle-imshow', {
       imShow: 1,
       beltId: beltId,
@@ -153,6 +170,22 @@ function Admin() {
           error={imShowError}
         />
       )}
+      <Modal
+        style={{ backgroundColor: 'white' }}
+        open={showFrame}
+        onClose={() => setShowFrame(null)}
+      >
+        <iframe
+          src="/receiver.html"
+          width="1920px"
+          height="1000px"
+          frameBorder="0"
+          scrolling="auto"
+          title="Embedded Page"
+        >
+          Your browser does not support iframes.
+        </iframe>
+      </Modal>
       <Layout alternateHeader title="Admin Portal">
         <Container>
           <Accordion>

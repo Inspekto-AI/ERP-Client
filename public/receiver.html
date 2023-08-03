@@ -1,0 +1,46 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Video Receiver</title>
+  </head>
+  <body>
+    <h1>Video Receiver</h1>
+    <canvas
+      id="videoCanvas"
+      width="1280"
+      height="720"
+      style="border: 1px solid black"
+    ></canvas>
+    <script>
+      const canvas = document.getElementById("videoCanvas");
+      const ctx = canvas.getContext("2d");
+      const wsURL = "ws://192.168.29.200:8765"; // Replace with the WebSocket server URL
+
+      // Create a WebSocket connection
+      const socket = new WebSocket(wsURL);
+
+      // Handle the received frames
+      socket.onmessage = (event) => {
+        const imageData = event.data;
+
+        // Create an image object to hold the frame
+        const img = new Image();
+
+        // Load the image data into the image object
+        img.onload = () => {
+          // Clear the canvas before drawing the new frame
+          ctx.clearRect(0, 0, canvas.width, canvas.height);
+
+          // Draw the image on the canvas
+          ctx.drawImage(img, 0, 0, canvas.width, canvas.height);
+        };
+
+        img.src = URL.createObjectURL(
+          new Blob([imageData], { type: "image/jpeg" })
+        );
+      };
+    </script>
+  </body>
+</html>
