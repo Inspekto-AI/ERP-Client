@@ -92,7 +92,7 @@ function Admin() {
     const res = await post('api/configuration/toggle-imshow', {
       imShow: 1,
       beltId: beltId,
-      isWagon
+      isWagon: flag
     });
     console.log(res?.data);
     if (res?.data !== 'done') {
