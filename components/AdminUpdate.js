@@ -62,12 +62,15 @@ function Admin() {
   const [frameExtraction, setFrameExtraction] = useState(1);
   const [beltId, setBeltId] = useState(null);
   const [allBelts, setAllBelts] = useState(null);
+  const [allPrintingBelts, setAllPrintingBelts] = useState(null);
+  const [isWagon, setIsWagon] = useState(0);
 
   const handleImShowOff = async () => {
     setImShow(0);
     await post('api/configuration/toggle-imshow', {
       imShow: 0,
-      beltId: beltId
+      beltId: beltId,
+      isWagon
     });
   };
 
@@ -75,7 +78,8 @@ function Admin() {
     setImShow(1);
     await post('api/configuration/toggle-imshow', {
       imShow: 1,
-      beltId: beltId
+      beltId: beltId,
+      isWagon
     });
   };
   const handleFrameExtractionOff = async () => {
@@ -110,6 +114,11 @@ function Admin() {
       setAllBelts(res?.data?.data);
     };
     fetchBelts();
+    const fetchPrintingBelts = async () => {
+      const res = await get('/api/shipment/all-printing-belt');
+      setAllPrintingBelts(res?.data?.data);
+    };
+    fetchPrintingBelts();
   }, []);
 
   // if (!userData) {
@@ -141,7 +150,10 @@ function Admin() {
               <Select
                 // className={classes.select_1}
                 value={beltId}
-                onChange={e => setBeltId(e.target.value)}
+                onChange={e => {
+                  setBeltId(e.target.value[0]);
+                  setIsWagon(e.target.value[1]);
+                }}
                 style={{
                   fontSize: '14px',
                   background: 'white',
@@ -155,7 +167,16 @@ function Admin() {
                 {/* <MenuItem value={null}>Select Belt</MenuItem> */}
                 {allBelts?.map(e => {
                   return (
-                    <MenuItem value={e?.machine_id}>{e?.machine_id}</MenuItem>
+                    <MenuItem value={[e?.machine_id, true]}>
+                      {e?.machine_id}
+                    </MenuItem>
+                  );
+                })}
+                {allPrintingBelts?.map(e => {
+                  return (
+                    <MenuItem value={[e?.printing_belt_id, false]}>
+                      {e?.printing_belt_id}
+                    </MenuItem>
                   );
                 })}
                 {/* <MenuItem value={0}>Shift A</MenuItem>
