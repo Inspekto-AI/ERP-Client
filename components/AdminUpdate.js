@@ -59,12 +59,12 @@ function Admin() {
 
   const { userData } = useContext(GlobalContext);
   const [dataExtractionStatus, setDataExtractionStatus] = useState(false);
-  const [imShow, setImShow] = useState(1);
-  const [frameExtraction, setFrameExtraction] = useState(1);
+  const [imShow, setImShow] = useState(0);
+  const [frameExtraction, setFrameExtraction] = useState(0);
   const [beltId, setBeltId] = useState(null);
   const [allBelts, setAllBelts] = useState(null);
   const [allPrintingBelts, setAllPrintingBelts] = useState(null);
-  const [isWagon, setIsWagon] = useState(0);
+  const [isWagon, setIsWagon] = useState(false);
   const [imShowError, setImShowError] = useState(null);
 
   const handleImShowOff = async () => {
@@ -77,6 +77,17 @@ function Admin() {
   };
 
   const handleImShowOn = async () => {
+    let flag = true;
+    allPrintingBelts?.map(e => {
+      if (e?.printing_belt_id === beltId) {
+        flag = false;
+      }
+    });
+    if (flag) {
+      setIsWagon(true);
+    } else {
+      setIsWagon(false);
+    }
     setImShow(1);
     const res = await post('api/configuration/toggle-imshow', {
       imShow: 1,
@@ -109,13 +120,7 @@ function Admin() {
       setDataExtractionStatus(!!res?.data?.data?.dataExtractionStatus);
     };
     fetchStatus();
-    const fetchRealTimeVideo = async () => {
-      const res = await get('/api/configuration/initialize-frontend');
-      console.log(res?.data?.data);
-      setImShow(res?.data?.data?.real_time_video);
-      setFrameExtraction(res?.data?.data?.frame_extraction);
-    };
-    fetchRealTimeVideo();
+
     const fetchBelts = async () => {
       const res = await get('/api/shipment/all-vehicle');
       setAllBelts(res?.data?.data);
@@ -166,10 +171,10 @@ function Admin() {
 
                 <Select
                   // className={classes.select_1}
-                  value={[beltId, isWagon]}
+                  // value={[beltId, isWagon]}
+                  value={beltId === null ? 0 : beltId}
                   onChange={e => {
-                    setBeltId(e.target.value[0]);
-                    setIsWagon(e.target.value[1]);
+                    setBeltId(e.target.value);
                   }}
                   style={{
                     fontSize: '14px',
@@ -181,17 +186,17 @@ function Admin() {
                   variant="outlined"
                   // IconComponent={KeyboardArrowDownSharpIcon}
                 >
-                  <MenuItem value={[null, 0]}>Select Belt</MenuItem>
-                  {allBelts?.map(e => {
+                  <MenuItem value={0}>Select Belt</MenuItem>
+                  {allBelts?.map((e, idx) => {
                     return (
-                      <MenuItem value={[e?.machine_id, true]}>
+                      <MenuItem value={e?.machine_id} key={idx}>
                         {e?.machine_id}
                       </MenuItem>
                     );
                   })}
-                  {allPrintingBelts?.map(e => {
+                  {allPrintingBelts?.map((e, index) => {
                     return (
-                      <MenuItem value={[e?.printing_belt_id, false]}>
+                      <MenuItem value={e?.printing_belt_id}>
                         {e?.printing_belt_id}
                       </MenuItem>
                     );
