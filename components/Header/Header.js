@@ -77,7 +77,8 @@ function Header({
               color="primary"
               className={trippingStatus ? 'red-button' : 'purple-button'}
               onClick={() => {
-                router.push('/login');
+                window.open('http://localhost:3000/login/', '_blank');
+                // router.push('/login');
               }}
             >
               <p className="button-label">Admin</p>

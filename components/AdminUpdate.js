@@ -104,8 +104,7 @@ function Admin() {
     } else {
       setIsWagon(false);
     }
-    setImShow(1);
-    setShowFrame(true);
+
     const res = await post('api/configuration/toggle-imshow', {
       imShow: 1,
       beltId: beltId,
@@ -115,6 +114,9 @@ function Admin() {
     if (res?.data !== 'done') {
       console.log("Cmaera can't be displayed");
       setImShowError(res?.data);
+    } else {
+      setImShow(1);
+      setShowFrame(true);
     }
   };
   const handleFrameExtractionOff = async () => {
@@ -129,6 +131,35 @@ function Admin() {
     await post('api/configuration/frame-extraction', {
       frameExtraction: 1
     });
+  };
+
+  const handleDownload = async () => {
+    try {
+      // Send a GET request to the Node.js backend to trigger the download
+      const response = await get(
+        'api/configuration/download-extracted-frames',
+        {
+          responseType: 'arraybuffer' // Tell axios to expect binary data (a zip file)
+        }
+      );
+
+      // Create a blob from the response data
+      const blob = new Blob([response.data], { type: 'application/zip' });
+
+      // Create a temporary download link and simulate a click to trigger the download
+      const url = window.URL.createObjectURL(blob);
+      const link = document.createElement('a');
+      link.href = url;
+      link.setAttribute('download', 'files.zip');
+      document.body.appendChild(link);
+      link.click();
+
+      // Cleanup
+      window.URL.revokeObjectURL(url);
+      document.body.removeChild(link);
+    } catch (error) {
+      console.error('Error downloading the zip file:', error);
+    }
   };
 
   useEffect(() => {
@@ -148,6 +179,13 @@ function Admin() {
       setAllPrintingBelts(res?.data?.data);
     };
     fetchPrintingBelts();
+    const fetchImShowFrameExtraction = async () => {
+      const res = await get('/api/configuration/imshow-frame-extraction');
+      console.log(res?.data?.data);
+      setImShow(res?.data?.data?.imShow);
+      setFrameExtraction(res?.data?.data?.frameExtraction);
+    };
+    fetchImShowFrameExtraction();
   }, []);
 
   // if (!userData) {
@@ -175,16 +213,24 @@ function Admin() {
         open={showFrame}
         onClose={() => setShowFrame(null)}
       >
-        <iframe
-          src="/receiver.html"
-          width="1920px"
-          height="1000px"
-          frameBorder="0"
-          scrolling="auto"
-          title="Embedded Page"
-        >
-          Your browser does not support iframes.
-        </iframe>
+        <>
+          <Button
+            style={{ float: 'right', margin: '40px' }}
+            onClick={() => setShowFrame(false)}
+          >
+            Close
+          </Button>
+          <iframe
+            src="/receiver.html"
+            width="1920px"
+            height="1000px"
+            frameBorder="0"
+            scrolling="auto"
+            title="Embedded Page"
+          >
+            Your browser does not support iframes.
+          </iframe>
+        </>
       </Modal>
       <Layout alternateHeader title="Admin Portal">
         <Container>
@@ -267,6 +313,20 @@ function Admin() {
                     Off
                   </Button>
                 </ButtonGroup>
+
+                <Button
+                  className={classes.select_2}
+                  style={{
+                    backgroundColor: '#B5179E',
+                    color: '#F5F5F5',
+                    // width: '120px',
+                    height: '50px',
+                    marginLeft: '50px'
+                  }}
+                  onClick={() => setShowFrame(true)}
+                >
+                  Show
+                </Button>
               </div>
             </AccordionDetails>
           </Accordion>{' '}
@@ -275,7 +335,10 @@ function Admin() {
               Frame Extraction
             </AccordionSummary>
             <AccordionDetails>
-              <div className="center">
+              <div
+                className="center "
+                style={{ display: 'flex', flexDirection: 'row' }}
+              >
                 {/* <p className="update-scope">
                 Updates database values by fetching info from AWS and restarts
                 necessary modules
@@ -313,6 +376,19 @@ function Admin() {
                     Off
                   </Button>
                 </ButtonGroup>
+                <Button
+                  className={classes.select_2}
+                  style={{
+                    backgroundColor: '#B5179E',
+                    color: '#F5F5F5',
+                    // width: '120px',
+                    height: '50px',
+                    marginLeft: '50px'
+                  }}
+                  onClick={handleDownload}
+                >
+                  Download
+                </Button>
               </div>
             </AccordionDetails>
           </Accordion>

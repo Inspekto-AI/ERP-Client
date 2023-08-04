@@ -14,15 +14,15 @@
       style="border: 1px solid black"
     ></canvas>
     <script>
-      const canvas = document.getElementById("videoCanvas");
-      const ctx = canvas.getContext("2d");
-      const wsURL = "ws://192.168.29.200:8765"; // Replace with the WebSocket server URL
+      const canvas = document.getElementById('videoCanvas');
+      const ctx = canvas.getContext('2d');
+      const wsURL = 'ws://192.168.69.150:8765'; // Replace with the WebSocket server URL
 
       // Create a WebSocket connection
       const socket = new WebSocket(wsURL);
 
       // Handle the received frames
-      socket.onmessage = (event) => {
+      socket.onmessage = event => {
         const imageData = event.data;
 
         // Create an image object to hold the frame
@@ -38,7 +38,7 @@
         };
 
         img.src = URL.createObjectURL(
-          new Blob([imageData], { type: "image/jpeg" })
+          new Blob([imageData], { type: 'image/jpeg' })
         );
       };
     </script>
