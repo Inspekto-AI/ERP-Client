@@ -16,10 +16,12 @@
     <script>
       const canvas = document.getElementById('videoCanvas');
       const ctx = canvas.getContext('2d');
-      const wsURL = 'ws://192.168.69.150:8765'; // Replace with the WebSocket server URL
+      const wsURL = '%%WS_URL%%';
+      // const wsURL = 'ws://192.168.69.150:8765'; // Replace with the WebSocket server URL
 
       // Create a WebSocket connection
       const socket = new WebSocket(wsURL);
+      console.log('url', wsURL);
 
       // Handle the received frames
       socket.onmessage = event => {

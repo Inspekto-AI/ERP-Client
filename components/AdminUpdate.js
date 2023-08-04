@@ -1,4 +1,4 @@
-import { useContext, useEffect, useState } from 'react';
+import { useContext, useEffect, useState, useRef } from 'react';
 import { useRouter } from 'next/router';
 import Loader from 'components/Loader';
 import { GlobalContext } from 'context/GlobalContext';
@@ -23,6 +23,7 @@ import { get, post } from 'utils/api';
 import UpdateTmate from 'components/UpdateTmate';
 import { makeStyles } from '@material-ui/core/styles';
 import ShipmentOverFlowModal from './ShipmentOverFlowModal';
+import axios from 'axios';
 
 const useStyles = makeStyles(theme => ({
   select: {
@@ -71,6 +72,7 @@ const modalStyle = {
 function Admin() {
   const router = useRouter();
   const classes = useStyles();
+  const iframeRef = useRef(null);
 
   const { userData } = useContext(GlobalContext);
   const [dataExtractionStatus, setDataExtractionStatus] = useState(false);
@@ -82,6 +84,22 @@ function Admin() {
   const [isWagon, setIsWagon] = useState(false);
   const [imShowError, setImShowError] = useState(null);
   const [showFrame, setShowFrame] = useState(null);
+  const [wsURL, setwsURL] = useState('ws://192.168.69.150:8765');
+  const [htmlContent, setHtmlContent] = useState('');
+
+  const handleIsWagonChange = async () => {
+    let flag = true;
+    allPrintingBelts?.map(e => {
+      if (e?.printing_belt_id === beltId) {
+        flag = false;
+      }
+    });
+    if (flag) {
+      setIsWagon(true);
+    } else {
+      setIsWagon(false);
+    }
+  };
 
   const handleImShowOff = async () => {
     setImShow(0);
@@ -99,20 +117,15 @@ function Admin() {
         flag = false;
       }
     });
-    if (flag) {
-      setIsWagon(true);
-    } else {
-      setIsWagon(false);
-    }
 
     const res = await post('api/configuration/toggle-imshow', {
       imShow: 1,
       beltId: beltId,
       isWagon: flag
     });
-    console.log(res?.data);
+    // console.log(res?.data);
     if (res?.data !== 'done') {
-      console.log("Cmaera can't be displayed");
+      // console.log("Cmaera can't be displayed");
       setImShowError(res?.data);
     } else {
       setImShow(1);
@@ -181,12 +194,47 @@ function Admin() {
     fetchPrintingBelts();
     const fetchImShowFrameExtraction = async () => {
       const res = await get('/api/configuration/imshow-frame-extraction');
-      console.log(res?.data?.data);
-      setImShow(res?.data?.data?.imShow);
-      setFrameExtraction(res?.data?.data?.frameExtraction);
+      // console.log(res?.data);
+
+      setImShow(res?.data?.imShow === null ? 0 : res?.data?.imShow);
+      setFrameExtraction(
+        res?.data?.frameExtraction === null ? 0 : res?.data?.frameExtraction
+      );
     };
     fetchImShowFrameExtraction();
   }, []);
+
+  useEffect(() => {
+    const fetchServerId = async () => {
+      await handleIsWagonChange();
+      const res = await get('/api/configuration/server-id', {
+        beltId
+      });
+      const serverId = res?.data?.serverId;
+      // console.log(isWagon == false);
+      setwsURL(
+        `ws://192.168.69.${150 + parseInt(serverId, 10)}:${
+          isWagon == false ? 8765 : 8766
+        }`
+      );
+    };
+
+    fetchServerId();
+  }, [beltId, isWagon]);
+
+  useEffect(() => {
+    // console.log(wsURL);
+    axios
+      .get('/receiver.html')
+      .then(response => {
+        const html = response.data.replace('%%WS_URL%%', wsURL);
+        // console.log(html);
+        setHtmlContent(html);
+      })
+      .catch(error => {
+        console.error('An error occurred while fetching the HTML:', error);
+      });
+  }, [wsURL]);
 
   // if (!userData) {
   //   return <Loader />;
@@ -220,7 +268,8 @@ function Admin() {
           >
             Close
           </Button>
-          <iframe
+          {/* <iframe
+            ref={iframeRef}
             src="/receiver.html"
             width="1920px"
             height="1000px"
@@ -229,7 +278,14 @@ function Admin() {
             title="Embedded Page"
           >
             Your browser does not support iframes.
-          </iframe>
+          </iframe> */}
+          {/* <iframe ref={iframeRef} width="400" height="300" /> */}
+          <iframe
+            srcDoc={htmlContent}
+            width="1280"
+            height="720"
+            style={{ border: '1px solid black' }}
+          />
         </>
       </Modal>
       <Layout alternateHeader title="Admin Portal">
@@ -291,8 +347,8 @@ function Admin() {
                   <Button
                     className={classes.select_2}
                     style={{
-                      backgroundColor: imShow === 1 ? '#B5179E' : '#F5F5F5',
-                      color: imShow === 0 ? '#B5179E' : '#F5F5F5',
+                      backgroundColor: imShow == 1 ? '#B5179E' : '#F5F5F5',
+                      color: imShow == 0 ? '#B5179E' : '#F5F5F5',
                       // width: '120px',
                       height: '50px'
                     }}
@@ -303,8 +359,8 @@ function Admin() {
                   <Button
                     className={classes.select_2}
                     style={{
-                      backgroundColor: imShow === 0 ? '#B5179E' : '#F5F5F5',
-                      color: imShow === 1 ? '#B5179E' : '#F5F5F5',
+                      backgroundColor: imShow == 0 ? '#B5179E' : '#F5F5F5',
+                      color: imShow == 1 ? '#B5179E' : '#F5F5F5',
                       // width: '120px',
                       height: '50px'
                     }}
@@ -314,7 +370,7 @@ function Admin() {
                   </Button>
                 </ButtonGroup>
 
-                <Button
+                {/* <Button
                   className={classes.select_2}
                   style={{
                     backgroundColor: '#B5179E',
@@ -326,7 +382,7 @@ function Admin() {
                   onClick={() => setShowFrame(true)}
                 >
                   Show
-                </Button>
+                </Button> */}
               </div>
             </AccordionDetails>
           </Accordion>{' '}
@@ -353,8 +409,8 @@ function Admin() {
                     className={classes.select_2}
                     style={{
                       backgroundColor:
-                        frameExtraction === 1 ? '#B5179E' : '#F5F5F5',
-                      color: frameExtraction === 0 ? '#B5179E' : '#F5F5F5',
+                        frameExtraction == 1 ? '#B5179E' : '#F5F5F5',
+                      color: frameExtraction == 0 ? '#B5179E' : '#F5F5F5',
                       // width: '120px',
                       height: '50px'
                     }}
@@ -366,8 +422,8 @@ function Admin() {
                     className={classes.select_2}
                     style={{
                       backgroundColor:
-                        frameExtraction === 0 ? '#B5179E' : '#F5F5F5',
-                      color: frameExtraction === 1 ? '#B5179E' : '#F5F5F5',
+                        frameExtraction == 0 ? '#B5179E' : '#F5F5F5',
+                      color: frameExtraction == 1 ? '#B5179E' : '#F5F5F5',
                       // width: '120px',
                       height: '50px'
                     }}
