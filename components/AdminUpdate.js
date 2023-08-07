@@ -19,7 +19,7 @@ import {
 import UpdateDatabase from 'components/UpdateDatabase';
 import UpdateModelWeights from 'components/UpdateModelWeights';
 import PythonDataExtraction from 'components/PythonDataExtraction';
-import { get, post } from 'utils/api';
+import { get, getFile, post } from 'utils/api';
 import UpdateTmate from 'components/UpdateTmate';
 import { makeStyles } from '@material-ui/core/styles';
 import ShipmentOverFlowModal from './ShipmentOverFlowModal';
@@ -148,28 +148,63 @@ function Admin() {
 
   const handleDownload = async () => {
     try {
-      // Send a GET request to the Node.js backend to trigger the download
-      const response = await get(
-        'api/configuration/download-extracted-frames',
-        {
-          responseType: 'arraybuffer' // Tell axios to expect binary data (a zip file)
-        }
+      // // Send a GET request to the Node.js backend to trigger the download
+      // const response = await get(
+      //   'api/configuration/download-extracted-frames'
+      //   // {
+      //   //   responseType: 'arraybuffer' // Tell axios to expect binary data (a zip file)
+      //   // }
+      // );
+      // // Create a Blob from the response data
+      // const blob = new Blob([response.data], { type: 'application/zip' });
+      // // Convert the Blob to a URL
+      // const url = window.URL.createObjectURL(blob);
+      // // Create an anchor element and trigger the download
+      // const link = document.createElement('a');
+      // link.href = url;
+      // link.download = 'files.zip'; // Set the desired file name
+      // document.body.appendChild(link);
+      // link.click();
+      // // Cleanup
+      // window.URL.revokeObjectURL(url);
+      // document.body.removeChild(link);
+      // window.open =
+      //   'http://localhost:9000/api/configuration/download-extracted-frames';
+      // const link = document.createElement('a');
+      // link.href =
+      //   'http://localhost:9000/api/configuration/download-extracted-frames';
+      // link.setAttribute('download', 'yourfile.zip');
+      // document.body.appendChild(link);
+      // link.click();
+      // document.body.removeChild(link);
+      // fetch('http://localhost:9000/api/configuration/download-extracted-frames')
+      //   .then(response => {
+      //     console.log('hello');
+      //     console.log(response);
+      //     return response.blob();
+      //   })
+      //   .then(blob => {
+      //     console.log('hello');
+      //     const url = window.URL.createObjectURL(blob);
+      //     const a = document.createElement('a');
+      //     a.href = url;
+      //     a.download = 'abc.zip';
+      //     a.click();
+      //     window.URL.revokeObjectURL(url);
+      //   });
+      // window.location.href =
+      //   'http://localhost:9000/api/configuration/download-extracted-frames';
+      const response = await getFile(
+        '/api/configuration/download-extracted-frames'
       );
-
-      // Create a blob from the response data
-      const blob = new Blob([response.data], { type: 'application/zip' });
-
-      // Create a temporary download link and simulate a click to trigger the download
-      const url = window.URL.createObjectURL(blob);
-      const link = document.createElement('a');
-      link.href = url;
-      link.setAttribute('download', 'files.zip');
-      document.body.appendChild(link);
-      link.click();
-
-      // Cleanup
-      window.URL.revokeObjectURL(url);
-      document.body.removeChild(link);
+      console.log(response);
+      // const url = window.URL.createObjectURL(new Blob([response.data]));
+      // const link = document.createElement('a');
+      // link.href = url;
+      // link.setAttribute('download', 'file.zip'); // You can name the file
+      // document.body.appendChild(link);
+      // link.click();
+      // link.remove();
     } catch (error) {
       console.error('Error downloading the zip file:', error);
     }
@@ -433,6 +468,7 @@ function Admin() {
                   </Button>
                 </ButtonGroup>
                 <Button
+                  disable={true}
                   className={classes.select_2}
                   style={{
                     backgroundColor: '#B5179E',
