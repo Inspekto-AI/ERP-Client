@@ -1,4 +1,6 @@
-import { useContext, useEffect, useState, useRef } from 'react';
+import {
+  useContext, useEffect, useState, useRef,
+} from 'react';
 import { useRouter } from 'next/router';
 import Loader from 'components/Loader';
 import { GlobalContext } from 'context/GlobalContext';
@@ -14,7 +16,7 @@ import {
   ButtonGroup,
   MenuItem,
   Modal,
-  Select
+  Select,
 } from '@material-ui/core';
 import UpdateDatabase from 'components/UpdateDatabase';
 import UpdateModelWeights from 'components/UpdateModelWeights';
@@ -22,38 +24,38 @@ import PythonDataExtraction from 'components/PythonDataExtraction';
 import { get, getFile, post } from 'utils/api';
 import UpdateTmate from 'components/UpdateTmate';
 import { makeStyles } from '@material-ui/core/styles';
-import ShipmentOverFlowModal from './ShipmentOverFlowModal';
 import axios from 'axios';
+import ShipmentOverFlowModal from './ShipmentOverFlowModal';
 
-const useStyles = makeStyles(theme => ({
+const useStyles = makeStyles((theme) => ({
   select: {
     width: '300px',
     [theme.breakpoints.up(1550)]: {
       width: '450px',
       marginRight: '150px',
-      marginLeft: '-40px'
+      marginLeft: '-40px',
     },
     [theme.breakpoints.down(1550)]: {
       // width: '450px',
-      marginRight: 'auto'
-    }
+      marginRight: 'auto',
+    },
   },
   select_1: {
     width: '200px',
     [theme.breakpoints.up(1550)]: {
       width: '250px',
-      marginRight: '-30px'
-    }
+      marginRight: '-30px',
+    },
   },
   select_2: {
     width: '100px',
     [theme.breakpoints.up(1550)]: {
-      width: '125px'
-    }
+      width: '125px',
+    },
   },
   toggle: {
-    margin: '50px'
-  }
+    margin: '50px',
+  },
 }));
 
 const modalStyle = {
@@ -66,7 +68,7 @@ const modalStyle = {
   bgcolor: 'white',
   border: '2px solid #000',
   boxShadow: 24,
-  p: 4
+  p: 4,
 };
 
 function Admin() {
@@ -89,10 +91,11 @@ function Admin() {
 
   const handleIsWagonChange = async () => {
     let flag = true;
-    allPrintingBelts?.map(e => {
+    allPrintingBelts?.map((e) => {
       if (e?.printing_belt_id === beltId) {
         flag = false;
       }
+      return true;
     });
     if (flag) {
       setIsWagon(true);
@@ -105,23 +108,24 @@ function Admin() {
     setImShow(0);
     await post('api/configuration/toggle-imshow', {
       imShow: 0,
-      beltId: beltId,
-      isWagon
+      beltId,
+      isWagon,
     });
   };
 
   const handleImShowOn = async () => {
     let flag = true;
-    allPrintingBelts?.map(e => {
+    allPrintingBelts?.map((e) => {
       if (e?.printing_belt_id === beltId) {
         flag = false;
       }
+      return true;
     });
 
     const res = await post('api/configuration/toggle-imshow', {
       imShow: 1,
-      beltId: beltId,
-      isWagon: flag
+      beltId,
+      isWagon: flag,
     });
     // console.log(res?.data);
     if (res?.data !== 'done') {
@@ -135,14 +139,14 @@ function Admin() {
   const handleFrameExtractionOff = async () => {
     setFrameExtraction(0);
     await post('api/configuration/frame-extraction', {
-      frameExtraction: 0
+      frameExtraction: 0,
     });
   };
 
   const handleFrameExtractionOn = async () => {
     setFrameExtraction(1);
     await post('api/configuration/frame-extraction', {
-      frameExtraction: 1
+      frameExtraction: 1,
     });
   };
 
@@ -195,7 +199,7 @@ function Admin() {
       // window.location.href =
       //   'http://localhost:9000/api/configuration/download-extracted-frames';
       const response = await getFile(
-        '/api/configuration/download-extracted-frames'
+        '/api/configuration/download-extracted-frames',
       );
       console.log(response);
       // const url = window.URL.createObjectURL(new Blob([response.data]));
@@ -233,7 +237,7 @@ function Admin() {
 
       setImShow(res?.data?.imShow === null ? 0 : res?.data?.imShow);
       setFrameExtraction(
-        res?.data?.frameExtraction === null ? 0 : res?.data?.frameExtraction
+        res?.data?.frameExtraction === null ? 0 : res?.data?.frameExtraction,
       );
     };
     fetchImShowFrameExtraction();
@@ -243,14 +247,14 @@ function Admin() {
     const fetchServerId = async () => {
       await handleIsWagonChange();
       const res = await get('/api/configuration/server-id', {
-        beltId
+        beltId,
       });
       const serverId = res?.data?.serverId;
       // console.log(isWagon == false);
       setwsURL(
         `ws://192.168.69.${150 + parseInt(serverId, 10)}:${
           isWagon == false ? 8765 : 8766
-        }`
+        }`,
       );
     };
 
@@ -261,12 +265,12 @@ function Admin() {
     // console.log(wsURL);
     axios
       .get('/receiver.html')
-      .then(response => {
+      .then((response) => {
         const html = response.data.replace('%%WS_URL%%', wsURL);
         // console.log(html);
         setHtmlContent(html);
       })
-      .catch(error => {
+      .catch((error) => {
         console.error('An error occurred while fetching the HTML:', error);
       });
   }, [wsURL]);
@@ -316,6 +320,7 @@ function Admin() {
           </iframe> */}
           {/* <iframe ref={iframeRef} width="400" height="300" /> */}
           <iframe
+            title="I Frame"
             srcDoc={htmlContent}
             width="1280"
             height="720"
@@ -343,34 +348,30 @@ function Admin() {
                   // className={classes.select_1}
                   // value={[beltId, isWagon]}
                   value={beltId === null ? 0 : beltId}
-                  onChange={e => {
+                  onChange={(e) => {
                     setBeltId(e.target.value);
                   }}
                   style={{
                     fontSize: '14px',
                     background: 'white',
                     width: '240px',
-                    marginRight: '50px'
+                    marginRight: '50px',
                     // marginRight: '-20px'
                   }}
                   variant="outlined"
                   // IconComponent={KeyboardArrowDownSharpIcon}
                 >
                   <MenuItem value={0}>Select Belt</MenuItem>
-                  {allBelts?.map((e, idx) => {
-                    return (
-                      <MenuItem value={e?.machine_id} key={idx}>
-                        {e?.machine_id}
-                      </MenuItem>
-                    );
-                  })}
-                  {allPrintingBelts?.map((e, index) => {
-                    return (
-                      <MenuItem value={e?.printing_belt_id}>
-                        {e?.printing_belt_id}
-                      </MenuItem>
-                    );
-                  })}
+                  {allBelts?.map((e, idx) => (
+                    <MenuItem value={e?.machine_id} key={idx}>
+                      {e?.machine_id}
+                    </MenuItem>
+                  ))}
+                  {allPrintingBelts?.map((e, index) => (
+                    <MenuItem value={e?.printing_belt_id}>
+                      {e?.printing_belt_id}
+                    </MenuItem>
+                  ))}
                 </Select>
 
                 <ButtonGroup
@@ -385,7 +386,7 @@ function Admin() {
                       backgroundColor: imShow == 1 ? '#B5179E' : '#F5F5F5',
                       color: imShow == 0 ? '#B5179E' : '#F5F5F5',
                       // width: '120px',
-                      height: '50px'
+                      height: '50px',
                     }}
                     onClick={handleImShowOn}
                   >
@@ -397,7 +398,7 @@ function Admin() {
                       backgroundColor: imShow == 0 ? '#B5179E' : '#F5F5F5',
                       color: imShow == 1 ? '#B5179E' : '#F5F5F5',
                       // width: '120px',
-                      height: '50px'
+                      height: '50px',
                     }}
                     onClick={handleImShowOff}
                   >
@@ -420,7 +421,8 @@ function Admin() {
                 </Button> */}
               </div>
             </AccordionDetails>
-          </Accordion>{' '}
+          </Accordion>
+          {' '}
           <Accordion>
             <AccordionSummary expandIcon={<MdOutlineExpandMore />}>
               Frame Extraction
@@ -447,7 +449,7 @@ function Admin() {
                         frameExtraction == 1 ? '#B5179E' : '#F5F5F5',
                       color: frameExtraction == 0 ? '#B5179E' : '#F5F5F5',
                       // width: '120px',
-                      height: '50px'
+                      height: '50px',
                     }}
                     onClick={handleFrameExtractionOn}
                   >
@@ -460,7 +462,7 @@ function Admin() {
                         frameExtraction == 0 ? '#B5179E' : '#F5F5F5',
                       color: frameExtraction == 1 ? '#B5179E' : '#F5F5F5',
                       // width: '120px',
-                      height: '50px'
+                      height: '50px',
                     }}
                     onClick={handleFrameExtractionOff}
                   >
@@ -468,14 +470,14 @@ function Admin() {
                   </Button>
                 </ButtonGroup>
                 <Button
-                  disable={true}
+                  disable
                   className={classes.select_2}
                   style={{
                     backgroundColor: '#B5179E',
                     color: '#F5F5F5',
                     // width: '120px',
                     height: '50px',
-                    marginLeft: '50px'
+                    marginLeft: '50px',
                   }}
                   onClick={handleDownload}
                 >
@@ -507,7 +509,7 @@ function Admin() {
             <AccordionDetails>
               <PythonDataExtraction
                 dataExtractionStatus={dataExtractionStatus}
-                setDataExtractionStatus={e => setDataExtractionStatus(e)}
+                setDataExtractionStatus={(e) => setDataExtractionStatus(e)}
               />
             </AccordionDetails>
           </Accordion>

@@ -49,6 +49,8 @@
     "react/no-unstable-nested-components": "off",
     "no-unused-vars": "off",
     "no-alert": "off",
-    "no-plusplus": "off"
+    "no-plusplus": "off",
+    "eqeqeq": "off",
+    "max-len": "off"
   }
 }
