@@ -19,7 +19,7 @@ import {
 import UpdateDatabase from 'components/UpdateDatabase';
 import UpdateModelWeights from 'components/UpdateModelWeights';
 import PythonDataExtraction from 'components/PythonDataExtraction';
-import { get, getFile, post } from 'utils/api';
+import { get, getFile, getZipFile, post } from 'utils/api';
 import UpdateTmate from 'components/UpdateTmate';
 import { makeStyles } from '@material-ui/core/styles';
 import axios from 'axios';
@@ -71,7 +71,7 @@ const modalStyle = {
 
 const downloadZIP = file => {
   const downloadLink = document.createElement('a');
-  const fileName = 'report.xlsx';
+  const fileName = 'report.zip';
   downloadLink.setAttribute('download', fileName);
   downloadLink.href = URL.createObjectURL(new Blob([file]));
   document.body.appendChild(downloadLink);
@@ -211,7 +211,9 @@ function Admin() {
       // );
       // console.log(response);
 
-      const res = await getFile('/api/configuration/download-extracted-frames');
+      const res = await getZipFile(
+        '/api/configuration/download-extracted-frames'
+      );
       console.log('response', res.data);
       downloadZIP(res.data);
       // const url = window.URL.createObjectURL(new Blob([response.data]));

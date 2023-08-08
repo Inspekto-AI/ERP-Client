@@ -20,6 +20,15 @@ export const axiosFileInstance = axios.create({
   maxBodyLength: Infinity
 });
 
+export const axiosZipFileInstance = axios.create({
+  baseURL: BASE_URL,
+  headers: {
+    'Content-Type': 'application/zip'
+  },
+  maxContentLength: Infinity,
+  maxBodyLength: Infinity
+});
+
 axiosInstance.interceptors.request.use(config => {
   const configuration = config;
   configuration.headers.Authorization = `${getLocalStorage('jwt')}`;
@@ -52,6 +61,22 @@ axiosFileInstance.interceptors.response.use(
   err => Promise.reject(err)
 );
 
+axiosZipFileInstance.interceptors.request.use(config => {
+  const configuration = config;
+  configuration.headers.Authorization = `${getLocalStorage('jwt')}`;
+  return configuration;
+});
+
+axiosZipFileInstance.interceptors.response.use(
+  async res => {
+    if (res.headers.authorization) {
+      setLocalStorage('jwt', res.headers.authorization);
+    }
+    return res;
+  },
+  err => Promise.reject(err)
+);
+
 export const get = (url, payload) =>
   axiosInstance.get(url, {
     withCredentials: true,
@@ -60,6 +85,13 @@ export const get = (url, payload) =>
 
 export const getFile = (url, payload) =>
   axiosFileInstance.get(url, {
+    withCredentials: true,
+    params: payload,
+    responseType: 'blob'
+  });
+
+export const getZipFile = (url, payload) =>
+  axiosZipFileInstance.get(url, {
     withCredentials: true,
     params: payload,
     responseType: 'blob'
