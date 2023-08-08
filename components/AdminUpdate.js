@@ -71,7 +71,7 @@ const modalStyle = {
 
 const downloadZIP = file => {
   const downloadLink = document.createElement('a');
-  const fileName = 'report.zip';
+  const fileName = 'Extracted_Frames.zip';
   downloadLink.setAttribute('download', fileName);
   downloadLink.href = URL.createObjectURL(new Blob([file]));
   document.body.appendChild(downloadLink);
