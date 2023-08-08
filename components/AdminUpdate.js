@@ -483,11 +483,12 @@ function Admin() {
                   </Button>
                 </ButtonGroup>
                 <Button
-                  disable
+                  disabled={frameExtraction == true}
                   className={classes.select_2}
                   style={{
-                    backgroundColor: '#B5179E',
-                    color: '#F5F5F5',
+                    backgroundColor:
+                      frameExtraction == false ? '#B5179E' : '#F5F5F5',
+                    color: frameExtraction == false ? '#F5F5F5' : '#B5179E',
                     // width: '120px',
                     height: '50px',
                     marginLeft: '50px'
