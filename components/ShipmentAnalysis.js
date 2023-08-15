@@ -4,7 +4,7 @@ import { setLocalStorage, getLocalStorage } from 'utils/storage';
 import { makeStyles } from '@material-ui/core/styles';
 import Button from '@material-ui/core/Button';
 import LoaderAnalysisRow from './LoaderAnalysisRow';
-import { get } from 'utils/api';
+import { get, post, put } from 'utils/api';
 
 // Define styles using makeStyles
 const useStyles = makeStyles(() => ({
@@ -78,7 +78,30 @@ function ShipmentAnalysis({
   const [rackNo, setRackNo] = useState('');
   const [rackNoModified, setRackNoModified] = useState(false);
   const [savedRackNo, setSavedRackNo] = useState('');
-  const [rackStarted, setRackStarted] = useState(false);
+  const [rackStarted, setRackStarted] = useState('0');
+
+  const handleRackSubmit = async () => {
+    if (rackStarted === '1') {
+      await put('/api/shipment/end-rack', {
+        rackStatus: 0,
+        rack_no: rackNo
+      });
+      setRackStarted('0');
+      return;
+    }
+    if (rackNo === '') {
+      return;
+    }
+    console.log(rackNo);
+    await post('/api/shipment/update-rack-status', {
+      rackStatus: 1,
+      rackNo: rackNo
+    });
+    setRackNoModified(false);
+    setLocalStorage('rackno', rackNo);
+    setSavedRackNo(rackNo);
+    setRackStarted('1');
+  };
 
   useEffect(() => {
     setFilterButton(vehicleType);
@@ -101,7 +124,9 @@ function ShipmentAnalysis({
     // setRackNo(getLocalStorage('rackno'));
     const fetchRackStatus = async () => {
       const res = await get('/api/shipment/rack-status');
+      console.log(res?.data, '-----------------');
       setRackStarted(res?.data?.rackStatus);
+      setRackNo(res?.data?.rackNo);
     };
     fetchRackStatus();
   }, []);
@@ -119,23 +144,15 @@ function ShipmentAnalysis({
               setRackNoModified(true);
             }}
             value={rackNo}
-            disabled={rackStarted}
+            disabled={rackStarted === '1'}
           />
-          <Button
-            className={classes.editRackButton}
-            onClick={() => {
-              setRackNoModified(false);
-              setLocalStorage('rackno', rackNo);
-              setSavedRackNo(rackNo);
-              setRackStarted(prev => !prev);
-            }}
-          >
-            {rackStarted ? 'END' : 'START'}
+          <Button className={classes.editRackButton} onClick={handleRackSubmit}>
+            {rackStarted === '1' ? 'END' : 'START'}
           </Button>
         </div>
       )}
       {vehicleType === 0 && <div className={classes.rackContainer1} />}
-      {(rackStarted || vehicleType === 0) && (
+      {(rackStarted === '1' || vehicleType === 0) && (
         <div className={classes.tableDiv}>
           <table className="custom-table">
             <thead>
@@ -173,7 +190,7 @@ function ShipmentAnalysis({
           </table>
         </div>
       )}
-      {!rackStarted && vehicleType === 1 && (
+      {(rackStarted === '0' || rackStarted === null) && vehicleType === 1 && (
         <h1 style={{ marginTop: '100px' }}>Please start the rack first</h1>
       )}
     </>
