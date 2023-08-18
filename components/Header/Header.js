@@ -78,7 +78,7 @@ function Header({
               color="primary"
               className={trippingStatus ? 'red-button' : 'purple-button'}
               onClick={() => {
-                window.open('http://localhost:3000/login/', '_blank');
+                window.open('/login/', '_blank');
                 // router.push('/login');
               }}
             >
