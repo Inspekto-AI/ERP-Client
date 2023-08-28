@@ -21,7 +21,9 @@ import {
 import UpdateDatabase from 'components/UpdateDatabase';
 import UpdateModelWeights from 'components/UpdateModelWeights';
 import PythonDataExtraction from 'components/PythonDataExtraction';
-import { get, getFile, getZipFile, post } from 'utils/api';
+import {
+  get, getFile, getZipFile, post,
+} from 'utils/api';
 import UpdateTmate from 'components/UpdateTmate';
 import { makeStyles } from '@material-ui/core/styles';
 import axios from 'axios';
@@ -214,7 +216,7 @@ function Admin() {
       // console.log(response);
 
       const res = await getZipFile(
-        '/api/configuration/download-extracted-frames'
+        '/api/configuration/download-extracted-frames',
       );
       console.log('response', res.data);
       downloadZIP(res.data);
