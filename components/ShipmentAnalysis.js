@@ -135,7 +135,7 @@ function ShipmentAnalysis({
     <>
       {vehicleType === 1 && (
         <div className={classes.rackContainer}>
-          RACK NUMBER :{' '}
+          RAKE NUMBER :{' '}
           <input
             className={classes.inputRackNo}
             placeholder="Rack No."
