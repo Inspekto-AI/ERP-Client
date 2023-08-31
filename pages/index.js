@@ -392,7 +392,8 @@ function Index() {
             vehicle_id,
             vehicle_type,
             is_active: 1,
-            is_shipment_complete: 1
+            is_belt_running: false,
+            is_shipment_complete: true
           };
         }
         return newState;
@@ -411,7 +412,8 @@ function Index() {
           newState[data?.belt_id] = {
             ...newState[data?.belt_id],
             bag_limit: parseInt(data?.new_bag_limit, 10),
-            is_shipment_complete: false
+            is_shipment_complete: false,
+            is_belt_running: true
           };
         }
         return newState;
