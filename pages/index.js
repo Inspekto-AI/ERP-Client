@@ -391,7 +391,22 @@ function Index() {
             id: vehicle_id,
             vehicle_id,
             vehicle_type,
-            is_active: 1,
+            is_active: 1
+          };
+        }
+        return newState;
+      });
+      setIsLoading(false);
+    });
+    socket.on('shipment-complete', data => {
+      const { belt_id } = data;
+      setVehicleBelts(prevState => {
+        if (!prevState) return null;
+        const newState = { ...prevState };
+        if (newState[belt_id]) {
+          newState[belt_id] = {
+            ...newState[belt_id],
+
             is_belt_running: false,
             is_shipment_complete: true
           };
