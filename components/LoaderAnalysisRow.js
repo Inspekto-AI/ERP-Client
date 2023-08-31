@@ -178,9 +178,11 @@ function LoaderAnalysisRow({
           className={classes.td2}
           style={{
             background: data?.shipment_id
-              ? data?.is_belt_running
-                ? 'green'
-                : 'red'
+              ? data?.is_shipment_complete
+                ? 'yellow'
+                : data?.is_belt_running
+                  ? 'green'
+                  : 'red'
               : 'white',
           }}
         >

@@ -135,6 +135,7 @@ function Index() {
               ...newState[bag_counting_belt_id],
               is_belt_running: true,
               issue_with_belt: null,
+              is_shipment_complete: false,
             };
           }
           return newState;
@@ -397,6 +398,23 @@ function Index() {
       });
       setIsLoading(false);
     });
+    socket.on('shipment-complete', (data) => {
+      const { belt_id } = data;
+      setVehicleBelts((prevState) => {
+        if (!prevState) return null;
+        const newState = { ...prevState };
+        if (newState[belt_id]) {
+          newState[belt_id] = {
+            ...newState[belt_id],
+
+            is_belt_running: false,
+            is_shipment_complete: true,
+          };
+        }
+        return newState;
+      });
+      setIsLoading(false);
+    });
     socket.on('bag-update', (data) => {
       if (data?.error) {
         setShipmentError(data?.error);
@@ -409,6 +427,8 @@ function Index() {
           newState[data?.belt_id] = {
             ...newState[data?.belt_id],
             bag_limit: parseInt(data?.new_bag_limit, 10),
+            is_shipment_complete: false,
+            is_belt_running: true,
           };
         }
         return newState;
