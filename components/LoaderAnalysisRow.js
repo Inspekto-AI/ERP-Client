@@ -180,7 +180,7 @@ function LoaderAnalysisRow({
             background: data?.shipment_id
               ? data?.is_shipment_complete
                 ? 'yellow'
-                : is_belt_running
+                : data?.is_belt_running
                 ? 'green'
                 : 'red'
               : 'white'
