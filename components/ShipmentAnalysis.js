@@ -12,14 +12,14 @@ const useStyles = makeStyles(() => ({
     marginTop: '120px',
     marginLeft: '80px',
     fontSize: '24px',
-    fontWeight: '800',
+    fontWeight: '800'
   },
   rackContainer1: {
     marginTop: '120px',
     marginLeft: '80px',
     fontSize: '24px',
     fontWeight: '800',
-    height: '20px',
+    height: '20px'
   },
   inputRackNo: {
     marginTop: '20px',
@@ -30,7 +30,7 @@ const useStyles = makeStyles(() => ({
     borderRadius: '6px',
     width: '130px',
     border: 'none',
-    padding: '0 10px',
+    padding: '0 10px'
   },
   rackButton: {
     backgroundColor: '#008847',
@@ -39,7 +39,7 @@ const useStyles = makeStyles(() => ({
     // padding: '2px 9px',
     fontWeight: '700',
     border: 'none',
-    height: '30px',
+    height: '30px'
   },
   editRackButton: {
     backgroundColor: '#69E866',
@@ -48,18 +48,18 @@ const useStyles = makeStyles(() => ({
     // padding: '2px 9px',
     fontWeight: '700',
     border: 'none',
-    height: '30px',
+    height: '30px'
   },
   tableContainer: {
-    marginTop: '140px',
+    marginTop: '140px'
     // marginLeft: '80px',
     // fontSize: '24px',
     // fontWeight: '800'
   },
   tableDiv: {
     // padding: '0px',
-    paddingBottom: '30px',
-  },
+    paddingBottom: '30px'
+  }
 }));
 
 function ShipmentAnalysis({
@@ -69,7 +69,7 @@ function ShipmentAnalysis({
   handleFlag,
   handleBagDone,
   handleBagIncrement,
-  handleBeltReset,
+  handleBeltReset
 }) {
   const classes = useStyles();
   const { bagTypes: BAG_TYPES } = useContext(GlobalContext);
@@ -84,18 +84,19 @@ function ShipmentAnalysis({
     if (rackStarted === '1') {
       await put('/api/shipment/end-rack', {
         rackStatus: 0,
-        rack_no: rackNo,
+        rack_no: rackNo
       });
       setRackStarted('0');
       return;
     }
-    if (rackNo === '') {
+    if (rackNo === '' || rackNo === null || rackNo === undefined) {
+      alert('Please enter rackNo');
       return;
     }
     console.log(rackNo);
     await post('/api/shipment/update-rack-status', {
       rackStatus: 1,
-      rackNo,
+      rackNo
     });
     setRackNoModified(false);
     setLocalStorage('rackno', rackNo);
@@ -110,7 +111,7 @@ function ShipmentAnalysis({
   useEffect(() => {
     const filtertedLoaders = {};
     if (vehicleBelts) {
-      Object.values(vehicleBelts).forEach((element) => {
+      Object.values(vehicleBelts).forEach(element => {
         if (element.vehicle_type === filterButton) {
           filtertedLoaders[element.vehicle_id] = element;
         }
@@ -135,12 +136,11 @@ function ShipmentAnalysis({
     <>
       {vehicleType === 1 && (
         <div className={classes.rackContainer}>
-          RAKE NUMBER :
-          {' '}
+          RAKE NUMBER :{' '}
           <input
             className={classes.inputRackNo}
             placeholder="Rack No."
-            onChange={(e) => {
+            onChange={e => {
               setRackNo(e.target.value);
               setRackNoModified(true);
             }}
@@ -171,13 +171,13 @@ function ShipmentAnalysis({
               </tr>
             </thead>
             <tbody>
-              {filterVehicle
-                && Object.values(filterVehicle).map((e, index) => (
+              {filterVehicle &&
+                Object.values(filterVehicle).map((e, index) => (
                   <LoaderAnalysisRow
                     key={index}
                     data={e}
                     BAG_TYPES={BAG_TYPES}
-                    handleNewShipment={(arg) => handleNewShipment(arg)}
+                    handleNewShipment={arg => handleNewShipment(arg)}
                     handleFlag={handleFlag}
                     index={index + 1}
                     rackNo={savedRackNo}
