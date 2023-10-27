@@ -2,25 +2,31 @@ import { GlobalProvider } from 'context/GlobalContext';
 import { SocketContext, socket } from 'context/SocketContext';
 import { QueryClient, QueryClientProvider } from 'react-query';
 import React from 'react';
-import axios from 'axios';
-import MockAdapter from 'axios-mock-adapter';
+import { jest } from '@jest/globals';
+import { useRouter } from 'next/router';
+import InitCheck from 'components/InitCheck';
 
 const queryClient = new QueryClient({
   defaultOptions: {
     queries: {
-      staleTime: Infinity
-    }
-  }
+      staleTime: Infinity,
+    },
+  },
 });
 
-const mock = new MockAdapter(axios);
-mock.onGet('/api/some-endpoint').reply(200, { data: 'Mocked Data' });
+useRouter.mockImplementation(() => ({
+  push: jest.fn(),
+  replace: jest.fn(),
+  prefetch: jest.fn(),
+}));
 
 function TestWrapperComponent({ children }) {
   return (
     <SocketContext.Provider value={socket}>
       <QueryClientProvider client={queryClient}>
-        <GlobalProvider>{children}</GlobalProvider>
+        <GlobalProvider>
+          <InitCheck>{children}</InitCheck>
+        </GlobalProvider>
       </QueryClientProvider>
     </SocketContext.Provider>
   );
