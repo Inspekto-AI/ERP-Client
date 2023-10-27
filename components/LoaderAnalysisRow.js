@@ -211,12 +211,11 @@ function LoaderAnalysisRow({
             <MenuItem className="table-button" value={0}>
               Select Grade
             </MenuItem>
-            {BAG_TYPES &&
-              BAG_TYPES.map((e, idx) => (
-                <MenuItem className="table-button" value={e} key={idx}>
-                  {e}
-                </MenuItem>
-              ))}
+            {BAG_TYPES.map((e, idx) => (
+              <MenuItem className="table-button" value={e} key={idx}>
+                {e}
+              </MenuItem>
+            ))}
           </Select>
         )}
         <td className={data?.shipment_id ? classes.td7 : classes.td4Inactive}>
