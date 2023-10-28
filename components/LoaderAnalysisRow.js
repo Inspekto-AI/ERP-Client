@@ -1,3 +1,4 @@
+/* eslint-disable react/button-has-type */
 /* eslint-disable operator-linebreak */
 import { Select, MenuItem, Avatar } from '@material-ui/core';
 import { useState } from 'react';
@@ -15,6 +16,8 @@ const useStyles = makeStyles(() => ({
     fontSize: '1vw',
     fontWeight: 200,
     width: '2vw',
+    outline: 'none',
+    border: 'none',
   },
 
   td1: {
@@ -294,9 +297,13 @@ function LoaderAnalysisRow({
           )}
         </td>
         <td>
-          <Button
+          <button
             className={classes.root}
             disabled={!data.shipment_id || data.is_belt_running}
+            id={`beltDetail-${data?.id}`}
+            data-testid={`beltDetail-${data?.id}${
+              data?.issue_with_belt ? `-${data.issue_with_belt}` : ''
+            }`}
             onClick={() =>
               setDetailModalOpen({
                 issue_with_belt: data?.issue_with_belt,
@@ -306,10 +313,10 @@ function LoaderAnalysisRow({
             }
           >
             VIEW
-          </Button>
+          </button>
         </td>
       </tr>
-      {detailModalOpen ? (
+      {detailModalOpen && (
         <InfoModal
           open={detailModalOpen}
           close={() => setDetailModalOpen(null)}
@@ -320,12 +327,15 @@ function LoaderAnalysisRow({
           handleBeltReset={handleBeltReset}
         >
           <>
-            <p style={{ textAlign: 'center' }}>
+            <p
+              style={{ textAlign: 'center' }}
+              data-testid={`${detailModalOpen?.issue_with_belt}-${detailModalOpen?.belt_id}`}
+            >
               {detailModalOpen?.issue_with_belt} -{detailModalOpen?.belt_id}
             </p>
           </>
         </InfoModal>
-      ) : null}
+      )}
     </>
   );
 }

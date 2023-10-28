@@ -432,6 +432,7 @@ function Index() {
       });
     });
     socket.on('bag-congestion-frontend', ({ belt_id, issue_with_belt, error }) => {
+      console.log('bag congestion:', { belt_id, issue_with_belt, error });
       if (error) {
         setShipmentError(error);
         setShipmentOverflow(true);

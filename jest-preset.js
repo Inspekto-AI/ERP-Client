@@ -2,6 +2,7 @@ module.exports = {
   testEnvironment: 'jsdom',
   testPathIgnorePatterns: ['<rootDir>/.next/', '<rootDir>/node_modules/'],
   // setupFilesAfterEnv: ['@testing-library/jest-dom/extend-expect'],
+  setupFiles: ['./tests/socketServer.js', './tests/setupTests.js'],
   transform: {
     '^.+\\.(js|jsx)$': 'babel-jest',
   },
