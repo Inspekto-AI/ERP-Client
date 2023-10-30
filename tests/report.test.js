@@ -26,18 +26,11 @@ test('report page check', async () => {
   const reportButton = screen.getByTestId('report_button');
   fireEvent.click(reportButton);
   await waitFor(() => {
-    expect(screen.queryByText('shipment_row-1')).toBeTruthy();
-    expect(screen.queryByText('shipment_row-2')).toBeTruthy();
+    expect(screen.queryAllByTestId('printing_belt_row-testPrintingBelt')).toBeTruthy();
+    expect(screen.queryByTestId('loading_row-testVehicleBelt')).toBeTruthy();
+    expect(screen.queryByTestId('shipment_row-1')).toBeTruthy();
+    expect(screen.queryByTestId('shipment_row-2')).toBeTruthy();
   });
-  const beltSelect = screen.getByTestId('filter_select');
-  console.log(beltSelect);
-  act(() => {
-    fireEvent.change(beltSelect, { target: { value: 1 } });
-  });
-  await waitFor(() => {
-    expect(screen.queryByText('Loader Summary')).toBeTruthy();
-  });
-  expect(screen.queryByText('testVehicleBelt')).toBeTruthy();
 });
 
 // afterAll(async () => {

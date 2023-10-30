@@ -556,7 +556,7 @@ function RenderTable({ layoutType, data, setRejectIndex }) {
                 // row?.licence_number ? (
                 <TableRow
                   hover
-                  data-testid={`shipment_row-${row?.shipmentid}`}
+                  data-testid={`shipment_row-${row?.shipment_id}`}
                   tabIndex={-1}
                   key={index}
                 >
@@ -637,7 +637,7 @@ function RenderTable({ layoutType, data, setRejectIndex }) {
               <TableRow
                 hover
                 tabIndex={-1}
-                data-testid={`shipment_row-${row?.shipmentid}`}
+                data-testid={`shipment_row-${row?.shipment_id}`}
                 // inputProps={{ 'data-testid': `shipment_row-${row?.shipmentid}` }}
                 key={index}
               >
@@ -832,7 +832,7 @@ function RenderTable({ layoutType, data, setRejectIndex }) {
 }
 
 RenderTable.propTypes = {
-  data: PropTypes.object,
+  // data: PropTypes.object,
   layoutType: PropTypes.number,
   setRejectIndex: PropTypes.func,
 };
@@ -1006,7 +1006,7 @@ function ReportTable({
 ReportTable.propTypes = {
   title: PropTypes.string.isRequired,
   layoutType: PropTypes.number.isRequired,
-  data: PropTypes.object,
+  // data: PropTypes.object,
   startCount: PropTypes.number,
   endCount: PropTypes.number,
   setStartCount: PropTypes.func,
