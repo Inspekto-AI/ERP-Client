@@ -554,6 +554,7 @@ function Index() {
               onClick={() => setActiveSection(4)}
               onKeyPress={() => setActiveSection(4)}
               role="button"
+              data-testid={'report_button'}
               tabIndex={0}
             >
               <h6 style={{ textAlign: 'center' }}>Reports</h6>

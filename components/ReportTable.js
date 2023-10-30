@@ -41,9 +41,10 @@ const descendingComparator = (a, b, orderBy) => {
   return 0;
 };
 
-const getComparator = (order, orderBy) => (order === 'desc'
-  ? (a, b) => descendingComparator(a, b, orderBy)
-  : (a, b) => -descendingComparator(a, b, orderBy));
+const getComparator = (order, orderBy) =>
+  order === 'desc'
+    ? (a, b) => descendingComparator(a, b, orderBy)
+    : (a, b) => -descendingComparator(a, b, orderBy);
 
 const stableSort = (array, comparator) => {
   const stabilizedThis = array?.map((el, index) => [el, index]);
@@ -273,23 +274,14 @@ const packerHead = [
     label: 'Overall Performance',
   },
 ];
-function RenderTableHeader({
-  layoutType,
-  order,
-  orderBy,
-  classes,
-  createSortHandler,
-}) {
+function RenderTableHeader({ layoutType, order, orderBy, classes, createSortHandler }) {
   switch (layoutType) {
     case 0:
       return (
         <TableRow>
           {' '}
           {shipmentHeadTruck.map((headCell) => (
-            <TableCell
-              key={headCell.id}
-              sortDirection={orderBy === headCell.id ? order : false}
-            >
+            <TableCell key={headCell.id} sortDirection={orderBy === headCell.id ? order : false}>
               <TableSortLabel
                 active={orderBy === headCell.id}
                 direction={orderBy === headCell.id ? order : 'asc'}
@@ -298,17 +290,12 @@ function RenderTableHeader({
                 {headCell.label}
                 {orderBy === headCell.id ? (
                   <span className={classes.visuallyHidden}>
-                    {order === 'desc'
-                      ? 'sorted descending'
-                      : 'sorted ascending'}
-                    {' '}
+                    {order === 'desc' ? 'sorted descending' : 'sorted ascending'}{' '}
                   </span>
-                ) : null}
-                {' '}
+                ) : null}{' '}
               </TableSortLabel>
             </TableCell>
-          ))}
-          {' '}
+          ))}{' '}
         </TableRow>
       );
     case 1:
@@ -330,17 +317,12 @@ function RenderTableHeader({
                 {headCell.label}
                 {orderBy === headCell.id ? (
                   <span className={classes.visuallyHidden}>
-                    {order === 'desc'
-                      ? 'sorted descending'
-                      : 'sorted ascending'}
-                    {' '}
+                    {order === 'desc' ? 'sorted descending' : 'sorted ascending'}{' '}
                   </span>
-                ) : null}
-                {' '}
+                ) : null}{' '}
               </TableSortLabel>
             </TableCell>
-          ))}
-          {' '}
+          ))}{' '}
         </TableRow>
       );
     case 2:
@@ -361,17 +343,12 @@ function RenderTableHeader({
                 {headCell.label}
                 {orderBy === headCell.id ? (
                   <span className={classes.visuallyHidden}>
-                    {order === 'desc'
-                      ? 'sorted descending'
-                      : 'sorted ascending'}
-                    {' '}
+                    {order === 'desc' ? 'sorted descending' : 'sorted ascending'}{' '}
                   </span>
-                ) : null}
-                {' '}
+                ) : null}{' '}
               </TableSortLabel>
             </TableCell>
-          ))}
-          {' '}
+          ))}{' '}
         </TableRow>
       );
     case 3:
@@ -379,10 +356,7 @@ function RenderTableHeader({
         <TableRow>
           {' '}
           {shipmentHeadWagon.map((headCell) => (
-            <TableCell
-              key={headCell.id}
-              sortDirection={orderBy === headCell.id ? order : false}
-            >
+            <TableCell key={headCell.id} sortDirection={orderBy === headCell.id ? order : false}>
               <TableSortLabel
                 active={orderBy === headCell.id}
                 direction={orderBy === headCell.id ? order : 'asc'}
@@ -391,17 +365,12 @@ function RenderTableHeader({
                 {headCell.label}
                 {orderBy === headCell.id ? (
                   <span className={classes.visuallyHidden}>
-                    {order === 'desc'
-                      ? 'sorted descending'
-                      : 'sorted ascending'}
-                    {' '}
+                    {order === 'desc' ? 'sorted descending' : 'sorted ascending'}{' '}
                   </span>
-                ) : null}
-                {' '}
+                ) : null}{' '}
               </TableSortLabel>
             </TableCell>
-          ))}
-          {' '}
+          ))}{' '}
         </TableRow>
       );
     default:
@@ -422,17 +391,12 @@ function RenderTableHeader({
                 {headCell.label}
                 {orderBy === headCell.id ? (
                   <span className={classes.visuallyHidden}>
-                    {order === 'desc'
-                      ? 'sorted descending'
-                      : 'sorted ascending'}
-                    {' '}
+                    {order === 'desc' ? 'sorted descending' : 'sorted ascending'}{' '}
                   </span>
-                ) : null}
-                {' '}
+                ) : null}{' '}
               </TableSortLabel>
             </TableCell>
-          ))}
-          {' '}
+          ))}{' '}
         </TableRow>
       );
   }
@@ -447,9 +411,7 @@ RenderTableHeader.propTypes = {
 };
 
 function EnhancedTableHead(props) {
-  const {
-    classes, order, orderBy, onRequestSort, layoutType,
-  } = props;
+  const { classes, order, orderBy, onRequestSort, layoutType } = props;
 
   const createSortHandler = (property) => (event) => {
     onRequestSort(event, property);
@@ -484,13 +446,13 @@ const useToolbarStyles = makeStyles((theme) => ({
   highlight:
     theme.palette.type === 'light'
       ? {
-        color: theme.palette.secondary.main,
-        backgroundColor: lighten(theme.palette.secondary.light, 0.85),
-      }
+          color: theme.palette.secondary.main,
+          backgroundColor: lighten(theme.palette.secondary.light, 0.85),
+        }
       : {
-        color: theme.palette.text.primary,
-        backgroundColor: theme.palette.secondary.dark,
-      },
+          color: theme.palette.text.primary,
+          backgroundColor: theme.palette.secondary.dark,
+        },
   title: {
     flex: '1 1 100%',
   },
@@ -507,22 +469,12 @@ function EnhancedTableToolbar(props) {
       })}
     >
       {numSelected > 0 ? (
-        <Typography
-          className={classes.title}
-          color="inherit"
-          variant="subtitle1"
-          component="div"
-        >
+        <Typography className={classes.title} color="inherit" variant="subtitle1" component="div">
           {numSelected}
           selected
         </Typography>
       ) : (
-        <Typography
-          className={classes.title}
-          variant="h6"
-          id="tableTitle"
-          component="div"
-        >
+        <Typography className={classes.title} variant="h6" id="tableTitle" component="div">
           Nutrition
         </Typography>
       )}
@@ -534,8 +486,7 @@ function EnhancedTableToolbar(props) {
         <Tooltip title="Filter list">
           <IconButton aria-label="filter list">filter</IconButton>
         </Tooltip>
-      )}
-      {' '}
+      )}{' '}
     </Toolbar>
   );
 }
@@ -576,7 +527,7 @@ function RenderTable({ layoutType, data, setRejectIndex }) {
   const classes = useStyles();
   const [order, setOrder] = useState('asc');
   const [orderBy, setOrderBy] = useState('calories');
-
+  console.log('data:', data);
   const handleRequestSort = (event, property) => {
     const isAsc = orderBy === property && order === 'asc';
     setOrder(isAsc ? 'desc' : 'asc');
@@ -603,65 +554,51 @@ function RenderTable({ layoutType, data, setRejectIndex }) {
             {stableSort(data?.rows, getComparator(order, orderBy))?.map(
               (row, index) => (
                 // row?.licence_number ? (
-                <TableRow hover tabIndex={-1} key={index}>
+                <TableRow
+                  hover
+                  data-testid={`shipment_row-${row?.shipmentid}`}
+                  tabIndex={-1}
+                  key={index}
+                >
                   <TableCell
                     component="th"
                     scope="row"
                     padding="none"
                     style={{ textAlign: 'center' }}
                   >
-                    {row?.shipment_id}
-                    {' '}
+                    {row?.shipment_id}{' '}
                   </TableCell>
                   <TableCell style={{ textAlign: 'center' }}>
                     {row?.licence_number}
                     {/* // , Gate/Door No.- ${row.gate_no}, Rake No.- ${row.rack_no} */}
                   </TableCell>
                   <TableCell style={{ textAlign: 'center' }}>
-                    {row?.loading_belt_id || 'NA'}
-                    {' '}
+                    {row?.loading_belt_id || 'NA'}{' '}
                   </TableCell>
                   {/* <TableCell style={{ textAlign: 'center' }}>
                       {row?.printing_belt_id || 'NA'}{' '}
                     </TableCell> */}
-                  <TableCell style={{ textAlign: 'center' }}>
-                    {row?.bag_type}
-                    {' '}
-                  </TableCell>
-                  <TableCell style={{ textAlign: 'center' }}>
-                    {row?.bag_limit}
-                    {' '}
-                  </TableCell>
-                  <TableCell style={{ textAlign: 'center' }}>
-                    {row?.loading_count || 0}
-                    {' '}
-                  </TableCell>
-                  <TableCell style={{ textAlign: 'center' }}>
-                    {row?.bags_increased}
-                    {' '}
-                  </TableCell>
+                  <TableCell style={{ textAlign: 'center' }}>{row?.bag_type} </TableCell>
+                  <TableCell style={{ textAlign: 'center' }}>{row?.bag_limit} </TableCell>
+                  <TableCell style={{ textAlign: 'center' }}>{row?.loading_count || 0} </TableCell>
+                  <TableCell style={{ textAlign: 'center' }}>{row?.bags_increased} </TableCell>
                   {/* <TableCell style={{ textAlign: 'center' }}>
                       {row?.misprinting_count}{' '}
                     </TableCell> */}
                   <TableCell style={{ textAlign: 'center' }}>
-                    {new Date(row?.created_at).toLocaleDateString()}
-                    {' '}
+                    {new Date(row?.created_at).toLocaleDateString()}{' '}
                   </TableCell>
                   <TableCell style={{ textAlign: 'center' }}>
-                    {new Date(row?.created_at).toLocaleTimeString()}
-                    {' '}
+                    {new Date(row?.created_at).toLocaleTimeString()}{' '}
                   </TableCell>
                   <TableCell style={{ textAlign: 'center' }}>
                     {moment
                       .utc(
                         moment
-                          .duration(
-                            moment(row?.stopped_at).diff(row?.created_at),
-                          )
+                          .duration(moment(row?.stopped_at).diff(row?.created_at))
                           .asMilliseconds(),
                       )
-                      .format('HH:mm:ss')}
-                    {' '}
+                      .format('HH:mm:ss')}{' '}
                   </TableCell>
 
                   {/* <TableCell style={{ textAlign: 'center' }}>
@@ -680,8 +617,7 @@ function RenderTable({ layoutType, data, setRejectIndex }) {
                 </TableRow>
               ),
               // ) : null
-            )}
-            {' '}
+            )}{' '}
           </TableBody>
         </Table>
       );
@@ -697,68 +633,52 @@ function RenderTable({ layoutType, data, setRejectIndex }) {
           />
           <TableBody>
             {' '}
-            {stableSort(data?.rows, getComparator(order, orderBy))?.map(
-              (row, index) => (
-                <TableRow hover tabIndex={-1} key={index}>
-                  <TableCell
-                    component="th"
-                    scope="row"
-                    padding="none"
-                    style={{ textAlign: 'center' }}
-                  >
-                    {row?.shipment_id}
-                    {' '}
-                  </TableCell>
-                  <TableCell style={{ textAlign: 'center' }}>
-                    {row?.wagon_no}
-                  </TableCell>
-                  <TableCell style={{ textAlign: 'center' }}>
-                    {row?.loading_belt_id || 'NA'}
-                    {' '}
-                  </TableCell>
-                  {/* <TableCell style={{ textAlign: 'center' }}>
+            {stableSort(data?.rows, getComparator(order, orderBy))?.map((row, index) => (
+              <TableRow
+                hover
+                tabIndex={-1}
+                data-testid={`shipment_row-${row?.shipmentid}`}
+                // inputProps={{ 'data-testid': `shipment_row-${row?.shipmentid}` }}
+                key={index}
+              >
+                <TableCell
+                  component="th"
+                  scope="row"
+                  padding="none"
+                  style={{ textAlign: 'center' }}
+                >
+                  {row?.shipment_id}{' '}
+                </TableCell>
+                <TableCell style={{ textAlign: 'center' }}>{row?.wagon_no}</TableCell>
+                <TableCell style={{ textAlign: 'center' }}>
+                  {row?.loading_belt_id || 'NA'}{' '}
+                </TableCell>
+                {/* <TableCell style={{ textAlign: 'center' }}>
                       {row?.printing_belt_id || 'NA'}{' '}
                     </TableCell> */}
-                  <TableCell style={{ textAlign: 'center' }}>
-                    {row?.bag_type}
-                    {' '}
-                  </TableCell>
-                  <TableCell style={{ textAlign: 'center' }}>
-                    {row?.bag_limit}
-                    {' '}
-                  </TableCell>
-                  <TableCell style={{ textAlign: 'center' }}>
-                    {row?.loading_count || 0}
-                    {' '}
-                  </TableCell>
-                  <TableCell style={{ textAlign: 'center' }}>
-                    {row?.bags_increased}
-                    {' '}
-                  </TableCell>
-                  {/* <TableCell style={{ textAlign: 'center' }}>
+                <TableCell style={{ textAlign: 'center' }}>{row?.bag_type} </TableCell>
+                <TableCell style={{ textAlign: 'center' }}>{row?.bag_limit} </TableCell>
+                <TableCell style={{ textAlign: 'center' }}>{row?.loading_count || 0} </TableCell>
+                <TableCell style={{ textAlign: 'center' }}>{row?.bags_increased} </TableCell>
+                {/* <TableCell style={{ textAlign: 'center' }}>
                       {row?.misprinting_count}{' '}
                     </TableCell> */}
-                  <TableCell style={{ textAlign: 'center' }}>
-                    {new Date(row?.created_at).toLocaleDateString()}
-                    {' '}
-                  </TableCell>
-                  <TableCell style={{ textAlign: 'center' }}>
-                    {new Date(row?.created_at).toLocaleTimeString()}
-                    {' '}
-                  </TableCell>
-                  <TableCell style={{ textAlign: 'center' }}>
-                    {moment
-                      .utc(
-                        moment
-                          .duration(
-                            moment(row?.stopped_at).diff(row?.created_at),
-                          )
-                          .asMilliseconds(),
-                      )
-                      .format('HH:mm:ss')}
-                    {' '}
-                  </TableCell>
-                  {/* <TableCell style={{ textAlign: 'center' }}>
+                <TableCell style={{ textAlign: 'center' }}>
+                  {new Date(row?.created_at).toLocaleDateString()}{' '}
+                </TableCell>
+                <TableCell style={{ textAlign: 'center' }}>
+                  {new Date(row?.created_at).toLocaleTimeString()}{' '}
+                </TableCell>
+                <TableCell style={{ textAlign: 'center' }}>
+                  {moment
+                    .utc(
+                      moment
+                        .duration(moment(row?.stopped_at).diff(row?.created_at))
+                        .asMilliseconds(),
+                    )
+                    .format('HH:mm:ss')}{' '}
+                </TableCell>
+                {/* <TableCell style={{ textAlign: 'center' }}>
                     <FrinksButton
                       text="View"
                       variant="outlined"
@@ -771,10 +691,8 @@ function RenderTable({ layoutType, data, setRejectIndex }) {
                       isInactive={row?.misprinting_count === 0}
                     />
                   </TableCell> */}
-                </TableRow>
-              ),
-            )}
-            {' '}
+              </TableRow>
+            ))}{' '}
           </TableBody>
         </Table>
       );
@@ -790,48 +708,43 @@ function RenderTable({ layoutType, data, setRejectIndex }) {
           />
           <TableBody>
             {' '}
-            {stableSort(data, getComparator(order, orderBy))?.map(
-              (row, index) => (
-                <TableRow hover tabIndex={-1} key={index}>
-                  <TableCell
-                    component="th"
-                    scope="row"
-                    padding="none"
-                    style={{ textAlign: 'center' }}
-                  >
-                    {row?.belt_id}
-                    {' '}
-                  </TableCell>
-                  {/* <TableCell style={{ textAlign: 'center' }}>NA</TableCell>
+            {stableSort(data, getComparator(order, orderBy))?.map((row, index) => (
+              <TableRow
+                hover
+                tabIndex={-1}
+                data-testid={`printing_belt_row-${row?.belt_id}`}
+                key={index}
+              >
+                <TableCell
+                  component="th"
+                  scope="row"
+                  padding="none"
+                  style={{ textAlign: 'center' }}
+                >
+                  {row?.belt_id}{' '}
+                </TableCell>
+                {/* <TableCell style={{ textAlign: 'center' }}>NA</TableCell>
                     <TableCell style={{ textAlign: 'center' }}>NA</TableCell> */}
-                  <TableCell style={{ textAlign: 'center' }}>
-                    {row?.tag_count}
-                    {' '}
-                  </TableCell>
-                  <TableCell style={{ textAlign: 'center' }}>
-                    {row?.missed_label_count}
-                    {' '}
-                  </TableCell>
-                  <TableCell style={{ textAlign: 'center' }}>
-                    <FrinksButton
-                      text="View"
-                      variant="outlined"
-                      style={{
-                        fontSize: '12px',
-                        padding: '2px 10px 2px 10px',
-                        height: '30px',
-                      }}
-                      onClick={() => setRejectIndex(index)}
-                      isInactive={row?.aws_missed_labels?.length === 0}
-                    />
-                  </TableCell>
-                  {/* <TableCell style={{ textAlign: 'center' }}>
+                <TableCell style={{ textAlign: 'center' }}>{row?.tag_count} </TableCell>
+                <TableCell style={{ textAlign: 'center' }}>{row?.missed_label_count} </TableCell>
+                <TableCell style={{ textAlign: 'center' }}>
+                  <FrinksButton
+                    text="View"
+                    variant="outlined"
+                    style={{
+                      fontSize: '12px',
+                      padding: '2px 10px 2px 10px',
+                      height: '30px',
+                    }}
+                    onClick={() => setRejectIndex(index)}
+                    isInactive={row?.aws_missed_labels?.length === 0}
+                  />
+                </TableCell>
+                {/* <TableCell style={{ textAlign: 'center' }}>
                       {row?.shipment_count}{' '}
                     </TableCell> */}
-                </TableRow>
-              ),
-            )}
-            {' '}
+              </TableRow>
+            ))}{' '}
           </TableBody>
         </Table>
       );
@@ -847,34 +760,22 @@ function RenderTable({ layoutType, data, setRejectIndex }) {
           />
           <TableBody>
             {' '}
-            {stableSort(data, getComparator(order, orderBy))?.map(
-              (row, index) => (
-                <TableRow hover tabIndex={-1} key={index}>
-                  <TableCell
-                    component="th"
-                    scope="row"
-                    padding="none"
-                    style={{ textAlign: 'center' }}
-                  >
-                    {row?.belt_id}
-                    (
-                    {row?.vehicle_type === 1 ? 'WL' : 'TL'}
-                    )
-                  </TableCell>
-                  {/* <TableCell style={{ textAlign: 'center' }}>NA</TableCell>
+            {stableSort(data, getComparator(order, orderBy))?.map((row, index) => (
+              <TableRow hover tabIndex={-1} data-testid={`loading_row-${row?.belt_id}`} key={index}>
+                <TableCell
+                  component="th"
+                  scope="row"
+                  padding="none"
+                  style={{ textAlign: 'center' }}
+                >
+                  {row?.belt_id}({row?.vehicle_type === 1 ? 'WL' : 'TL'})
+                </TableCell>
+                {/* <TableCell style={{ textAlign: 'center' }}>NA</TableCell>
                     <TableCell style={{ textAlign: 'center' }}>NA</TableCell> */}
-                  <TableCell style={{ textAlign: 'center' }}>
-                    {row?.bag_count}
-                    {' '}
-                  </TableCell>
-                  <TableCell style={{ textAlign: 'center' }}>
-                    {row?.shipment_count}
-                    {' '}
-                  </TableCell>
-                </TableRow>
-              ),
-            )}
-            {' '}
+                <TableCell style={{ textAlign: 'center' }}>{row?.bag_count} </TableCell>
+                <TableCell style={{ textAlign: 'center' }}>{row?.shipment_count} </TableCell>
+              </TableRow>
+            ))}{' '}
           </TableBody>
         </Table>
       );
@@ -890,56 +791,40 @@ function RenderTable({ layoutType, data, setRejectIndex }) {
           />
           <TableBody>
             {' '}
-            {stableSort(data, getComparator(order, orderBy))?.map(
-              (row, index) => (
-                <TableRow hover tabIndex={-1} key={index}>
-                  <TableCell
-                    component="th"
-                    scope="row"
-                    padding="none"
-                    style={{ textAlign: 'center' }}
-                  >
-                    {row?.belt_id}
-                    {' '}
-                  </TableCell>
-                  <TableCell style={{ textAlign: 'center' }}>
-                    {row.runtime_performance ? (
-                      <ProgressBarContainer
-                        progressBackground={
-                          getStatus(row.runtime_performance).colorCode
-                        }
-                      >
-                        <LinearProgress
-                          variant="determinate"
-                          value={row.runtime_performance}
-                        />
-                      </ProgressBarContainer>
-                    ) : (
-                      'NA'
-                    )}
-                    {' '}
-                  </TableCell>
-                  <TableCell style={{ textAlign: 'center' }}>
-                    {row.overall_performance ? (
-                      <ProgressBarContainer
-                        progressBackground={
-                          getStatus(row.overall_performance).colorCode
-                        }
-                      >
-                        <LinearProgress
-                          variant="determinate"
-                          value={row.overall_performance}
-                        />
-                      </ProgressBarContainer>
-                    ) : (
-                      'NA'
-                    )}
-                    {' '}
-                  </TableCell>
-                </TableRow>
-              ),
-            )}
-            {' '}
+            {stableSort(data, getComparator(order, orderBy))?.map((row, index) => (
+              <TableRow hover tabIndex={-1} data-testid={`belt_row-${row?.belt_id}`} key={index}>
+                <TableCell
+                  component="th"
+                  scope="row"
+                  padding="none"
+                  style={{ textAlign: 'center' }}
+                >
+                  {row?.belt_id}{' '}
+                </TableCell>
+                <TableCell style={{ textAlign: 'center' }}>
+                  {row.runtime_performance ? (
+                    <ProgressBarContainer
+                      progressBackground={getStatus(row.runtime_performance).colorCode}
+                    >
+                      <LinearProgress variant="determinate" value={row.runtime_performance} />
+                    </ProgressBarContainer>
+                  ) : (
+                    'NA'
+                  )}{' '}
+                </TableCell>
+                <TableCell style={{ textAlign: 'center' }}>
+                  {row.overall_performance ? (
+                    <ProgressBarContainer
+                      progressBackground={getStatus(row.overall_performance).colorCode}
+                    >
+                      <LinearProgress variant="determinate" value={row.overall_performance} />
+                    </ProgressBarContainer>
+                  ) : (
+                    'NA'
+                  )}{' '}
+                </TableCell>
+              </TableRow>
+            ))}{' '}
           </TableBody>
         </Table>
       );
@@ -1008,10 +893,7 @@ function ReportTable({
                   width={25}
                 />
               </Button>
-              <Button
-                className="view-toggle-buttons"
-                style={{ marginLeft: '0px' }}
-              >
+              <Button className="view-toggle-buttons" style={{ marginLeft: '0px' }}>
                 <Image
                   src="graph-icon.svg"
                   loader={ImageKitLoader}
@@ -1038,8 +920,7 @@ function ReportTable({
                 <MenuItem value={0}>Truck Loader</MenuItem>
               </Select> */}
             </div>
-          )}
-          {' '}
+          )}{' '}
         </div>
       </div>
       <div className="table-container">
@@ -1059,11 +940,7 @@ function ReportTable({
                 <div className="number-of-records">
                   Show
                   <FormControl>
-                    <Select
-                      variant="outlined"
-                      value={rowCount}
-                      onChange={handleRowCountChange}
-                    >
+                    <Select variant="outlined" value={rowCount} onChange={handleRowCountChange}>
                       <MenuItem value={5}>5</MenuItem>
                       <MenuItem value={10}>10</MenuItem>
                       <MenuItem value={20}>20</MenuItem>
@@ -1073,18 +950,9 @@ function ReportTable({
                 </div>
                 <div className="pipe" />
                 <div className="total-records">
-                  Showing
-                  {' '}
-                  {data?.count === 0 ? 0 : startCount + 1}
-                  {' '}
-                  to
-                  {' '}
-                  {Math.min(endCount, data?.count)}
-                  {' '}
-                  of
-                  {data?.count}
-                  {' '}
-                  entries
+                  Showing {data?.count === 0 ? 0 : startCount + 1} to{' '}
+                  {Math.min(endCount, data?.count)} of
+                  {data?.count} entries
                 </div>
               </div>
               <div className="right">
@@ -1111,8 +979,7 @@ function ReportTable({
                 </div>
               </div>
             </div>
-          )}
-          {' '}
+          )}{' '}
         </div>
       </div>
       {rejectIndex !== null ? (
@@ -1125,16 +992,13 @@ function ReportTable({
         >
           <DefectiveBags
             belt_id={Array.isArray(data) ? data[rejectIndex]?.belt_id : null}
-            transaction_id={
-              data?.rows ? data?.rows[rejectIndex]?.shipment_id : null
-            }
+            transaction_id={data?.rows ? data?.rows[rejectIndex]?.shipment_id : null}
             date={date}
             dateUnAltered={dateUnAltered}
             shift={shift}
           />
         </InfoModal>
-      ) : null}
-      {' '}
+      ) : null}{' '}
     </Container>
   );
 }

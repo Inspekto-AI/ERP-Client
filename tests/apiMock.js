@@ -256,6 +256,119 @@ mock.onGet('/api/stats/summarized-stats').reply(
   { authorization: 'test' },
 );
 
+const filter1ShipmentData = {
+  shipment_id: 1,
+  aws_upload_status: 0,
+  printing_belt_id: 'testPrintingBelt',
+  loading_belt_id: 'testVehicleBelt',
+  wagon_no: 'W123',
+  rack_no: 'R456',
+  gate_no: 'G789',
+  licence_number: 'LIC123',
+  bag_type: 'TypeA',
+  bag_limit: 100,
+  label_example: 'ExampleLabel',
+  is_active: 1,
+  stopped_at: 1635583922,
+  is_listed: 1,
+  last_count_at: 1635584000,
+  loading_count: 500,
+  printing_count: 1000,
+  misprinting_count: 10,
+  date_created: '2023-10-30',
+  hour_created: 14,
+  state: 1,
+  add_comment: 'This is an additional comment',
+  stop_comment: 'This is a stop comment',
+  bags_increased: 50,
+  organization_id: 2,
+  created_at: 1635584100,
+};
+
+const filter2ShipmentData = {
+  shipment_id: 2,
+  aws_upload_status: 0,
+  printing_belt_id: 'testPrintingBelt2',
+  loading_belt_id: 'testVehicleBelt2',
+  wagon_no: 'W123',
+  rack_no: 'R456',
+  gate_no: 'G789',
+  licence_number: 'LIC123',
+  bag_type: 'TypeA',
+  bag_limit: 100,
+  label_example: 'ExampleLabel',
+  is_active: 1,
+  stopped_at: 1635583922,
+  is_listed: 1,
+  last_count_at: 1635584000,
+  loading_count: 500,
+  printing_count: 1000,
+  misprinting_count: 10,
+  date_created: '2023-10-30',
+  hour_created: 14,
+  state: 1,
+  add_comment: 'This is an additional comment',
+  stop_comment: 'This is a stop comment',
+  bags_increased: 50,
+  organization_id: 2,
+  created_at: 1635584100,
+};
+
+mock.onGet('/api/stats/shipment-stats').reply((config) => {
+  const paramValue = config.params.shipmentFilter;
+  return paramValue
+    ? [200, { data: { count: 1, rows: [filter1ShipmentData] } }, { authorization: 'test' }]
+    : [200, { data: { count: 1, rows: [filter2ShipmentData] } }, { authorization: 'test' }];
+});
+
+mock.onGet('/api/stats/printing-stats').reply(
+  200,
+  {
+    data: [
+      [
+        {
+          shipment_count: 0,
+          tag_count: 0,
+          belt_id: 'testPrintingBelt',
+          missed_label_count: 0,
+        },
+      ],
+      [
+        {
+          shipment_count: 0,
+          tag_count: 0,
+          belt_id: 'testPrintingBelt',
+          missed_label_count: 0,
+        },
+      ],
+      [
+        {
+          shipment_count: 0,
+          tag_count: 0,
+          belt_id: 'testPrintingBelt',
+          missed_label_count: 0,
+        },
+      ],
+    ],
+  },
+  { authorization: 'test' },
+);
+
+mock.onGet('/api/stats/loading-stats').reply(
+  200,
+  {
+    data: [
+      {
+        shipment_count: 0,
+        bag_count: 0,
+        belt_id: 'testVehicleBelt',
+        vehicle_type: 1,
+      },
+    ],
+  },
+  { authorization: 'test' },
+);
+
 mock.onPut('/api/shipment/reset-belt').reply(200, { data: null }, { authorization: 'test' });
 
 export default axios;

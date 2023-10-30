@@ -14,20 +14,20 @@ jest.mock('next/router', () => ({
   useRouter: jest.fn(),
 }));
 
-test('summary page check', async () => {
+test('report page check', async () => {
   render(
     <TestWrapperComponent>
       <Index />
     </TestWrapperComponent>,
   );
-
   await waitFor(() => {
-    expect(screen.queryByTestId('summary_button')).toBeTruthy();
+    expect(screen.queryByTestId('report_button')).toBeTruthy();
   });
-  const summarybutton = screen.getByTestId('summary_button');
-  fireEvent.click(summarybutton);
+  const reportButton = screen.getByTestId('report_button');
+  fireEvent.click(reportButton);
   await waitFor(() => {
-    expect(screen.queryByText('testPrintingBelt')).toBeTruthy();
+    expect(screen.queryByText('shipment_row-1')).toBeTruthy();
+    expect(screen.queryByText('shipment_row-2')).toBeTruthy();
   });
   const beltSelect = screen.getByTestId('filter_select');
   console.log(beltSelect);
@@ -39,3 +39,11 @@ test('summary page check', async () => {
   });
   expect(screen.queryByText('testVehicleBelt')).toBeTruthy();
 });
+
+// afterAll(async () => {
+//   try {
+//     await mockServer.close();
+//   } catch (e) {
+//     console.log(e);
+//   }
+// });
