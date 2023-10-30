@@ -2,8 +2,6 @@
 import { render, screen, waitFor } from '@testing-library/react';
 import React from 'react';
 import { expect, jest, test } from '@jest/globals';
-import { socket } from 'context/SocketContext';
-import axios from './apiMock';
 import Index from '../pages/index';
 import TestWrapperComponent from './testUtils';
 

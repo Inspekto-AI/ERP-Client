@@ -43,13 +43,12 @@ test('alert socket event', async () => {
     );
     console.log(await promise);
   });
-
   await waitFor(() => {
     expect(screen.queryByTestId('testVehicleBelt')).toBeTruthy();
   });
-  await waitFor(() => {
-    expect(screen.queryByTestId('beltDetail-testVehicleBelt-congestion')).toBeTruthy();
-  });
+  // await waitFor(() => {
+  //   expect(screen.queryByTestId('beltDetail-testVehicleBelt-congestion')).toBeTruthy();
+  // });
   expect(screen.queryByTestId('beltDetail-testVehicleBelt-congestion')).toBeTruthy();
 });
 
