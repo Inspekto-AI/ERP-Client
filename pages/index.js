@@ -532,6 +532,7 @@ function Index() {
                 onKeyPress={() => setActiveSection(2)}
                 role="button"
                 tabIndex={0}
+                data-testid={'printing_belt'}
               >
                 <h6 style={{ textAlign: 'center' }}>Printing belt</h6>
               </div>

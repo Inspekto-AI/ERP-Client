@@ -41,45 +41,25 @@ const useStyles = makeStyles((theme) => ({
   },
 }));
 
-function FrinksButton({
-  text,
-  isInactive,
-  type,
-  onClick,
-  variant,
-  style,
-  image,
-}) {
+function FrinksButton({ text, isInactive, type, onClick, variant, style, image }) {
   const classes = useStyles();
 
   return (
     <Button
-      variant={
-        variant || 'contained'
-    }
+      variant={variant || 'contained'}
       color="primary"
-      className={
-            variant === 'outlined' ? classes.buttonOutlined : classes.buttonStyle
-        }
+      className={variant === 'outlined' ? classes.buttonOutlined : classes.buttonStyle}
       disabled={isInactive}
       type={type}
       onClick={onClick}
       style={style}
     >
       {' '}
-      {
-            image ? (
-              <Image
-                src={image}
-                loader={ImageKitLoader}
-                layout="fixed"
-                height={35}
-                width={35}
-              />
-            ) : text
-        }
-      {' '}
-
+      {image ? (
+        <Image src={image} loader={ImageKitLoader} layout="fixed" height={35} width={35} />
+      ) : (
+        text
+      )}{' '}
     </Button>
   );
 }

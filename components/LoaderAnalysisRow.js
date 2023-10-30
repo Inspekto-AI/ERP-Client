@@ -297,7 +297,7 @@ function LoaderAnalysisRow({
           )}
         </td>
         <td>
-          <button
+          <Button
             className={classes.root}
             disabled={!data.shipment_id || data.is_belt_running}
             id={`beltDetail-${data?.id}`}
@@ -313,7 +313,7 @@ function LoaderAnalysisRow({
             }
           >
             VIEW
-          </button>
+          </Button>
         </td>
       </tr>
       {detailModalOpen && (

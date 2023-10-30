@@ -9,11 +9,6 @@ import Index from '../pages/index';
 import TestWrapperComponent from './testUtils';
 import { createMockSocketServer } from './socketServer';
 import { act } from 'react-dom/test-utils';
-// import { server, startTestServer, stopTestServer } from './socketServer';
-
-// Create a mock socket connection
-// const mockSocket = io('http://localhost:3000');
-// Emit or listen for mock socket events as needed
 
 jest.mock('next/router', () => ({
   useRouter: jest.fn(),
@@ -22,16 +17,16 @@ jest.mock('next/router', () => ({
 let mockServer;
 let events = [
   {
-    event: 'bag-congestion-frontend',
+    event: 'tripping_belt',
     message: {
-      belt_id: 'testVehicleBelt',
-      issue_with_belt: 'congestion',
+      belt_id: 'testPrintingBelt',
+      issue_with_belt: 'some_error',
       error: null,
     },
   },
 ];
 
-test('belt congestion frontend event', async () => {
+test('tripping belt event', async () => {
   mockServer = createServer();
   mockServer.listen(5000);
   await act(async () => {
@@ -43,13 +38,12 @@ test('belt congestion frontend event', async () => {
     );
     console.log(await promise);
   });
+  const printBeltButton = screen.getByTestId('printing_belt');
+  fireEvent.click(printBeltButton);
   await waitFor(() => {
-    expect(screen.queryByTestId('testVehicleBelt')).toBeTruthy();
+    expect(screen.queryByText('testPrintingBelt')).toBeTruthy();
   });
-  await waitFor(() => {
-    expect(screen.queryByTestId('beltDetail-testVehicleBelt-congestion')).toBeTruthy();
-  });
-  expect(screen.queryByTestId('beltDetail-testVehicleBelt-congestion')).toBeTruthy();
+  expect(screen.queryByTestId('openView-testPrintingBelt-some_error')).toBeTruthy();
 });
 
 afterAll(() => {

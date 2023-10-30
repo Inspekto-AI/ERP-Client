@@ -2,9 +2,7 @@ import { useState, useEffect, useContext } from 'react';
 import PropTypes from 'prop-types';
 import { GrFlag } from 'react-icons/gr';
 import { IoMdAdd } from 'react-icons/io';
-import {
-  Avatar, Button, LinearProgress,
-} from '@material-ui/core';
+import { Avatar, Button, LinearProgress } from '@material-ui/core';
 import { msToTime } from 'utils/globalFunctions';
 // import { PACKER_LIMIT } from 'utils/constants';
 import FrinksButton from 'components/FrinksButton';
@@ -49,11 +47,10 @@ function AnalyticsCard({
 
   useEffect(() => {
     const interval = setInterval(
-      () => setTimeDifference(
-        data.created_at
-          ? msToTime(new Date().getTime() - data.created_at)
-          : '00:00:00',
-      ),
+      () =>
+        setTimeDifference(
+          data.created_at ? msToTime(new Date().getTime() - data.created_at) : '00:00:00',
+        ),
       1000,
     );
     return () => clearInterval(interval);
@@ -61,9 +58,7 @@ function AnalyticsCard({
   return (
     <Container
       packerCard={packerCard}
-      progressBackground={
-        getStatus(Math.min((data.count * 100) / PACKER_LIMIT, 100)).colorCode
-      }
+      progressBackground={getStatus(Math.min((data.count * 100) / PACKER_LIMIT, 100)).colorCode}
       status={status}
       active={data?.is_active}
       countReached={
@@ -87,15 +82,11 @@ function AnalyticsCard({
       </div>
       <div className="head" style={{ flexDirection: 'row' }}>
         <div className="id-container">
-          <div className="status" />
-          {' '}
+          <div className="status" />{' '}
           <div className="id">
             {' '}
             {packerCard ? (
-              <p>
-                {' '}
-                {data?.id}
-              </p>
+              <p> {data?.id}</p>
             ) : (
               <>
                 {' '}
@@ -133,23 +124,14 @@ function AnalyticsCard({
                   </div>
                 )}
                 {status < 2 && loaderCard ? (
-                  <p className="tag-id">
-                    {' '}
-                    {data?.printing_id}
-                  </p>
+                  <p className="tag-id"> {data?.printing_id}</p>
                 ) : printingCard ? (
-                  <p className="tag-id">
-                    {' '}
-                    {data?.printing_id}
-                  </p>
-                ) : null}
-                {' '}
+                  <p className="tag-id"> {data?.printing_id}</p>
+                ) : null}{' '}
               </>
-            )}
-            {' '}
+            )}{' '}
           </div>
-        </div>
-        {' '}
+        </div>{' '}
         <div className="timer">
           {' '}
           {printingCard || status > 1 ? null : (
@@ -159,8 +141,7 @@ function AnalyticsCard({
                 ? data?.count_finished_at - data?.created_at
                 : timeDifference}
             </>
-          )}
-          {' '}
+          )}{' '}
         </div>
       </div>
       {status === 0 && !printingCard && (
@@ -176,8 +157,7 @@ function AnalyticsCard({
               {' '}
               {data?.vehicle_type === 1
                 ? `Wagon No.- ${data?.wagon_no}`
-                : `Truck No.- ${data?.licence_number}`}
-              {' '}
+                : `Truck No.- ${data?.licence_number}`}{' '}
             </h6>
           </div>
         </div>
@@ -199,8 +179,7 @@ function AnalyticsCard({
             <Avatar onClick={bagModifyModalOpen}>
               <IoMdAdd />
             </Avatar>
-          )}
-          {' '}
+          )}{' '}
         </div>
       )}
       {packerCard ? null : (
@@ -215,8 +194,7 @@ function AnalyticsCard({
                     <span>Bag type: </span>
                     {data.bag_type}
                   </>
-                )}
-                {' '}
+                )}{' '}
               </div>
               {status > 1 || !printingCard ? null : (
                 <div
@@ -230,22 +208,19 @@ function AnalyticsCard({
                   }}
                 >
                   <div className="count">
-                    <Avatar>
-                      {' '}
-                      {data?.missed_label_count || 0}
-                    </Avatar>
+                    <Avatar> {data?.missed_label_count || 0}</Avatar>
                     <h6>Rejected bags</h6>
                   </div>
                   <Button
                     variant="text"
                     onClick={rejectModalOpen}
                     style={{ backgroundColor: '#E6C5FC' }}
+                    data-testid={`openView-${data?.id}-${data?.issue_with_belt}`}
                   >
                     View
                   </Button>
                 </div>
-              )}
-              {' '}
+              )}{' '}
             </>
           )}
           {printingCard ? (
@@ -254,13 +229,15 @@ function AnalyticsCard({
                 <FrinksButton
                   variant="filled"
                   className="view-button"
-                  onClick={() => handleBeltReset(
-                    data?.id,
-                    data?.bag_counting_belt_id,
-                    data?.printing_belt_id,
-                    data?.vehicle_id,
-                    data?.vehicle_type,
-                  )}
+                  onClick={() =>
+                    handleBeltReset(
+                      data?.id,
+                      data?.bag_counting_belt_id,
+                      data?.printing_belt_id,
+                      data?.vehicle_id,
+                      data?.vehicle_type,
+                    )
+                  }
                   text="Reset"
                   style={{
                     borderTopWidth: '3px',
@@ -307,66 +284,68 @@ function AnalyticsCard({
                     >
                       Start
                     </Button>
-                  )}
-                  {' '}
+                  )}{' '}
                 </>
               )}
               {(DEACTIVATE_LOADER_SOLUTION
                 ? data?.bag_limit <= data?.tag_count
                 : data?.bag_limit <= data?.bag_count) && status === 0 ? (
-                  <FrinksButton
-                    variant="filled"
-                    className="view-button"
-                    onClick={() => handleBagDone(
+                <FrinksButton
+                  variant="filled"
+                  className="view-button"
+                  onClick={() =>
+                    handleBagDone(
                       data?.id,
                       data?.bag_counting_belt_id,
                       data?.printing_belt_id,
                       data?.vehicle_id,
                       data?.vehicle_type,
-                    )}
-                    text="Done"
-                    style={{
-                      borderTopWidth: '3px',
-                      borderRightWidth: '3px',
-                      borderBottomWidth: '3px',
-                      borderLeftWidth: '3px',
-                      padding: '5px 15px',
-                      width: '48%',
-                      height: '45px',
-                      color: 'white',
-                    }}
-                  />
-                ) : (
-                  <>
-                    {data?.is_belt_running === false ? (
-                      <FrinksButton
-                        variant="filled"
-                        className="view-button"
-                        onClick={() => handleBeltReset(
+                    )
+                  }
+                  text="Done"
+                  style={{
+                    borderTopWidth: '3px',
+                    borderRightWidth: '3px',
+                    borderBottomWidth: '3px',
+                    borderLeftWidth: '3px',
+                    padding: '5px 15px',
+                    width: '48%',
+                    height: '45px',
+                    color: 'white',
+                  }}
+                />
+              ) : (
+                <>
+                  {data?.is_belt_running === false ? (
+                    <FrinksButton
+                      variant="filled"
+                      className="view-button"
+                      onClick={() =>
+                        handleBeltReset(
                           data?.id,
                           data?.bag_counting_belt_id,
                           data?.printing_belt_id,
                           data?.vehicle_id,
                           data?.vehicle_type,
-                        )}
-                        text="Reset"
-                        style={{
-                          borderTopWidth: '3px',
-                          borderRightWidth: '3px',
-                          borderBottomWidth: '3px',
-                          borderLeftWidth: '3px',
-                          padding: '5px 15px',
-                          width: '48%',
-                          height: '45px',
-                          color: 'white',
-                        }}
-                      />
-                    ) : null}
-                  </>
-                )}
+                        )
+                      }
+                      text="Reset"
+                      style={{
+                        borderTopWidth: '3px',
+                        borderRightWidth: '3px',
+                        borderBottomWidth: '3px',
+                        borderLeftWidth: '3px',
+                        padding: '5px 15px',
+                        width: '48%',
+                        height: '45px',
+                        color: 'white',
+                      }}
+                    />
+                  ) : null}
+                </>
+              )}
             </div>
-          )}
-          {' '}
+          )}{' '}
         </>
       )}
       {packerCard ? (
@@ -379,18 +358,10 @@ function AnalyticsCard({
           </div>
           <div className="productivity">
             <span className="bold">Productivity:&nbsp;</span>
-            <span>
-              {' '}
-              {
-                getStatus(Math.min((data.count * 100) / PACKER_LIMIT, 100))
-                  .status
-              }
-              {' '}
-            </span>
+            <span> {getStatus(Math.min((data.count * 100) / PACKER_LIMIT, 100)).status} </span>
           </div>
         </div>
-      ) : null}
-      {' '}
+      ) : null}{' '}
     </Container>
   );
 }
