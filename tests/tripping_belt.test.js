@@ -29,15 +29,13 @@ let events = [
 test('tripping belt event', async () => {
   mockServer = createServer();
   mockServer.listen(5000);
-  let rerenderFunc = () => {};
   await act(async () => {
     const promise = createMockSocketServer(mockServer, events);
-    let { rerender } = render(
+    render(
       <TestWrapperComponent>
         <Index />
       </TestWrapperComponent>,
     );
-    rerenderFunc = rerender;
     console.log(await promise);
   });
   const printBeltButton = screen.getByTestId('printing_belt');

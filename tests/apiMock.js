@@ -83,6 +83,179 @@ mock.onGet('/api/shipment/rack-status').reply(
   { authorization: 'test' },
 );
 
+mock.onGet('/api/stats/summarized-stats').reply(
+  200,
+  {
+    data: {
+      analysis: {
+        total_bags_dispatched: 0,
+        total_bags_packed: 0,
+        total_missed_labels: 0,
+        total_burstage_count: 0,
+        missed_paths: {
+          testPrintingBelt: [],
+        },
+        loaderBags: {
+          testVehicleBelt: 0,
+        },
+        packerBags: {
+          testPrintingBelt: 0,
+        },
+        burstageCount: 0,
+        HourlyPackerBags: [
+          {
+            name: '12 AM',
+            Dispatch: 0,
+            Efficiency: 0,
+          },
+          {
+            name: '1 AM',
+            Dispatch: 0,
+            Efficiency: 0,
+          },
+          {
+            name: '2 AM',
+            Dispatch: 0,
+            Efficiency: 0,
+          },
+          {
+            name: '3 AM',
+            Dispatch: 0,
+            Efficiency: 0,
+          },
+          {
+            name: '4 AM',
+            Dispatch: 0,
+            Efficiency: 0,
+          },
+          {
+            name: '5 AM',
+            Dispatch: 0,
+            Efficiency: 0,
+          },
+          {
+            name: '6 AM',
+            Dispatch: 0,
+            Efficiency: 0,
+          },
+          {
+            name: '7 AM',
+            Dispatch: 0,
+            Efficiency: 0,
+          },
+        ],
+        HourlyLoaderBags: [
+          {
+            name: '12 AM',
+            Dispatch: 0,
+            Efficiency: 0,
+          },
+          {
+            name: '1 AM',
+            Dispatch: 0,
+            Efficiency: 0,
+          },
+          {
+            name: '2 AM',
+            Dispatch: 0,
+            Efficiency: 0,
+          },
+          {
+            name: '3 AM',
+            Dispatch: 0,
+            Efficiency: 0,
+          },
+          {
+            name: '4 AM',
+            Dispatch: 0,
+            Efficiency: 0,
+          },
+          {
+            name: '5 AM',
+            Dispatch: 0,
+            Efficiency: 0,
+          },
+          {
+            name: '6 AM',
+            Dispatch: 0,
+            Efficiency: 0,
+          },
+          {
+            name: '7 AM',
+            Dispatch: 0,
+            Efficiency: 0,
+          },
+        ],
+        packerWiseHourlyData: {
+          0: {
+            testPrintingBelt: 0,
+          },
+          1: {
+            testPrintingBelt: 0,
+          },
+          2: {
+            testPrintingBelt: 0,
+          },
+          3: {
+            testPrintingBelt: 0,
+          },
+          4: {
+            testPrintingBelt: 0,
+          },
+          5: {
+            testPrintingBelt: 0,
+          },
+          6: {
+            testPrintingBelt: 0,
+          },
+          7: {
+            testPrintingBelt: 0,
+          },
+        },
+        missedPackerBags: {
+          testPrintingBelt: 0,
+        },
+        packerWiseHourlyMissedBags: {
+          0: {
+            testPrintingBelt: 0,
+          },
+          1: {
+            testPrintingBelt: 0,
+          },
+          2: {
+            testPrintingBelt: 0,
+          },
+          3: {
+            testPrintingBelt: 0,
+          },
+          4: {
+            testPrintingBelt: 0,
+          },
+          5: {
+            testPrintingBelt: 0,
+          },
+          6: {
+            testPrintingBelt: 0,
+          },
+          7: {
+            testPrintingBelt: 0,
+          },
+        },
+        targetLoaderCount: 0,
+        shipmentDetails: [],
+        vehicleType: {
+          testVehicleBelt: 0,
+          testPrintingBelt: 0,
+        },
+      },
+      shift: 1,
+      date: '10/30/2023',
+      maintainence_tickets: [],
+    },
+  },
+  { authorization: 'test' },
+);
+
 mock.onPut('/api/shipment/reset-belt').reply(200, { data: null }, { authorization: 'test' });
 
 export default axios;
