@@ -229,6 +229,7 @@ function AnalyticsCard({
                 <FrinksButton
                   variant="filled"
                   className="view-button"
+                  dataTestId={`beltReset-${data?.id}`}
                   onClick={() =>
                     handleBeltReset(
                       data?.id,

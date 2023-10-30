@@ -83,4 +83,6 @@ mock.onGet('/api/shipment/rack-status').reply(
   { authorization: 'test' },
 );
 
+mock.onPut('/api/shipment/reset-belt').reply(200, { data: null }, { authorization: 'test' });
+
 export default axios;

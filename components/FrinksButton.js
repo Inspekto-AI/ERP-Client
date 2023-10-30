@@ -41,7 +41,7 @@ const useStyles = makeStyles((theme) => ({
   },
 }));
 
-function FrinksButton({ text, isInactive, type, onClick, variant, style, image }) {
+function FrinksButton({ text, isInactive, type, onClick, variant, style, image, dataTestId }) {
   const classes = useStyles();
 
   return (
@@ -53,6 +53,7 @@ function FrinksButton({ text, isInactive, type, onClick, variant, style, image }
       type={type}
       onClick={onClick}
       style={style}
+      data-testid={dataTestId}
     >
       {' '}
       {image ? (

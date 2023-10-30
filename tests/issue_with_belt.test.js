@@ -52,9 +52,9 @@ test('belt congestion frontend event', async () => {
   expect(screen.queryByTestId('beltDetail-testVehicleBelt-congestion')).toBeTruthy();
 });
 
-afterAll(() => {
+afterAll(async () => {
   try {
-    mockServer.close();
+    await mockServer.close();
   } catch (e) {
     console.log(e);
   }
