@@ -209,15 +209,17 @@ function LoaderAnalysisRow({
             variant="outlined"
             value={bagType === '' ? 0 : bagType}
             disabled={data?.shipment_id}
+            native={true}
+            inputProps={{ 'data-testid': `grade-${data.id}` }}
             onChange={(e) => setBagType(e.target.value)}
           >
-            <MenuItem className="table-button" value={0}>
+            <option className="table-button" value={0}>
               Select Grade
-            </MenuItem>
+            </option>
             {BAG_TYPES.map((e, idx) => (
-              <MenuItem className="table-button" value={e} key={idx}>
+              <option className="table-button" value={e} key={idx}>
                 {e}
-              </MenuItem>
+              </option>
             ))}
           </Select>
         )}
@@ -230,6 +232,7 @@ function LoaderAnalysisRow({
               style={{ width: '12vw', padding: '10px' }}
               disabled={data?.shipment_id}
               placeholder={vehicleType === 1 ? 'Add Wagon No.' : 'Add Truck No.'}
+              data-testid={`wagon-${data.id}`}
               onChange={
                 // vehicleType === 1
                 //   ? (e) => handleValueChange(e, setWagonno)
@@ -250,6 +253,7 @@ function LoaderAnalysisRow({
               placeholder="Target"
               value={bagCount}
               disabled={data?.shipment_id}
+              data-testid={`target-${data.id}`}
               onChange={(e) => handleValueChange(e, setBagCount)}
             />
           )}
@@ -290,6 +294,7 @@ function LoaderAnalysisRow({
             <Button
               disabled={bagCount === '' || bagCount === 0 || bagCount === '0'}
               className={classes.root}
+              data-testid={`start-${data?.id}`}
               onClick={handleSubmit}
             >
               START
@@ -300,17 +305,16 @@ function LoaderAnalysisRow({
           <Button
             className={classes.root}
             disabled={!data.shipment_id || data.is_belt_running}
-            id={`beltDetail-${data?.id}`}
-            data-testid={`beltDetail-${data?.id}${
-              data?.issue_with_belt ? `-${data.issue_with_belt}` : ''
-            }`}
-            onClick={() =>
+            id={`beltDetail-${data?.shipment_id}-${data.is_belt_running}`}
+            data-testid={`beltDetail-${data?.id}-${data.issue_with_belt}`}
+            onClick={() => {
+              console.log('clicked view button');
               setDetailModalOpen({
                 issue_with_belt: data?.issue_with_belt,
                 belt_id: data?.id,
                 transaction_id: data?.shipment_id,
-              })
-            }
+              });
+            }}
           >
             VIEW
           </Button>

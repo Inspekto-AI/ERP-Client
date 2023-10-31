@@ -51,6 +51,7 @@ mock.onGet('/api/shipment').reply(
         testPrintingBelt: {
           id: 'testPrintingBelt',
           printing_id: 'testPrintingBelt',
+          shipment_id: 2,
           tag_count: 0,
           missed_label_count: 0,
           is_belt_running: true,
@@ -404,6 +405,8 @@ mock.onGet('/api/stats/inoperational-device-stats').reply(
   },
   { authorization: 'test' },
 );
+
+mock.onPost('/api/shipment').reply(200, { data: null }, { authorization: 'test' });
 
 mock.onPut('/api/shipment/reset-belt').reply(200, { data: null }, { authorization: 'test' });
 

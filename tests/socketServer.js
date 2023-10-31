@@ -8,10 +8,20 @@ export const createMockSocketServer = async (server, events) => {
         events.map((item) => {
           socket.emit(item.event, item.message);
         });
-        resolve(socket);
+        resolve(io);
       });
     } catch (e) {
       resolve('ERROR ' + e);
     }
   });
+};
+
+export const emitEvents = async (ioServer, events) => {
+  try {
+    events.map((item) => {
+      ioServer.emit(item.event, item.message);
+    });
+  } catch (e) {
+    console.log('emit error:', e);
+  }
 };

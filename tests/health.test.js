@@ -2,12 +2,9 @@
 import { fireEvent, render, screen, waitFor } from '@testing-library/react';
 import React from 'react';
 import { afterAll, beforeAll, expect, jest, test } from '@jest/globals';
-import { Server } from 'socket.io';
-import { createServer } from 'http';
 import axios from './apiMock';
 import Index from '../pages/index';
 import TestWrapperComponent from './testUtils';
-import { createMockSocketServer } from './socketServer';
 import { act } from 'react-dom/test-utils';
 
 jest.mock('next/router', () => ({
