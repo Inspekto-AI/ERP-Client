@@ -369,6 +369,42 @@ mock.onGet('/api/stats/loading-stats').reply(
   { authorization: 'test' },
 );
 
+mock.onGet('/api/stats/inoperational-device-stats').reply(
+  200,
+  {
+    data: {
+      Arduino: [],
+      Plc: [],
+      Receivers: [],
+      Transmitters: [],
+      NVR: [],
+      Camera: [
+        {
+          id: 1,
+          entity_type: 'Camera',
+          entity_name: 'CamA',
+          ip_address: '0.0.0.1',
+          get_status: 0,
+          parent_id: 3,
+          started_at: 123123,
+          ended_at: null,
+        },
+        {
+          id: 2,
+          entity_type: 'Camera',
+          entity_name: 'CamB',
+          ip_address: '0.0.0.2',
+          get_status: 1,
+          parent_id: 3,
+          started_at: null,
+          ended_at: null,
+        },
+      ],
+    },
+  },
+  { authorization: 'test' },
+);
+
 mock.onPut('/api/shipment/reset-belt').reply(200, { data: null }, { authorization: 'test' });
 
 export default axios;
