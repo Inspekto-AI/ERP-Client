@@ -209,17 +209,16 @@ function LoaderAnalysisRow({
             variant="outlined"
             value={bagType === '' ? 0 : bagType}
             disabled={data?.shipment_id}
-            native={true}
             inputProps={{ 'data-testid': `grade-${data.id}` }}
             onChange={(e) => setBagType(e.target.value)}
           >
-            <option className="table-button" value={0}>
+            <MenuItem className="table-button" value={0}>
               Select Grade
-            </option>
+            </MenuItem>
             {BAG_TYPES.map((e, idx) => (
-              <option className="table-button" value={e} key={idx}>
+              <MenuItem className="table-button" value={e} key={idx}>
                 {e}
-              </option>
+              </MenuItem>
             ))}
           </Select>
         )}
