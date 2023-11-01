@@ -406,6 +406,10 @@ mock.onGet('/api/stats/inoperational-device-stats').reply(
   { authorization: 'test' },
 );
 
+mock
+  .onGet('/api/shipment/reject-bags-shiftwise')
+  .reply(200, { data: [] }, { authorization: 'test' });
+
 mock.onPost('/api/shipment').reply(200, { data: null }, { authorization: 'test' });
 
 mock.onPut('/api/shipment/reset-belt').reply(200, { data: null }, { authorization: 'test' });

@@ -38,12 +38,24 @@ test('tripping belt event', async () => {
     );
     console.log(await promise);
   });
-  const printBeltButton = screen.getByTestId('printing_belt');
-  fireEvent.click(printBeltButton);
+  act(() => {
+    const printBeltButton = screen.getByTestId('printing_belt');
+    fireEvent.click(printBeltButton);
+  });
   await waitFor(() => {
     expect(screen.queryByText('testPrintingBelt')).toBeTruthy();
   });
-  expect(screen.queryByTestId('openView-testPrintingBelt-some_error')).toBeTruthy();
+  act(() => {
+    const openViewButton = screen.getByTestId('openView-testPrintingBelt-some_error');
+    fireEvent.click(openViewButton);
+  });
+  await waitFor(() => {
+    expect(screen.queryByTestId('defectiveBags-testPrintingBelt')).toBeTruthy();
+  });
+  act(() => {
+    const modalCloseButton = screen.getByTestId('modal-close');
+    fireEvent.click(modalCloseButton);
+  });
   await waitFor(() => {
     expect(screen.queryByTestId('beltReset-testPrintingBelt')).toBeTruthy();
   });
