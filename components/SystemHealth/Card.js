@@ -5,27 +5,34 @@ import { msToTime } from 'utils/globalFunctions';
 import { CardContainer } from './SystemHealth.styles';
 
 function Card({
-  active, type, name, ip, index, started_at: startedAt,
+  active,
+  type,
+  name,
+  ip,
+  index,
+  started_at: startedAt,
+  handleModalData
 }) {
   const [timeDifference, setTimeDifference] = useState(0);
 
+  const handleClick = async () => {
+    handleModalData(name);
+  };
+
   useEffect(() => {
     const interval = setInterval(
-      () => setTimeDifference(
-        startedAt
-          ? msToTime(new Date().getTime() - startedAt)
-          : '00:00:00',
-      ),
-      1000,
+      () =>
+        setTimeDifference(
+          startedAt ? msToTime(new Date().getTime() - startedAt) : '00:00:00'
+        ),
+      1000
     );
     return () => clearInterval(interval);
   }, [startedAt]);
 
   return (
-    <CardContainer active={active}>
-      {!active && (
-        <p className="downtime">{timeDifference}</p>
-      )}
+    <CardContainer onClick={handleClick} active={active}>
+      {!active && <p className="downtime">{timeDifference}</p>}
       <div className="container">
         <div className="image-container">
           <Image
@@ -33,8 +40,8 @@ function Card({
               type === 'Camera'
                 ? 'cctv.png'
                 : type === 'NVR'
-                  ? 'server.png'
-                  : 'internet.png'
+                ? 'server.png'
+                : 'internet.png'
             }
             alt="camera"
             height={80}
