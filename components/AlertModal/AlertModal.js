@@ -165,7 +165,15 @@ function AlertModal({
               Close
             </Button>
           </div>
-          <p style={{ fontSize: '18px', marginTop: '20px' }}>{fileContent}</p>
+          <p
+            style={{
+              fontSize: '18px',
+              marginTop: '20px',
+              whiteSpace: 'pre-line',
+            }}
+          >
+            {fileContent}
+          </p>
         </div>
       </Fade>
     </Modal>
