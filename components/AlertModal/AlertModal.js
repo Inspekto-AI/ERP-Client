@@ -7,6 +7,7 @@ import Image from 'next/image';
 import theme from 'styles/theme';
 
 import ImageKitLoader from 'utils/ImageLoader';
+import { useEffect, useState } from 'react';
 
 const useStyles = makeStyles(() => ({
   modal: {
@@ -14,11 +15,13 @@ const useStyles = makeStyles(() => ({
     padding: '10px',
     alignItems: 'flex-start',
     justifyContent: 'center',
+    // height: '80vh'
   },
   paper: {
     position: 'relative',
     background: theme.palette.error.main,
-    width: '34%',
+    width: '80%',
+    height: '80vh',
     color: 'black',
     fontSize: '0.78125vw',
     display: 'flex',
@@ -26,7 +29,6 @@ const useStyles = makeStyles(() => ({
     alignItems: 'center',
     borderRadius: '0.625em',
     marginTop: '3.75em',
-    marginLeft: '60%',
   },
   close: {
     top: '10px',
@@ -82,12 +84,37 @@ const useStyles = makeStyles(() => ({
   h4: {
     fontSize: '1.4583333333333333vw',
     lineHeight: '1.71875vw',
+    marginTop: '20px',
   },
-
 }));
 
-function AlertModal({ open, close, alertsnooze }) {
+function AlertModal({
+  open, close, alertsnooze, name,
+}) {
   const classes = useStyles();
+  const [fileContent, setFileContent] = useState(null);
+
+  useEffect(() => {
+    // Function to fetch the file content
+    const fetchFileContent = async () => {
+      try {
+        const response = await fetch(
+          `/state_change_logs/${open}.txt`,
+          // '../../../cement-health-backend/state_change_logs/loading_TX_15.txt'
+        );
+        if (response.ok) {
+          const content = await response.text();
+          console.log(content, 'content');
+          setFileContent(content);
+        }
+      } catch (error) {
+        console.error('Error reading file:', error);
+      }
+    };
+
+    // Call the function
+    fetchFileContent();
+  }, []);
 
   return (
     <Modal
@@ -101,52 +128,55 @@ function AlertModal({ open, close, alertsnooze }) {
       }}
     >
       <Fade in={open}>
-        <div className={classes.paper}>
-          <div className={classes.title}>
-            <div className="icon">
-              <Image
-                src="icons/bell_RT6oBFUYV.svg"
-                loader={ImageKitLoader}
-                layout="fixed"
-                height={120}
-                width={120}
-              />
-            </div>
-            <div className={classes.heading}>
-              <h4 className={classes.h4}>
-                Loader #6:
-                {' '}
-                <span className={classes.bold}>Incorrect bags</span>
-              </h4>
-              <p className={classes.subHeading}>
-                Here is a subtitle for this table
-              </p>
-            </div>
-          </div>
-          <div>
-            {/* <Button variant="contained" className={classes.actionButton}>
-              Mark Solved
-            </Button> */}
-            <Button variant="contained" className={classes.actionButton} onClick={alertsnooze}>
-              Snooze
+        <div
+          style={{
+            position: 'relative',
+            background: theme.palette.error.main,
+            width: '80%',
+            height: '80vh',
+            color: 'black',
+            fontSize: '0.78125vw',
+            // display: 'flex',
+            justifyContent: 'space-between',
+            alignItems: 'center',
+            borderRadius: '0.625em',
+            padding: '30px',
+            maxHeight: '80vh', // Adjust the height as needed
+            overflowY: 'auto',
+            marginTop: '40px',
+          }}
+        >
+          <div
+            style={{
+              display: 'flex',
+              alignItems: 'center',
+              justifyContent: 'space-between',
+            }}
+          >
+            <h4>
+              State change logs
+              {/* <span className={classes.bold}></span> */}
+            </h4>
+            <Button
+              variant="contained"
+              className={classes.actionButton}
+              onClick={close}
+            >
+              Close
             </Button>
           </div>
+          <p
+            style={{
+              fontSize: '18px',
+              marginTop: '20px',
+              whiteSpace: 'pre-line',
+            }}
+          >
+            {fileContent}
+          </p>
         </div>
       </Fade>
     </Modal>
-
-  // <MuiAlert
-  //   className={classes.alert}
-  //   open={open}
-  //   // onClose={() => handleClose(alert)}
-  //   id={alert.id}
-  //   elevation={6}
-  //   variant="filled"
-  //   severity={alert.type}
-  // >
-  //   <AlertTitle>hello</AlertTitle>
-  //   alert
-  // </MuiAlert>
   );
 }
 

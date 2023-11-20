@@ -1,8 +1,6 @@
 import { useEffect, useState } from 'react';
 import Container from 'styles/summary.styles';
-import {
-  Grid, Select, ButtonGroup, Button, MenuItem,
-} from '@material-ui/core';
+import { Grid, Select, ButtonGroup, Button, MenuItem } from '@material-ui/core';
 import { get, getFile } from 'utils/api';
 import Layout from 'components/Layout';
 import Maintenance from 'components/Maintenance';
@@ -118,10 +116,7 @@ function Summary() {
 
       newDateRange[1] += 86399000;
 
-      const newUpdatedDateRange = [
-        newDateRange[0] + 86400000,
-        newDateRange[1] + 86400000,
-      ];
+      const newUpdatedDateRange = [newDateRange[0] + 86400000, newDateRange[1] + 86400000];
       // console.log(newDateRange, newUpdatedDateRange);
       const data = await get('/api/stats/summarized-stats', {
         // dateRange: getStartAndEndDate()
@@ -158,10 +153,7 @@ function Summary() {
 
     newDateRange[1] += 86399000;
 
-    const newUpdatedDateRange = [
-      newDateRange[0] + 86400000,
-      newDateRange[1] + 86400000,
-    ];
+    const newUpdatedDateRange = [newDateRange[0] + 86400000, newDateRange[1] + 86400000];
     // console.log(newDateRange, newUpdatedDateRange);
     const res = await getFile('/api/report/datewise', {
       dateRange: newDateRange,
@@ -211,6 +203,8 @@ function Summary() {
                 value={filter}
                 className={classes.select}
                 onChange={(e) => setFilter(e.target.value)}
+                native={true}
+                inputProps={{ 'data-testid': 'filter_select' }}
                 style={{
                   fontSize: '28px',
                   fontWeight: '600',
@@ -225,8 +219,8 @@ function Summary() {
                 variant="outlined"
                 IconComponent={KeyboardArrowDownSharpIcon}
               >
-                <MenuItem value={0}>Packer Summary</MenuItem>
-                <MenuItem value={1}>Loader Summary</MenuItem>
+                <option value={0}>Packer Summary</option>
+                <option value={1}>Loader Summary</option>
               </Select>
             </div>
 
@@ -362,10 +356,7 @@ function Summary() {
             >
               <Grid container spacing={5}>
                 <Grid item xs={6}>
-                  <div
-                    className="count-block"
-                    style={{ background: '#3A71A5' }}
-                  >
+                  <div className="count-block" style={{ background: '#3A71A5' }}>
                     <p className="count">
                       {summaryData
                         ? filter === 0
@@ -373,8 +364,8 @@ function Summary() {
                             ? `${summaryData?.total_bags_packed} Bags`
                             : `${summaryData?.total_bags_packed / 20} Tones`
                           : bagType === 0
-                            ? `${summaryData?.total_bags_dispatched} Bags`
-                            : `${summaryData?.total_bags_dispatched / 20} Tones`
+                          ? `${summaryData?.total_bags_dispatched} Bags`
+                          : `${summaryData?.total_bags_dispatched / 20} Tones`
                         : 'NA'}
                     </p>
                     <p className="description">
@@ -383,10 +374,7 @@ function Summary() {
                   </div>
                 </Grid>
                 <Grid item xs={6}>
-                  <div
-                    className="count-block"
-                    style={{ background: '#FF5742' }}
-                  >
+                  <div className="count-block" style={{ background: '#FF5742' }}>
                     <p className="count">
                       {summaryData
                         ? filter === 0
@@ -394,28 +382,19 @@ function Summary() {
                             ? `${summaryData?.total_missed_labels} Bags`
                             : `${summaryData?.total_missed_labels / 20} Tones`
                           : bagType === 0
-                            ? `${summaryData?.total_burstage_count} Bags`
-                            : `${summaryData?.total_burstage_count / 20} Tones`
+                          ? `${summaryData?.total_burstage_count} Bags`
+                          : `${summaryData?.total_burstage_count / 20} Tones`
                         : 'NA'}
                     </p>
-                    <p className="description">
-                      {filter === 0 ? 'Misprint Cases' : 'Burstage'}
-                    </p>
+                    <p className="description">{filter === 0 ? 'Misprint Cases' : 'Burstage'}</p>
                   </div>
                 </Grid>
               </Grid>
             </div>
-            <div
-              className="maintenance-container"
-              style={{ marginTop: '50px' }}
-            >
+            <div className="maintenance-container" style={{ marginTop: '50px' }}>
               <Layout
                 alternateHeader
-                title={
-                  filter === 0
-                    ? 'Hourly Packer Data'
-                    : 'Hourly Loading Analytics'
-                }
+                title={filter === 0 ? 'Hourly Packer Data' : 'Hourly Loading Analytics'}
                 hideFooter
                 counter={0}
                 summaryHeader
@@ -437,10 +416,7 @@ function Summary() {
             </div>
           </div>
           <div className="right-portion" style={{ marginTop: '20px' }}>
-            <div
-              className="notification-container"
-              style={{ marginBottom: '10px' }}
-            >
+            <div className="notification-container" style={{ marginBottom: '10px' }}>
               <Layout
                 alternateHeader
                 title={filter === 0 ? 'Packer Analysis' : 'Loader Analysis'}
@@ -457,9 +433,9 @@ function Summary() {
                 }}
               >
                 <div className="count-container">
-                  {!filter
-                    && summaryData?.packerBags
-                    && Object.keys(summaryData?.packerBags)?.map((key) => {
+                  {!filter &&
+                    summaryData?.packerBags &&
+                    Object.keys(summaryData?.packerBags)?.map((key) => {
                       const value = summaryData?.packerBags[key];
 
                       return (
@@ -468,15 +444,17 @@ function Summary() {
                           key1={key}
                           value={value}
                           bagType={bagType}
+                          runTimePackerSummary={summaryData?.runTimePackerSummary}
+                          perHourDispatch={summaryData?.perHourDispatch}
                         />
                       );
                     })}
                   {filter ? (
                     <Grid container spacing={3}>
-                      {summaryData?.loaderBags
-                        && Object.keys(summaryData?.loaderBags)?.map((key) => {
+                      {summaryData?.loaderBags &&
+                        Object.keys(summaryData?.loaderBags)?.map((key) => {
                           const value = summaryData?.loaderBags[key];
-                          console.log(key, summaryData?.vehicleType[key]);
+                          // console.log(key, summaryData?.vehicleType[key]);
                           return (
                             <SummaryLoaderAnalysis
                               filter={filter}

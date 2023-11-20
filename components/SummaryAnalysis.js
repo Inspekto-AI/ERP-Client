@@ -2,7 +2,12 @@ import { Grid } from '@material-ui/core';
 import SummaryMeter from './SummaryMeter';
 
 function SummaryAnalysis({
-  filter, key1, value, bagType,
+  filter,
+  key1,
+  value,
+  bagType,
+  runTimePackerSummary,
+  perHourDispatch
 }) {
   return (
     <Grid container spacing={3}>
@@ -14,7 +19,7 @@ function SummaryAnalysis({
             display: 'flex',
             justifyContent: 'space-around',
             marginTop: '15px',
-            height: '100px',
+            height: '100px'
           }}
         >
           <div style={{ textAlign: 'center' }}>
@@ -24,7 +29,9 @@ function SummaryAnalysis({
           <div>
             <p className="count_summary">
               {value !== null
-                ? bagType === 0 ? `${value} Bags` : `${value / 20} Tones`
+                ? bagType === 0
+                  ? `${value} Bags`
+                  : `${value / 20} Tones`
                 : 'NA'}
             </p>
             <p className="description_summary">
@@ -32,10 +39,31 @@ function SummaryAnalysis({
             </p>
           </div>
           <div style={{ textAlign: 'center' }}>
-            <SummaryMeter progress={-0.6} />
-            <p className="description_summary_">
-              {filter === 0 ? 'Total Production' : 'Total Dispatch'}
-            </p>
+            {filter === 0 && (
+              <div>
+                <SummaryMeter
+                  progress={
+                    -1 +
+                    (runTimePackerSummary[key1] === 0
+                      ? 0
+                      : (value * 12 * 60) /
+                        perHourDispatch[key1] /
+                        runTimePackerSummary[key1])
+                  }
+                />
+                <p className="description_summary_">
+                  Packer Efficiency ={' '}
+                  {runTimePackerSummary[key1] === 0
+                    ? 0
+                    : (
+                        (value * 12 * 60 * 100) /
+                        perHourDispatch[key1] /
+                        runTimePackerSummary[key1]
+                      ).toFixed(2)}{' '}
+                  %
+                </p>
+              </div>
+            )}
           </div>
         </div>
       </Grid>
