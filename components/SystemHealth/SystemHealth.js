@@ -1,9 +1,9 @@
 import { get } from 'utils/api';
 import { useState, useEffect } from 'react';
 import { SYSTEM_REFETCH_TIMEOUT_MS } from 'utils/constants';
+import AlertModal from 'components/AlertModal/AlertModal';
 import Card from './Card';
 import Container from './SystemHealth.styles';
-import AlertModal from 'components/AlertModal/AlertModal';
 
 function SystemHealth() {
   const [healthData, setHealthData] = useState(null);
@@ -14,6 +14,7 @@ function SystemHealth() {
     const fetchHealth = async () => {
       const data = await get('/api/stats/inoperational-device-stats');
       setHealthData(data?.data?.data);
+      console.log(data);
     };
     fetchHealth();
   }, []);
@@ -25,7 +26,7 @@ function SystemHealth() {
     };
     const interval = setInterval(
       () => fetchHealth(),
-      SYSTEM_REFETCH_TIMEOUT_MS
+      SYSTEM_REFETCH_TIMEOUT_MS,
     );
     return () => clearInterval(interval);
   }, []);
@@ -33,8 +34,8 @@ function SystemHealth() {
   useEffect(() => {
     if (healthData) {
       const defectiveElements = [];
-      Object.values(healthData).forEach(e => {
-        e.forEach(ele => {
+      Object.values(healthData).forEach((e) => {
+        e.forEach((ele) => {
           if (ele.started_at && !ele.ended_at) {
             defectiveElements.push(ele);
           }
@@ -47,18 +48,18 @@ function SystemHealth() {
   useEffect(() => {
     // fetch('../../../cement-health-backend/state_change_logs/loading_TX_15.txt')
     fetch('./Card.js')
-      .then(response => {
+      .then((response) => {
         if (!response.ok) {
           throw new Error('File not found or could not be loaded.');
         }
         return response.text();
       })
-      .then(text => {
+      .then((text) => {
         console.log(text, 'text');
         // setFileContent(text);
         // set(true);
       })
-      .catch(error => {
+      .catch((error) => {
         console.error('Error loading file:', error);
       });
   }, [modalData]);
@@ -84,14 +85,14 @@ function SystemHealth() {
                 key={index}
                 index={index}
                 started_at={e.started_at}
-                handleModalData={data => setModalData(data)}
+                handleModalData={(data) => setModalData(data)}
               />
             ))}
           </div>
         </div>
       )}
-      {healthData &&
-        Object.keys(healthData).map((ele, idx) => (
+      {healthData
+        && Object.keys(healthData).map((ele, idx) => (
           <div key={idx}>
             <div className="sub-header">
               <h3 className="sub-heading">{ele}</h3>
@@ -107,7 +108,7 @@ function SystemHealth() {
                   key={index}
                   index={index}
                   started_at={e.started_at}
-                  handleModalData={data => setModalData(data)}
+                  handleModalData={(data) => setModalData(data)}
                 />
               ))}
             </div>

@@ -11,8 +11,9 @@ function Card({
   ip,
   index,
   started_at: startedAt,
-  handleModalData
+  handleModalData,
 }) {
+  console.log(name, 'entity name');
   const [timeDifference, setTimeDifference] = useState(0);
 
   const handleClick = async () => {
@@ -21,11 +22,10 @@ function Card({
 
   useEffect(() => {
     const interval = setInterval(
-      () =>
-        setTimeDifference(
-          startedAt ? msToTime(new Date().getTime() - startedAt) : '00:00:00'
-        ),
-      1000
+      () => setTimeDifference(
+        startedAt ? msToTime(new Date().getTime() - startedAt) : '00:00:00',
+      ),
+      1000,
     );
     return () => clearInterval(interval);
   }, [startedAt]);
@@ -40,8 +40,8 @@ function Card({
               type === 'Camera'
                 ? 'cctv.png'
                 : type === 'NVR'
-                ? 'server.png'
-                : 'internet.png'
+                  ? 'server.png'
+                  : 'internet.png'
             }
             alt="camera"
             height={80}
