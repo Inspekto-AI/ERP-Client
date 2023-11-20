@@ -2,8 +2,8 @@ import { useState, useEffect } from 'react';
 import Container from 'styles/summary.styles';
 import ReportTable from 'components/ReportTable';
 import { DateRange } from 'react-date-range';
-// import 'react-date-range/dist/styles.css'; // main css file
-// import 'react-date-range/dist/theme/default.css'; // theme css file
+import 'react-date-range/dist/styles.css'; // main css file
+import 'react-date-range/dist/theme/default.css'; // theme css file
 import { get, getFile } from 'utils/api';
 import { getStartAndEndDate } from 'utils/globalFunctions';
 import FrinksButton from './FrinksButton';
@@ -127,7 +127,9 @@ function Report() {
       if (loaderFilter === 2) setLoaderFilterReport(loaderReport);
       else if (loaderFilter === 1) {
         setLoaderFilterReport(loaderReport.filter((e) => e.vehicle_type === 1));
-      } else { setLoaderFilterReport(loaderReport.filter((e) => e.vehicle_type === 0)); }
+      } else {
+        setLoaderFilterReport(loaderReport.filter((e) => e.vehicle_type === 0));
+      }
     }
   }, [loaderFilter, loaderReport]);
 
