@@ -1,4 +1,5 @@
 import PropTypes from 'prop-types';
+import React, { useState, useContext, useEffect } from 'react';
 import { get, post, put } from 'utils/api';
 import Report from 'components/Report';
 import Loader from 'components/Loader';
@@ -13,7 +14,6 @@ import ServiceQuery from 'reactQueries/shipmentQueries';
 import SystemHealth from 'components/SystemHealth';
 import { SocketContext } from 'context/SocketContext';
 import InfoModal from 'components/InfoModal/InfoModal';
-import { useState, useContext, useEffect } from 'react';
 import { GlobalContext } from 'context/GlobalContext';
 import ShipmentOverFlowModal from 'components/ShipmentOverFlowModal';
 import WhatsappRecipient from 'components/WhatsAppRecipient';
@@ -61,12 +61,7 @@ function DashboardComponent({
     );
   }
   if (activeSection === 2) {
-    return (
-      <PrintingAnalysis
-        printingBelts={printingBelts}
-        handleBeltReset={handleBeltReset}
-      />
-    );
+    return <PrintingAnalysis printingBelts={printingBelts} handleBeltReset={handleBeltReset} />;
   }
   if (activeSection === 3) {
     return <Summary />;
@@ -110,13 +105,9 @@ function Index() {
     setIsQfullError,
   } = useContext(GlobalContext);
 
-  const handleBeltReset = async (
-    id,
-    bag_counting_belt_id,
-    printing_belt_id,
-    transaction_id,
-  ) => {
+  const handleBeltReset = async (id, bag_counting_belt_id, printing_belt_id, transaction_id) => {
     try {
+      console.log('handling belt reset');
       const data = await put('/api/shipment/reset-belt', {
         belt_id: printing_belt_id || bag_counting_belt_id || id,
         transaction_id,
@@ -167,10 +158,7 @@ function Index() {
     current_count,
     bag_limit,
   ) => {
-    if (
-      typeof current_count !== 'undefined'
-      && typeof bag_limit !== 'undefined'
-    ) {
+    if (typeof current_count !== 'undefined' && typeof bag_limit !== 'undefined') {
       if (current_count < bag_limit) {
         setBagDoneModalOpen({
           transaction_id,
@@ -239,12 +227,8 @@ function Index() {
       setVehicleBelts(res?.data?.data?.vehicleBeltRes);
       setBeltTrippingEnabled(res?.data?.data?.enableBeltTripping);
       setShowPrinting(!res?.data?.data?.showPrinting);
-      setShowTruckLoader(
-        res?.data?.data?.showLoader === 0 && res?.data?.data.truckLoaders > 0,
-      );
-      setShowWagonLoader(
-        res?.data?.data?.showLoader === 0 && res?.data?.data.wagonLoaders > 0,
-      );
+      setShowTruckLoader(res?.data?.data?.showLoader === 0 && res?.data?.data.truckLoaders > 0);
+      setShowWagonLoader(res?.data?.data?.showLoader === 0 && res?.data?.data.wagonLoaders > 0);
 
       // console.log(res?.data?.data.truckLoaders);
       // setShowTruckLoader(
@@ -436,6 +420,7 @@ function Index() {
       setIsLoading(false);
     });
     socket.on('tripping_belt', ({ belt_id, issue_with_belt }) => {
+      console.log('tripping belts');
       setPrintingBelts((prevState) => {
         if (!prevState) return null;
         return {
@@ -448,27 +433,25 @@ function Index() {
         };
       });
     });
-    socket.on(
-      'bag-congestion-frontend',
-      ({ belt_id, issue_with_belt, error }) => {
-        if (error) {
-          setShipmentError(error);
-          setShipmentOverflow(true);
+    socket.on('bag-congestion-frontend', ({ belt_id, issue_with_belt, error }) => {
+      console.log('bag congestion:', { belt_id, issue_with_belt, error });
+      if (error) {
+        setShipmentError(error);
+        setShipmentOverflow(true);
+      }
+      setVehicleBelts((prevState) => {
+        if (!prevState) return null;
+        const newState = { ...prevState };
+        if (newState[belt_id]) {
+          newState[belt_id] = {
+            ...newState[belt_id],
+            is_belt_running: false,
+            issue_with_belt,
+          };
         }
-        setVehicleBelts((prevState) => {
-          if (!prevState) return null;
-          const newState = { ...prevState };
-          if (newState[belt_id]) {
-            newState[belt_id] = {
-              ...newState[belt_id],
-              is_belt_running: false,
-              issue_with_belt,
-            };
-          }
-          return newState;
-        });
-      },
-    );
+        return newState;
+      });
+    });
     socket.on('qfull', (data) => {
       setIsQfullError(data?.error);
     });
@@ -520,7 +503,7 @@ function Index() {
       >
         <Container>
           {isLoading ? <Loader /> : null}
-          <div className="trackbar">
+          <div className="trackbar" data-testid="trackbar">
             {showTruckLoader && (
               <div
                 className={`option ${activeSection === 0 ? 'active' : ''}`}
@@ -551,6 +534,7 @@ function Index() {
                 onKeyPress={() => setActiveSection(2)}
                 role="button"
                 tabIndex={0}
+                data-testid={'printing_belt'}
               >
                 <h6 style={{ textAlign: 'center' }}>Printing belt</h6>
               </div>
@@ -560,6 +544,7 @@ function Index() {
               onClick={() => setActiveSection(3)}
               onKeyPress={() => setActiveSection(3)}
               role="button"
+              data-testid={'summary_button'}
               tabIndex={0}
             >
               <h6 style={{ textAlign: 'center' }}>Summary</h6>
@@ -569,6 +554,7 @@ function Index() {
               onClick={() => setActiveSection(4)}
               onKeyPress={() => setActiveSection(4)}
               role="button"
+              data-testid={'report_button'}
               tabIndex={0}
             >
               <h6 style={{ textAlign: 'center' }}>Reports</h6>
@@ -578,6 +564,7 @@ function Index() {
               onClick={() => setActiveSection(5)}
               onKeyPress={() => setActiveSection(5)}
               role="button"
+              data-testid={'health_button'}
               tabIndex={0}
             >
               <h6 style={{ textAlign: 'center' }}>System Health</h6>
@@ -612,7 +599,7 @@ function Index() {
                     marginBottom: '0.938em',
                     width: '500px',
                   }}
-                  action={(
+                  action={
                     <Button
                       color="inherit"
                       size="small"
@@ -621,7 +608,7 @@ function Index() {
                     >
                       Snooze
                     </Button>
-                  )}
+                  }
                   key={index}
                 >
                   {`${missPrintTransactionId[e].missed_count} misprint bags passed from - ${missPrintTransactionId[e].machine_id}`}

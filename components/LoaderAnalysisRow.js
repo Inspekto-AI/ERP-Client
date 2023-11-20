@@ -1,3 +1,5 @@
+/* eslint-disable react/button-has-type */
+/* eslint-disable operator-linebreak */
 import { Select, MenuItem, Avatar } from '@material-ui/core';
 import { useState } from 'react';
 import { IoMdAdd } from 'react-icons/io';
@@ -14,6 +16,8 @@ const useStyles = makeStyles(() => ({
     fontSize: '1vw',
     fontWeight: 200,
     width: '2vw',
+    outline: 'none',
+    border: 'none',
   },
 
   td1: {
@@ -181,7 +185,7 @@ function LoaderAnalysisRow({
 
   return (
     <>
-      <tr className="custom-table">
+      <tr className="custom-table" data-testid={data?.id}>
         <td className={classes.td1}>{index}</td>
         <td
           className={classes.td11}
@@ -190,8 +194,8 @@ function LoaderAnalysisRow({
               ? data?.is_shipment_complete
                 ? 'yellow'
                 : data?.is_belt_running
-                  ? 'green'
-                  : 'red'
+                ? 'green'
+                : 'red'
               : 'white',
           }}
         >
@@ -205,6 +209,7 @@ function LoaderAnalysisRow({
             variant="outlined"
             value={bagType === '' ? 0 : bagType}
             disabled={data?.shipment_id}
+            inputProps={{ 'data-testid': `grade-${data.id}` }}
             onChange={(e) => setBagType(e.target.value)}
           >
             <MenuItem className="table-button" value={0}>
@@ -225,9 +230,8 @@ function LoaderAnalysisRow({
               value={wagonno}
               style={{ width: '12vw', padding: '10px' }}
               disabled={data?.shipment_id}
-              placeholder={
-                vehicleType === 1 ? 'Add Wagon No.' : 'Add Truck No.'
-              }
+              placeholder={vehicleType === 1 ? 'Add Wagon No.' : 'Add Truck No.'}
+              data-testid={`wagon-${data.id}`}
               onChange={
                 // vehicleType === 1
                 //   ? (e) => handleValueChange(e, setWagonno)
@@ -248,6 +252,7 @@ function LoaderAnalysisRow({
               placeholder="Target"
               value={bagCount}
               disabled={data?.shipment_id}
+              data-testid={`target-${data.id}`}
               onChange={(e) => handleValueChange(e, setBagCount)}
             />
           )}
@@ -266,9 +271,7 @@ function LoaderAnalysisRow({
             <Avatar
               // disabled={null}
               className={
-                addBagCount === '0' || addBagCount === ''
-                  ? classes.avatarDisabled
-                  : classes.avatar
+                addBagCount === '0' || addBagCount === '' ? classes.avatarDisabled : classes.avatar
               }
               onClick={handleAddButton}
             >
@@ -279,9 +282,7 @@ function LoaderAnalysisRow({
           <td className={classes.td4Inactive}>-</td>
         )}
         <td className={classes.td10}>
-          {data?.created_at
-            ? new Date(data?.created_at).toLocaleTimeString()
-            : '-'}
+          {data?.created_at ? new Date(data?.created_at).toLocaleTimeString() : '-'}
         </td>
         <td>
           {data?.shipment_id ? (
@@ -292,6 +293,7 @@ function LoaderAnalysisRow({
             <Button
               disabled={bagCount === '' || bagCount === 0 || bagCount === '0'}
               className={classes.root}
+              data-testid={`start-${data?.id}`}
               onClick={handleSubmit}
             >
               START
@@ -302,17 +304,22 @@ function LoaderAnalysisRow({
           <Button
             className={classes.root}
             disabled={!data.shipment_id || data.is_belt_running}
-            onClick={() => setDetailModalOpen({
-              issue_with_belt: data?.issue_with_belt,
-              belt_id: data?.id,
-              transaction_id: data?.shipment_id,
-            })}
+            id={`beltDetail-${data?.shipment_id}-${data.is_belt_running}`}
+            data-testid={`beltDetail-${data?.id}-${data.issue_with_belt}`}
+            onClick={() => {
+              console.log('clicked view button');
+              setDetailModalOpen({
+                issue_with_belt: data?.issue_with_belt,
+                belt_id: data?.id,
+                transaction_id: data?.shipment_id,
+              });
+            }}
           >
             VIEW
           </Button>
         </td>
       </tr>
-      {detailModalOpen ? (
+      {detailModalOpen && (
         <InfoModal
           open={detailModalOpen}
           close={() => setDetailModalOpen(null)}
@@ -323,15 +330,15 @@ function LoaderAnalysisRow({
           handleBeltReset={handleBeltReset}
         >
           <>
-            <p style={{ textAlign: 'center' }}>
-              {detailModalOpen?.issue_with_belt}
-              {' '}
-              -
-              {detailModalOpen?.belt_id}
+            <p
+              style={{ textAlign: 'center' }}
+              data-testid={`${detailModalOpen?.issue_with_belt}-${detailModalOpen?.belt_id}`}
+            >
+              {detailModalOpen?.issue_with_belt} -{detailModalOpen?.belt_id}
             </p>
           </>
         </InfoModal>
-      ) : null}
+      )}
     </>
   );
 }

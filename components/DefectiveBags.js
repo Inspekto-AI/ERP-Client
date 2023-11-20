@@ -66,7 +66,7 @@ function DefectiveBags({
   };
 
   return (
-    <DefectiveBagsContainer>
+    <DefectiveBagsContainer data-testid={`defectiveBags-${beltId}`}>
       {isLoading ? (
         <Loader />
       ) : rejectBags && rejectBags.length > 0 ? (
@@ -78,9 +78,7 @@ function DefectiveBags({
               </div>
               <div className="stepper">
                 <div className="thumb" />
-                {index === rejectBags.length - 1 ? null : (
-                  <div className="vr" />
-                )}
+                {index === rejectBags.length - 1 ? null : <div className="vr" />}
               </div>
               <div className="image">
                 <div className="image-container">
@@ -92,24 +90,21 @@ function DefectiveBags({
                     //     : e.s3_image_url
                     // }
                     layout="fill"
-                    loader={() => `${BASE_URL}/api/shipment/images?image_location=${e.local_image_path}`}
+                    loader={() =>
+                      `${BASE_URL}/api/shipment/images?image_location=${e.local_image_path}`
+                    }
                     objectFit="contain"
                     objectPosition="top"
                   />
                 </div>
                 <div className="description">
-                  <div className="heading">
-                    Alert #
-                    {index + 1}
-                  </div>
+                  <div className="heading">Alert #{index + 1}</div>
                   <div className="sub-heading">Bag tag missing</div>
                   {e?.is_false_positive === 1 ? null : (
                     <Button
-                      onClick={() => removeFromMissprint(
-                        e?.misprint_id,
-                        e?.local_image_path,
-                        index,
-                      )}
+                      onClick={() =>
+                        removeFromMissprint(e?.misprint_id, e?.local_image_path, index)
+                      }
                       variant="outlined"
                       color="secondary"
                       style={{ fontSize: '10px', fontWeight: '600' }}

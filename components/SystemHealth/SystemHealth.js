@@ -24,10 +24,7 @@ function SystemHealth() {
       const data = await get('/api/stats/inoperational-device-stats');
       setHealthData(data?.data?.data);
     };
-    const interval = setInterval(
-      () => fetchHealth(),
-      SYSTEM_REFETCH_TIMEOUT_MS,
-    );
+    const interval = setInterval(() => fetchHealth(), SYSTEM_REFETCH_TIMEOUT_MS);
     return () => clearInterval(interval);
   }, []);
 
@@ -78,6 +75,7 @@ function SystemHealth() {
           <div className="card-container">
             {defected.map((e, index) => (
               <Card
+                id={e.id}
                 active={!(e.started_at && !e.ended_at)}
                 type={e.entity_type}
                 name={e.entity_name}
@@ -91,8 +89,8 @@ function SystemHealth() {
           </div>
         </div>
       )}
-      {healthData
-        && Object.keys(healthData).map((ele, idx) => (
+      {healthData &&
+        Object.keys(healthData).map((ele, idx) => (
           <div key={idx}>
             <div className="sub-header">
               <h3 className="sub-heading">{ele}</h3>
@@ -101,6 +99,7 @@ function SystemHealth() {
             <div className="card-container">
               {healthData[ele].map((e, index) => (
                 <Card
+                  id={e.id}
                   active={!(e.started_at && !e.ended_at)}
                   type={e.entity_type}
                   name={e.entity_name}
@@ -114,9 +113,7 @@ function SystemHealth() {
             </div>
           </div>
         ))}
-      {modalData && (
-        <AlertModal open={modalData} close={() => setModalData(null)} />
-      )}
+      {modalData && <AlertModal open={modalData} close={() => setModalData(null)} />}
     </Container>
   );
 }

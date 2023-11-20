@@ -1,8 +1,6 @@
 import { useState } from 'react';
 import { makeStyles } from '@material-ui/core/styles';
-import {
-  Modal, Backdrop, Fade, Button, TextField,
-} from '@material-ui/core';
+import { Modal, Backdrop, Fade, Button, TextField } from '@material-ui/core';
 import PropTypes from 'prop-types';
 import FrinksButton from 'components/FrinksButton';
 import theme from 'styles/theme';
@@ -96,15 +94,7 @@ const useStyles = makeStyles(() => ({
 }));
 
 function ConfirmationPreview({ data }) {
-  const {
-    loaderId,
-    licenceNumber,
-    wagonNo,
-    rackNo,
-    gateNo,
-    bagType,
-    bagCount,
-  } = data;
+  const { loaderId, licenceNumber, wagonNo, rackNo, gateNo, bagType, bagCount } = data;
 
   return (
     <div>
@@ -180,12 +170,7 @@ function InfoModal({
 
   const handleTransactionStop = async () => {
     if (jamReset) {
-      handleBeltReset(
-        null,
-        open?.belt_id,
-        null,
-        open.transaction_id,
-      );
+      handleBeltReset(null, open?.belt_id, null, open.transaction_id);
       close();
     }
     if (comment === '') {
@@ -220,26 +205,19 @@ function InfoModal({
       }}
     >
       <Fade in={open}>
-        <div
-          className={classes.paper}
-          style={{ minHeight: `${onlyBags ? '197px' : '250px'}` }}
-        >
+        <div className={classes.paper} style={{ minHeight: `${onlyBags ? '197px' : '250px'}` }}>
           <div className={classes.header}>
             <div className="title">
               <h3 className={classes.title}>{title}</h3>
             </div>
             <div className={classes.closeBtn}>
-              <Button variant="text" onClick={() => close()}>
+              <Button variant="text" data-testid={`modal-close`} onClick={() => close()}>
                 X Close
               </Button>
             </div>
           </div>
           <div className={classes.children}>
-            {dataToDisplay ? (
-              <ConfirmationPreview data={dataToDisplay} />
-            ) : (
-              children
-            )}
+            {dataToDisplay ? <ConfirmationPreview data={dataToDisplay} /> : children}
           </div>
           {dataToDisplay || hideComment ? null : (
             <>
@@ -257,9 +235,7 @@ function InfoModal({
               <p className={classes.error}>{error}</p>
             </>
           )}
-          {showDivision && !onlyBags ? (
-            <hr className={classes.division} />
-          ) : null}
+          {showDivision && !onlyBags ? <hr className={classes.division} /> : null}
           {!hideConfirm ? (
             <div className={classes.btnContainer}>
               {!hideModify ? (
@@ -278,12 +254,7 @@ function InfoModal({
                     onChange={(e) => {
                       if (e.target.value === '') setNewBagCount(1);
                       else if (!Number.isNaN(e.target.value)) {
-                        setNewBagCount(
-                          Math.max(
-                            1,
-                            Math.min(parseInt(e.target.value, 10), 100),
-                          ),
-                        );
+                        setNewBagCount(Math.max(1, Math.min(parseInt(e.target.value, 10), 100)));
                       }
                     }}
                     InputProps={{
@@ -310,10 +281,10 @@ function InfoModal({
                         jamReset
                           ? 'Reset'
                           : incrementModal
-                            ? 'Add Bags'
-                            : currentCount >= bagCount
-                              ? 'Done'
-                              : 'Stop'
+                          ? 'Add Bags'
+                          : currentCount >= bagCount
+                          ? 'Done'
+                          : 'Stop'
                       }
                       onClick={handleTransactionStop}
                       variant="outlined"
@@ -321,10 +292,7 @@ function InfoModal({
                     />
                   ) : null}
                   {hideModify ? null : (
-                    <FrinksButton
-                      text={buttonText || 'Confirm'}
-                      onClick={handleFormSubmit}
-                    />
+                    <FrinksButton text={buttonText || 'Confirm'} onClick={handleFormSubmit} />
                   )}
                 </div>
               )}
