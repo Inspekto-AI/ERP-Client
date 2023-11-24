@@ -66,7 +66,7 @@ function SystemHealth() {
       <div className="container">
         <h1 className="heading">System Health Monitoring</h1>
       </div>
-      {defected && defected.length > 0 && (
+      {/* {defected && defected.length > 0 && (
         <div>
           <div className="sub-header">
             <h3 className="sub-heading">Not Functioning</h3>
@@ -88,7 +88,7 @@ function SystemHealth() {
             ))}
           </div>
         </div>
-      )}
+      )} */}
       {healthData &&
         Object.keys(healthData).map((ele, idx) => (
           <div key={idx}>
